@@ -1,6 +1,6 @@
 # Durable allowance for Bob public recovery
 
-Status: offline local resource policy in journal v6. This is not authenticated peer admission, a global rate limit or a safe funded-swap recovery policy. No authentication key provisioning, rotation or transport construction has been selected by this change.
+Status: offline local resource policy introduced in journal v6; current storage is v7. This is not authenticated peer admission, a global rate limit or a safe funded-swap recovery policy. No authentication key provisioning, rotation or transport construction has been selected by this change.
 
 ## Scope and configuration
 
@@ -54,4 +54,4 @@ Process kills do not establish power-loss durability. Restoring both matching pr
 
 Invalid observations can consume the final slot and prevent a later valid recovery. Exhaustion is an intentional local stopping condition, not proof of swap failure, safe refund, or permission to start over. A real funded application needs a separately reviewed availability, emergency recovery and authenticated admission policy before using such a limit.
 
-Journal schema and digest domain advance to v6. Versions 1 through 5 are quarantined without modification or migration. Public packet/result schemas, cryptographic inputs and fixture signatures are unchanged. See [Stage 8 validation](STAGE8_VALIDATION.md) for executed tests and remaining gates.
+Stage 8 advanced journal schema and digest domain to v6. Current v7 adds optional [durable authentication pins](DURABLE_AUTHENTICATION_PINS.md); versions 1 through 6 are quarantined without modification or migration. Public packet/result schemas, cryptographic inputs and fixture signatures are unchanged. See [Stage 8 validation](STAGE8_VALIDATION.md) for executed tests and remaining gates.
