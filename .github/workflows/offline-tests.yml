@@ -50,12 +50,14 @@ jobs:
         run: cargo +1.90.0 fetch --locked --manifest-path qualification/Cargo.toml
       - name: Run offline adaptor qualification
         run: cargo +1.90.0 test --locked --offline --manifest-path qualification/Cargo.toml
-      - name: Build public artifact and completion executables
+      - name: Build public artifact, completion and authentication executables
         run: cargo +1.90.0 build --locked --offline --manifest-path qualification/Cargo.toml --examples
       - name: Qualify durable exchange with the actual public verifier
         run: python3 -B scripts/qualify_exchange.py --verifier qualification/target/debug/examples/verify_exchange
       - name: Qualify public completion and recovery with separate journals
         run: python3 -B scripts/qualify_completion.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
+      - name: Qualify pinned completion envelopes and their admission limits
+        run: python3 -B scripts/qualify_authentication.py --authentication qualification/target/debug/examples/verify_authentication --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
       - name: Check Rust formatting
         run: cargo +1.90.0 fmt --manifest-path qualification/Cargo.toml -- --check
 

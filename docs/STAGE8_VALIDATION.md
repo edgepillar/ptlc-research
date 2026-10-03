@@ -1,5 +1,7 @@
 # Stage 8 validation: durable Bob recovery allowance
 
+Historical milestone report. [Stage 9](STAGE9_VALIDATION.md) adds a separate completion-envelope qualifier; the journal allowance and its unenforced authentication boundary remain unchanged.
+
 Scope: a caller-selected local allowance shared by ordinary Bob public recovery and explicit reconciliation. Admission is persisted before the worker and never refunded. No peer authentication, Alice producer policy, cryptographic construction, chain observation or live execution was added.
 
 ## Executed checks
