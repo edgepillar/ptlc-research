@@ -8,6 +8,8 @@ The official BIP340 public corpus contains 19 vectors. This old Go verifier matc
 
 Stage 3 also checks both completed signatures in `qualification/fixtures/nonce_rounds.json`, rejects message/signature mutations, and parses the eight compressed points in its four distinct public nonces. This verifier does not check partial signatures, adaptor pre-signatures, application context hashes, or nonce freshness. All four top-level tests passed in the Stage 3 offline run; see the [validation report](../docs/STAGE3_VALIDATION.md).
 
+Stage 9 adds a fifth top-level test over `qualification/fixtures/authentication.json`. It independently reconstructs the domain-separated 32-byte envelope message and verifies both public authentication signatures, including the envelope with an invalid inner Zenon signature. Changed payload and wrong sender key reject. This is independent fixture verification, not peer enrollment, a reusable authentication service or a contract test. See the [Stage 9 report](../docs/STAGE9_VALIDATION.md).
+
 Dependency acquisition needs network access once. With Go 1.23.12 and the cache populated:
 
 ```sh

@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 8 durable Bob recovery allowance. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 9 offline completion-envelope qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -17,6 +17,8 @@ Alice now validates that release against her own retained partial and consumes c
 Both public executables use a shared bounded pipe runner. It rejects stdout overflow during transfer, applies one transfer/exit deadline and attempts safe cleanup of the owned process group on failure. It creates no output spool file. The executable remains trusted; this is neither a sandbox nor protection against repeated verification requests.
 
 Bob's two journal recovery APIs now share an explicit finite allowance persisted before each admitted recovery. Failures and crashes do not refund it; exact replay is free. This local policy does not authenticate peers or bound other verification calls, new sessions or restored copies. Exhaustion can prevent a later valid recovery and is not a funded-swap availability policy.
+
+A separate public BIP340 verifier now qualifies Alice's completion envelope against locally selected session terms and dedicated authentication-key pins. It binds the exact payload and returns no signing material. Authentication does not prove the enclosed completion valid, provide freshness or establish pin provenance. Journal entry points remain callable without it; authenticated admission is not enforced.
 
 ## Repository boundaries
 
@@ -53,6 +55,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 21. [Stage 7 validation and remaining gates](docs/STAGE7_VALIDATION.md)
 22. [Durable Bob recovery admission](docs/RECOVERY_ADMISSION.md)
 23. [Stage 8 validation and remaining gates](docs/STAGE8_VALIDATION.md)
+24. [Offline completion-envelope authentication](docs/COMPLETION_AUTHENTICATION.md)
+25. [Stage 9 validation and remaining gates](docs/STAGE9_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -84,13 +88,14 @@ To run the separate Python-to-Rust public-verifier integration after fetching th
 cargo build --locked --offline --manifest-path qualification/Cargo.toml --examples
 python3 -B scripts/qualify_exchange.py --verifier qualification/target/debug/examples/verify_exchange
 python3 -B scripts/qualify_completion.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
+python3 -B scripts/qualify_authentication.py --authentication qualification/target/debug/examples/verify_authentication --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
 ```
 
 Use the corresponding executable paths if `CARGO_TARGET_DIR` is set. These checks use temporary public journals, fixture artifacts and explicitly selected local executables. Ordinary Python tests use clearly labeled fake callbacks for sequencing and do not require Rust. Journal storage v6 quarantines older v1-v5 state without migration; incoming Bob releases require v2 packets with both partials. Starting managed Bob exchange requires an explicit `recovery_limit` from 1 through 64.
 
 ## Next milestone
 
-Define authenticated peer transport, observation selection and actual funding/time authorization. Bob has explicit positive-verification reconciliation and a local recovery allowance; key provisioning, authenticated admission, aggregate verification-rate control and a safe exhaustion/recovery policy remain unresolved. Connect a reviewed private signing worker only after resolving fresh entropy, secret memory, restored-copy protection, and its journal boundary. Restoring both matching database/checkpoint copies can still permit another synthetic Alice producer call or replenish Bob's allowance. Independent construction review and authenticated chain observations remain prerequisites for a current-node PTLC port and two-party regtest/devnet work.
+Define durable trusted-key binding and enforced authenticated admission before extending the qualified envelope to a transport or other inbound messages. Observation selection, pin provisioning/rotation, aggregate verification-rate control and a safe exhaustion/recovery policy remain unresolved. Connect a reviewed private signing worker only after resolving fresh entropy, secret memory, restored-copy protection, and its journal boundary. Restoring both matching database/checkpoint copies can still permit another synthetic Alice producer call or replenish Bob's allowance. Independent construction review, authenticated chain observations and funding/time authorization remain prerequisites for a current-node PTLC port and two-party regtest/devnet work.
 
 All checked-in content is English and contains no user identity or private operational data. The artifact checker detects a limited set of accidental disclosures; source, metadata, and destination still require review before publication.
 

@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 8 - durable Bob recovery allowance. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 9 - offline completion-envelope qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -36,6 +36,8 @@ Stage 6 adds [explicit completion observation reconciliation](OBSERVATION_RECONC
 Stage 7 replaces temporary-file stdout spooling with [bounded public worker transport](PUBLIC_WORKERS.md), shared by the artifact and completion adapters. It adds concurrent pipe transfer, immediate overflow rejection, a transfer/exit deadline and bounded cleanup attempts without changing storage or cryptographic inputs. [Stage 7 validation](STAGE7_VALIDATION.md) separates synthetic process tests from actual Rust integration. Peer admission and aggregate resource policy remain unresolved.
 
 Stage 8 adds a [durable Bob recovery allowance](RECOVERY_ADMISSION.md) in journal v6, shared by ordinary completion and explicit reconciliation. The caller chooses a finite immutable limit; each eligible attempt is charged before the worker, with no crash/failure refund. This changes reconciliation's storage behavior on failure, while preserving its candidate and archive rules. [Stage 8 validation](STAGE8_VALIDATION.md) records the evidence. Alice and initial artifact verification are outside this allowance; it is not authenticated admission or funded-swap availability policy.
+
+Stage 9 adds a [public completion-envelope qualifier](COMPLETION_AUTHENTICATION.md) using the pinned BIP340 backend and separate locally supplied authentication keys. Exact bytes, roles, purpose, terms and both pins are signed. The [validation report](STAGE9_VALIDATION.md) distinguishes authenticated bytes from valid completion and explicitly demonstrates replay and direct journal bypass. Pin enrollment, durable binding, freshness, transport and authenticated journal enforcement remain unimplemented.
 
 | Component | Responsibility | Boundary for this repository |
 | --- | --- | --- |

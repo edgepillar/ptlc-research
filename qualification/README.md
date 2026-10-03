@@ -69,6 +69,8 @@ The later public-only example `examples/verify_exchange.rs` verifies strict cano
 
 Stage 5 adds `examples/complete_exchange.rs`, which reuses the bundle verifier, verifies a final Zenon signature before witness extraction, checks its exact adaptor point, and adapts/verifies the Bitcoin signature from public inputs. It returns no extracted scalar and accepts no signing key or secret nonce input. Seven new completion tests bring the locked offline suite to **37 passed, 0 failed, 0 ignored**. The manifest, lockfile and public fixtures are unchanged. Alice private signing remains disconnected. See the [completion lifecycle](../docs/COMPLETION_LIFECYCLE.md) and [Stage 5 report](../docs/STAGE5_VALIDATION.md) for integration, intermediate failures and limits.
 
+Stage 9 adds `examples/verify_authentication.rs`: a public-only BIP340 verifier for exact completion-envelope bytes and supplied authentication context. Ten new tests bring the suite to **47 passed**. Both pins are parsed as curve points; the signature binds the session, terms digest, roles, purpose, both pins and exact payload. Synthetic signing occurs only in tests. The new public fixture includes a correctly authenticated but invalid inner completion to expose the distinction. Python separately requires local context agreement; the executable alone cannot establish pin provenance. Journal enforcement and freshness are absent. See the [envelope design](../docs/COMPLETION_AUTHENTICATION.md) and [Stage 9 report](../docs/STAGE9_VALIDATION.md).
+
 [`fixtures/completed_signatures.json`](fixtures/completed_signatures.json) contains four valid fixed-32-byte-message examples:
 
 1. `musig2-single`.
