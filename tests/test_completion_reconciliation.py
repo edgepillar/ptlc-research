@@ -114,7 +114,7 @@ class CompletionReconciliationTests(unittest.TestCase):
                     expected_observation_digest=self.digest, recoverer=lambda request: calls.append(request))
         self.assertEqual(calls, [])
 
-    def test_nonbytes_replacement_is_rejected_before_custom_equality_can_run(self):
+    def test_nonbytes_completion_is_rejected_before_custom_equality_can_run(self):
         before = exchange.canonical(self.observed)
         equality_calls, recovery_calls = [], []
         class HostilePacket:
@@ -123,6 +123,12 @@ class CompletionReconciliationTests(unittest.TestCase):
                 raise RuntimeError("synthetic equality side effect")
         with self.assertRaises(exchange.ExchangeError):
             self.reconcile(packet=HostilePacket(), recoverer=lambda request: recovery_calls.append(request))
+        with self.assertRaises(exchange.ExchangeError):
+            completion.bob_request(self.observed, HostilePacket())
+        with self.assertRaises(exchange.ExchangeError):
+            completion.bob_reconciliation_request(
+                self.observed, HostilePacket(), expected_observation_digest=self.digest,
+            )
         self.assertEqual(equality_calls, [])
         self.assertEqual(recovery_calls, [])
         self.assertEqual(exchange.canonical(self.observed), before)

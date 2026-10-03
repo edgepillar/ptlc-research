@@ -1,5 +1,7 @@
 # Stage 6 validation: explicit Bob observation reconciliation
 
+Historical milestone: [Stage 8](STAGE8_VALIDATION.md) adds journal v6 and a durable admission commit before Bob recovery. Failed reconciliation now consumes allowance while preserving the original protocol state. Storage-unchanged and single-commit claims below describe Stage 6 before that change.
+
 Date: 2026-10-03. Scope: a local public-input replacement path for a retained Bob completion candidate, with positive cryptographic acceptance, exact original-packet retention and unchanged Alice ownership. No signing keys, secret nonce ownership, peer authentication, chain observation or live settlement were added.
 
 ## Executed checks

@@ -83,6 +83,8 @@ A preliminary [public-state journal](SESSION_JOURNAL.md) now qualifies SQLite/ch
 
 [Stage 6 reconciliation](OBSERVATION_RECONCILIATION.md) adds a distinct Bob-only path for a different positively verified observation. An exact original-packet digest prevents stale selection; the final stored snapshot retains both the completed replacement and the superseded original. Public computation can be retried after pre-commit interruption if the caller resupplies the replacement. This does not reset any signing ownership or authenticate the observation.
 
+[Stage 8 admission](RECOVERY_ADMISSION.md) now requires remaining local allowance for Bob recovery retries. Each structurally eligible attempt is charged durably before the worker, including failed or interrupted computation. Reconciliation preserves the old candidate on failure while advancing this separate allowance. Exhaustion is a local stopping condition, not a safe funded-swap recovery policy or a cryptographic verdict.
+
 ## 6. Timing, refund, and fee policy
 
 The selected graph must identify which leg is funded first, which claim exposes the secret, and which deadline leaves the other party time to claim. It must justify the deadline difference using explicit assumptions for confirmation/reorg policy, detection delay, signing and recovery latency, inclusion delay, clock semantics and resource availability. No arbitrary timeout value is approved here.

@@ -2,7 +2,7 @@
 
 Status: offline reference sequencing with public synthetic inputs. This implements the local retention-before-release requirement from [CANDIDATE-01](TRANSACTION_GRAPH.md). It has no signer, participant authentication, peer transport, funding observation, time authorization, wallet or broadcaster. A completed state-machine transition is not authorization to use funds.
 
-This document describes the retention/release component introduced in Stage 4. Current storage is v5, and releases use v2 packets containing both ordered partials. [Stage 5](COMPLETION_LIFECYCLE.md) extends this flow with Alice completion and Bob public recovery; the earlier validation report remains historical.
+This document describes the retention/release component introduced in Stage 4. Current storage is v6, and releases use v2 packets containing both ordered partials. [Stage 5](COMPLETION_LIFECYCLE.md) extends this flow with Alice completion and Bob public recovery; the earlier validation report remains historical. Managed Bob start requires the explicit [Stage 8 recovery allowance](RECOVERY_ADMISSION.md); initial artifact verification does not consume it.
 
 ## Local transition contract
 
@@ -59,7 +59,7 @@ The release marker is separate from `possible_exposure`. Bob releasing a pre-sig
 
 These guarantees apply to the managed journal API. The pure reducer has no persistence, and the trusted caller already possesses the supplied public artifacts. It could transmit them directly or read a defensive snapshot and bypass the release API. This module cannot constrain malicious caller side effects. The complete application must own all outbound routes before retention order can be a system-wide guarantee.
 
-Storage versions 1-4 are quarantined without migration or automatic reset. As before, restoring both matching database and checkpoint copies is undetectable; there is no hardware counter or remote witness. This stage does not supply a durable secret nonce owner or a crash-tested journal-to-signer boundary.
+Storage versions 1-5 are quarantined without migration or automatic reset. As before, restoring both matching database and checkpoint copies is undetectable; there is no hardware counter or remote witness. This stage does not supply a durable secret nonce owner or a crash-tested journal-to-signer boundary.
 
 ## Reproduction and next work
 

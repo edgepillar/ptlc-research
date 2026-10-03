@@ -37,7 +37,7 @@ class RealVerifierExchangeTests(unittest.TestCase):
             base = Path(directory)
             with Journal.open(base / "state", base / "head.json") as journal:
                 journal.create_session(terms.session_id, terms.digest_hex)
-                journal.start_exchange(terms.session_id, bitcoin)
+                journal.start_exchange(terms.session_id, bitcoin, recovery_limit=8)
                 with self.assertRaises(Conflict):
                     journal.bind_exchange_zenon(terms.session_id, zenon)
                 journal.retain_exchange_bitcoin(terms.session_id, btc_bundle, verifier=verified)

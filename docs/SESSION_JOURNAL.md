@@ -29,7 +29,7 @@ The journal uses persistent POSIX advisory locks for the directory and separate 
 
 SQLite stores a canonical public-state snapshot and its version, lineage, sequence and digest. A separately stored checkpoint outside the journal directory records the corresponding head. Opening recomputes the actual state digest and checks the checkpoint; comparing only two stored digest fields would miss payload changes.
 
-The current storage schema and digest domain are version 5. Opening version 1, 2, 3 or 4 state quarantines it without modifying either copy. No automatic migration or reset is provided. Transcript schema v1 remains unchanged; optional nonce-bound contexts extend it while historical static context bytes remain identical.
+The current storage schema and digest domain are version 6. Opening versions 1 through 5 quarantines them without modifying either copy. No automatic migration or reset is provided. Transcript schema v1 remains unchanged; optional nonce-bound contexts extend it while historical static context bytes remain identical.
 
 For each mutation the database commit precedes checkpoint replacement. The checkpoint is written to a temporary file, flushed, atomically replaced and its parent directory synchronized before success is returned. This is deliberately **not** presented as one atomic transaction across two files. An interruption in the gap can leave mismatched heads, which cause quarantine instead of automatic repair or another producer attempt.
 
@@ -38,6 +38,8 @@ SQLite and filesystem synchronization rely on the operating system and storage s
 ## Reservation and output lifecycle
 
 The lifecycle below applies to the original generic synthetic producer. A fresh session may instead enter managed Bob exchange or managed Alice completion before any generic reservation. These three modes are mutually exclusive. Managed sessions cannot use generic reserve/produce/replay operations; verifier calls, transitions and persistence remain under the same mutation/ownership guard. Stored exchange contexts supply that session's binding/round/nonce pins and must match them on reload. See the [managed state machine](ARTIFACT_EXCHANGE.md) for retention/release and the [completion lifecycle](COMPLETION_LIFECYCLE.md) for Alice consumption, retained Bob observations and public-input recovery. A failed Bob recovery may retry its exact retained public input; explicit reconciliation additionally accepts a different positively verified candidate while preserving the old packet. An uncertain Alice producer may not run again.
+
+Managed Bob start now requires an explicit `recovery_limit` from 1 through 64. [Stage 8 admission](RECOVERY_ADMISSION.md) durably consumes one shared allowance before ordinary recovery or reconciliation, including unsuccessful attempts. Retry therefore also requires remaining allowance. Exact output/release replay costs nothing. Initial artifact verification and Alice's producer/completion path are not charged by this Bob-only policy.
 
 ```text
 RESERVED -> CONSUMED -> OUTPUT_RECORDED

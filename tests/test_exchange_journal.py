@@ -74,7 +74,7 @@ class ExchangeJournalTests(unittest.TestCase):
 
     def start(self, journal):
         self.initialize(journal)
-        journal.start_exchange(self.session, self.contexts["bitcoin"])
+        journal.start_exchange(self.session, self.contexts["bitcoin"], recovery_limit=8)
 
     def bitcoin_retained(self, journal):
         self.start(journal)
@@ -153,7 +153,7 @@ class ExchangeJournalTests(unittest.TestCase):
                 lambda: journal.bind_exchange_zenon(self.session, self.contexts["zenon"]),
                 lambda: journal.retain_exchange_alice_partial(self.session, "01" * 32, verifier=reject),
                 lambda: journal.retain_exchange_zenon(self.session, self.bundles["zenon"], verifier=reject),
-                lambda: journal.start_exchange(self.session, self.contexts["bitcoin"]),
+                lambda: journal.start_exchange(self.session, self.contexts["bitcoin"], recovery_limit=8),
             ]
             for action in actions:
                 with self.assertRaises(Conflict):
@@ -251,10 +251,10 @@ class ExchangeJournalTests(unittest.TestCase):
             self.initialize(journal)
             journal.reserve(self.session, "31" * 32, self.contexts["bitcoin"], "32" * 32)
             with self.assertRaises(Conflict):
-                journal.start_exchange(self.session, self.contexts["bitcoin"])
+                journal.start_exchange(self.session, self.contexts["bitcoin"], recovery_limit=8)
         with self.open() as journal:
             with self.assertRaises(Conflict):
-                journal.start_exchange(self.session, self.contexts["bitcoin"])
+                journal.start_exchange(self.session, self.contexts["bitcoin"], recovery_limit=8)
             self.assertIsNone(journal.get_session(self.session)["exchange"])
 
     def test_managed_start_requires_dynamic_bob_bitcoin_context(self):
@@ -273,7 +273,7 @@ class ExchangeJournalTests(unittest.TestCase):
             self.initialize(journal)
             for context in bad:
                 with self.assertRaises((Conflict, InvalidInput)):
-                    journal.start_exchange(self.session, context)
+                    journal.start_exchange(self.session, context, recovery_limit=8)
                 self.assertIsNone(journal.get_session(self.session)["exchange"])
                 self.assertEqual(journal.get_session(self.session)["signing_rounds"], {})
 
@@ -295,7 +295,7 @@ class ExchangeJournalTests(unittest.TestCase):
                 with Journal.open(root, anchor) as journal:
                     self.initialize(journal)
                     if first_managed:
-                        journal.start_exchange(self.session, self.contexts["bitcoin"])
+                        journal.start_exchange(self.session, self.contexts["bitcoin"], recovery_limit=8)
                     else:
                         journal.reserve(self.session, "31" * 32, self.contexts["bitcoin"], "32" * 32)
                     journal.create_session(other_terms.session_id, other_terms.digest_hex)
@@ -304,7 +304,7 @@ class ExchangeJournalTests(unittest.TestCase):
                         if first_managed:
                             journal.reserve(other_terms.session_id, "33" * 32, other["bitcoin"], "34" * 32)
                         else:
-                            journal.start_exchange(other_terms.session_id, other["bitcoin"])
+                            journal.start_exchange(other_terms.session_id, other["bitcoin"], recovery_limit=8)
 
     def test_repeated_nonce_between_managed_legs_is_rejected(self):
         _, repeated, _ = exchange_fixture(repeated_nonces=True)

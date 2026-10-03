@@ -21,9 +21,18 @@ def main():
     parser.add_argument("checkpoint")
     parser.add_argument("marker")
     args = parser.parse_args()
+    recovery_returned = False
 
     def hook(name):
-        if name == args.checkpoint:
+        nonlocal recovery_returned
+        if name == "after_bitcoin_reconciliation_recoverer":
+            recovery_returned = True
+        target = args.checkpoint
+        if target.startswith("completion:"):
+            if not recovery_returned:
+                return
+            target = target.split(":", 1)[1]
+        if name == target:
             print("paused", flush=True)
             sys.stdin.buffer.read(1)
 

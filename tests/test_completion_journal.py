@@ -146,7 +146,7 @@ class CompletionJournalTests(unittest.TestCase):
                     journal.close,
                     lambda: journal.observe(self.session, "91" * 32),
                     lambda: journal.complete_alice(self.session, producer=lambda: b"", verifier=self.finish),
-                    lambda: journal.start_exchange(self.session, self.bitcoin),
+                    lambda: journal.start_exchange(self.session, self.bitcoin, recovery_limit=8),
                     lambda: journal.accept_alice_release(self.session, self.release, verifier=accepted),
                 ):
                     with self.assertRaises(Conflict):
@@ -219,7 +219,7 @@ class CompletionJournalTests(unittest.TestCase):
                     if mode == "alice":
                         journal.start_alice(self.session, self.alice, self.partial, verifier=accepted)
                     elif mode == "bob":
-                        journal.start_exchange(self.session, self.bitcoin)
+                        journal.start_exchange(self.session, self.bitcoin, recovery_limit=8)
                     else:
                         journal.reserve(self.session, "31" * 32, self.alice, "32" * 32)
                     for other in ({"alice", "bob", "generic"} - {mode}):
@@ -227,7 +227,7 @@ class CompletionJournalTests(unittest.TestCase):
                             if other == "alice":
                                 journal.start_alice(self.session, self.alice, self.partial, verifier=accepted)
                             elif other == "bob":
-                                journal.start_exchange(self.session, self.bitcoin)
+                                journal.start_exchange(self.session, self.bitcoin, recovery_limit=8)
                             else:
                                 journal.reserve(self.session, "33" * 32, self.alice, "34" * 32)
                     if mode == "alice":

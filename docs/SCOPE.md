@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 7 - bounded public worker transport. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 8 - durable Bob recovery allowance. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 7 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 8 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -34,6 +34,8 @@ Stage 5 adds [Alice completion and Bob public recovery](COMPLETION_LIFECYCLE.md)
 Stage 6 adds [explicit completion observation reconciliation](OBSERVATION_RECONCILIATION.md) in journal v5. A different candidate requires an exact retained-input guard and positive public cryptographic recovery before the completed replacement and original archive are persisted. This local recovery path does not authenticate observations or change Alice ownership. [Stage 6 validation](STAGE6_VALIDATION.md) records the evidence.
 
 Stage 7 replaces temporary-file stdout spooling with [bounded public worker transport](PUBLIC_WORKERS.md), shared by the artifact and completion adapters. It adds concurrent pipe transfer, immediate overflow rejection, a transfer/exit deadline and bounded cleanup attempts without changing storage or cryptographic inputs. [Stage 7 validation](STAGE7_VALIDATION.md) separates synthetic process tests from actual Rust integration. Peer admission and aggregate resource policy remain unresolved.
+
+Stage 8 adds a [durable Bob recovery allowance](RECOVERY_ADMISSION.md) in journal v6, shared by ordinary completion and explicit reconciliation. The caller chooses a finite immutable limit; each eligible attempt is charged before the worker, with no crash/failure refund. This changes reconciliation's storage behavior on failure, while preserving its candidate and archive rules. [Stage 8 validation](STAGE8_VALIDATION.md) records the evidence. Alice and initial artifact verification are outside this allowance; it is not authenticated admission or funded-swap availability policy.
 
 | Component | Responsibility | Boundary for this repository |
 | --- | --- | --- |
