@@ -257,6 +257,25 @@ def _bob_request(state, packet):
                     bitcoin=bitcoin, bitcoin_bundle=state["bitcoin_bundle"])
 
 
+def bob_candidate_from_signature(state, signature):
+    """Build unverified candidate bytes from retained Bob context and a signature.
+
+    Role labels describe the existing packet format, not evidence that Alice
+    transmitted it. This performs no authentication, cryptographic verification,
+    admission or persistence. A different retained candidate still requires the
+    ordinary explicit reconciliation path before it can replace that observation.
+    """
+    if type(signature) is not bytes or len(signature) != 64:
+        raise CompletionError("an exact 64-byte public signature is required")
+    try:
+        snapshot = exchange._at(state, "RELEASE_RECORDED")
+        packet = _alice_packet(exchange.contexts(snapshot)[1], signature.hex())
+        _bob_request(snapshot, packet)
+        return packet
+    except Exception:
+        raise CompletionError("public signature candidate rejected") from None
+
+
 def bob_request(state, packet):
     exchange._at(state, "RELEASE_RECORDED")
     request = _bob_request(state, packet)

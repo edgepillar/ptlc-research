@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 11 bounded recovery admission model. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 12 public signature candidate construction. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -23,6 +23,8 @@ A separate public BIP340 verifier now qualifies Alice's completion envelope agai
 Optional authentication pins can now be frozen when Bob's exchange starts. A journal-scoped helper rebuilds the envelope context from those stored pins and terms after reopen. Verification itself writes nothing and consumes no recovery allowance. Both configured pins and the choice of no pins are immutable under the local continuity checks. Restored matching pre-start files can still erase that choice; enrollment and rollback protection remain external.
 
 A separate finite recovery-admission model explores policy choices before they are connected to the journal. It separates candidate/history integrity from recovery availability, with explicit local authorization as an external input. Counterexamples cover a withheld authentication envelope, exhausted recovery allowance and treating authentication as inner-signature validity. This model selects no funded-swap admission policy and changes no journal or cryptographic behavior.
+
+A pure helper now constructs an unverified completion candidate from a 64-byte public signature and Bob's retained context. It accepts no remote context or provenance claims, writes nothing, and leaves ordinary recovery and comparison-guarded reconciliation unchanged. Its role labels are packet-format metadata, not evidence of an authenticated Alice message. Actual verification and caller authorization remain separate.
 
 ## Repository boundaries
 
@@ -65,6 +67,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 27. [Stage 10 validation and remaining gates](docs/STAGE10_VALIDATION.md)
 28. [Bounded recovery admission and observation model](docs/RECOVERY_ADMISSION_MODEL.md)
 29. [Stage 11 validation and remaining gates](docs/STAGE11_VALIDATION.md)
+30. [Public signature candidate construction](docs/PUBLIC_SIGNATURE_CANDIDATES.md)
+31. [Stage 12 validation and remaining gates](docs/STAGE12_VALIDATION.md)
 
 ## Run the offline checks
 

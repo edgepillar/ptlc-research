@@ -56,6 +56,12 @@ Candidate retention is a structural match, **not a claim of cryptographic validi
 
 Ordinary completion preserves this pinning even when the candidate is invalid. [Stage 6](OBSERVATION_RECONCILIATION.md) adds an explicit operation requiring the expected original-packet digest and a different positively verified replacement, retaining the exact old packet alongside the completed result. There is no reset API. Authenticated observation selection remains required before network use.
 
+[Stage 12](PUBLIC_SIGNATURE_CANDIDATES.md) can construct an unverified candidate
+from Bob's retained snapshot and 64 public signature bytes. This supplies the
+existing packet format without requiring an Alice message or adopting remote
+context. It writes nothing and does not change candidate pinning, explicit
+reconciliation, admission or actual cryptographic verification.
+
 On success Bob commits the completed Bitcoin packet, bound verification receipt and retained Zenon observation before returning output. State becomes `BTC_COMPLETION_RECORDED`. The packet includes the exact Bitcoin-complete context and final signature, not a broadcast result. Further completion calls reject; replay returns the exact stored output while still performing local structural/hash checks. Bob can also replay his original Zenon release. Neither replay calls an external cryptographic worker.
 
 ## Ownership and storage
