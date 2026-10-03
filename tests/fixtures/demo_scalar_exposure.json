@@ -1,0 +1,32 @@
+{
+  "purpose": "Public synthetic inputs for an offline regression; no wallet or live-chain material.",
+  "source": {
+    "repository": "https://github.com/KingGorrin/znn_ptlc_use_cases_go",
+    "commit": "bdc02c11e78fcf9e7af2dafa3a39d7a771935ce3",
+    "scalar_disclosure": "https://github.com/KingGorrin/znn_ptlc_use_cases_go/blob/bdc02c11e78fcf9e7af2dafa3a39d7a771935ce3/app/main.go#L124-L136",
+    "recipient_recomputes_challenge": "https://github.com/KingGorrin/znn_ptlc_use_cases_go/blob/bdc02c11e78fcf9e7af2dafa3a39d7a771935ce3/app/main.go#L301-L316",
+    "funding_key": "https://github.com/KingGorrin/znn_ptlc_use_cases_go/blob/bdc02c11e78fcf9e7af2dafa3a39d7a771935ce3/app/main.go#L81-L95",
+    "arithmetic": "https://github.com/KingGorrin/znn_ptlc_use_cases_go/blob/bdc02c11e78fcf9e7af2dafa3a39d7a771935ce3/crypto/ed25519/ed25519.go#L110-L118",
+    "challenge": "https://github.com/KingGorrin/znn_ptlc_use_cases_go/blob/bdc02c11e78fcf9e7af2dafa3a39d7a771935ce3/crypto/ed25519/ed25519.go#L174-L187",
+    "observed_formula": "c = SHA512(encode(Ra + T) || encode(A + B) || message) mod ell; disclosed = c * a mod ell",
+    "counterexample_formula": "For c != 0: a = disclosed * inverse(c) mod ell; recipient knows b, so aggregate signing scalar = a + b mod ell."
+  },
+  "synthetic": {
+    "alice_scalar": "18364758544493064720",
+    "bob_scalar": "12379813738877118345",
+    "adaptor_scalar": "314159265358979323846",
+    "original_nonce_scalar": "271828182845904523536",
+    "fresh_nonce_scalar": "161803398874989484820",
+    "message_utf8": "Offline PTLC scalar-exposure regression; synthetic message only."
+  },
+  "rfc8032_test_1": {
+    "source": "https://www.rfc-editor.org/rfc/rfc8032#section-7.1",
+    "license": "IETF Trust Legal Provisions (2015), IRTF provisions",
+    "license_source": "https://trustee.ietf.org/documents/trust-legal-provisions/tlp-5/",
+    "license_notice": "../../THIRD_PARTY_NOTICES.md",
+    "purpose": "Published public verification vector; the private test seed is deliberately omitted.",
+    "public_key_hex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+    "message_hex": "",
+    "signature_hex": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+  }
+}

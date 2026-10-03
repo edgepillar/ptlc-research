@@ -1,0 +1,96 @@
+name: Offline research checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-tests:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Select macOS OpenSSL verifier
+        if: runner.os == 'macOS'
+        run: |
+          verifier_prefix="$(brew --prefix openssl@3)"
+          test -x "$verifier_prefix/bin/openssl"
+          printf '%s/bin\n' "$verifier_prefix" >> "$GITHUB_PATH"
+      - name: Run offline regression and independent verification
+        env:
+          REQUIRE_OPENSSL: "1"
+        run: python3 -m unittest discover -s tests -v
+      - name: Check artifact hygiene
+        run: python3 scripts/check_artifacts.py
+
+  adaptor-qualification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.90.0 --profile minimal --component rustfmt
+      - name: Fetch locked qualification dependencies
+        run: cargo +1.90.0 fetch --locked --manifest-path qualification/Cargo.toml
+      - name: Run offline adaptor qualification
+        run: cargo +1.90.0 test --locked --offline --manifest-path qualification/Cargo.toml
+      - name: Build public artifact and completion executables
+        run: cargo +1.90.0 build --locked --offline --manifest-path qualification/Cargo.toml --examples
+      - name: Qualify durable exchange with the actual public verifier
+        run: python3 -B scripts/qualify_exchange.py --verifier qualification/target/debug/examples/verify_exchange
+      - name: Qualify public completion and recovery with separate journals
+        run: python3 -B scripts/qualify_completion.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
+      - name: Check Rust formatting
+        run: cargo +1.90.0 fmt --manifest-path qualification/Cargo.toml -- --check
+
+  go-compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [qualification-go, qualification-bitcoin-go]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install pinned compatibility toolchain
+        shell: bash
+        run: |
+          test "$(uname -m)" = x86_64
+          archive="$RUNNER_TEMP/ptlc-go.tar.gz"
+          curl --fail --silent --show-error --location https://go.dev/dl/go1.23.12.linux-amd64.tar.gz --output "$archive"
+          printf '%s  %s\n' d3847fef834e9db11bf64e3fb34db9c04db14e068eeb064f49af747010454f90 "$archive" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/ptlc-go"
+          tar -xzf "$archive" -C "$RUNNER_TEMP/ptlc-go"
+          printf '%s\n' "$RUNNER_TEMP/ptlc-go/go/bin" >> "$GITHUB_PATH"
+      - name: Fetch recorded Go dependencies
+        working-directory: ${{ matrix.module }}
+        env:
+          GOTOOLCHAIN: local
+        run: go mod download all
+      - name: Run offline Go qualification
+        working-directory: ${{ matrix.module }}
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: "off"
+          GOSUMDB: "off"
+        run: go test -mod=readonly -count=1 -v ./...
+      - name: Check Go formatting
+        working-directory: ${{ matrix.module }}
+        run: test -z "$(gofmt -l .)"
