@@ -108,3 +108,7 @@ those policies, evidence retention, admission/resource controls, compromise and
 rotation handling before enforcing any envelope requirement. Private signing,
 authenticated chain observations and a funded timing policy remain unimplemented.
 Live swaps and a core port remain no-go.
+
+Stage 11 explores these admission questions in a separate
+[bounded policy model](RECOVERY_ADMISSION_MODEL.md). Its counterexamples do not
+change this helper or enforce a new journal policy.
