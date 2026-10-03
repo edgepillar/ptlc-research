@@ -1,6 +1,6 @@
 # Threat model and evidence limits
 
-Status: **DRAFT, carried through Stage 6 offline qualification.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
+Status: **DRAFT, carried through Stage 7 offline qualification.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
 
 ## Security objective
 
@@ -58,3 +58,5 @@ The report must identify exact commits, dependency versions, environment and ass
 [Stage 4 results](STAGE4_VALIDATION.md) add Bob's local artifact retention/release order and a real public-verification subprocess. The managed API prevents release before full verified extraction material is stored, under a trusted verifier/caller and existing storage assumptions. It does not constrain direct transmission by that caller, authenticate peers, validate funding/time policy, or provide secret signer ownership. Receipts are bound local verification records, not signed attestations.
 
 [Stage 5 results](STAGE5_VALIDATION.md) add exact inbound context checks, Alice consume-before-producer/output-before-return ordering, and actual Bob verification/extraction/adaptation from retained public inputs. No private signing backend is integrated. Restoring both matching pre-consumption storage copies demonstrably permits a second synthetic Alice invocation. Ordinary completion keeps a structurally matching but invalid Bob observation pinned. [Stage 6](OBSERVATION_RECONCILIATION.md) permits explicit replacement after positive verification and exact original-input comparison, while preserving the original packet. Authenticated observation selection and repeated-verification denial of service remain unresolved. Neither completion, possible exposure nor exact replay establishes peer delivery or chain inclusion.
+
+[Stage 7 transport](PUBLIC_WORKERS.md) limits captured stdout during concurrent pipe transfer and applies a per-invocation transfer/exit deadline. It removes unbounded temporary stdout spooling from both public adapters. It does not constrain arbitrary executable resource use, contain escaped descendants, enforce aggregate admission policy or establish private signer isolation. The worker and host remain trusted.

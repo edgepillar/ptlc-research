@@ -3,12 +3,12 @@
 import copy
 import json
 from pathlib import Path
-import subprocess
 import unittest
 from unittest.mock import patch
 
 from offline_session import exchange
 from offline_session.artifact_verifier import SubprocessVerifier
+from offline_session.public_worker import WorkerError
 from offline_session.transcript import (
     agree_terms, bind_bitcoin, bind_zenon, commit_nonce_round,
     nonce_commitment, reveal_nonce_round, signing_context,
@@ -262,14 +262,16 @@ class SubprocessVerifierAdapterTests(unittest.TestCase):
             self.verifier = SubprocessVerifier(Path.cwd() / "synthetic-verifier", timeout=1)
 
     def run_with(self, response, returncode=0):
-        def process(*args, **kwargs):
-            self.assertEqual(kwargs["input"], exchange.canonical(self.request))
+        def process(executable, request, **kwargs):
+            self.assertEqual(executable, self.verifier._executable)
+            self.assertEqual(request, exchange.canonical(self.request))
             self.assertEqual(kwargs["timeout"], 1)
-            self.assertIs(kwargs["stderr"], subprocess.DEVNULL)
-            self.assertIs(kwargs["check"], False)
-            kwargs["stdout"].write(response)
-            return subprocess.CompletedProcess(args[0], returncode)
-        with patch("offline_session.artifact_verifier.subprocess.run", side_effect=process):
+            self.assertEqual(kwargs["max_input_bytes"], 32768)
+            self.assertEqual(kwargs.get("max_output_bytes", 4096), 4096)
+            if returncode:
+                raise WorkerError("synthetic worker rejection")
+            return response
+        with patch("offline_session.artifact_verifier.run_public_worker", side_effect=process):
             return self.verifier(self.request)
 
     def test_exact_success_with_optional_lf_and_no_payload_reflection(self):
@@ -292,11 +294,11 @@ class SubprocessVerifierAdapterTests(unittest.TestCase):
             self.run_with(raw, returncode=1)
 
     def test_deadline_and_os_errors_are_sanitized(self):
-        for error in (subprocess.TimeoutExpired("synthetic", 1), OSError("synthetic")):
-            with patch("offline_session.artifact_verifier.subprocess.run", side_effect=error), \
+        for error in (WorkerError("synthetic worker detail"), OSError("synthetic worker detail")):
+            with patch("offline_session.artifact_verifier.run_public_worker", side_effect=error), \
                     self.assertRaisesRegex(exchange.VerificationError, "public verifier failed"):
                 self.verifier(self.request)
-        with patch("offline_session.artifact_verifier.subprocess.run") as run:
+        with patch("offline_session.artifact_verifier.run_public_worker") as run:
             with self.assertRaises(exchange.VerificationError):
                 self.verifier({"value": "a" * 32769})
             run.assert_not_called()

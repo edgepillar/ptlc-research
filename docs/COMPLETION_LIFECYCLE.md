@@ -4,6 +4,8 @@ Status: offline lifecycle qualification with synthetic fixtures. Alice's produce
 
 This document describes the Stage 5 component. [Stage 6 reconciliation](OBSERVATION_RECONCILIATION.md) adds an explicit positively verified replacement path for Bob's retained observation. Current storage is v5; external packet schemas remain unchanged.
 
+The completion adapter now shares the [Stage 7 bounded pipe runner](PUBLIC_WORKERS.md) with the artifact verifier. It preserves the 65,536-byte request and 4,096-byte response limits, enforces output overflow during transfer and uses a single transfer/exit deadline. A transport failure does not prove that an observation is cryptographically invalid or permit a signing reset.
+
 ## Alice's inbound boundary
 
 Alice starts in a fresh managed journal session with her exact nonce-bound Zenon partial context and her own already computed public partial. That partial is verified with the artifact verifier before retention. This entry point does not manage her earlier Bitcoin partial generation, funding transaction or secret witness. The current local lifecycle deliberately starts after those public signing inputs exist.

@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 6 - offline completion observation reconciliation. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 7 - bounded public worker transport. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 6 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 7 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -32,6 +32,8 @@ Stage 4 implements the [managed Bob artifact flow](ARTIFACT_EXCHANGE.md) in jour
 Stage 5 adds [Alice completion and Bob public recovery](COMPLETION_LIFECYCLE.md) in journal v4. Alice validates the complete inbound bundle, consumes her synthetic producer before invocation, and persists exact completion output. Bob retains the observed public signature before actual verification, witness extraction and Bitcoin adaptation. Alice still returns a fixture signature; no private signing backend is attached. [Stage 5 validation](STAGE5_VALIDATION.md) records public cryptographic integration, process-death tests and the remaining paired-restore and observation-selection limits.
 
 Stage 6 adds [explicit completion observation reconciliation](OBSERVATION_RECONCILIATION.md) in journal v5. A different candidate requires an exact retained-input guard and positive public cryptographic recovery before the completed replacement and original archive are persisted. This local recovery path does not authenticate observations or change Alice ownership. [Stage 6 validation](STAGE6_VALIDATION.md) records the evidence.
+
+Stage 7 replaces temporary-file stdout spooling with [bounded public worker transport](PUBLIC_WORKERS.md), shared by the artifact and completion adapters. It adds concurrent pipe transfer, immediate overflow rejection, a transfer/exit deadline and bounded cleanup attempts without changing storage or cryptographic inputs. [Stage 7 validation](STAGE7_VALIDATION.md) separates synthetic process tests from actual Rust integration. Peer admission and aggregate resource policy remain unresolved.
 
 | Component | Responsibility | Boundary for this repository |
 | --- | --- | --- |

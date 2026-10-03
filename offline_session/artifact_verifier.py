@@ -7,10 +7,9 @@ signing worker. Its result is a local trust boundary, never a peer credential.
 import json
 import os
 from pathlib import Path
-import subprocess
-import tempfile
 
 from .exchange import RESULT_SCHEMA, VerificationError, canonical, request_digest
+from .public_worker import WorkerError, run_public_worker
 
 
 class SubprocessVerifier:
@@ -28,22 +27,14 @@ class SubprocessVerifier:
         if len(wire) > 32768:
             raise VerificationError("public verification request exceeds its bound")
         try:
-            # Disk-backed output prevents an unbounded pipe buffer in Python.
-            # The executable remains trusted; this is not an OS resource sandbox.
-            with tempfile.TemporaryFile() as output:
-                process = subprocess.run(
-                    [self._executable], input=wire, stdout=output, stderr=subprocess.DEVNULL,
-                    timeout=self._timeout, check=False,
-                )
-                output.seek(0)
-                response = output.read(4097)
-            if process.returncode != 0 or len(response) > 4096:
-                raise VerificationError("public verifier rejected or exceeded its output bound")
+            response = run_public_worker(
+                self._executable, wire, timeout=self._timeout, max_input_bytes=32768,
+            )
             result = json.loads(response.decode("ascii"))
             expected = {"schema": RESULT_SCHEMA, "request_digest_hex": request_digest(request), "valid": True}
             if (type(result) is not dict or result != expected or result.get("valid") is not True
                     or response not in (canonical(expected), canonical(expected) + b"\n")):
                 raise VerificationError("public verifier returned an invalid bound result")
             return expected
-        except (OSError, ValueError, RecursionError, subprocess.SubprocessError):
+        except (OSError, ValueError, RecursionError, WorkerError):
             raise VerificationError("public verifier failed") from None
