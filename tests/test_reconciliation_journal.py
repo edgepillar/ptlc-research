@@ -305,6 +305,8 @@ class ReconciliationJournalTests(unittest.TestCase):
                 "SELECT lineage, sequence, state_json FROM checkpoint",
             ).fetchone()
             state = json.loads(raw)
+            state["sessions"][self.session].pop("authentication_pins")
+            state["sessions"][self.session].pop("recovery_budget")
             state["sessions"][self.session]["exchange"].pop("superseded_zenon_completion_packet_hex")
             material = {"version": 4, "lineage": lineage, "sequence": sequence, "state": state}
             digest = hashlib.sha256(b"ptlc-offline-journal-v4\x00" + exchange.canonical(material)).hexdigest()
@@ -316,7 +318,7 @@ class ReconciliationJournalTests(unittest.TestCase):
             }))
         finally:
             connection.close()
-        self.assertEqual(VERSION, 6)
+        self.assertEqual(VERSION, 7)
         before = self.durable_bytes()
         with self.assertRaises(Quarantined):
             self.open()

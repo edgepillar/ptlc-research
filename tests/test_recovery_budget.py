@@ -327,8 +327,8 @@ class RecoveryBudgetTests(unittest.TestCase):
     def test_resealed_version_five_checkpoint_quarantines_without_migration(self):
         with self.open() as journal:
             self.ready(journal)
-        self.rewrite(lambda session: session.pop("recovery_budget"), version=5)
-        self.assertEqual(VERSION, 6)
+        self.rewrite(lambda session: (session.pop("recovery_budget"), session.pop("authentication_pins")), version=5)
+        self.assertEqual(VERSION, 7)
         before = self.durable_bytes()
         with self.assertRaises(Quarantined):
             self.open()

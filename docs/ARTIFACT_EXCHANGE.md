@@ -2,7 +2,7 @@
 
 Status: offline reference sequencing with public synthetic inputs. This implements the local retention-before-release requirement from [CANDIDATE-01](TRANSACTION_GRAPH.md). It has no signer, participant authentication, peer transport, funding observation, time authorization, wallet or broadcaster. A completed state-machine transition is not authorization to use funds.
 
-This document describes the retention/release component introduced in Stage 4. Current storage is v6, and releases use v2 packets containing both ordered partials. [Stage 5](COMPLETION_LIFECYCLE.md) extends this flow with Alice completion and Bob public recovery; the earlier validation report remains historical. Managed Bob start requires the explicit [Stage 8 recovery allowance](RECOVERY_ADMISSION.md); initial artifact verification does not consume it.
+This document describes the retention/release component introduced in Stage 4. Current storage is v7, and releases use v2 packets containing both ordered partials. [Stage 5](COMPLETION_LIFECYCLE.md) extends this flow with Alice completion and Bob public recovery; the earlier validation report remains historical. Managed Bob start requires the explicit [Stage 8 recovery allowance](RECOVERY_ADMISSION.md); initial artifact verification does not consume it.
 
 ## Local transition contract
 

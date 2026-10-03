@@ -2,7 +2,7 @@
 
 Status: offline public-input reconciliation. This extends Bob's [completion lifecycle](COMPLETION_LIFECYCLE.md); it does not add peer authentication, chain observation, private signing or transaction submission.
 
-The original Stage 6 transition is now subject to [Stage 8 recovery admission](RECOVERY_ADMISSION.md). Current journal v6 charges an immutable session allowance before recovery; a rejected worker preserves the candidate but no longer leaves storage unchanged.
+The original Stage 6 transition is now subject to [Stage 8 recovery admission](RECOVERY_ADMISSION.md). Current journal v7 charges an immutable session allowance before recovery; a rejected worker preserves the candidate but no longer leaves storage unchanged.
 
 ## Problem and acceptance rule
 
@@ -53,6 +53,6 @@ Recovery rejection preserves the protocol state while leaving the admission spen
 
 ## Compatibility and remaining scope
 
-Journal storage/domain v5 introduced the required nullable archive field; current v6 adds Bob's recovery allowance. Versions 1-5 are quarantined without modifying either copy or migrating state. This research repository has no supported funded-session migration. External artifact requests and release/completion packet schemas are unchanged.
+Journal storage/domain v5 introduced the required nullable archive field; v6 added Bob's recovery allowance and current v7 adds optional durable authentication pins. Versions 1-6 are quarantined without modifying either copy or migrating state. This research repository has no supported funded-session migration. External artifact requests and release/completion packet schemas are unchanged.
 
 The bounded path permits replacing an invalid original candidate when a correctly bound valid replacement is available, the trusted caller selects it and recovery allowance remains. It does not authenticate the sender, validate funding or deadlines, provide general denial-of-service resistance, authorize network delivery, or protect against restoring both matching old storage copies. Exhaustion can prevent a later valid recovery. Alice's synthetic producer and secret-owner integration remain unchanged. See [Stage 6 validation](STAGE6_VALIDATION.md) for historical evidence and [Stage 8 validation](STAGE8_VALIDATION.md) for current admission checks.

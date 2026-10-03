@@ -24,14 +24,14 @@ try:
 except ImportError:  # Import remains possible so unsupported hosts fail clearly.
     fcntl = None
 
-from . import completion, exchange
-from .transcript import validate_signing_context
+from . import authentication, completion, exchange
+from .transcript import agree_terms, validate_signing_context
 
 
 MAX_OUTPUT_BYTES = 65536
 MAX_STATE_BYTES = 16 * 1024 * 1024
 MAX_RECOVERY_ATTEMPTS = 64
-VERSION = 6
+VERSION = 7
 _HEX = re.compile(r"[0-9a-f]{64}\Z")
 _PURPOSES = {
     "bitcoin-claim-partial", "zenon-claim-partial",
@@ -97,7 +97,7 @@ def _decode(data):
 
 def _digest(lineage, sequence, state):
     material = {"version": VERSION, "lineage": lineage, "sequence": sequence, "state": state}
-    return hashlib.sha256(b"ptlc-offline-journal-v6\x00" + _canonical(material)).hexdigest()
+    return hashlib.sha256(b"ptlc-offline-journal-v7\x00" + _canonical(material)).hexdigest()
 
 
 def _public_nonce_digest(encoded):
@@ -126,6 +126,21 @@ def _context_fields(context):
             zenon_digest, leg, round_digest, nonce_digests)
 
 
+def _bob_authentication_context(state, pins):
+    """Rebuild public authentication inputs from stored Bob terms and local pins.
+
+    This checks pin encodings and key separation, not curve validity or how the
+    caller selected the pins. The actual public verifier parses both curve keys.
+    """
+    if (type(pins) is not dict or any(type(key) is not str for key in pins)
+            or set(pins) != {"alice_auth_key_hex", "bob_auth_key_hex"}
+            or any(type(value) is not str for value in pins.values())):
+        raise ValueError("invalid Bob authentication pins")
+    bitcoin = exchange.contexts(state)[0]
+    terms = agree_terms(bitcoin.as_dict()["binding"]["terms"])
+    return authentication.context(terms, **pins)
+
+
 def _validate_state(state):
     """Validate the complete materialized state before accepting its checkpoint."""
     if not isinstance(state, dict) or set(state) != {"sessions"} or not isinstance(state["sessions"], dict):
@@ -138,6 +153,7 @@ def _validate_state(state):
             "terms_digest", "possible_exposure", "operations", "observations",
             "bitcoin_binding_digest", "zenon_binding_digest",
             "signing_rounds", "signing_round_nonces", "exchange", "alice", "recovery_budget",
+            "authentication_pins",
         }:
             raise ValueError("invalid session")
         _hex(session["terms_digest"])
@@ -171,9 +187,12 @@ def _validate_state(state):
         if session["exchange"] is not None and session["alice"] is not None:
             raise ValueError("managed participant ownership is exclusive")
         budget = session["recovery_budget"]
+        pins = session["authentication_pins"]
         if session["exchange"] is None:
             if budget is not None:
                 raise ValueError("recovery allowance requires a managed Bob exchange")
+            if pins is not None:
+                raise ValueError("authentication pins require a managed Bob exchange")
         elif (type(budget) is not dict or set(budget) != {"limit", "consumed"}
               or type(budget["limit"]) is not int or not 1 <= budget["limit"] <= MAX_RECOVERY_ATTEMPTS
               or type(budget["consumed"]) is not int or not 0 <= budget["consumed"] <= budget["limit"]):
@@ -189,6 +208,8 @@ def _validate_state(state):
             managed = completion.contexts(session["alice"])
         elif session["exchange"] is not None:
             exchange.validate_state(session["exchange"])
+            if pins is not None:
+                _bob_authentication_context(session["exchange"], pins)
             exchange_stage = session["exchange"]["stage"]
             candidate = session["exchange"]["zenon_completion_packet_hex"] is not None
             if exchange_stage not in {"RELEASE_RECORDED", "BTC_COMPLETION_RECORDED"} and budget["consumed"] != 0:
@@ -304,7 +325,7 @@ class Journal:
     Each leg also pins one validated public nonce round, or static context mode.
     Dynamic rounds reject duplicate public nonce encodings visible in this journal;
     this public-byte check cannot prove freshness or ownership of secret nonces.
-    Versions 1 through 5 are quarantined; this experiment has no migration.
+    Versions 1 through 6 are quarantined; this experiment has no migration.
     Managed exchanges retain public artifacts under a caller-supplied verifier;
     that verifier is a trusted local boundary, not automatic cryptographic proof.
     """
@@ -498,10 +519,17 @@ class Journal:
                         and new_budget["consumed"] != 0):
                     raise Conflict("Bob recovery allowance must start unconsumed")
             for session_id, previous in self._state["sessions"].items():
+                current = state["sessions"].get(session_id)
+                if previous["exchange"] is not None:
+                    if (current is None or current["exchange"] is None
+                            or current["authentication_pins"] != previous["authentication_pins"]
+                            or current["terms_digest"] != previous["terms_digest"]
+                            or _canonical(current["exchange"]["bitcoin_context"])
+                            != _canonical(previous["exchange"]["bitcoin_context"])):
+                        raise Conflict("Bob authentication choice and Bitcoin context cannot change")
                 old_budget = previous["recovery_budget"]
                 if old_budget is None:
                     continue
-                current = state["sessions"].get(session_id)
                 new_budget = None if current is None else current["recovery_budget"]
                 if (new_budget is None or new_budget["limit"] != old_budget["limit"]
                         or new_budget["consumed"] < old_budget["consumed"]
@@ -617,6 +645,7 @@ class Journal:
             "bitcoin_binding_digest": None, "zenon_binding_digest": None,
             "signing_rounds": {}, "signing_round_nonces": {}, "operations": {}, "observations": [],
             "exchange": None, "alice": None, "recovery_budget": None,
+            "authentication_pins": None,
         }
         self._persist(state)
 
@@ -702,7 +731,8 @@ class Journal:
         return base64.b64decode(operation["output_b64"], validate=True)
 
     def _exchange_transition(self, session_id, transition, *, context=None,
-                             starting=False, releasing=False, checkpoint=None, recovery_limit=None):
+                             starting=False, releasing=False, checkpoint=None, recovery_limit=None,
+                             authentication_pins=None):
         """Keep the complete verifier, reducer and commit under one owner guard."""
         self._check(mutation=True)
         session = self._session(session_id)
@@ -725,6 +755,15 @@ class Journal:
                 result, output = result
             state["sessions"][session_id]["exchange"] = result
             if starting:
+                if authentication_pins is not None:
+                    try:
+                        if type(authentication_pins) is not dict:
+                            raise ValueError("invalid Bob authentication pins")
+                        stored_pins = authentication_pins.copy()
+                        _bob_authentication_context(result, stored_pins)
+                    except Exception:
+                        raise InvalidInput("valid local Bob authentication pins are required") from None
+                    state["sessions"][session_id]["authentication_pins"] = stored_pins
                 state["sessions"][session_id]["recovery_budget"] = {"limit": recovery_limit, "consumed": 0}
             self._check()
             self._persist(state)
@@ -739,15 +778,49 @@ class Journal:
         finally:
             self._producing = False
 
-    def start_exchange(self, session_id, bitcoin_context, *, recovery_limit):
-        """Enter Bob's flow with an explicit immutable public-recovery allowance."""
+    def start_exchange(self, session_id, bitcoin_context, *, recovery_limit, authentication_pins=None):
+        """Freeze Bob's recovery allowance and optional locally selected pins.
+
+        Both the configured pair and the choice of no pins are immutable. Pins
+        add an optional envelope helper; raw public recovery remains independent.
+        """
         self._check(mutation=True)
         if type(recovery_limit) is not int or not 1 <= recovery_limit <= MAX_RECOVERY_ATTEMPTS:
             raise InvalidInput("Bob recovery limit must be an integer from 1 through 64")
         return self._exchange_transition(
             session_id, lambda _: exchange.start(bitcoin_context),
             context=bitcoin_context, starting=True, recovery_limit=recovery_limit,
+            authentication_pins=authentication_pins,
         )
+
+    def authenticate_exchange_envelope(self, session_id, envelope_bytes, *, verifier):
+        """Authenticate exact opaque bytes relative to the durable local pins.
+
+        No receipt, observation, exposure, recovery debit or stage is written.
+        Success does not establish payload validity, freshness or an admission
+        permit. The caller may separately use the ordinary public recovery APIs.
+        """
+        self._check(mutation=True)
+        session = self._session(session_id)
+        if session["exchange"] is None:
+            raise Conflict("managed exchange is not recorded")
+        if session["authentication_pins"] is None:
+            raise Conflict("Bob authentication pins are not configured")
+        if not callable(verifier):
+            raise InvalidInput("public authentication verifier must be callable")
+        self._producing = True
+        try:
+            try:
+                context = _bob_authentication_context(
+                    copy.deepcopy(session["exchange"]), session["authentication_pins"].copy(),
+                )
+                payload = authentication.authenticate(context, envelope_bytes, verifier=verifier)
+            except Exception:
+                raise Conflict("Bob envelope authentication rejected") from None
+            self._check()
+            return payload
+        finally:
+            self._producing = False
 
     def bind_exchange_zenon(self, session_id, zenon_context):
         return self._exchange_transition(

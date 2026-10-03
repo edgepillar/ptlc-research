@@ -2,12 +2,13 @@
 
 This repository contains experimental offline PTLC research and synthetic qualification code. It has no production signing backend, wallet integration or supported live settlement path. Do not use its fixtures, fixed scalars, nonce inputs or reference arithmetic with real funds.
 
-The [threat model](docs/THREAT_MODEL.md) and [Stage 9 validation report](docs/STAGE9_VALIDATION.md) describe the current evidence and known limits. In particular:
+The [threat model](docs/THREAT_MODEL.md) and [Stage 10 validation report](docs/STAGE10_VALIDATION.md) describe the current evidence and known limits. In particular:
 
 - Alice's completion producer returns a public fixture; it does not manage private signing material.
 - Restoring both matching journal and checkpoint copies can reenable a synthetic producer. Local consistency checks do not provide clone or rollback protection.
+- Restoring both matching pre-start files can also erase a later authentication-pin choice. Persisted pins supply local continuity, not trustworthy enrollment, an external trust anchor or protection against coherently rewritten state.
 - Authenticated peer transport and observation selection remain unresolved. Explicit local reconciliation requires a positively verified replacement and retains the original candidate; it does not provide peer authentication or prevent repeated-verification denial of service.
-- Completion-envelope qualification authenticates exact bytes only relative to independently supplied trusted pins. Pin enrollment, durable binding, rotation, freshness and journal enforcement are absent. A correctly authenticated message can contain an invalid completion; direct journal entry points remain callable without the envelope.
+- Completion-envelope qualification authenticates exact bytes only relative to independently supplied trusted pins. Optional pins are frozen at Bob start and reconstructed after reopen. Trustworthy enrollment, rotation, freshness and authenticated journal admission remain absent. A correctly authenticated message can contain an invalid completion; direct journal entry points remain callable without the envelope.
 - Public verification and adaptation do not establish funding, chain identity, safe timing, transaction acceptance or settlement.
 - Public worker pipe output and transfer/exit time are bounded per invocation. The executable and host remain trusted; process-group cleanup is best effort and does not contain arbitrary resource use or escaped descendants.
 - A durable allowance bounds only Bob recovery admissions within one owned journal session. It does not authenticate peers or prevent new-session/restore bypass; exhaustion can prevent a later valid recovery.

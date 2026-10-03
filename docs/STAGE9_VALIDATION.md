@@ -1,5 +1,8 @@
 # Stage 9 validation: offline completion-envelope authentication
 
+Historical milestone report. [Stage 10](STAGE10_VALIDATION.md) adds optional
+durable local pin binding without changing these envelope or verifier schemas.
+
 Scope: public BIP340 verification of exact Alice-to-Bob bytes against locally
 selected terms and dedicated key pins. Authentication is separate from inner
 completion validity, freshness, pin enrollment and journal admission. No

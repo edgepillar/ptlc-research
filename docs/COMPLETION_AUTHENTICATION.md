@@ -6,6 +6,10 @@ enroll peers, implement transport, or require authentication at journal entry
 points. Its output is opaque authenticated bytes; completion validation must
 still run before treating those bytes as a valid claim.
 
+[Stage 10](DURABLE_AUTHENTICATION_PINS.md) adds optional durable pin binding and
+a journal-scoped stateless helper, while retaining this wire format. The
+original standalone helper still accepts an independently selected context.
+
 ## Requirements and selected experiment
 
 The protocol needs authenticated participants and agreement on the exact
@@ -103,7 +107,8 @@ the envelope layer and fails actual recovery, consuming its admitted attempt.
 Another test deliberately calls the journal without authentication and succeeds.
 Consequently Stage 9 does not enforce authenticated admission.
 
-Journal v6 and its schemas are unchanged. No pin is durably stored there. The
+At Stage 9, journal v6 was unchanged and stored no pin. Current journal v7 adds
+the separately documented durable local binding. The
 helper's verification calls are outside Bob's recovery allowance; repeated
 requests, sessions and restored copies remain separate resource-policy issues.
 Per-worker bounds are not aggregate denial-of-service protection. The envelope

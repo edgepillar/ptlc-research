@@ -2,7 +2,7 @@
 
 Status: offline lifecycle qualification with synthetic fixtures. Alice's producer returns an existing public test signature; no private signing backend is attached. Bob's executable performs actual verification, witness extraction and Bitcoin signature adaptation using public inputs. It does not accept signing keys, generate secret nonces, return the extracted scalar, broadcast transactions or observe either chain.
 
-This document describes the Stage 5 component. [Stage 6 reconciliation](OBSERVATION_RECONCILIATION.md) adds an explicit positively verified replacement path for Bob's retained observation. Current storage is v6; external packet schemas remain unchanged.
+This document describes the Stage 5 component. [Stage 6 reconciliation](OBSERVATION_RECONCILIATION.md) adds an explicit positively verified replacement path for Bob's retained observation. Current storage is v7; external packet schemas remain unchanged.
 
 The completion adapter now shares the [Stage 7 bounded pipe runner](PUBLIC_WORKERS.md) with the artifact verifier. It preserves the 65,536-byte request and 4,096-byte response limits, enforces output overflow during transfer and uses a single transfer/exit deadline. A transport failure does not prove that an observation is cryptographically invalid or permit a signing reset.
 
@@ -62,7 +62,7 @@ On success Bob commits the completed Bitcoin packet, bound verification receipt 
 
 Storage schema/domain v4 introduced support for mutually exclusive generic, managed Bob and managed Alice modes. A session cannot mix these paths to bypass consumption or artifact ordering. Context, binding, round and public nonce pins are reconstructed on reload. Alice exposure matches her consumed/unknown/recorded stage; Bob exposure matches retained observation presence. Observation/reorg metadata cannot clear either marker.
 
-All producer/verifier/recoverer calls remain under process/thread ownership and mutation guards. Returning bytes follows database plus checkpoint persistence. Mismatched storage heads quarantine the journal. Schema/domain v5 introduced a nullable superseded-observation field; v6 adds Bob's recovery allowance. Versions 1-5 are quarantined without modification or automatic migration.
+All producer/verifier/recoverer calls remain under process/thread ownership and mutation guards. Returning bytes follows database plus checkpoint persistence. Mismatched storage heads quarantine the journal. Schema/domain v5 introduced a nullable superseded-observation field; v6 adds Bob's recovery allowance and v7 adds optional durable authentication pins. Versions 1-6 are quarantined without modification or automatic migration.
 
 Restoring **both** matching old storage copies remains undetectable. A new test restores Alice's pre-consumption snapshot after a completed run and demonstrates that the synthetic producer can run again. These local records therefore do not establish backup/clone-safe secret ownership. The ephemeral Rust nonce owner from Stage 3 is still separate, and the new Alice callback is not its integration.
 
