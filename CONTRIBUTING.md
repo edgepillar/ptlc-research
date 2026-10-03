@@ -1,8 +1,10 @@
 # Contributing
 
-This is an experimental offline PTLC research workspace. Read the [scope](docs/SCOPE.md), [threat model](docs/THREAT_MODEL.md) and [current validation report](docs/STAGE12_VALIDATION.md) before proposing changes. There is no usable swap client or production signing backend.
+This is an experimental offline PTLC research workspace. Read the [scope](docs/SCOPE.md), [threat model](docs/THREAT_MODEL.md), [implementation validation](docs/STAGE12_VALIDATION.md) and [current packaging validation](docs/STAGE13_VALIDATION.md) before proposing changes. There is no usable swap client or production signing backend.
 
 Contributions should be focused and reproducible: protocol analysis, adversarial cases, synthetic fixtures, offline qualification, recovery behavior and documentation. Explain the concrete problem, the resulting behavior and the evidence supporting the change. Keep protocol requirements, selected constructions and verified implementation behavior distinct; identify assumptions and unresolved decisions.
+
+For an independent assessment, use the [exact subject and obligations](docs/INDEPENDENT_REVIEW.md) and [unfilled report template](docs/REVIEW_REPORT_TEMPLATE.md). Identify the reviewed revision, assumptions, findings and excluded surfaces. The package is preparation, not a completed assessment; later changes require an explicit delta review.
 
 - Use English and public synthetic values only. Exclude personal identity, private conversations, local absolute paths, hostnames, credentials, wallet material and private environment logs from files, examples and reports.
 - Pin external source claims to immutable commits where possible. Check licenses before reusing material and preserve required attribution.

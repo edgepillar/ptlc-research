@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 12 - public signature candidate construction. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 13 - independent review preparation. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 12 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 13 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -44,6 +44,8 @@ Stage 10 adds [durable local authentication pins](DURABLE_AUTHENTICATION_PINS.md
 Stage 11 adds a separate [bounded recovery-admission model](RECOVERY_ADMISSION_MODEL.md) with idealized authentication/validity and explicit external local authorization. It separates candidate/history integrity from availability and produces replayable counterexamples for envelope withholding, finite-allowance exhaustion and authentication/validity confusion. [Stage 11 validation](STAGE11_VALIDATION.md) reports configured exploration bounds, complete versus truncated searches, and the unchanged journal/cryptography boundary. It selects no safe funded admission policy.
 
 Stage 12 adds [pure candidate construction from a public signature](PUBLIC_SIGNATURE_CANDIDATES.md). The helper derives the existing packet entirely from a retained Bob context and 64 signature bytes, without writing state, verifying signatures, or granting source/admission authority. [Stage 12 validation](STAGE12_VALIDATION.md) covers exact fixture reconstruction, unchanged storage and actual recovery/rejection. Journal v7 and ordinary/CAS recovery rules remain unchanged.
+
+Stage 13 prepares an [independent review brief](INDEPENDENT_REVIEW.md), a complete Git-object inventory of the exact Stage 12 source subject and an unfilled report template. [Stage 13 validation](STAGE13_VALIDATION.md) records packaging and regression checks. No independent assessment, production backend choice, reviewer outreach or execution change is implied by this preparation.
 
 | Component | Responsibility | Boundary for this repository |
 | --- | --- | --- |
@@ -84,6 +86,8 @@ The PR's stored base SHA is not necessarily the current target-branch tip. See [
 Stage 0 is reviewable when the source facts, cryptographic candidates, threat model, and unresolved decisions are documented and internally consistent. It does not have to resolve the construction to truthfully complete the research package.
 
 Starting a runnable swap requires a separate decision resolving the cryptographic construction and the full transaction/message graph, with an independent assessment of the safety argument. The acceptance checklist in [PROTOCOL.md](PROTOCOL.md) must then become specific to that graph. A local proof of concept may expose additional blockers.
+
+The Stage 13 brief defines a concrete subject and assessment obligations for that independent work. Its inventory is source identity evidence, not a signed attestation or security verdict. External review remains pending; material findings and changes after the assessed revision need explicit disposition before progression.
 
 A later core port must preserve pre-activation historical behavior and compose PTLC with other activated features. Existing expiry and replay tests must be retained and extended; their presence must not be reported as absent. Any core contribution needs coordination with current maintainers and overlapping work before changes are proposed.
 
