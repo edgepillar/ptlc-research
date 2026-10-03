@@ -205,6 +205,113 @@ class RealCompletionTests(unittest.TestCase):
                 self.assertEqual(bob.get_exchange(session), retained)
                 self.assertEqual(bob.replay_exchange_release(session), release)
 
+    def test_reopened_bob_imports_raw_public_signature_without_an_envelope_or_construction_write(self):
+        vector = json.loads((Path(__file__).resolve().parents[1]
+                             / "qualification/fixtures/authentication.json").read_text("ascii"))
+        pins = {key: vector["envelope"]["context"][key]
+                for key in ("alice_auth_key_hex", "bob_auth_key_hex")}
+        with tempfile.TemporaryDirectory(prefix="ptlc-raw-public-completion-") as directory:
+            base = Path(directory)
+            root, anchor = base / "state", base / "head.json"
+            with Journal.open(root, anchor) as bob:
+                session = prepare(bob, verifier=self.verifier, recovery_limit=1, authentication_pins=pins)
+                bob.release_exchange_zenon(session)
+            with Journal.open(root, anchor) as bob:
+                before = bob.get_session(session), bob._sequence, (root / "journal.sqlite3").read_bytes(), anchor.read_bytes()
+                state = bob.get_exchange(session)
+                candidate = completion.bob_candidate_from_signature(state, final_signatures()[0])
+                self.assertEqual(candidate, bytes.fromhex(vector["envelope"]["payload_hex"]))
+                self.assertEqual((bob.get_session(session), bob._sequence,
+                                  (root / "journal.sqlite3").read_bytes(), anchor.read_bytes()), before)
+                self.assertEqual(bob.get_session(session)["authentication_pins"], pins)
+                self.assertFalse(bob.get_session(session)["possible_exposure"])
+                self.assertEqual(bob.get_session(session)["recovery_budget"]["consumed"], 0)
+                output = bob.complete_exchange_bitcoin(session, candidate, recoverer=self.completer)
+                bitcoin_context = dict(state["bitcoin_context"], role="bob", purpose="bitcoin-claim-complete")
+                expected = exchange.canonical({"schema": "ptlc-bob-bitcoin-completion-v1",
+                                               "context": bitcoin_context,
+                                               "signature_hex": final_signatures()[1].hex()})
+                self.assertEqual(output, expected)
+                self.assertEqual(bob.get_session(session)["recovery_budget"]["consumed"], 1)
+            with Journal.open(root, anchor) as bob:
+                self.assertEqual(bob.replay_exchange_bitcoin(session), output)
+
+    def test_imported_invalid_and_foreign_leg_signatures_require_real_math_and_consume_allowance(self):
+        with tempfile.TemporaryDirectory(prefix="ptlc-imported-signature-rejection-") as directory:
+            base = Path(directory)
+            root, anchor = base / "state", base / "head.json"
+            with Journal.open(root, anchor) as bob:
+                session = prepare(bob, verifier=self.verifier, recovery_limit=2)
+                bob.release_exchange_zenon(session)
+                previous = completion.bob_candidate_from_signature(bob.get_exchange(session), bytes(64))
+                with self.assertRaises(Conflict):
+                    bob.complete_exchange_bitcoin(session, previous, recoverer=self.completer)
+                # This fixture signature is valid for Bitcoin's different key and
+                # message. A session label alone is not a chain-signature domain.
+                wrong_leg = completion.bob_candidate_from_signature(bob.get_exchange(session), final_signatures()[1])
+                self.assertNotEqual(wrong_leg, previous)
+                with self.assertRaises(Conflict):
+                    bob.reconcile_exchange_bitcoin(session, wrong_leg,
+                        expected_observation_digest=completion.observation_digest(previous), recoverer=self.completer)
+                state = bob.get_exchange(session)
+                self.assertEqual(state["zenon_completion_packet_hex"], previous.hex())
+                self.assertIsNone(state["superseded_zenon_completion_packet_hex"])
+                self.assertIsNone(state["completion_receipt_hex"])
+                self.assertEqual(bob.get_session(session)["recovery_budget"], {"limit": 2, "consumed": 2})
+                before = bob.get_session(session), bob._sequence, (root / "journal.sqlite3").read_bytes(), anchor.read_bytes()
+                candidate = completion.bob_candidate_from_signature(state, final_signatures()[0])
+                self.assertEqual(candidate, alice_packet())
+                calls = []
+                def unexpected(request):
+                    calls.append(True)
+                    return self.completer(request)
+                with self.assertRaises(RecoveryExhausted):
+                    bob.reconcile_exchange_bitcoin(session, candidate,
+                        expected_observation_digest=completion.observation_digest(previous), recoverer=unexpected)
+                self.assertEqual(calls, [])
+                self.assertEqual((bob.get_session(session), bob._sequence,
+                                  (root / "journal.sqlite3").read_bytes(), anchor.read_bytes()), before)
+                with self.assertRaises(OutcomeUnknown):
+                    bob.replay_exchange_bitcoin(session)
+
+    def test_imported_public_replacement_requires_exact_cas_then_archives_the_original(self):
+        with tempfile.TemporaryDirectory(prefix="ptlc-imported-public-reconciliation-") as directory:
+            base = Path(directory)
+            root, anchor = base / "state", base / "head.json"
+            with Journal.open(root, anchor) as bob:
+                session = prepare(bob, verifier=self.verifier, recovery_limit=2)
+                release = bob.release_exchange_zenon(session)
+                previous = completion.bob_candidate_from_signature(bob.get_exchange(session), bytes(64))
+                with self.assertRaises(Conflict):
+                    bob.complete_exchange_bitcoin(session, previous, recoverer=self.completer)
+            with Journal.open(root, anchor) as bob:
+                before = bob.get_session(session), bob._sequence, (root / "journal.sqlite3").read_bytes(), anchor.read_bytes()
+                candidate = completion.bob_candidate_from_signature(bob.get_exchange(session), final_signatures()[0])
+                self.assertEqual(candidate, alice_packet())
+                calls = []
+                def recover(request):
+                    calls.append(True)
+                    return self.completer(request)
+                with self.assertRaises(Conflict):
+                    bob.complete_exchange_bitcoin(session, candidate, recoverer=recover)
+                with self.assertRaises(Conflict):
+                    bob.reconcile_exchange_bitcoin(session, candidate,
+                        expected_observation_digest=completion.observation_digest(candidate), recoverer=recover)
+                self.assertEqual(calls, [])
+                self.assertEqual((bob.get_session(session), bob._sequence,
+                                  (root / "journal.sqlite3").read_bytes(), anchor.read_bytes()), before)
+                output = bob.reconcile_exchange_bitcoin(session, candidate,
+                    expected_observation_digest=completion.observation_digest(previous), recoverer=recover)
+                self.assertEqual(calls, [True])
+                self.assertEqual(json.loads(output)["signature_hex"], final_signatures()[1].hex())
+                state = bob.get_exchange(session)
+                self.assertEqual(state["zenon_completion_packet_hex"], candidate.hex())
+                self.assertEqual(state["superseded_zenon_completion_packet_hex"], previous.hex())
+                self.assertEqual(bob.get_session(session)["recovery_budget"], {"limit": 2, "consumed": 2})
+            with Journal.open(root, anchor) as bob:
+                self.assertEqual(bob.replay_exchange_bitcoin(session), output)
+                self.assertEqual(bob.replay_exchange_release(session), release)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Offline public completion integration; no private signer or network")

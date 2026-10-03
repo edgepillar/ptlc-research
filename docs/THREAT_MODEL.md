@@ -1,6 +1,6 @@
 # Threat model and evidence limits
 
-Status: **DRAFT, carried through Stage 11 offline qualification.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
+Status: **DRAFT, carried through Stage 12 offline qualification.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
 
 ## Security objective
 
@@ -66,3 +66,5 @@ The report must identify exact commits, dependency versions, environment and ass
 [Stage 9 envelopes](COMPLETION_AUTHENTICATION.md) qualify one message direction relative to locally trusted pins. Correct signatures do not make the enclosed completion valid or fresh. Stage 10 adds optional [durable local pin binding](DURABLE_AUTHENTICATION_PINS.md), with no enrollment or rotation policy; existing recovery entry points remain callable without authentication. Verification calls are outside Bob's allowance; repeating valid or invalid envelopes can still cause work. Public pins and payloads supply neither confidentiality nor anonymity.
 
 [Stage 11's bounded model](RECOVERY_ADMISSION_MODEL.md) makes recovery blockage executable without adding journal admission policy. A universal envelope requirement can block an independently authorized public witness; authenticated invalid inputs or interrupted work can spend a finite allowance. Ideal verifier results and explicit local authorization are model inputs, not an implemented trust source. Preserved state invariants do not establish funded availability or principal safety, and incomplete exploration must never be reported as success.
+
+[Stage 12 candidate construction](PUBLIC_SIGNATURE_CANDIDATES.md) imports only public signature bytes into a locally reconstructed packet. Structural acceptance is neither cryptographic validity nor evidence that Alice transmitted it. The helper has no source authorization, journal mutation or allowance bypass; a later admitted invalid candidate can still poison ordinary selection or exhaust recovery. A coherent local snapshot remains a trusted input, not independently authenticated storage evidence.
