@@ -30,4 +30,4 @@ This change also does not impose admission control, a persistent attempt budget 
 
 ## Compatibility and evidence
 
-Journal storage remains v5. Public packet schemas, signature encodings, result schemas, fixture values and request digests are unchanged. The actual Rust integration must pass through the new runner, in addition to synthetic process tests. Synthetic workers demonstrate transport behavior only; they are not cryptographic verifiers. See [Stage 7 validation](STAGE7_VALIDATION.md) for executed tests and limitations.
+The transport itself does not change journal storage. [Stage 8 admission](RECOVERY_ADMISSION.md) separately introduces journal v6 and a durable allowance for two Bob recovery APIs. Public packet schemas, signature encodings, result schemas, fixture values and request digests are unchanged. Actual Rust integration passes through the runner in addition to synthetic process tests. Synthetic workers demonstrate transport behavior only; they are not cryptographic verifiers. See [Stage 7 validation](STAGE7_VALIDATION.md) for transport evidence and [Stage 8 validation](STAGE8_VALIDATION.md) for current admission evidence.

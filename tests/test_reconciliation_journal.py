@@ -1,6 +1,7 @@
 """Offline reconciliation durability with public fixtures and fake recovery."""
 
 import hashlib
+import copy
 import json
 from pathlib import Path
 import sqlite3
@@ -60,21 +61,24 @@ class ReconciliationJournalTests(unittest.TestCase):
             recoverer=recoverer,
         )
 
-    def test_replacement_is_verified_before_single_commit_and_preserves_exact_audit(self):
+    def test_replacement_admission_precedes_worker_and_output_commit_preserves_exact_audit(self):
         calls, events = [], []
         with self.open(hook=events.append) as journal:
             release = self.ready(journal)
             before = journal.get_session(self.session)
+            admitted = copy.deepcopy(before)
+            admitted["recovery_budget"]["consumed"] += 1
             stored_before = self.durable_bytes()
             sequence = json.loads(stored_before[1])["sequence"]
             events.clear()
 
             def recoverer(request):
                 calls.append(1)
-                self.assertEqual(journal.get_session(self.session), before)
-                self.assertEqual(self.durable_bytes(), stored_before)
+                self.assertEqual(journal.get_session(self.session), admitted)
+                self.assertNotEqual(self.durable_bytes(), stored_before)
                 self.assertEqual(request["zenon_signature_hex"], json.loads(self.valid_packet)["signature_hex"])
-                self.assertEqual(events, [])
+                self.assertEqual(events, ["before_db_commit", "after_db_commit", "after_anchor_replace",
+                                          "after_anchor_commit", "after_bob_recovery_admission_commit"])
                 return completion_accepted(request)
 
             output = self.reconcile(journal, recoverer=recoverer)
@@ -86,8 +90,10 @@ class ReconciliationJournalTests(unittest.TestCase):
             self.assertTrue(journal.get_session(self.session)["possible_exposure"])
             self.assertEqual(journal.replay_exchange_bitcoin(self.session), output)
             self.assertEqual(journal.replay_exchange_release(self.session), release)
-            self.assertEqual(json.loads(self.anchor.read_bytes())["sequence"], sequence + 1)
+            self.assertEqual(json.loads(self.anchor.read_bytes())["sequence"], sequence + 2)
             self.assertEqual(events, [
+                "before_db_commit", "after_db_commit", "after_anchor_replace", "after_anchor_commit",
+                "after_bob_recovery_admission_commit",
                 "after_bitcoin_reconciliation_recoverer", "before_db_commit", "after_db_commit",
                 "after_anchor_replace", "after_anchor_commit", "after_bitcoin_reconciliation_commit",
             ])
@@ -103,7 +109,7 @@ class ReconciliationJournalTests(unittest.TestCase):
             self.assertTrue(journal.get_session(self.session)["possible_exposure"])
         self.assertEqual(calls, [1])
 
-    def test_callback_failures_preserve_original_memory_storage_and_retry(self):
+    def test_callback_failures_preserve_original_artifacts_but_consume_each_admission(self):
         def failure(request):
             raise KeyboardInterrupt("synthetic recovery detail")
 
@@ -120,17 +126,19 @@ class ReconciliationJournalTests(unittest.TestCase):
             self.ready(journal)
             before, stored = journal.get_session(self.session), self.durable_bytes()
             events.clear()
-            for recoverer in cases:
+            for attempt, recoverer in enumerate(cases, 1):
                 with self.subTest(callback=cases.index(recoverer)):
                     with self.assertRaisesRegex(Conflict, "^Bitcoin completion reconciliation rejected$"):
                         self.reconcile(journal, recoverer=recoverer)
-                    self.assertEqual(journal.get_session(self.session), before)
-                    self.assertEqual(self.durable_bytes(), stored)
-                    self.assertEqual(events, [])
+                    expected = copy.deepcopy(before)
+                    expected["recovery_budget"]["consumed"] += attempt
+                    self.assertEqual(journal.get_session(self.session), expected)
+                    self.assertNotEqual(self.durable_bytes(), stored)
+                    self.assertEqual(events[-1], "after_bob_recovery_admission_commit")
                     with self.assertRaises(OutcomeUnknown):
                         journal.replay_exchange_bitcoin(self.session)
         with self.open() as journal:
-            self.assertEqual(journal.get_session(self.session), before)
+            self.assertEqual(journal.get_session(self.session), expected)
             self.assertIsInstance(self.reconcile(journal), bytes)
 
     def test_stale_malformed_and_same_candidate_inputs_never_call_recoverer(self):
@@ -182,6 +190,7 @@ class ReconciliationJournalTests(unittest.TestCase):
         with self.open() as journal:
             self.ready(journal)
             before = journal.get_session(self.session)
+            before["recovery_budget"]["consumed"] += 1
 
             def recoverer(request):
                 for action in (
@@ -283,8 +292,8 @@ class ReconciliationJournalTests(unittest.TestCase):
                         if checkpoint == "before_db_commit":
                             self.assertEqual(journal.get_exchange(self.session), prior)
                         else:
-                            self.assertEqual(journal.get_exchange(self.session)["stage"], "BTC_COMPLETION_RECORDED")
-                            self.assertIsInstance(journal.replay_exchange_bitcoin(self.session), bytes)
+                            self.assertEqual(journal.get_exchange(self.session), prior)
+                            self.assertEqual(journal.get_session(self.session)["recovery_budget"]["consumed"], 2)
 
     def test_version_four_checkpoint_is_quarantined_without_migration(self):
         with self.open() as journal:
@@ -307,7 +316,7 @@ class ReconciliationJournalTests(unittest.TestCase):
             }))
         finally:
             connection.close()
-        self.assertEqual(VERSION, 5)
+        self.assertEqual(VERSION, 6)
         before = self.durable_bytes()
         with self.assertRaises(Quarantined):
             self.open()

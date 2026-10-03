@@ -1,5 +1,7 @@
 # Stage 7 validation: bounded public worker transport
 
+Historical milestone: [Stage 8](STAGE8_VALIDATION.md) adds Bob's durable recovery allowance and journal v6. Counts and storage-version references below describe Stage 7.
+
 Scope: replace temporary-file stdout spooling in the public artifact and completion adapters with bounded concurrent pipe transfer. This changes local process handling, not the cryptographic construction, journal format, observation policy or signing ownership.
 
 ## Executed checks

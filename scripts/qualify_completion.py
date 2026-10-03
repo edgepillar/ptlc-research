@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tests"))
 from offline_session.artifact_verifier import SubprocessVerifier
 from offline_session import completion, exchange
 from offline_session.completion_verifier import SubprocessCompletion
-from offline_session.journal import Conflict, Journal, OutcomeUnknown
+from offline_session.journal import Conflict, Journal, OutcomeUnknown, RecoveryExhausted
 from completion_test_support import final_signatures, prepare_alice, alice_packet
 from exchange_test_support import prepare
 
@@ -56,10 +56,12 @@ class RealCompletionTests(unittest.TestCase):
                     raise RuntimeError("synthetic public worker unavailable")
                 with self.assertRaises(Conflict):
                     bob.complete_exchange_bitcoin(session, packet, recoverer=unavailable)
+                self.assertEqual(bob.get_session(session)["recovery_budget"]["consumed"], 1)
                 self.assertEqual(bob.get_exchange(session)["zenon_completion_packet_hex"], packet.hex())
                 self.assertTrue(bob.get_session(session)["possible_exposure"])
             with Journal.open(bob_root, bob_anchor) as bob:
                 output = bob.complete_exchange_bitcoin(session, recoverer=self.completer)
+                self.assertEqual(bob.get_session(session)["recovery_budget"]["consumed"], 2)
                 completed = json.loads(output)
                 self.assertEqual(completed["signature_hex"], final_signatures()[1].hex())
                 self.assertEqual(completed["context"]["purpose"], "bitcoin-claim-complete")
@@ -138,7 +140,7 @@ class RealCompletionTests(unittest.TestCase):
                         session, packet, expected_observation_digest=expected, recoverer=self.completer,
                     )
 
-    def test_failed_real_reconciliation_does_not_change_retained_state_or_storage(self):
+    def test_failed_real_reconciliation_consumes_only_the_admission_allowance(self):
         with tempfile.TemporaryDirectory(prefix="ptlc-reconciliation-reject-") as directory:
             base = Path(directory)
             value = json.loads(alice_packet())
@@ -159,11 +161,49 @@ class RealCompletionTests(unittest.TestCase):
                         session, replacement, expected_observation_digest=completion.observation_digest(previous),
                         recoverer=self.completer,
                     )
+                state["recovery_budget"]["consumed"] += 1
                 self.assertEqual(bob.get_session(session), state)
-                self.assertEqual((db.read_bytes(), (base / "head.json").read_bytes()), saved)
+                self.assertNotEqual((db.read_bytes(), (base / "head.json").read_bytes()), saved)
                 self.assertIsNone(bob.get_exchange(session)["superseded_zenon_completion_packet_hex"])
                 with self.assertRaises(OutcomeUnknown):
                     bob.replay_exchange_bitcoin(session)
+
+    def test_actual_rejection_exhausts_shared_recovery_allowance_across_reopen(self):
+        with tempfile.TemporaryDirectory(prefix="ptlc-recovery-admission-") as directory:
+            base = Path(directory)
+            value = json.loads(alice_packet())
+            value["signature_hex"] = "00" * 64
+            previous = exchange.canonical(value)
+            with Journal.open(base / "state", base / "head.json") as bob:
+                session = prepare(bob, verifier=self.verifier, recovery_limit=2)
+                release = bob.release_exchange_zenon(session)
+                with self.assertRaises(Conflict):
+                    bob.complete_exchange_bitcoin(session, previous, recoverer=self.completer)
+                self.assertEqual(bob.get_session(session)["recovery_budget"], {"limit": 2, "consumed": 1})
+                value["signature_hex"] = "ff" * 64
+                with self.assertRaises(Conflict):
+                    bob.reconcile_exchange_bitcoin(
+                        session, exchange.canonical(value),
+                        expected_observation_digest=completion.observation_digest(previous),
+                        recoverer=self.completer,
+                    )
+                retained = bob.get_exchange(session)
+            with Journal.open(base / "state", base / "head.json") as bob:
+                self.assertEqual(bob.get_session(session)["recovery_budget"], {"limit": 2, "consumed": 2})
+                calls = []
+                def unexpected(request):
+                    calls.append(True)
+                    return self.completer(request)
+                with self.assertRaises(RecoveryExhausted):
+                    bob.complete_exchange_bitcoin(session, recoverer=unexpected)
+                with self.assertRaises(RecoveryExhausted):
+                    bob.reconcile_exchange_bitcoin(
+                        session, alice_packet(), expected_observation_digest=completion.observation_digest(previous),
+                        recoverer=unexpected,
+                    )
+                self.assertEqual(calls, [])
+                self.assertEqual(bob.get_exchange(session), retained)
+                self.assertEqual(bob.replay_exchange_release(session), release)
 
 
 def main():

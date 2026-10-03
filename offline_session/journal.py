@@ -30,7 +30,8 @@ from .transcript import validate_signing_context
 
 MAX_OUTPUT_BYTES = 65536
 MAX_STATE_BYTES = 16 * 1024 * 1024
-VERSION = 5
+MAX_RECOVERY_ATTEMPTS = 64
+VERSION = 6
 _HEX = re.compile(r"[0-9a-f]{64}\Z")
 _PURPOSES = {
     "bitcoin-claim-partial", "zenon-claim-partial",
@@ -48,6 +49,10 @@ class InvalidInput(JournalError):
 
 
 class Conflict(JournalError):
+    pass
+
+
+class RecoveryExhausted(JournalError):
     pass
 
 
@@ -92,7 +97,7 @@ def _decode(data):
 
 def _digest(lineage, sequence, state):
     material = {"version": VERSION, "lineage": lineage, "sequence": sequence, "state": state}
-    return hashlib.sha256(b"ptlc-offline-journal-v5\x00" + _canonical(material)).hexdigest()
+    return hashlib.sha256(b"ptlc-offline-journal-v6\x00" + _canonical(material)).hexdigest()
 
 
 def _public_nonce_digest(encoded):
@@ -132,7 +137,7 @@ def _validate_state(state):
         if not isinstance(session, dict) or set(session) != {
             "terms_digest", "possible_exposure", "operations", "observations",
             "bitcoin_binding_digest", "zenon_binding_digest",
-            "signing_rounds", "signing_round_nonces", "exchange", "alice",
+            "signing_rounds", "signing_round_nonces", "exchange", "alice", "recovery_budget",
         }:
             raise ValueError("invalid session")
         _hex(session["terms_digest"])
@@ -165,6 +170,14 @@ def _validate_state(state):
         scopes, contexts, observed_legs = set(), set(), set()
         if session["exchange"] is not None and session["alice"] is not None:
             raise ValueError("managed participant ownership is exclusive")
+        budget = session["recovery_budget"]
+        if session["exchange"] is None:
+            if budget is not None:
+                raise ValueError("recovery allowance requires a managed Bob exchange")
+        elif (type(budget) is not dict or set(budget) != {"limit", "consumed"}
+              or type(budget["limit"]) is not int or not 1 <= budget["limit"] <= MAX_RECOVERY_ATTEMPTS
+              or type(budget["consumed"]) is not int or not 0 <= budget["consumed"] <= budget["limit"]):
+            raise ValueError("invalid Bob recovery allowance")
         managed = None
         if session["alice"] is not None:
             completion.validate_state(session["alice"])
@@ -178,6 +191,16 @@ def _validate_state(state):
             exchange.validate_state(session["exchange"])
             exchange_stage = session["exchange"]["stage"]
             candidate = session["exchange"]["zenon_completion_packet_hex"] is not None
+            if exchange_stage not in {"RELEASE_RECORDED", "BTC_COMPLETION_RECORDED"} and budget["consumed"] != 0:
+                raise ValueError("Bob recovery admission precedes release")
+            if candidate and budget["consumed"] < 1:
+                raise ValueError("Bob observation lacks a recovery admission")
+            if not candidate and budget["consumed"] != 0:
+                raise ValueError("Bob recovery admission lacks its observation")
+            if exchange_stage == "BTC_COMPLETION_RECORDED" and budget["consumed"] < 1:
+                raise ValueError("Bitcoin completion lacks a recovery admission")
+            if session["exchange"]["superseded_zenon_completion_packet_hex"] is not None and budget["consumed"] < 2:
+                raise ValueError("reconciliation lacks separate observation and replacement admissions")
             if candidate != session["possible_exposure"]:
                 raise ValueError("Bob observation contradicts possible witness exposure")
             if exchange_stage == "BTC_COMPLETION_RECORDED" and not session["possible_exposure"]:
@@ -281,7 +304,7 @@ class Journal:
     Each leg also pins one validated public nonce round, or static context mode.
     Dynamic rounds reject duplicate public nonce encodings visible in this journal;
     this public-byte check cannot prove freshness or ownership of secret nonces.
-    Versions 1 through 4 are quarantined; this experiment has no migration.
+    Versions 1 through 5 are quarantined; this experiment has no migration.
     Managed exchanges retain public artifacts under a caller-supplied verifier;
     that verifier is a trusted local boundary, not automatic cryptographic proof.
     """
@@ -466,6 +489,24 @@ class Journal:
     def _persist(self, state, *, initializing=False):
         self._check()
         _validate_state(state)
+        if not initializing:
+            for session_id, current in state["sessions"].items():
+                new_budget = current["recovery_budget"]
+                previous = self._state["sessions"].get(session_id)
+                if (new_budget is not None
+                        and (previous is None or previous["recovery_budget"] is None)
+                        and new_budget["consumed"] != 0):
+                    raise Conflict("Bob recovery allowance must start unconsumed")
+            for session_id, previous in self._state["sessions"].items():
+                old_budget = previous["recovery_budget"]
+                if old_budget is None:
+                    continue
+                current = state["sessions"].get(session_id)
+                new_budget = None if current is None else current["recovery_budget"]
+                if (new_budget is None or new_budget["limit"] != old_budget["limit"]
+                        or new_budget["consumed"] < old_budget["consumed"]
+                        or new_budget["consumed"] > old_budget["consumed"] + 1):
+                    raise Conflict("Bob recovery allowance cannot be reset or changed")
         raw = _canonical(state)
         if len(raw) > MAX_STATE_BYTES:
             raise InvalidInput("journal state exceeds its offline bound")
@@ -575,7 +616,7 @@ class Journal:
             "terms_digest": terms_digest, "possible_exposure": False,
             "bitcoin_binding_digest": None, "zenon_binding_digest": None,
             "signing_rounds": {}, "signing_round_nonces": {}, "operations": {}, "observations": [],
-            "exchange": None, "alice": None,
+            "exchange": None, "alice": None, "recovery_budget": None,
         }
         self._persist(state)
 
@@ -661,7 +702,7 @@ class Journal:
         return base64.b64decode(operation["output_b64"], validate=True)
 
     def _exchange_transition(self, session_id, transition, *, context=None,
-                             starting=False, releasing=False, checkpoint=None):
+                             starting=False, releasing=False, checkpoint=None, recovery_limit=None):
         """Keep the complete verifier, reducer and commit under one owner guard."""
         self._check(mutation=True)
         session = self._session(session_id)
@@ -683,6 +724,8 @@ class Journal:
             if releasing:
                 result, output = result
             state["sessions"][session_id]["exchange"] = result
+            if starting:
+                state["sessions"][session_id]["recovery_budget"] = {"limit": recovery_limit, "consumed": 0}
             self._check()
             self._persist(state)
             if checkpoint is not None:
@@ -696,11 +739,14 @@ class Journal:
         finally:
             self._producing = False
 
-    def start_exchange(self, session_id, bitcoin_context):
-        """Enter the managed Bob flow before any generic operation is reserved."""
+    def start_exchange(self, session_id, bitcoin_context, *, recovery_limit):
+        """Enter Bob's flow with an explicit immutable public-recovery allowance."""
+        self._check(mutation=True)
+        if type(recovery_limit) is not int or not 1 <= recovery_limit <= MAX_RECOVERY_ATTEMPTS:
+            raise InvalidInput("Bob recovery limit must be an integer from 1 through 64")
         return self._exchange_transition(
             session_id, lambda _: exchange.start(bitcoin_context),
-            context=bitcoin_context, starting=True,
+            context=bitcoin_context, starting=True, recovery_limit=recovery_limit,
         )
 
     def bind_exchange_zenon(self, session_id, zenon_context):
@@ -855,12 +901,20 @@ class Journal:
             raise Conflict("managed Alice completion is not recorded")
         return copy.deepcopy(state)
 
+    def _admit_bob_recovery(self, state, session_id):
+        """Consume an allowance in a staged state; the caller persists it first."""
+        budget = state["sessions"][session_id]["recovery_budget"]
+        if budget["consumed"] >= budget["limit"]:
+            raise RecoveryExhausted("Bob recovery allowance is exhausted")
+        budget["consumed"] += 1
+
     def complete_exchange_bitcoin(self, session_id, completion_packet=None, *, recoverer):
         """Retain a bound observation, verify and adapt it, then record output.
 
         Omitting the packet retries only the exact retained public observation.
         A rejected observation remains pinned; this API cannot replace it.
         A different candidate requires explicit positive-verification reconciliation.
+        Each admitted recovery consumes its durable allowance before invocation.
         """
         self._check(mutation=True)
         session = self._session(session_id)
@@ -883,7 +937,9 @@ class Journal:
             state = copy.deepcopy(self._state)
             state["sessions"][session_id]["possible_exposure"] = True
             state["sessions"][session_id]["exchange"] = observed
+            self._admit_bob_recovery(state, session_id)
             self._persist(state)
+            self._completion_checkpoint("after_bob_recovery_admission_commit")
             self._completion_checkpoint("after_bob_observation_commit")
             self._check()
             try:
@@ -917,10 +973,10 @@ class Journal:
                                    expected_observation_digest, recoverer):
         """Complete a verified replacement while preserving the old observation.
 
-        The caller must identify the exact retained observation. Public recovery
-        runs before persistence; recovery rejection leaves that observation
-        unchanged. Persistence uncertainty still quarantines the journal. The
-        retained bytes are not labeled cryptographically invalid.
+        The caller must identify the exact retained observation. Admission is
+        persisted before public recovery and is never refunded; recovery rejection
+        leaves the observation unchanged. Persistence uncertainty quarantines the
+        journal. Retained bytes are not labeled cryptographically invalid.
         """
         self._check(mutation=True)
         session = self._session(session_id)
@@ -932,8 +988,20 @@ class Journal:
         try:
             try:
                 self._check()
-                result, output = completion.reconcile_bob(
+                completion.bob_reconciliation_request(
                     copy.deepcopy(session["exchange"]), completion_packet,
+                    expected_observation_digest=expected_observation_digest,
+                )
+            except exchange.ExchangeError:
+                raise Conflict("Bitcoin completion reconciliation rejected") from None
+            state = copy.deepcopy(self._state)
+            self._admit_bob_recovery(state, session_id)
+            self._persist(state)
+            self._completion_checkpoint("after_bob_recovery_admission_commit")
+            self._check()
+            try:
+                result, output = completion.reconcile_bob(
+                    copy.deepcopy(self._session(session_id)["exchange"]), completion_packet,
                     expected_observation_digest=expected_observation_digest,
                     recoverer=recoverer,
                 )

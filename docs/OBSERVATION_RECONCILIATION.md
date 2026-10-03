@@ -2,6 +2,8 @@
 
 Status: offline public-input reconciliation. This extends Bob's [completion lifecycle](COMPLETION_LIFECYCLE.md); it does not add peer authentication, chain observation, private signing or transaction submission.
 
+The original Stage 6 transition is now subject to [Stage 8 recovery admission](RECOVERY_ADMISSION.md). Current journal v6 charges an immutable session allowance before recovery; a rejected worker preserves the candidate but no longer leaves storage unchanged.
+
 ## Problem and acceptance rule
 
 The ordinary `complete_exchange_bitcoin` API durably retains a structurally matching Zenon completion before executing public cryptographic recovery. If that packet is invalid, ordinary recovery cannot replace it with a later valid packet. A failed executable is not sufficient evidence that the packet is invalid: a timeout, unavailable process or malformed response has the same unsuccessful outcome.
@@ -29,26 +31,28 @@ After successful verification, the next exchange snapshot contains all of:
 
 The original release, bundles, nonce pins, existing artifact receipts and possible-exposure marker remain unchanged. The superseded packet is not labeled invalid: this transition establishes acceptance of the replacement, not a separate verdict about the historical packet. The archive has one entry because successful reconciliation immediately seals completion; there is no mutable or unbounded replacement history.
 
-The process/thread owner and mutation guard cover comparison, callback, validation and persistence. Reentrant mutations or close, foreign-thread use and competing ownership are rejected. The pure helper snapshots the input before calling the trusted adapter. The journal validates and persists the complete resulting state before returning output.
+The process/thread owner and mutation guard cover comparison, admission, callback, validation and persistence. Reentrant mutations or close, foreign-thread use and competing ownership are rejected. The pure request helper validates comparison and packet/context rules without a callback. The journal then consumes admission durably before invoking recovery. The pure reducer snapshots its input; the journal preserves the current allowance when persisting the complete result before returning output.
 
 Normal completion leaves the archive null. Stored archives are allowed only in completed state, must be canonical packets with the same exact context, and must differ from the current packet. Reload checks these relationships and the existing total-state bound without invoking an external verifier. The archive and receipt rely on the existing trusted local checkpoint/storage assumptions; they are not independently signed evidence against a hostile host.
 
 ## Crash and retry boundary
 
-Reconciliation performs public computation **before** writing the replacement. No unverified pending-replacement slot is introduced. Before the database commit, the original observation remains authoritative; the caller must resupply the replacement to retry. The journal cannot recover an uncommitted replacement from memory after process death. Repeating this computation does not reuse a signing nonce.
+Reconciliation persists one consumed admission before public computation, while retaining the original observation. It still performs positive public verification **before** writing the replacement. No unverified pending-replacement slot is introduced. Before the result commit, the original observation remains authoritative; the caller must resupply the replacement and have remaining allowance to retry. The journal cannot recover an uncommitted replacement from memory after process death. Repeating this public computation does not reuse a signing nonce, but consumes another admission.
 
-The resulting snapshot uses one database commit followed by the existing separate checkpoint update. This is not an atomic transaction across both storage locations:
+The admission snapshot and successful result snapshot each use a database commit followed by the existing separate checkpoint update. Neither pair is one atomic transaction across both storage locations:
 
 | Interruption | Recovery |
 | --- | --- |
-| During recovery, after successful recovery, or before database commit | Original candidate remains; replacement is not retained; caller may explicitly resupply it |
-| After database commit, before matching checkpoint | Quarantine; no automatic repair or retry |
-| After matching checkpoint persistence, including before API return | Completed replacement, original archive and exact Bitcoin output replay |
+| Before admission database commit | Original candidate and allowance unchanged; no worker call |
+| Admission database committed before matching checkpoint | Quarantine; no worker call |
+| Admission checkpoint matched, before or during recovery, or before result database commit | Original candidate remains; admission stays consumed; another attempt needs remaining allowance |
+| Result database committed before matching checkpoint | Quarantine; no automatic repair or retry |
+| Result checkpoint matched, including before API return | Completed replacement, original archive and exact Bitcoin output replay |
 
-Recovery rejection leaves both storage copies unchanged. Persistence uncertainty may quarantine or leave a completed state on reopening; an exception is not proof that no commit occurred. Once completed, ordinary completion and reconciliation both reject another attempt. Exact Bitcoin output and original release replay remain available.
+Recovery rejection preserves the protocol state while leaving the admission spent in both matched storage copies. Persistence uncertainty may quarantine or leave a completed state on reopening; an exception is not proof that no commit occurred. Once completed, ordinary completion and reconciliation both reject another attempt. Exact Bitcoin output and original release replay remain available without another admission.
 
 ## Compatibility and remaining scope
 
-Journal storage/domain v5 adds the required nullable archive field. Versions 1-4 are quarantined without modifying either copy or migrating state. This research repository has no supported funded-session migration. External artifact requests and release/completion packet schemas are unchanged.
+Journal storage/domain v5 introduced the required nullable archive field; current v6 adds Bob's recovery allowance. Versions 1-5 are quarantined without modifying either copy or migrating state. This research repository has no supported funded-session migration. External artifact requests and release/completion packet schemas are unchanged.
 
-The bounded path removes permanent pinning by an invalid original candidate when a correctly bound valid replacement is available and the trusted caller selects it. It does not authenticate the sender, validate funding or deadlines, prevent denial of service through repeated verification requests, authorize network delivery, or protect against restoring both matching old storage copies. Alice's synthetic producer and secret-owner integration remain unchanged. See [Stage 6 validation](STAGE6_VALIDATION.md) for executed tests and remaining gates.
+The bounded path permits replacing an invalid original candidate when a correctly bound valid replacement is available, the trusted caller selects it and recovery allowance remains. It does not authenticate the sender, validate funding or deadlines, provide general denial-of-service resistance, authorize network delivery, or protect against restoring both matching old storage copies. Exhaustion can prevent a later valid recovery. Alice's synthetic producer and secret-owner integration remain unchanged. See [Stage 6 validation](STAGE6_VALIDATION.md) for historical evidence and [Stage 8 validation](STAGE8_VALIDATION.md) for current admission checks.

@@ -30,10 +30,10 @@ def accepted(request):
     return {"schema": RESULT_SCHEMA, "request_digest_hex": request_digest(request), "valid": True}
 
 
-def prepare(journal, *, verifier=accepted):
+def prepare(journal, *, verifier=accepted, recovery_limit=8):
     terms, bitcoin, zenon, btc_bundle, znn_bundle = artifacts()
     journal.create_session(terms.session_id, terms.digest_hex)
-    journal.start_exchange(terms.session_id, bitcoin)
+    journal.start_exchange(terms.session_id, bitcoin, recovery_limit=recovery_limit)
     journal.retain_exchange_bitcoin(terms.session_id, btc_bundle, verifier=verifier)
     journal.bind_exchange_zenon(terms.session_id, zenon)
     journal.retain_exchange_alice_partial(terms.session_id, znn_bundle["partial_signatures_hex"][0], verifier=verifier)

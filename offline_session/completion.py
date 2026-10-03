@@ -259,10 +259,11 @@ def _bob_request(state, packet):
 
 def bob_request(state, packet):
     exchange._at(state, "RELEASE_RECORDED")
+    request = _bob_request(state, packet)
     recorded = state["zenon_completion_packet_hex"]
     if recorded is not None and _stored_packet(recorded) != packet:
         raise CompletionError("a different completion observation is already retained")
-    return _bob_request(state, packet)
+    return request
 
 
 def observe_bob(state, packet):
@@ -290,13 +291,7 @@ def complete_bob(state, packet, recoverer):
     return state, output
 
 
-def reconcile_bob(state, packet, *, expected_observation_digest, recoverer):
-    """Complete a different positively verified observation, retaining the old one.
-
-    Worker rejection or failure never proves that the retained candidate was
-    invalid. A replacement is not retained until verification succeeds. Journal
-    supplies durable publication of the entire completed state before return.
-    """
+def _reconciliation_inputs(state, packet, expected_observation_digest):
     state = exchange._at(state, "RELEASE_RECORDED")
     if state["zenon_completion_packet_hex"] is None:
         raise CompletionError("reconciliation requires a retained observation")
@@ -307,6 +302,27 @@ def reconcile_bob(state, packet, *, expected_observation_digest, recoverer):
     request = _bob_request(state, packet)
     if packet == previous:
         raise CompletionError("the retained observation requires ordinary recovery")
+    return state, previous, request
+
+
+def bob_reconciliation_request(state, packet, *, expected_observation_digest):
+    """Validate local reconciliation preconditions without invoking recovery.
+
+    Journal uses the exact public request to check admission before persisting a
+    consumed attempt. Preparing it neither verifies a signature nor replaces the
+    retained observation.
+    """
+    return _reconciliation_inputs(state, packet, expected_observation_digest)[2]
+
+
+def reconcile_bob(state, packet, *, expected_observation_digest, recoverer):
+    """Complete a different positively verified observation, retaining the old one.
+
+    Worker rejection or failure never proves that the retained candidate was
+    invalid. A replacement is not retained until verification succeeds. Journal
+    supplies durable admission and publication before returning output.
+    """
+    state, previous, request = _reconciliation_inputs(state, packet, expected_observation_digest)
     result = _run(request, recoverer)
     output = _bitcoin_packet(exchange.contexts(state)[0], result["bitcoin_signature_hex"])
     state.update(stage="BTC_COMPLETION_RECORDED", zenon_completion_packet_hex=packet.hex(),

@@ -40,10 +40,10 @@ class ReconciliationCrashTests(unittest.TestCase):
     def test_kill_matrix_preserves_original_quarantines_or_replays_complete_reconciliation(self):
         cases = (("during_reconciliation_recoverer", "RELEASE_RECORDED"),
                  ("after_bitcoin_reconciliation_recoverer", "RELEASE_RECORDED"),
-                 ("before_db_commit", "RELEASE_RECORDED"),
-                 ("after_db_commit", "QUARANTINED"),
-                 ("after_anchor_replace", "BTC_COMPLETION_RECORDED"),
-                 ("after_anchor_commit", "BTC_COMPLETION_RECORDED"),
+                 ("completion:before_db_commit", "RELEASE_RECORDED"),
+                 ("completion:after_db_commit", "QUARANTINED"),
+                 ("completion:after_anchor_replace", "BTC_COMPLETION_RECORDED"),
+                 ("completion:after_anchor_commit", "BTC_COMPLETION_RECORDED"),
                  ("after_bitcoin_reconciliation_commit", "BTC_COMPLETION_RECORDED"))
         replacement = alice_packet()
         value = json.loads(replacement)
@@ -64,6 +64,7 @@ class ReconciliationCrashTests(unittest.TestCase):
                     with self.assertRaises(Conflict):
                         journal.complete_exchange_bitcoin(session, previous, recoverer=unavailable)
                     original = journal.get_session(session)
+                    original["recovery_budget"]["consumed"] += 1
                 self.kill(root, anchor, session, checkpoint, marker)
                 self.assertEqual(marker.read_bytes(), b"1")
                 if stage == "QUARANTINED":

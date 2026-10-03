@@ -29,7 +29,7 @@ class ExchangeCrashTests(unittest.TestCase):
                 terms, bitcoin, zenon, btc_bundle, znn_bundle = artifacts()
                 with Journal.open(root, anchor) as journal:
                     journal.create_session(terms.session_id, terms.digest_hex)
-                    journal.start_exchange(terms.session_id, bitcoin)
+                    journal.start_exchange(terms.session_id, bitcoin, recovery_limit=8)
                     journal.retain_exchange_bitcoin(terms.session_id, btc_bundle, verifier=accepted)
                     journal.bind_exchange_zenon(terms.session_id, zenon)
                     journal.retain_exchange_alice_partial(terms.session_id, znn_bundle["partial_signatures_hex"][0], verifier=accepted)
@@ -131,7 +131,7 @@ class ExchangeCrashTests(unittest.TestCase):
             base = Path(directory)
             with Journal.open(base / "state", base / "head.json") as journal:
                 journal.create_session(terms.session_id, terms.digest_hex)
-                journal.start_exchange(terms.session_id, bitcoin)
+                journal.start_exchange(terms.session_id, bitcoin, recovery_limit=8)
                 journal.retain_exchange_bitcoin(terms.session_id, btc_bundle, verifier=accepted)
                 journal.bind_exchange_zenon(terms.session_id, zenon)
                 journal.retain_exchange_alice_partial(terms.session_id, znn_bundle["partial_signatures_hex"][0], verifier=accepted)

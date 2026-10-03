@@ -1,6 +1,6 @@
 # Stage 5 validation: completion and public recovery
 
-Historical milestone: [Stage 6 validation](STAGE6_VALIDATION.md) records current explicit reconciliation and journal v5. Counts, storage version and remaining-work items below describe Stage 5 before publication.
+Historical milestone: [Stage 6 validation](STAGE6_VALIDATION.md) records the introduction of explicit reconciliation and journal v5. Counts, storage version and remaining-work items below describe Stage 5 before publication.
 
 Date: 2026-10-03. This milestone uses public synthetic fixtures, temporary local journals and cached dependencies. Alice's producer copies an existing fixture signature; no private signing backend is connected. Bob's Rust executable performs actual final-signature verification, witness extraction and Bitcoin signature adaptation using public inputs. No wallet, private participant identity, peer transport, live RPC, node, broadcast, real funds, commit or publication was used.
 

@@ -102,6 +102,7 @@ class CompletionCrashTests(unittest.TestCase):
                     self.assertEqual(state["stage"], stage)
                     self.assertEqual(journal.get_session(session)["possible_exposure"], observed)
                     self.assertEqual(state["zenon_completion_packet_hex"], packet.hex() if observed else None)
+                    self.assertEqual(journal.get_session(session)["recovery_budget"]["consumed"], int(observed))
                     if stage == "BTC_COMPLETION_RECORDED":
                         output = journal.replay_exchange_bitcoin(session)
                         with self.assertRaises(Conflict):
