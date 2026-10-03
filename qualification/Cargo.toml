@@ -1,0 +1,15 @@
+[package]
+name = "ptlc-primitive-qualification"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.85"
+publish = false
+description = "Synthetic offline qualification of pinned BIP340 adaptor primitives"
+license = "MIT"
+
+[dev-dependencies]
+musig2 = { git = "https://github.com/conduition/musig2", rev = "5a09b1197b1b5c621a5a9abc60fa95fa84a1da30", default-features = false, features = ["secp256k1"] }
+schnorr_fun = { git = "https://github.com/LLFourn/secp256kfun", rev = "74d18bbf864f98e5cf7c18dcfb74ba1ecfe837ce", default-features = false, features = ["std"] }
+sha2 = { version = "=0.10.9", default-features = false }
+serde_json = { version = "1.0", default-features = false, features = ["std"] }
+bitcoin = { version = "=0.32.7", default-features = false, features = ["std"] }
