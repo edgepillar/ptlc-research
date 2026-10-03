@@ -30,7 +30,7 @@ from .transcript import validate_signing_context
 
 MAX_OUTPUT_BYTES = 65536
 MAX_STATE_BYTES = 16 * 1024 * 1024
-VERSION = 4
+VERSION = 5
 _HEX = re.compile(r"[0-9a-f]{64}\Z")
 _PURPOSES = {
     "bitcoin-claim-partial", "zenon-claim-partial",
@@ -92,7 +92,7 @@ def _decode(data):
 
 def _digest(lineage, sequence, state):
     material = {"version": VERSION, "lineage": lineage, "sequence": sequence, "state": state}
-    return hashlib.sha256(b"ptlc-offline-journal-v4\x00" + _canonical(material)).hexdigest()
+    return hashlib.sha256(b"ptlc-offline-journal-v5\x00" + _canonical(material)).hexdigest()
 
 
 def _public_nonce_digest(encoded):
@@ -281,7 +281,7 @@ class Journal:
     Each leg also pins one validated public nonce round, or static context mode.
     Dynamic rounds reject duplicate public nonce encodings visible in this journal;
     this public-byte check cannot prove freshness or ownership of secret nonces.
-    Versions 1 through 3 are quarantined; this experiment has no migration.
+    Versions 1 through 4 are quarantined; this experiment has no migration.
     Managed exchanges retain public artifacts under a caller-supplied verifier;
     that verifier is a trusted local boundary, not automatic cryptographic proof.
     """
@@ -860,6 +860,7 @@ class Journal:
 
         Omitting the packet retries only the exact retained public observation.
         A rejected observation remains pinned; this API cannot replace it.
+        A different candidate requires explicit positive-verification reconciliation.
         """
         self._check(mutation=True)
         session = self._session(session_id)
@@ -911,6 +912,43 @@ class Journal:
             return completion.replay_bob(copy.deepcopy(state))
         except exchange.ExchangeError:
             raise OutcomeUnknown("no durable Bitcoin completion is available") from None
+
+    def reconcile_exchange_bitcoin(self, session_id, completion_packet, *,
+                                   expected_observation_digest, recoverer):
+        """Complete a verified replacement while preserving the old observation.
+
+        The caller must identify the exact retained observation. Public recovery
+        runs before persistence; recovery rejection leaves that observation
+        unchanged. Persistence uncertainty still quarantines the journal. The
+        retained bytes are not labeled cryptographically invalid.
+        """
+        self._check(mutation=True)
+        session = self._session(session_id)
+        if session["exchange"] is None:
+            raise Conflict("managed exchange is not recorded")
+        if not callable(recoverer):
+            raise InvalidInput("public completion recoverer must be callable")
+        self._producing = True
+        try:
+            try:
+                self._check()
+                result, output = completion.reconcile_bob(
+                    copy.deepcopy(session["exchange"]), completion_packet,
+                    expected_observation_digest=expected_observation_digest,
+                    recoverer=recoverer,
+                )
+            except exchange.ExchangeError:
+                raise Conflict("Bitcoin completion reconciliation rejected") from None
+            self._check()
+            self._completion_checkpoint("after_bitcoin_reconciliation_recoverer")
+            state = copy.deepcopy(self._state)
+            state["sessions"][session_id]["exchange"] = result
+            self._persist(state)
+            self._completion_checkpoint("after_bitcoin_reconciliation_commit")
+            self._check()
+            return output
+        finally:
+            self._producing = False
 
     def observe(self, session_id, observation_digest, *, reorg=False):
         """Append untrusted observation metadata; it never changes exposure."""

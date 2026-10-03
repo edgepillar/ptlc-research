@@ -1,6 +1,6 @@
 # Stage 4 validation: managed public artifact exchange
 
-Historical milestone: [Stage 5 validation](STAGE5_VALIDATION.md) records the current completion flow, v2 release packets and journal v4. Counts, storage version and remaining-work items below describe Stage 4.
+Historical milestone: [Stage 5 validation](STAGE5_VALIDATION.md) records the later completion flow, v2 release packets and journal v4. [Stage 6](STAGE6_VALIDATION.md) records current reconciliation and v5. Counts, storage version and remaining-work items below describe Stage 4.
 
 Date: 2026-10-03. This milestone uses only public synthetic fixtures, local temporary state and cached dependencies. No wallet, participant identity, peer transport, live RPC, node, broadcast, real funds, commit or publication was used. The new exchange has no application signing backend; its executable performs public verification only. Existing Rust signing tests ran separately with deliberately public synthetic inputs.
 

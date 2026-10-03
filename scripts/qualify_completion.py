@@ -15,6 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tests"))
 
 from offline_session.artifact_verifier import SubprocessVerifier
+from offline_session import completion, exchange
 from offline_session.completion_verifier import SubprocessCompletion
 from offline_session.journal import Conflict, Journal, OutcomeUnknown
 from completion_test_support import final_signatures, prepare_alice, alice_packet
@@ -102,6 +103,65 @@ class RealCompletionTests(unittest.TestCase):
                 self.assertIsNone(bob.get_exchange(session)["completion_receipt_hex"])
                 with self.assertRaises(Conflict):
                     bob.complete_exchange_bitcoin(session, alice_packet(), recoverer=self.completer)
+                with self.assertRaises(OutcomeUnknown):
+                    bob.replay_exchange_bitcoin(session)
+
+    def test_positive_reconciliation_retains_original_and_seals_verified_output(self):
+        with tempfile.TemporaryDirectory(prefix="ptlc-reconciliation-integration-") as directory:
+            base = Path(directory)
+            packet = alice_packet()
+            invalid = json.loads(packet)
+            invalid["signature_hex"] = "00" * 64
+            previous = exchange.canonical(invalid)
+            expected = completion.observation_digest(previous)
+            with Journal.open(base / "state", base / "head.json") as bob:
+                session = prepare(bob, verifier=self.verifier)
+                release = bob.release_exchange_zenon(session)
+                with self.assertRaises(Conflict):
+                    bob.complete_exchange_bitcoin(session, previous, recoverer=self.completer)
+            with Journal.open(base / "state", base / "head.json") as bob:
+                with self.assertRaises(Conflict):
+                    bob.complete_exchange_bitcoin(session, packet, recoverer=self.completer)
+                output = bob.reconcile_exchange_bitcoin(
+                    session, packet, expected_observation_digest=expected, recoverer=self.completer,
+                )
+                self.assertEqual(json.loads(output)["signature_hex"], final_signatures()[1].hex())
+                state = bob.get_exchange(session)
+                self.assertEqual(state["superseded_zenon_completion_packet_hex"], previous.hex())
+                self.assertEqual(state["zenon_completion_packet_hex"], packet.hex())
+                self.assertTrue(bob.get_session(session)["possible_exposure"])
+            with Journal.open(base / "state", base / "head.json") as bob:
+                self.assertEqual(bob.replay_exchange_bitcoin(session), output)
+                self.assertEqual(bob.replay_exchange_release(session), release)
+                with self.assertRaises(Conflict):
+                    bob.reconcile_exchange_bitcoin(
+                        session, packet, expected_observation_digest=expected, recoverer=self.completer,
+                    )
+
+    def test_failed_real_reconciliation_does_not_change_retained_state_or_storage(self):
+        with tempfile.TemporaryDirectory(prefix="ptlc-reconciliation-reject-") as directory:
+            base = Path(directory)
+            value = json.loads(alice_packet())
+            value["signature_hex"] = "00" * 64
+            previous = exchange.canonical(value)
+            value["signature_hex"] = "ff" * 64
+            replacement = exchange.canonical(value)
+            with Journal.open(base / "state", base / "head.json") as bob:
+                session = prepare(bob, verifier=self.verifier)
+                bob.release_exchange_zenon(session)
+                with self.assertRaises(Conflict):
+                    bob.complete_exchange_bitcoin(session, previous, recoverer=self.completer)
+                state = bob.get_session(session)
+                db = base / "state" / "journal.sqlite3"
+                saved = db.read_bytes(), (base / "head.json").read_bytes()
+                with self.assertRaises(Conflict):
+                    bob.reconcile_exchange_bitcoin(
+                        session, replacement, expected_observation_digest=completion.observation_digest(previous),
+                        recoverer=self.completer,
+                    )
+                self.assertEqual(bob.get_session(session), state)
+                self.assertEqual((db.read_bytes(), (base / "head.json").read_bytes()), saved)
+                self.assertIsNone(bob.get_exchange(session)["superseded_zenon_completion_packet_hex"])
                 with self.assertRaises(OutcomeUnknown):
                     bob.replay_exchange_bitcoin(session)
 

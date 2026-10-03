@@ -1,6 +1,6 @@
 # Stage 3 validation: public nonce rounds
 
-Historical milestone: [Stage 4 validation](STAGE4_VALIDATION.md) records the later artifact exchange and journal v3 results. [Stage 5 validation](STAGE5_VALIDATION.md) records current completion and journal v4 results. The counts and storage version below describe Stage 3.
+Historical milestone: [Stage 4 validation](STAGE4_VALIDATION.md) records the later artifact exchange and journal v3 results. [Stage 5 validation](STAGE5_VALIDATION.md) records later completion and journal v4 results; [Stage 6](STAGE6_VALIDATION.md) records current reconciliation and v5. The counts and storage version below describe Stage 3.
 
 Scope: local offline qualification, following the historical [Stage 2 report](STAGE2_VALIDATION.md). All examples use public synthetic inputs. No wallet, real key material, RPC, network transport, node activation, broadcast, funds, public repository, or publication action was involved. Source documentation was inspected separately; verification commands used already populated offline dependency caches.
 

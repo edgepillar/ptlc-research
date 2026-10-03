@@ -2,7 +2,7 @@
 
 Status: offline reference sequencing with public synthetic inputs. This implements the local retention-before-release requirement from [CANDIDATE-01](TRANSACTION_GRAPH.md). It has no signer, participant authentication, peer transport, funding observation, time authorization, wallet or broadcaster. A completed state-machine transition is not authorization to use funds.
 
-This document describes the retention/release component introduced in Stage 4. Current storage is v4, and releases use v2 packets containing both ordered partials. [Stage 5](COMPLETION_LIFECYCLE.md) extends this flow with Alice completion and Bob public recovery; the earlier validation report remains historical.
+This document describes the retention/release component introduced in Stage 4. Current storage is v5, and releases use v2 packets containing both ordered partials. [Stage 5](COMPLETION_LIFECYCLE.md) extends this flow with Alice completion and Bob public recovery; the earlier validation report remains historical.
 
 ## Local transition contract
 
@@ -49,7 +49,7 @@ Normal Python tests deliberately use a fake verifier to isolate sequencing and p
 
 The journal holds its process/thread ownership and mutation guard while a verifier runs, while the reducer validates its next state, and through database/checkpoint persistence. A callback cannot reenter a mutation, reserve another operation or close the journal during this sequence. Failed artifact-retention verification commits no state. Stage 5 completion deliberately persists Alice consumption or Bob's candidate observation before its separate completion verifier runs.
 
-Storage schema/domain v3 introduced managed exchange state; v4 extends it with retained completion observations and outputs. On reopening, the reducer validates the full stage/artifact order, reconstructs contexts, recomputes receipt-to-request bindings, and checks the release bytes and flags. The journal independently matches those contexts to stored session/leg/round/nonce pins. It does not rerun an external verifier on load. This relies on previously trusted verification and the existing local checkpoint/storage assumptions, not resistance to a hostile process that can rewrite both files.
+Storage schema/domain v3 introduced managed exchange state; v4 extended it with retained completion observations and outputs, and v5 adds the superseded-observation archive. On reopening, the reducer validates the full stage/artifact order, reconstructs contexts, recomputes receipt-to-request bindings, and checks the release bytes and flags. The journal independently matches those contexts to stored session/leg/round/nonce pins. It does not rerun an external verifier on load. This relies on previously trusted verification and the existing local checkpoint/storage assumptions, not resistance to a hostile process that can rewrite both files.
 
 The current `ptlc-bob-zenon-release-v2` envelope is canonical public JSON containing sender role Bob, recipient role Alice, Bob's full Zenon dynamic context, both ordered partials and the exact retained complete Zenon pre-signature. Roles are labels, not authenticated identities. Both ordered partials also remain in Bob's stored bundle for reconstruction. The local application retains both chain contexts, key/tweak/nonce inputs, adaptor point and encoded pre-signature, including the library's parity/extraction representation.
 
@@ -59,7 +59,7 @@ The release marker is separate from `possible_exposure`. Bob releasing a pre-sig
 
 These guarantees apply to the managed journal API. The pure reducer has no persistence, and the trusted caller already possesses the supplied public artifacts. It could transmit them directly or read a defensive snapshot and bypass the release API. This module cannot constrain malicious caller side effects. The complete application must own all outbound routes before retention order can be a system-wide guarantee.
 
-Storage versions 1-3 are quarantined without migration or automatic reset. As before, restoring both matching database and checkpoint copies is undetectable; there is no hardware counter or remote witness. This stage does not supply a durable secret nonce owner or a crash-tested journal-to-signer boundary.
+Storage versions 1-4 are quarantined without migration or automatic reset. As before, restoring both matching database and checkpoint copies is undetectable; there is no hardware counter or remote witness. This stage does not supply a durable secret nonce owner or a crash-tested journal-to-signer boundary.
 
 ## Reproduction and next work
 
@@ -72,4 +72,4 @@ python3 -B scripts/qualify_exchange.py --verifier qualification/target/debug/exa
 
 Adjust the executable path when selecting a custom Cargo target directory. The integration uses temporary local journals and unchanged public fixtures; it performs no signing or network activity. [STAGE4_VALIDATION.md](STAGE4_VALIDATION.md) records both fake-verifier process tests and actual-verifier integration separately.
 
-[Stage 5](COMPLETION_LIFECYCLE.md) implements Alice's validated inbound flow and the public completion/extraction lifecycle. Remaining work includes authenticated transport, observation selection/reconciliation, actual chain/timing authorization and a reviewed secret-worker boundary. Fresh entropy, secure memory, copied/restored-state protection and independent cryptographic/protocol assessment remain unresolved before any node integration.
+[Stage 5](COMPLETION_LIFECYCLE.md) implements Alice's validated inbound flow and the public completion/extraction lifecycle. Remaining work includes authenticated transport, authenticated observation selection, actual chain/timing authorization and a reviewed secret-worker boundary. Fresh entropy, secure memory, copied/restored-state protection and independent cryptographic/protocol assessment remain unresolved before any node integration.

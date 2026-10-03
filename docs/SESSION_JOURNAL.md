@@ -1,6 +1,6 @@
 # Offline transcript and public-output journal
 
-Status: experimental local qualification, now including [managed Bob exchange](ARTIFACT_EXCHANGE.md) and the [Stage 5 Alice/Bob completion lifecycle](COMPLETION_LIFECYCLE.md). This module has no wallet, signing backend, transport, RPC, broadcaster or node integration. It stores public synthetic commitments and output bytes. An explicitly selected public verifier checks the managed flow's artifacts. It does not serialize a cryptographic library's secret nonce object or implement secure key storage.
+Status: experimental local qualification, now including [managed Bob exchange](ARTIFACT_EXCHANGE.md), the [Stage 5 Alice/Bob completion lifecycle](COMPLETION_LIFECYCLE.md), and [Stage 6 explicit reconciliation](OBSERVATION_RECONCILIATION.md). This module has no wallet, signing backend, transport, RPC, broadcaster or node integration. It stores public synthetic commitments and output bytes. An explicitly selected public verifier checks the managed flow's artifacts. It does not serialize a cryptographic library's secret nonce object or implement secure key storage.
 
 ## Staged session commitments
 
@@ -29,7 +29,7 @@ The journal uses persistent POSIX advisory locks for the directory and separate 
 
 SQLite stores a canonical public-state snapshot and its version, lineage, sequence and digest. A separately stored checkpoint outside the journal directory records the corresponding head. Opening recomputes the actual state digest and checks the checkpoint; comparing only two stored digest fields would miss payload changes.
 
-The current storage schema and digest domain are version 4. Opening version 1, 2 or 3 state quarantines it without modifying either copy. No automatic migration or reset is provided. Transcript schema v1 remains unchanged; optional nonce-bound contexts extend it while historical static context bytes remain identical.
+The current storage schema and digest domain are version 5. Opening version 1, 2, 3 or 4 state quarantines it without modifying either copy. No automatic migration or reset is provided. Transcript schema v1 remains unchanged; optional nonce-bound contexts extend it while historical static context bytes remain identical.
 
 For each mutation the database commit precedes checkpoint replacement. The checkpoint is written to a temporary file, flushed, atomically replaced and its parent directory synchronized before success is returned. This is deliberately **not** presented as one atomic transaction across two files. An interruption in the gap can leave mismatched heads, which cause quarantine instead of automatic repair or another producer attempt.
 
@@ -37,7 +37,7 @@ SQLite and filesystem synchronization rely on the operating system and storage s
 
 ## Reservation and output lifecycle
 
-The lifecycle below applies to the original generic synthetic producer. A fresh session may instead enter managed Bob exchange or managed Alice completion before any generic reservation. These three modes are mutually exclusive. Managed sessions cannot use generic reserve/produce/replay operations; verifier calls, transitions and persistence remain under the same mutation/ownership guard. Stored exchange contexts supply that session's binding/round/nonce pins and must match them on reload. See the [managed state machine](ARTIFACT_EXCHANGE.md) for retention/release and the [completion lifecycle](COMPLETION_LIFECYCLE.md) for Alice consumption, retained Bob observations and public-input recovery. A failed Bob recovery may retry its exact retained public input; an uncertain Alice producer may not run again.
+The lifecycle below applies to the original generic synthetic producer. A fresh session may instead enter managed Bob exchange or managed Alice completion before any generic reservation. These three modes are mutually exclusive. Managed sessions cannot use generic reserve/produce/replay operations; verifier calls, transitions and persistence remain under the same mutation/ownership guard. Stored exchange contexts supply that session's binding/round/nonce pins and must match them on reload. See the [managed state machine](ARTIFACT_EXCHANGE.md) for retention/release and the [completion lifecycle](COMPLETION_LIFECYCLE.md) for Alice consumption, retained Bob observations and public-input recovery. A failed Bob recovery may retry its exact retained public input; explicit reconciliation additionally accepts a different positively verified candidate while preserving the old packet. An uncertain Alice producer may not run again.
 
 ```text
 RESERVED -> CONSUMED -> OUTPUT_RECORDED
@@ -67,6 +67,6 @@ The module assumes a trusted local directory and cooperating writers. It does no
 
 ## Executed evidence and next work
 
-See [STAGE2_VALIDATION.md](STAGE2_VALIDATION.md) and [STAGE3_VALIDATION.md](STAGE3_VALIDATION.md) for historical cases, [STAGE4_VALIDATION.md](STAGE4_VALIDATION.md) for retention/release, and [STAGE5_VALIDATION.md](STAGE5_VALIDATION.md) for current completion results. The process tests terminate actual child processes at commit/producer/output boundaries, rather than treating an in-process exception as equivalent to process death. Both kinds of failure are tested separately; matrices cover generic static/nonce-bound operations, managed artifact retention/release, Alice consumption/output and Bob observation/recovery/output.
+See [STAGE2_VALIDATION.md](STAGE2_VALIDATION.md) and [STAGE3_VALIDATION.md](STAGE3_VALIDATION.md) for historical cases, [STAGE4_VALIDATION.md](STAGE4_VALIDATION.md) for retention/release, [STAGE5_VALIDATION.md](STAGE5_VALIDATION.md) for completion, and [STAGE6_VALIDATION.md](STAGE6_VALIDATION.md) for current reconciliation results. The process tests terminate actual child processes at commit/producer/output boundaries, rather than treating an in-process exception as equivalent to process death. Both kinds of failure are tested separately; matrices cover generic static/nonce-bound operations, managed artifact retention/release, Alice consumption/output and Bob observation/recovery/output.
 
 Before a real signer is attached: implement authenticated exchange and validated artifact order, review the backend-specific secret-nonce owner and its durable worker boundary, define protection against restored copies, bind actual chain observations and timing decisions, and independently assess the resulting protocol. The separate Rust owner remains test-only and ephemeral. A local SQLite record is not a replacement for those requirements.

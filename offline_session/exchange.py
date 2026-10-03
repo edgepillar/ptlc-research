@@ -25,6 +25,7 @@ _FIELDS = {
     "alice_partial_hex", "zenon_bundle", "release_hex", "release_may_have_escaped",
     "verification_receipts",
     "zenon_completion_packet_hex", "bitcoin_completion_packet_hex", "completion_receipt_hex",
+    "superseded_zenon_completion_packet_hex",
 }
 _HEX = re.compile(r"[0-9a-f]+\Z")
 MAX_EXCHANGE_BYTES = 128_000
@@ -235,6 +236,8 @@ def validate_state(state):
     for field in ("bitcoin_completion_packet_hex", "completion_receipt_hex"):
         if (state[field] is not None) != (stage == 6):
             raise ExchangeError("Bitcoin completion fields contradict exchange stage")
+    if stage != 6 and state["superseded_zenon_completion_packet_hex"] is not None:
+        raise ExchangeError("superseded observation requires a completed reconciliation")
     if stage == 5 and state["zenon_completion_packet_hex"] is not None:
         from .completion import validate_bob_observation
         validate_bob_observation(state)
@@ -259,6 +262,7 @@ def start(context):
         "verification_receipts": {},
         "zenon_completion_packet_hex": None, "bitcoin_completion_packet_hex": None,
         "completion_receipt_hex": None,
+        "superseded_zenon_completion_packet_hex": None,
     }
     validate_state(state)
     return state

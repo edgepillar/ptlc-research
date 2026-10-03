@@ -8,12 +8,13 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from offline_session.journal import Journal
+from offline_session.completion import observation_digest
 from completion_test_support import alice_packet, completion_accepted, final_signatures
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", choices=("alice", "bob"))
+    parser.add_argument("mode", choices=("alice", "bob", "reconcile"))
     parser.add_argument("root")
     parser.add_argument("anchor")
     parser.add_argument("session")
@@ -40,14 +41,22 @@ def main():
 
     def recoverer(request):
         count()
+        if args.mode == "reconcile":
+            hook("during_reconciliation_recoverer")
         return completion_accepted(request)
 
     try:
         with Journal.open(args.root, args.anchor, hook=hook) as journal:
             if args.mode == "alice":
                 journal.complete_alice(args.session, producer=producer, verifier=completion_accepted)
-            else:
+            elif args.mode == "bob":
                 journal.complete_exchange_bitcoin(args.session, alice_packet(), recoverer=recoverer)
+            else:
+                previous = bytes.fromhex(journal.get_exchange(args.session)["zenon_completion_packet_hex"])
+                journal.reconcile_exchange_bitcoin(
+                    args.session, alice_packet(), expected_observation_digest=observation_digest(previous),
+                    recoverer=recoverer,
+                )
         print("returned", flush=True)
     except BaseException as error:
         print(type(error).__name__, flush=True)
