@@ -113,5 +113,12 @@ reusing public authentication keys can link sessions.
 Before integration, define and review trusted pin establishment and durable
 binding, rotation/compromise semantics, all inbound artifact types, replay and
 reconciliation policy, verification admission and safe exhaustion behavior.
+Peer-message admission and recovery from a public witness need separate
+authorization policies. Alice could publish a valid Zenon completion while
+withholding its auxiliary authentication envelope. Requiring that envelope
+for every Bob recovery path could therefore prevent a necessary recovery.
+Do not make an authenticated inbox policy a universal prerequisite for witness
+recovery; independently authorized chain observation remains an unresolved
+alternative path, not a bypass to silently add to this helper.
 Private signing, clone protection, authenticated chain observations and funded
 timing policy remain separate gates. A core port and live swap remain no-go.
