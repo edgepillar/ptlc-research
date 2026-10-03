@@ -116,6 +116,8 @@ The separate [Bitcoin transaction fixture](../qualification/fixtures/bitcoin_tra
 
 [Stage 5](COMPLETION_LIFECYCLE.md) qualifies the local public-artifact lifecycle in steps 6-7: Alice verifies the retained bundle and records a synthetic completion, then Bob verifies that signature, extracts against the exact retained pre-signature and actually adapts the Bitcoin signature. Separate journals persist the corresponding transitions. Alice private signing and the graph's funding, time, transport and chain requirements remain outside this implementation.
 
+[Stage 6](OBSERVATION_RECONCILIATION.md) adds explicit recovery from a pinned Bob candidate when a valid same-context replacement is supplied. It preserves the original observation and exact release, and performs only public verification/extraction/adaptation. This is local recovery behavior, not authenticated observation selection or settlement.
+
 ## Remaining blockers before implementation
 
 1. Independently assess the exact two-party MuSig2 adaptor construction, share order, backend revision and binding. Finite primitive and tweaked-transaction tests are not this assessment. Connect the currently separate examples into the exact cross-chain session and binding logic.

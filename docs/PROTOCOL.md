@@ -81,6 +81,8 @@ A preliminary [public-state journal](SESSION_JOURNAL.md) now qualifies SQLite/ch
 
 [Stage 5 completion](COMPLETION_LIFECYCLE.md) uses journal v4 for Alice inbound bundle verification, durable synthetic-producer consumption and exact final output replay. Bob stores the exact Zenon observation before actual final-signature verification, witness extraction and Bitcoin adaptation; only that same public input may be retried after an incomplete recovery. Alice private signing, full funding/transaction handling and authenticated observation selection remain unimplemented. Joint restoration of both old storage copies defeats the local consumption history and is explicitly tested.
 
+[Stage 6 reconciliation](OBSERVATION_RECONCILIATION.md) adds a distinct Bob-only path for a different positively verified observation. An exact original-packet digest prevents stale selection; the final stored snapshot retains both the completed replacement and the superseded original. Public computation can be retried after pre-commit interruption if the caller resupplies the replacement. This does not reset any signing ownership or authenticate the observation.
+
 ## 6. Timing, refund, and fee policy
 
 The selected graph must identify which leg is funded first, which claim exposes the secret, and which deadline leaves the other party time to claim. It must justify the deadline difference using explicit assumptions for confirmation/reorg policy, detection delay, signing and recovery latency, inclusion delay, clock semantics and resource availability. No arbitrary timeout value is approved here.

@@ -29,6 +29,13 @@ def request_digest(request):
     return hashlib.sha256(b"PTLC/completion/v1\x00" + exchange.canonical(request)).hexdigest()
 
 
+def observation_digest(packet):
+    """Bind exact public bytes for compare-and-swap; this is not authentication."""
+    if type(packet) is not bytes or not packet or len(packet) > MAX_PACKET_BYTES:
+        raise CompletionError("invalid observation digest input")
+    return hashlib.sha256(b"PTLC/completion-observation/v1\x00" + packet).hexdigest()
+
+
 def recontext(context, role, purpose):
     """Reconstruct a role/purpose change while preserving the exact binding/round."""
     try:
@@ -283,6 +290,32 @@ def complete_bob(state, packet, recoverer):
     return state, output
 
 
+def reconcile_bob(state, packet, *, expected_observation_digest, recoverer):
+    """Complete a different positively verified observation, retaining the old one.
+
+    Worker rejection or failure never proves that the retained candidate was
+    invalid. A replacement is not retained until verification succeeds. Journal
+    supplies durable publication of the entire completed state before return.
+    """
+    state = exchange._at(state, "RELEASE_RECORDED")
+    if state["zenon_completion_packet_hex"] is None:
+        raise CompletionError("reconciliation requires a retained observation")
+    exchange._hex(expected_observation_digest, 32)
+    previous = _stored_packet(state["zenon_completion_packet_hex"])
+    if observation_digest(previous) != expected_observation_digest:
+        raise CompletionError("retained observation changed before reconciliation")
+    request = _bob_request(state, packet)
+    if packet == previous:
+        raise CompletionError("the retained observation requires ordinary recovery")
+    result = _run(request, recoverer)
+    output = _bitcoin_packet(exchange.contexts(state)[0], result["bitcoin_signature_hex"])
+    state.update(stage="BTC_COMPLETION_RECORDED", zenon_completion_packet_hex=packet.hex(),
+                 bitcoin_completion_packet_hex=output.hex(), completion_receipt_hex=request_digest(request),
+                 superseded_zenon_completion_packet_hex=previous.hex())
+    exchange.validate_state(state)
+    return state, output
+
+
 def validate_bob_result(state):
     """Called inside exchange validation; do not recursively validate that state."""
     packet = _stored_packet(state["zenon_completion_packet_hex"])
@@ -293,6 +326,13 @@ def validate_bob_result(state):
     if (state["completion_receipt_hex"] != request_digest(request)
             or _stored_packet(state["bitcoin_completion_packet_hex"]) != _bitcoin_packet(bitcoin, output["signature_hex"])):
         raise CompletionError("stored Bitcoin completion changed its bound inputs")
+    superseded = state["superseded_zenon_completion_packet_hex"]
+    if superseded is not None:
+        previous = _stored_packet(superseded)
+        if previous == packet:
+            raise CompletionError("superseded observation equals its replacement")
+        # Historical evidence has the same binding, but no validity assertion.
+        _bob_request(state, previous)
 
 
 def replay_bob(state):

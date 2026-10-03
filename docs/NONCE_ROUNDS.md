@@ -2,7 +2,7 @@
 
 Status: offline qualification with deliberately public synthetic inputs. The Python package has no cryptographic signer, secret nonce store, peer transport or chain connection. The Rust owner exists only in an integration-test file and is not callable by the Python journal. Neither component is a usable swap client.
 
-This document describes the Stage 3 nonce layer. [Stage 4](ARTIFACT_EXCHANGE.md) adds a managed Bob artifact flow and a public-verification bridge; current journal storage is v4, including [Stage 5 completion](COMPLETION_LIFECYCLE.md). The ephemeral signing owner remains separate. The next-integration list below records the original Stage 3 backlog; Bob's local retention/release order has since been implemented within Stage 4's narrower scope.
+This document describes the Stage 3 nonce layer. [Stage 4](ARTIFACT_EXCHANGE.md) adds a managed Bob artifact flow and a public-verification bridge; current journal storage is v5, including [Stage 5 completion](COMPLETION_LIFECYCLE.md) and [Stage 6 reconciliation](OBSERVATION_RECONCILIATION.md). The ephemeral signing owner remains separate. The next-integration list below records the original Stage 3 backlog; Bob's local retention/release order has since been implemented within Stage 4's narrower scope.
 
 ## Public commitment and opening format
 
