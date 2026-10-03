@@ -84,6 +84,12 @@ Repeated authentication calls remain outside Bob's recovery allowance. Pin
 bootstrap/rotation, durable policy, admission/resource controls, observation
 selection, confidentiality and transport remain unresolved.
 
+A subsequent admission design must keep peer-message authentication separate
+from authorization to recover an independently observed public witness. Alice
+may reveal the valid Zenon signature while withholding an authentication
+envelope. Requiring the envelope for all recovery would threaten liveness;
+Stage 9 does not resolve the separate trusted observation policy.
+
 All new exported fixtures contain public synthetic values. No signer is
 connected to the journal. Private nonce ownership, clone protection, chain
 trust, funded timing, independent construction review and coordinated node
