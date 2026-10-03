@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 12 public signature candidate construction. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 13 independent review preparation. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -25,6 +25,8 @@ Optional authentication pins can now be frozen when Bob's exchange starts. A jou
 A separate finite recovery-admission model explores policy choices before they are connected to the journal. It separates candidate/history integrity from recovery availability, with explicit local authorization as an external input. Counterexamples cover a withheld authentication envelope, exhausted recovery allowance and treating authentication as inner-signature validity. This model selects no funded-swap admission policy and changes no journal or cryptographic behavior.
 
 A pure helper now constructs an unverified completion candidate from a 64-byte public signature and Bob's retained context. It accepts no remote context or provenance claims, writes nothing, and leaves ordinary recovery and comparison-guarded reconciliation unchanged. Its role labels are packet-format metadata, not evidence of an authenticated Alice message. Actual verification and caller authorization remain separate.
+
+An independent review brief now freezes the Stage 12 implementation subject, inventories all 119 source files and separates verified behavior from unresolved construction, ownership and availability obligations. The accompanying assessment template is unfilled. Preparing this package does not complete an independent review or select a production backend.
 
 ## Repository boundaries
 
@@ -69,6 +71,9 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 29. [Stage 11 validation and remaining gates](docs/STAGE11_VALIDATION.md)
 30. [Public signature candidate construction](docs/PUBLIC_SIGNATURE_CANDIDATES.md)
 31. [Stage 12 validation and remaining gates](docs/STAGE12_VALIDATION.md)
+32. [Independent review brief and exact subject](docs/INDEPENDENT_REVIEW.md)
+33. [Unfilled assessment report template](docs/REVIEW_REPORT_TEMPLATE.md)
+34. [Stage 13 packaging validation and remaining gates](docs/STAGE13_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -107,6 +112,8 @@ python3 -B scripts/qualify_authentication.py --authentication qualification/targ
 Use the corresponding executable paths if `CARGO_TARGET_DIR` is set. These checks use temporary public journals, fixture artifacts and explicitly selected local executables. Ordinary Python tests use clearly labeled fake callbacks for sequencing and do not require Rust. Journal storage v7 quarantines older v1-v6 state without migration; incoming Bob releases require v2 packets with both partials. Starting managed Bob exchange requires an explicit `recovery_limit` from 1 through 64. Optional `authentication_pins` are copied at that start and cannot be added, changed or removed later; omitting them is also a frozen choice.
 
 ## Next milestone
+
+Obtain a scoped independent assessment of the exact subject in the [review brief](docs/INDEPENDENT_REVIEW.md), with explicit assumptions, findings and unreviewed surfaces recorded in the report template. External review is pending; later source changes need a separate delta assessment. This package makes that work reviewable without introducing private signing, node access or reviewer outreach.
 
 Use the bounded admission model's counterexamples to define an explicit public-observation authorization and exhaustion/recovery policy before enforcing an envelope requirement or adding transport. The baseline model's finite shared allowance still permits recovery blockage; no safe funded policy has been selected. Durable local pin selection is available; trustworthy pin establishment remains external. Preserve a separately reviewed authorization path for public-witness recovery: Alice may reveal the Zenon signature while withholding an auxiliary authentication envelope. Observation selection, evidence retention, pin provisioning/rotation and aggregate verification-rate control remain unresolved. Connect a reviewed private signing worker only after resolving fresh entropy, secret memory, restored-copy protection, and its journal boundary. Restoring both matching database/checkpoint copies can still permit another synthetic Alice producer call or replenish Bob's allowance. Independent construction review, authenticated chain observations and funding/time authorization remain prerequisites for a current-node PTLC port and two-party regtest/devnet work.
 
