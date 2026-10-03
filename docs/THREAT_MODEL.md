@@ -1,6 +1,6 @@
 # Threat model and evidence limits
 
-Status: **DRAFT, carried through Stage 10 offline qualification.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
+Status: **DRAFT, carried through Stage 11 offline qualification.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
 
 ## Security objective
 
@@ -64,3 +64,5 @@ The report must identify exact commits, dependency versions, environment and ass
 [Stage 8 admission](RECOVERY_ADMISSION.md) durably limits two Bob recovery APIs within an existing owned session. Every admitted attempt remains consumed after failure or restart. Initial artifact verification, Alice completion, direct helpers, new sessions and restored copies remain outside this policy. Malicious observations can exhaust the allowance before a legitimate recovery; a production application needs an independently reviewed recovery/availability policy and authenticated peer admission. No participant authentication follows from counters, public key fields or role labels.
 
 [Stage 9 envelopes](COMPLETION_AUTHENTICATION.md) qualify one message direction relative to locally trusted pins. Correct signatures do not make the enclosed completion valid or fresh. Stage 10 adds optional [durable local pin binding](DURABLE_AUTHENTICATION_PINS.md), with no enrollment or rotation policy; existing recovery entry points remain callable without authentication. Verification calls are outside Bob's allowance; repeating valid or invalid envelopes can still cause work. Public pins and payloads supply neither confidentiality nor anonymity.
+
+[Stage 11's bounded model](RECOVERY_ADMISSION_MODEL.md) makes recovery blockage executable without adding journal admission policy. A universal envelope requirement can block an independently authorized public witness; authenticated invalid inputs or interrupted work can spend a finite allowance. Ideal verifier results and explicit local authorization are model inputs, not an implemented trust source. Preserved state invariants do not establish funded availability or principal safety, and incomplete exploration must never be reported as success.
