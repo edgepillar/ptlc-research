@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 6 offline completion observation reconciliation. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 7 bounded public worker transport. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -13,6 +13,8 @@ The `offline_session` package adds staged public transcript commitments, role-bo
 The managed Bob exchange now verifies and durably retains both legs' public artifacts before making the complete Zenon pre-signature available through its release API. A separate Rust executable performs public MuSig2 verification; it has no signing capability. This local order does not establish peer authentication, chain acceptance, time margins or delivery.
 
 Alice now validates that release against her own retained partial and consumes completion ownership before a synthetic producer runs. Bob durably retains her candidate completion, then uses a second Rust executable to verify the Zenon signature, extract and check the witness, and complete the Bitcoin signature. The recovered scalar is never returned. Actual private signing and chain submission remain absent. An explicit reconciliation path can complete a different positively verified observation while preserving the original candidate; it never resets Alice or treats a failed worker as proof of invalidity.
+
+Both public executables use a shared bounded pipe runner. It rejects stdout overflow during transfer, applies one transfer/exit deadline and attempts safe cleanup of the owned process group on failure. It creates no output spool file. The executable remains trusted; this is neither a sandbox nor protection against repeated verification requests.
 
 ## Repository boundaries
 
@@ -45,6 +47,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 17. [Stage 5 validation and intermediate findings](docs/STAGE5_VALIDATION.md)
 18. [Explicit completion observation reconciliation](docs/OBSERVATION_RECONCILIATION.md)
 19. [Stage 6 validation and remaining gates](docs/STAGE6_VALIDATION.md)
+20. [Bounded public worker transport](docs/PUBLIC_WORKERS.md)
+21. [Stage 7 validation and remaining gates](docs/STAGE7_VALIDATION.md)
 
 ## Run the offline checks
 

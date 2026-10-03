@@ -3,12 +3,12 @@
 import copy
 import json
 from pathlib import Path
-import subprocess
 import unittest
 from unittest.mock import patch
 
 from offline_session import completion, exchange
 from offline_session.completion_verifier import SubprocessCompletion
+from offline_session.public_worker import WorkerError
 from offline_session.transcript import _restore, signing_context
 from exchange_test_support import accepted, artifacts
 from completion_test_support import (
@@ -299,14 +299,16 @@ class CompletionAdapterTests(unittest.TestCase):
             self.verifier = SubprocessCompletion(Path.cwd() / "synthetic-completion", timeout=1)
 
     def run_with(self, response, returncode=0):
-        def process(*args, **kwargs):
-            self.assertEqual(kwargs["input"], exchange.canonical(self.request))
+        def process(executable, request, **kwargs):
+            self.assertEqual(executable, self.verifier._executable)
+            self.assertEqual(request, exchange.canonical(self.request))
             self.assertEqual(kwargs["timeout"], 1)
-            self.assertIs(kwargs["stderr"], subprocess.DEVNULL)
-            self.assertIs(kwargs["check"], False)
-            kwargs["stdout"].write(response)
-            return subprocess.CompletedProcess(args[0], returncode)
-        with patch("offline_session.completion_verifier.subprocess.run", side_effect=process):
+            self.assertEqual(kwargs["max_input_bytes"], 65536)
+            self.assertEqual(kwargs.get("max_output_bytes", 4096), 4096)
+            if returncode:
+                raise WorkerError("synthetic worker rejection")
+            return response
+        with patch("offline_session.completion_verifier.run_public_worker", side_effect=process):
             return self.verifier(self.request)
 
     def test_canonical_success_binds_complete_public_request(self):
@@ -329,11 +331,11 @@ class CompletionAdapterTests(unittest.TestCase):
             self.run_with(raw, returncode=1)
 
     def test_timeout_and_oversized_request_reject_without_unsanitized_details(self):
-        for error in (subprocess.TimeoutExpired("synthetic", 1), OSError("synthetic")):
-            with patch("offline_session.completion_verifier.subprocess.run", side_effect=error), \
+        for error in (WorkerError("synthetic worker detail"), OSError("synthetic worker detail")):
+            with patch("offline_session.completion_verifier.run_public_worker", side_effect=error), \
                     self.assertRaisesRegex(completion.CompletionError, "public completion executable failed"):
                 self.verifier(self.request)
-        with patch("offline_session.completion_verifier.subprocess.run") as run:
+        with patch("offline_session.completion_verifier.run_public_worker") as run:
             with self.assertRaises(exchange.ExchangeError):
                 self.verifier({"value": "x" * 65537})
             run.assert_not_called()

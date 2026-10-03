@@ -2,12 +2,13 @@
 
 This repository contains experimental offline PTLC research and synthetic qualification code. It has no production signing backend, wallet integration or supported live settlement path. Do not use its fixtures, fixed scalars, nonce inputs or reference arithmetic with real funds.
 
-The [threat model](docs/THREAT_MODEL.md) and [Stage 6 validation report](docs/STAGE6_VALIDATION.md) describe the current evidence and known limits. In particular:
+The [threat model](docs/THREAT_MODEL.md) and [Stage 7 validation report](docs/STAGE7_VALIDATION.md) describe the current evidence and known limits. In particular:
 
 - Alice's completion producer returns a public fixture; it does not manage private signing material.
 - Restoring both matching journal and checkpoint copies can reenable a synthetic producer. Local consistency checks do not provide clone or rollback protection.
 - Authenticated peer transport and observation selection remain unresolved. Explicit local reconciliation requires a positively verified replacement and retains the original candidate; it does not provide peer authentication or prevent repeated-verification denial of service.
 - Public verification and adaptation do not establish funding, chain identity, safe timing, transaction acceptance or settlement.
+- Public worker pipe output and transfer/exit time are bounded per invocation. The executable and host remain trusted; process-group cleanup is best effort and does not contain arbitrary resource use or escaped descendants.
 - Local tests and review are not an independent cryptographic audit or production security guarantee.
 
 ## Reporting a concern
