@@ -41,6 +41,14 @@ charges separate from worker entry, credential verification and durability.
 Assess this exact model delta without changing either fixed subject or using
 the model as application admission.
 
+Stage 32 adds a [candidate retained-resource and unsigned intent contract](docs/RETAINED_RESOURCE_INTENT.md)
+and [separate validation](docs/STAGE32_VALIDATION.md). Seven-commitment equality
+is one selected content class, not authenticated economic/source equivalence.
+An independent public-key selection and message digest supply no owner role,
+signature check, freshness, allocation or idempotency. Matching unsigned bytes
+replay. Assess the exact class/framing and every later verifier/backend separately;
+preserve both fixed subjects and existing entry-point boundaries.
+
 - Use English and public synthetic values only. Exclude personal identity, private conversations, local absolute paths, hostnames, credentials, wallet material and private environment logs from files, examples and reports.
 - Pin external source claims to immutable commits where possible. Check licenses before reusing material and preserve required attribution.
 - Keep reference arithmetic and synthetic signing helpers out of application cryptography. Passing tests do not establish that the swap construction is secure.

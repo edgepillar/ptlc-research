@@ -105,6 +105,16 @@ worker entries, authentication or native persistence evidence. No backend or
 application integration is supplied; fixed subjects and assessments remain
 unchanged. See [validation](docs/STAGE31_VALIDATION.md).
 
+Stage 32 adds a [pure retained-resource and unsigned intent contract](docs/RETAINED_RESOURCE_INTENT.md).
+All nine scope selections keep one selected seven-commitment content key but
+change the full unsigned owner intent. Source/economic equivalence, namespace
+and first-registration capture remain external. The public-key encoding checks
+no curve membership, key control or role, and matching unsigned values replay.
+Current snapshot consistency is not current-source authentication; stable keys
+do not preserve charged history through restore. No owner verifier, registry,
+worker permission or existing runtime integration exists. See
+[validation](docs/STAGE32_VALIDATION.md); both subjects and reports are unchanged.
+
 ## Reporting a concern
 
 Use GitHub private vulnerability reporting through the repository's Security tab **when that feature is enabled**. This document does not claim that private reporting has been configured. If it is unavailable, a public issue may request a private reporting channel without including sensitive details or an exploit that affects live systems.

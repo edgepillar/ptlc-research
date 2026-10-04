@@ -159,3 +159,11 @@ owner authority, atomic uniqueness and non-rollbackable lineage. **No-go:** use
 model inputs as authentication, claim implemented restore/clone or worker-entry
 defense, select a production backend, connect private signing, port core rules,
 activate a node or authorize real funds.
+
+The later [Stage 32 content-key and unsigned owner contract](RETAINED_RESOURCE_INTENT.md)
+selects a narrower equality class for seven public source commitments and a
+separate owner-bound proposal. It does not implement this model's canonical
+source/owner facts, atomic registry or non-rollbackable lineage. Changed source
+and namespace remain explicit policy gates, and matching unsigned intent
+replays. This model and both fixed subjects remain unchanged; see
+[Stage 32 validation](STAGE32_VALIDATION.md) for the separate contract delta.

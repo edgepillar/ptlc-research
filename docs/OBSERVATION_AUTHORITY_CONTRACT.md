@@ -196,3 +196,10 @@ absence races and registry rewind. Its stronger resource/owner facts and atomic
 lineage are model premises, not mechanisms added to this codec. Existing codec
 behavior and replayable claim limits remain unchanged. See
 [Stage 31 validation](STAGE31_VALIDATION.md) for that finite delta's evidence.
+
+The later [Stage 32 retained-resource and unsigned intent contract](RETAINED_RESOURCE_INTENT.md)
+derives a separate content key from this scope's seven retained source bindings
+while excluding its nine external selections. The full scope still binds the
+unsigned owner proposal. This selects no canonical economic/source mapping,
+owner role, actual signature verifier or registry; this codec remains unchanged.
+See [Stage 32 validation](STAGE32_VALIDATION.md) for that separate delta.

@@ -1,6 +1,6 @@
 # Threat model and evidence limits
 
-Status: **DRAFT, carried through Stage 31 canonical enrollment comparison.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
+Status: **DRAFT, carried through Stage 32 retained-resource and unsigned intent contract.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
 
 ## Security objective
 
@@ -171,3 +171,15 @@ No resource equivalence proof, owner key/pin, service, native durability or
 worker-entry enforcer is implemented. A Boolean model input cannot authenticate
 a real caller. This exact delta lies outside both fixed subjects; their reports
 remain unfilled and no funded recovery or signer integration is authorized.
+
+[Stage 32's selected content key and unsigned intent](RETAINED_RESOURCE_INTENT.md)
+exclude caller labels/profiles/limits from a seven-commitment resource tuple.
+This equality class authenticates no source or economic/funding identity.
+Changed source and separate authority namespaces can still yield independent
+allocation unless an external governor enforces a reviewed policy. Owner key
+encoding, full-scope binding and a distinct message purpose verify no curve,
+signature, role, freshness or permission. Matching unsigned messages replay,
+including against retained old expectations. Stable resource bytes alone do not
+preserve spent history after coherent restore. No registry, dispatcher or
+existing entry point uses the new values. This delta needs separate assessment;
+fixed subjects/reports and all private-signing/funds exclusions remain unchanged.
