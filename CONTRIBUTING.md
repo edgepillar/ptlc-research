@@ -82,3 +82,13 @@ Keep fixture-derived rule helpers confined to synthetic qualification. Run both
 the affected unit suite and separate actual-worker qualifier, then required full
 offline/artifact checks; distinguish real math from fake callback sequencing.
 Assess this delta outside both unchanged fixed subjects and unfilled reports.
+
+Stage 36 adds a [finite governor authority comparison](docs/GOVERNOR_AUTHORITY_MODEL.md)
+and [validation](docs/STAGE36_VALIDATION.md). Keep root trust, complete assignment,
+signature validity and non-rollbackable current evidence as independent premises.
+The stronger profile binding is hypothetical; do not modify the existing v1
+intent or promote a model decision into runtime admission. Replay witnesses at
+their recorded use instant and preserve cached-current/restore counterexamples
+and repeated-packet boundaries. A capped search is incomplete. Run the affected
+model and seven complete CLI searches, then full offline/artifact checks. Neither
+fixed subject or unfilled report changes; assess this later delta separately.

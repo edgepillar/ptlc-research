@@ -148,3 +148,13 @@ Existing entry points do not require the helper; matching and repeated actual
 signature checks preserve exhausted quota without creating allocation authority.
 Current policy/source trust, registry lineage, dispatch, signer and funds remain
 unresolved. Both fixed review subjects/reports remain unchanged.
+
+Stage 36's [governor authority model](docs/GOVERNOR_AUTHORITY_MODEL.md) uses ideal
+root/assignment/intent facts and hypothetical complete profile binding. Cached
+current checks can miss update, rotation or revocation; coherent local anchor
+restore admits old authority under a use-time rule. Its strongest conditional
+policy assumes non-rollbackable current evidence at an indivisible use instant.
+Repeated packet admission remains possible with no registry/idempotency or worker
+proof. No real certificate, provisioning, cryptographic check or new wire format
+is supplied; existing application behavior and both fixed subjects/reports remain
+unchanged. Source, lineage, dispatch, signer and funded gates remain open.

@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 35 explicit local governor-role profile qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 36 finite governor provenance and current-policy comparison. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -85,6 +85,14 @@ Wrong or stale locally selected rules can match, and broader local caps change
 the profile digest without changing the old signed message. This is no role
 certificate, policy-version binding, registration or allocation. Existing entry
 points do not enforce it; bootstrap, revocation and trusted selection remain open.
+
+A separate finite governor model now compares peer selection, an initial key pin,
+scoped role assignment, complete profile binding, cached current checks, an ideal
+atomic current check and coherent local anchor restore. Correct static signatures
+and binding can remain valid after update, rotation or revocation. Conditional
+use-time authorization requires independently trusted current state that cannot
+rewind. All policies still permit repeated packet admission. The model issues no
+credential, changes no signed message and implements no enrollment or dispatch.
 
 Selected admission-model traces now replay against real temporary journals, with comparisons inside the admitted callback and after reopen. Python discovery uses explicit fixture oracles; a separate qualifier uses the actual public Rust executables. Exhaustion remains reproducible, with no reset, new authorization policy or signing change. External model facts are kept separate from journal fields.
 
@@ -212,6 +220,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 77. [Stage 34 validation and remaining gates](docs/STAGE34_VALIDATION.md)
 78. [Explicit local governor-role profiles and bootstrap limits](docs/LOCAL_GOVERNOR_PROFILE.md)
 79. [Stage 35 validation and remaining gates](docs/STAGE35_VALIDATION.md)
+80. [Finite governor provenance and current-policy comparison](docs/GOVERNOR_AUTHORITY_MODEL.md)
+81. [Stage 36 validation and remaining gates](docs/STAGE36_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -333,6 +343,14 @@ policy and rotation/revocation before selecting an enrollment backend. Profile
 equality and the old valid signature do not implement these mechanisms; replay,
 coherent profile restore, first-registration capture and namespace quota splits
 remain outside this helper. Keep later uniqueness and charged lineage separate.
+
+Use the [governor model](docs/GOVERNOR_AUTHORITY_MODEL.md) to specify independently
+authenticated provisioning, complete role/scope/policy evidence and the exact
+authorization instant before selecting another credential or wire format. Define
+current-state evidence and outage, compromise, rotation/revocation and coherent
+restore behavior. The model's root and current oracle are assumptions; its
+strongest finite gate is neither a backend nor a one-use dispatcher. Preserve
+the unchanged v1 intent while separately qualifying any future profile binding.
 
 ## License and participation
 

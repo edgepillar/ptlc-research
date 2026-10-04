@@ -412,3 +412,12 @@ malicious/stale selection, broader-cap matches and replay remain positives.
 Assess framing, independent selection and composition boundaries separately.
 Neither fixed manifest or unfilled report changes; [validation](STAGE35_VALIDATION.md)
 separates unit oracles, actual signatures and hosted execution.
+
+[Stage 36 governor authority comparison](GOVERNOR_AUTHORITY_MODEL.md) is a later
+finite model outside both fixed subjects. Root/assignment/signature facts, semantic
+resource identity and non-rollbackable current evidence are assumptions. Bound
+credentials remain replayable after policy/key change or revocation; cached checks
+and coherent local anchors add distinct counterexamples. Even the ideal use-time
+gate permits repeated packet admission. This selects no provisioning, certificate,
+new intent or runtime policy. Neither fixed manifest/report changes; assess this
+exact delta separately. See [validation](STAGE36_VALIDATION.md).
