@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 29 finite observation-authority design comparison. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 30 candidate observation-authority scope and message contract. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -42,6 +42,15 @@ Atomic charge alone does not stop copied receipts from starting multiple modeled
 workers. The strongest result assumes non-rollbackable external state and a
 trusted dispatcher; neither is implemented. History fencing does not contain
 old running work, and lost receipts can exhaust quota before any entry.
+
+A new pure bounded authority codec now binds candidate-independent scope,
+external enrollment/epoch/profile selections, exact evidence target and full
+expected head to reserve, dispatch, publish and unknown-resolution requests.
+Reply parsing checks declared transitions but accepts forged matching claims
+and replay; it authenticates no authority and returns no worker capability.
+Canonical enrollment, target-set ownership, current-head evidence, idempotency
+and durable unique dispatch remain unimplemented. Existing entry points and
+storage behavior are unchanged; the codec is not connected to them.
 
 Selected admission-model traces now replay against real temporary journals, with comparisons inside the admitted callback and after reopen. Python discovery uses explicit fixture oracles; a separate qualifier uses the actual public Rust executables. Exhaustion remains reproducible, with no reset, new authorization policy or signing change. External model facts are kept separate from journal fields.
 
@@ -157,6 +166,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 65. [Stage 28 validation and remaining gates](docs/STAGE28_VALIDATION.md)
 66. [Observation freshness and dispatch authority comparison](docs/OBSERVATION_AUTHORITY_MODEL.md)
 67. [Stage 29 validation and remaining gates](docs/STAGE29_VALIDATION.md)
+68. [Candidate observation authority scope and message contract](docs/OBSERVATION_AUTHORITY_CONTRACT.md)
+69. [Stage 30 validation and remaining gates](docs/STAGE30_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -241,6 +252,11 @@ The [authority comparison](docs/OBSERVATION_AUTHORITY_MODEL.md) turns that
 restore boundary into explicit enrollment, freshness, receipt and dispatch
 requirements. Its finite ideal premises select no backend, impose no application
 authority and guarantee no funded recovery or physical worker containment.
+The [candidate authority contract](docs/OBSERVATION_AUTHORITY_CONTRACT.md) makes
+scope, full-head expectations, operation phases and reply-claim bindings concrete
+without implementing those ideal premises. Review canonical enrollment,
+authenticated latest-head evidence, scoped idempotency and durable one-use entry
+before selecting a backend or using a parsed reply for any admission decision.
 Virtual address space is not RSS, and per-process caps supply no cumulative rate,
 fairness, capability isolation or funded availability proof.
 
