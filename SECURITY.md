@@ -75,6 +75,15 @@ does not demonstrate contradictory actual mathematical verdicts. Application
 behavior, both fixed subjects and pending assessments are unchanged. See
 [validation](docs/STAGE28_VALIDATION.md).
 
+Stage 29 separately [models freshness and dispatch authority](docs/OBSERVATION_AUTHORITY_MODEL.md).
+Externally charged copyable receipts still permit duplicate abstract entries;
+conditional unique dispatch assumes canonical enrollment, non-rollbackable
+external state and a trusted enforcer. No backend or service implements these
+premises. History fencing does not terminate old work, and receipt loss or
+authority outage can prevent progress. Both fixed subjects and unfilled reports
+remain unchanged; model results supply no restore defense, signer protection,
+native storage or funded recovery guarantee. See [validation](docs/STAGE29_VALIDATION.md).
+
 ## Reporting a concern
 
 Use GitHub private vulnerability reporting through the repository's Security tab **when that feature is enabled**. This document does not claim that private reporting has been configured. If it is unavailable, a public issue may request a private reporting channel without including sensitive details or an exploit that affects live systems.

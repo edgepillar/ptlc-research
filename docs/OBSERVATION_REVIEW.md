@@ -31,6 +31,11 @@ external source and audit material at the immutable references in the
 licenses and record unavailable material separately. A dependency lockfile does
 not attest registry bytes or an upstream Git checkout.
 
+The later [Stage 29 authority model](OBSERVATION_AUTHORITY_MODEL.md) is outside
+both fixed subjects. Its finite external-state/dispatch premises supply no
+implemented service, enrollment or restore defense. Assess that exact delta
+separately; neither manifest nor unfilled report is extended or completed.
+
 ## Requested assessment surfaces
 
 Relative links locate files in this checkout. Assess their exact source versions

@@ -19,6 +19,12 @@ qualifier methods lie outside both fixed subjects, leave application behavior
 unchanged and implement no restore or freshness authority. Identify their exact
 qualification revision separately before using them in an assessment.
 
+Stage 29 adds a [finite authority comparison](docs/OBSERVATION_AUTHORITY_MODEL.md)
+and [separate validation](docs/STAGE29_VALIDATION.md). Keep trusted external
+state, canonical enrollment and unique dispatch as explicit model premises;
+none is an implemented service or restore defense. Assess this later delta
+separately and do not extend either fixed manifest or unfilled report.
+
 - Use English and public synthetic values only. Exclude personal identity, private conversations, local absolute paths, hostnames, credentials, wallet material and private environment logs from files, examples and reports.
 - Pin external source claims to immutable commits where possible. Check licenses before reusing material and preserve required attribution.
 - Keep reference arithmetic and synthetic signing helpers out of application cryptography. Passing tests do not establish that the swap construction is secure.
