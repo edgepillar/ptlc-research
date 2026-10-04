@@ -1,6 +1,6 @@
 # Separately owned offline observation records
 
-Status: **Stage 27 review preparation for owned v3/v4 records with shared admission, explicit Linux
+Status: **Stage 28 restore qualification for owned v3/v4 records with shared admission, explicit Linux
 resource continuity, v4 process-death cuts and storage-failure qualification, separate from recovery admission. No chain source,
 private signer or funded policy is connected. Arbitrary process containment,
 aggregate rate/resource policy and clone/restore protection remain open.**
@@ -234,3 +234,12 @@ its producer/guard/pool/resource dependencies and all source context through
 Stage 26. Its complete inventory and [unfilled report](OBSERVATION_REVIEW_REPORT_TEMPLATE.md)
 prepare independent assessment without changing application behavior. Neither
 source identity nor passing tests resolve the exclusions above.
+
+[Stage 28's v4 restore experiments](RESOURCE_STORE_RESTORES.md) now distinguish
+mismatched-pair quarantine from coherent old-history acceptance under the same
+requested resource profile. Paired rewind can replenish quota or erase later
+claims; separate copied histories can admit independent work with the same
+physical pool and public labels. Repeat pending recovery remains charged and
+does not replay a worker. This test-only delta adds no application restore API,
+freshness authority or clone defense and lies outside both fixed review subjects.
+See [validation](STAGE28_VALIDATION.md).

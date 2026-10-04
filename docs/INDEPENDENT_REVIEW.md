@@ -43,6 +43,11 @@ this original 119-file manifest and assessment scope. Neither report is a
 completed independent assessment, and unchanged dependencies are not implicitly
 reviewed. Read the separate brief for the later ownership/pool/resource targets.
 
+[Stage 28 restore qualification](RESOURCE_STORE_RESTORES.md) adds test-only v4
+rewind and copied-history evidence outside both fixed subjects. It implements no
+restore/enrollment authority or defense, and neither manifest or unfilled report
+is changed. Its execution and exclusions require a separate explicit assessment.
+
 ## Reading and implementation map
 
 Links below locate files in this repository. For the material assessment, read

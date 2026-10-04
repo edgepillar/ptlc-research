@@ -1,6 +1,6 @@
 # Threat model and evidence limits
 
-Status: **DRAFT, carried through Stage 27 separate observation review preparation.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
+Status: **DRAFT, carried through Stage 28 explicit v4 restore qualification.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
 
 ## Security objective
 
@@ -128,3 +128,11 @@ later source while retaining the original construction subject. Canonical
 inventory and archive checks establish exact local byte identity only; they
 authenticate no external source, reviewer or hostile host. Both independent
 assessments and all implementation/operational exclusions above remain pending.
+
+[Stage 28 restore qualification](RESOURCE_STORE_RESTORES.md) separately exposes
+coherent v4 rewind and copied-history allowances under identical profiles.
+Single-sided mismatches quarantine; consistent older pairs remain acceptable
+without external latest-head authority. Synthetic conflict erasure is not an
+actual contradictory-verifier result. Actual Linux positives, resource selection
+and source-journal preservation have a separate execution gate. No defense,
+global quota or funded recovery policy is implemented.
