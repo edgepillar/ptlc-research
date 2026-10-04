@@ -170,3 +170,9 @@ exact transition and failure rules, then review aggregate resources and source
 authority independently. **No-go:** call these bytes durable evidence, promote a
 received claim to trust, infer rejection from unknown work, bypass journal
 exhaustion or claim live-swap/core readiness. See [validation](STAGE19_VALIDATION.md).
+
+[Stage 20](OBSERVATION_STORE.md) now implements a separate owned offline disk
+backend around these unchanged pure transitions. It qualifies managed record
+publication and commit ordering, not containment of a worker orphaned by owner
+death. That stronger lifetime/resource requirement, paired-restore protection,
+source authority and any funded admission policy remain explicit open gates.

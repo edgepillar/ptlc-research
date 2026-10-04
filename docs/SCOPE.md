@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 17 - exact observation evidence and mathematical claim codec. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 20 - separately owned offline observation records. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 17 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 20 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -58,6 +58,8 @@ Stage 17 adds a pure [observation-evidence contract and codec](OBSERVATION_EVIDE
 Stage 18 adds a separate [local public verdict producer and adapter](OBSERVATION_VERIFIER.md). A complete shape guard precedes reuse of the unchanged pure predicate; normal mathematical negatives are distinct from unavailable requests or workers. The adapter requires an explicit entry-file hash and emits bound unknowns on worker/result failure. [Stage 18 validation](STAGE18_VALIDATION.md) uses synthetic process actors and actual local executables. Host/provisioning trust, source authority and aggregate resources remain external; no cache or journal policy is connected.
 
 Stage 19 adds a pure [bounded observation-record contract](OBSERVATION_RECORDS.md). Pending and finished attempts retain their charges; normal claims survive unknown work and conflicts remain explicit. Exact local targets/profiles, complete event replay and finite quotas are checked without I/O or worker invocation. [Stage 19 validation](STAGE19_VALIDATION.md) separates fixture claims from actual-verdict exercises and exposes old-value quota restoration. Owned persistence, storage identity, aggregate resources and recovery admission remain unimplemented.
+
+Stage 20 adds [separately owned local disk records](OBSERVATION_STORE.md). Lifetime process/thread locks precede load and span pending commit, selected work, result commit and return. Reopen commits unfinished publication as unknown without refund or worker replay; mismatched database/checkpoint pairs quarantine. [Stage 20 validation](STAGE20_VALIDATION.md) covers native owner death, inherited handles, wrong configuration and one-sided/paired restores, plus actual worker restart/result-loss cases. Orphan computation, paired rollback, hostile host integrity, aggregate resources and source authority remain open. The session/recovery journal and frozen review subject are unchanged.
 
 | Component | Responsibility | Boundary for this repository |
 | --- | --- | --- |

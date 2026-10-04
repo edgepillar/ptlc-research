@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 17 exact observation evidence and mathematical claim codec. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 20 separately owned offline observation records. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -39,6 +39,8 @@ A pure observation-evidence codec now binds exact candidate bytes, both retained
 A separate public-only observation worker now emits explicit normal verdicts after a complete request-shape check and reuses the existing pure cryptographic predicate. Its adapter requires a caller-provisioned executable hash and binds results to the exact target/profile; process or result failure becomes unknown. The selected local host and verifier remain trusted. Real verdicts preserve reopened journals and exhausted budgets; no evidence cache, source policy or journal admission is connected.
 
 A pure bounded record contract now separates pending/finished attempts from retained normal claims, replays complete transition ordering and preserves contradictory decisions explicitly. Unknown work remains charged and cannot erase a prior normal claim. The format freezes one profile and finite attempt/target limits through its managed operations; a restored old value can replenish quota. No disk owner, durable cache or recovery admission is implemented by these bytes.
+
+A separate owned SQLite/checkpoint store now retains those records across local restarts. It acquires lifetime process/thread ownership before loading, commits pending work before the selected public worker starts, and commits the exact result before returning it. Reopen recovers unfinished publication as charged unknown without replaying work; divergent pairs quarantine. Real process-death and actual-worker checks exercise that ordering. Matching old pair restores can replenish quota, and owner death can leave orphan computation alive; containment, aggregate resources, source authority and journal admission remain separate gates.
 
 ## Repository boundaries
 
@@ -98,6 +100,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 44. [Stage 18 validation and remaining gates](docs/STAGE18_VALIDATION.md)
 45. [Bounded observation attempts and claim records](docs/OBSERVATION_RECORDS.md)
 46. [Stage 19 validation and remaining gates](docs/STAGE19_VALIDATION.md)
+47. [Separately owned offline observation records](docs/OBSERVATION_STORE.md)
+48. [Stage 20 validation and remaining gates](docs/STAGE20_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -136,6 +140,7 @@ python3 -B scripts/qualify_authentication.py --authentication qualification/targ
 python3 -B scripts/qualify_recovery_model.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
 python3 -B scripts/qualify_observation.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange --observation qualification/target/debug/examples/verify_observation
 python3 -B scripts/qualify_observation_records.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange --observation qualification/target/debug/examples/verify_observation
+python3 -B scripts/qualify_observation_store.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange --observation qualification/target/debug/examples/verify_observation
 ```
 
 Use the corresponding executable paths if `CARGO_TARGET_DIR` is set. These checks use temporary public journals, fixture artifacts and explicitly selected local executables. Ordinary Python tests use clearly labeled fake callbacks for sequencing and do not require Rust. Journal storage v7 quarantines older v1-v6 state without migration; incoming Bob releases require v2 packets with both partials. Starting managed Bob exchange requires an explicit `recovery_limit` from 1 through 64. Optional `authentication_pins` are copied at that start and cannot be added, changed or removed later; omitting them is also a frozen choice.
@@ -152,7 +157,7 @@ The [public-observation comparison](docs/PUBLIC_OBSERVATION_MODEL.md) further se
 
 The [observation-evidence contract](docs/OBSERVATION_EVIDENCE_CONTRACT.md) makes the exact target and outcome vocabulary concrete. The [local producer](docs/OBSERVATION_VERIFIER.md) adds explicit normal verdicts under a caller-provisioned executable pin and trusted host. Review that error partition and provisioning separately, then specify durable attempt/evidence ordering and aggregate resource policy before connecting a negative cache or admission decision. Legacy errors, received claims, matching hashes and profile labels supply no such trust.
 
-The [record contract](docs/OBSERVATION_RECORDS.md) now defines bounded attempt/claim transitions and the required ordering for an owned disk backend. Implement and qualify that ownership, pending-before-worker and result-before-return persistence next, including process death, stale writers and partial checkpoint/restore cases. Pure canonical records and fixture results establish neither durability nor producer truth; external source and aggregate-resource policy remain separate.
+The [record contract](docs/OBSERVATION_RECORDS.md) defines bounded attempt/claim transitions. The [separate local disk backend](docs/OBSERVATION_STORE.md) now qualifies record ownership and pending-before-worker/result-before-return persistence, including process death, inherited handles and inconsistent restores. Assess this exact producer/storage delta, then specify aggregate admission, worker containment, source authority and external restore handling before connecting recovery policy. Pure canonical records, file hashes and fixture results supply no independent truth, power-loss or anti-clone proof.
 
 All checked-in content is English and contains no user identity or private operational data. The artifact checker detects a limited set of accidental disclosures; source, metadata, and destination still require review before publication.
 

@@ -92,6 +92,13 @@ format and managed transitions remain outside this subject, and supply no disk
 ownership, durable commit, rollback protection or producer authentication. Their
 delta review and a future owned-backend assessment must be identified separately.
 
+[Stage 20's separate disk owner](OBSERVATION_STORE.md) adds local process/thread
+ownership and SQLite/checkpoint ordering around the unchanged record/producer
+surfaces. Its crash recovery, trusted storage/configuration, entry provisioning,
+orphan computation and restore boundaries need their own exact delta assessment.
+It changes neither the frozen source manifest nor recovery admission, and does
+not supply external review, process containment or funded availability evidence.
+
 ## Claims and open obligations
 
 | Bounded evidence at the subject | Obligation still open |

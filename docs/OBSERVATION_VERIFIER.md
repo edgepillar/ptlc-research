@@ -166,3 +166,10 @@ separately identified delta assessment. See [validation](STAGE18_VALIDATION.md).
 for these statements and unknown attempts. Its canonical values and actual
 verdict exercises implement no owned persistent cache or journal policy. The
 required disk ownership and commit ordering remain a separate next-stage gate.
+
+[Stage 20](OBSERVATION_STORE.md) now implements a separate offline disk owner
+around this unchanged adapter. It commits pending work before invocation and a
+bound result before return; restart recovers unfinished publication as charged
+unknown. Record-writer exclusion does not contain orphan workers or establish
+paired-restore protection, source authority or recovery admission. The producer
+alone still performs no persistence, and both deltas need separate assessment.
