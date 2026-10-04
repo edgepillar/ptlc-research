@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 36 - finite governor provenance and current-policy comparison. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 37 - unsigned governor assignment and complete-profile-bound intent. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 34 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 37 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -290,3 +290,17 @@ dependencies and workflow remain unchanged. See [validation](STAGE36_VALIDATION.
 Both fixed subjects/reports remain unchanged and this later model needs separate
 assessment. Select actual role/current-policy evidence and credential framing
 before any backend; source, lineage, dispatch, signer and funded gates remain open.
+
+## Stage 37 unsigned assignment and complete profile binding
+
+The [pure assignment/intent contract](GOVERNOR_ASSIGNMENT_CONTRACT.md) selects
+five-field unsigned issuer bytes containing the full 14-field local profile and
+nine-field unsigned v2 owner bytes that commit the assignment. Broader caps and
+another issuer change the new message, preserving the old v1 scope/message.
+Exact expected-object parsing supplies no issued credential, current authority,
+registry, replay defense or quota. [Validation](STAGE37_VALIDATION.md) includes
+the corrected first affected run and a real exhausted-journal preservation check.
+The old codecs/messages, signature fixture, workers, journals, dependencies and
+workflow are unchanged. Actual signature construction, provisioning, current
+state at use and both independent assessments remain gates. Current-node core
+work, private signing, deployment and funded recovery remain excluded.

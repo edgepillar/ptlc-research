@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 36 finite governor provenance and current-policy comparison. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 37 unsigned governor assignment and complete-profile-bound intent. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -222,6 +222,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 79. [Stage 35 validation and remaining gates](docs/STAGE35_VALIDATION.md)
 80. [Finite governor provenance and current-policy comparison](docs/GOVERNOR_AUTHORITY_MODEL.md)
 81. [Stage 36 validation and remaining gates](docs/STAGE36_VALIDATION.md)
+82. [Unsigned governor assignment and v2 intent bindings](docs/GOVERNOR_ASSIGNMENT_CONTRACT.md)
+83. [Stage 37 validation and remaining gates](docs/STAGE37_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -362,3 +364,13 @@ research snapshot, not a published production cryptography package.
 
 See [contribution guidance](CONTRIBUTING.md) for review priorities and validation
 requirements, and the [security policy](SECURITY.md) for limitations and reporting.
+
+The [Stage 37 unsigned assignment contract](docs/GOVERNOR_ASSIGNMENT_CONTRACT.md)
+now binds an independently selected issuer and complete governor profile into
+separate candidate bytes. A new nine-field unsigned v2 intent commits the full
+assignment digest, so broader local caps change its message under the same old
+scope and owner. This introduces no credential signature, current-state source,
+migration, registry or worker admission. The old v1 messages and public signature
+fixture remain unchanged. [Validation](docs/STAGE37_VALIDATION.md) reports the
+corrected first test run and new executed evidence. The next gate is assessment
+and actual public-signature qualification of these exact candidate messages.

@@ -229,3 +229,12 @@ counterexamples; conditional current checking provides no idempotency or worker
 entry. Hypothetical complete profile binding changes no existing message. Neither
 fixed manifest or unfilled report changes; assess this model separately. See
 [validation](STAGE36_VALIDATION.md) for complete finite counts and evidence limits.
+
+[Stage 37 unsigned assignment and v2 intent](GOVERNOR_ASSIGNMENT_CONTRACT.md)
+is later framing outside both fixed subjects. It binds complete selected profile
+content and issuer, while old v1 messages/signatures remain unchanged. It supplies
+no role provisioning, actual credential verification, current-state source,
+registry, quota or worker entry. The unsigned vector and passing encoding tests
+are no construction assessment or independent cryptographic evidence. Both fixed
+inventories and unfilled reports remain unchanged; this later delta needs its
+own review. See [validation](STAGE37_VALIDATION.md) for the corrected first run.
