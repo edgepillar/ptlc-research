@@ -57,6 +57,8 @@ Stage 17 adds a pure [observation-evidence contract and codec](OBSERVATION_EVIDE
 
 Stage 18 adds a separate [local public verdict producer and adapter](OBSERVATION_VERIFIER.md). A complete shape guard precedes reuse of the unchanged pure predicate; normal mathematical negatives are distinct from unavailable requests or workers. The adapter requires an explicit entry-file hash and emits bound unknowns on worker/result failure. [Stage 18 validation](STAGE18_VALIDATION.md) uses synthetic process actors and actual local executables. Host/provisioning trust, source authority and aggregate resources remain external; no cache or journal policy is connected.
 
+Stage 19 adds a pure [bounded observation-record contract](OBSERVATION_RECORDS.md). Pending and finished attempts retain their charges; normal claims survive unknown work and conflicts remain explicit. Exact local targets/profiles, complete event replay and finite quotas are checked without I/O or worker invocation. [Stage 19 validation](STAGE19_VALIDATION.md) separates fixture claims from actual-verdict exercises and exposes old-value quota restoration. Owned persistence, storage identity, aggregate resources and recovery admission remain unimplemented.
+
 | Component | Responsibility | Boundary for this repository |
 | --- | --- | --- |
 | Reference application | Session transcript, counterparty validation, chain observations, signing orchestration, durable recovery, and user-visible outcomes | Specify these now; implement only after the construction and transaction graph are selected. |

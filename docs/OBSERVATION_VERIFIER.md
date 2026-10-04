@@ -161,3 +161,8 @@ admission policy as a funded guarantee, authenticate an observation using hashes
 introduce private signing, activate a contract or port this client work into the
 core node. The frozen Stage 12 subject remains unchanged; Stage 18 needs a
 separately identified delta assessment. See [validation](STAGE18_VALIDATION.md).
+
+[Stage 19](OBSERVATION_RECORDS.md) now defines a separate pure bounded history
+for these statements and unknown attempts. Its canonical values and actual
+verdict exercises implement no owned persistent cache or journal policy. The
+required disk ownership and commit ordering remain a separate next-stage gate.

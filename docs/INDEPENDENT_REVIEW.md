@@ -86,6 +86,12 @@ measurement. Its reuse of earlier pure error paths, local profile, provisioning,
 host assumptions and absence of durable evidence/resource policy require their
 own delta assessment. The frozen subject and manifest remain unchanged.
 
+[Stage 19's pure record contract](OBSERVATION_RECORDS.md) adds bounded attempt
+and claim history with revision replay and explicit conflicts. The selected
+format and managed transitions remain outside this subject, and supply no disk
+ownership, durable commit, rollback protection or producer authentication. Their
+delta review and a future owned-backend assessment must be identified separately.
+
 ## Claims and open obligations
 
 | Bounded evidence at the subject | Obligation still open |
