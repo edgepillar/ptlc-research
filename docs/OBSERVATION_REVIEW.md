@@ -197,3 +197,11 @@ history, single-sided quarantine and repeat pending recovery. It changes no
 application behavior or frozen manifest. Both unfilled assessments remain
 pending; review this later qualification delta explicitly instead of silently
 extending the 189-file subject. See [validation](STAGE28_VALIDATION.md).
+
+[Stage 33 public enrollment signatures](PUBLIC_ENROLLMENT_SIGNATURES.md) are a later
+verifier/framing delta outside this immutable subject and the original 119-file
+subject. Actual public checks supply no governor-role or source authority, registry,
+quota allocation, freshness, non-rollbackable lineage or unique dispatch. The
+reused bounded runner adds no aggregate enrollment work policy. Neither manifest
+nor unfilled report changes; assess this delta and its [validation](STAGE33_VALIDATION.md)
+separately before any backend or integration.

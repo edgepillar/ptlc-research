@@ -1,0 +1,172 @@
+{
+  "alternate_owner": {
+    "envelope": {
+      "intent": {
+        "algorithm": "BIP340-SHA256",
+        "owner_auth_key_hex": "1162ffa0f68dda9783c9e3c419ed824a086c1594dc8d3333306016611739dfc1",
+        "purpose": "observation-enrollment",
+        "request_id_hex": "8888888888888888888888888888888888888888888888888888888888888888",
+        "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+        "role": "enrollment-governor",
+        "schema": "ptlc-observation-enrollment-intent-v1",
+        "scope_digest_hex": "76054926d7a5683e6a44e88b228d81cd7d3f60f55dba675463f9a01c8f2c08dd"
+      },
+      "schema": "ptlc-observation-enrollment-signature-envelope-v1",
+      "signature_hex": "86e711284d7a1d347532af30432281018774f69e9c504a3a593d699fd090c7cbf1024f45d4c35031d77d69d56dab601490079f9783e4f18b8fe7da90400511bb"
+    },
+    "intent": {
+      "algorithm": "BIP340-SHA256",
+      "owner_auth_key_hex": "1162ffa0f68dda9783c9e3c419ed824a086c1594dc8d3333306016611739dfc1",
+      "purpose": "observation-enrollment",
+      "request_id_hex": "8888888888888888888888888888888888888888888888888888888888888888",
+      "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+      "role": "enrollment-governor",
+      "schema": "ptlc-observation-enrollment-intent-v1",
+      "scope_digest_hex": "76054926d7a5683e6a44e88b228d81cd7d3f60f55dba675463f9a01c8f2c08dd"
+    },
+    "message_digest_hex": "35509290eb4d2e1e620f36e465ecd94d295bd78ac9e221c08fbd6e7513512ee9",
+    "request": {
+      "intent": {
+        "algorithm": "BIP340-SHA256",
+        "owner_auth_key_hex": "1162ffa0f68dda9783c9e3c419ed824a086c1594dc8d3333306016611739dfc1",
+        "purpose": "observation-enrollment",
+        "request_id_hex": "8888888888888888888888888888888888888888888888888888888888888888",
+        "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+        "role": "enrollment-governor",
+        "schema": "ptlc-observation-enrollment-intent-v1",
+        "scope_digest_hex": "76054926d7a5683e6a44e88b228d81cd7d3f60f55dba675463f9a01c8f2c08dd"
+      },
+      "schema": "ptlc-observation-enrollment-signature-request-v1",
+      "signature_hex": "86e711284d7a1d347532af30432281018774f69e9c504a3a593d699fd090c7cbf1024f45d4c35031d77d69d56dab601490079f9783e4f18b8fe7da90400511bb"
+    },
+    "result": {
+      "request_digest_hex": "a8a0a420036f1aa42a7390b49d8d7bdf4a4860f58a12fbd50934c4bcb52ea993",
+      "schema": "ptlc-observation-enrollment-signature-result-v1",
+      "signature_valid": true
+    }
+  },
+  "alternate_signature_hex": "dd1de02e4b6c2930f7104e37a5dae3e32d948364fb9c9972ef266845fa66208a9c79b595bf2f3d6b077a37fdb7c13d88c5da949c2643d6f38e9eeb8553ec2440",
+  "envelope": {
+    "intent": {
+      "algorithm": "BIP340-SHA256",
+      "owner_auth_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+      "purpose": "observation-enrollment",
+      "request_id_hex": "8888888888888888888888888888888888888888888888888888888888888888",
+      "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+      "role": "enrollment-governor",
+      "schema": "ptlc-observation-enrollment-intent-v1",
+      "scope_digest_hex": "76054926d7a5683e6a44e88b228d81cd7d3f60f55dba675463f9a01c8f2c08dd"
+    },
+    "schema": "ptlc-observation-enrollment-signature-envelope-v1",
+    "signature_hex": "b158859c7f5f8b72666606aac4c33deb34694d00113f16728f6705632b96470020e93645e5ce085662bfd76502f5a75fee6ed28d293662e68077cbf39be3b70d"
+  },
+  "intent": {
+    "algorithm": "BIP340-SHA256",
+    "owner_auth_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+    "purpose": "observation-enrollment",
+    "request_id_hex": "8888888888888888888888888888888888888888888888888888888888888888",
+    "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+    "role": "enrollment-governor",
+    "schema": "ptlc-observation-enrollment-intent-v1",
+    "scope_digest_hex": "76054926d7a5683e6a44e88b228d81cd7d3f60f55dba675463f9a01c8f2c08dd"
+  },
+  "message_digest_hex": "658bac856897469310f3f2ef024800741c3f9b07f51e1e21dd1393d52585e384",
+  "request": {
+    "intent": {
+      "algorithm": "BIP340-SHA256",
+      "owner_auth_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+      "purpose": "observation-enrollment",
+      "request_id_hex": "8888888888888888888888888888888888888888888888888888888888888888",
+      "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+      "role": "enrollment-governor",
+      "schema": "ptlc-observation-enrollment-intent-v1",
+      "scope_digest_hex": "76054926d7a5683e6a44e88b228d81cd7d3f60f55dba675463f9a01c8f2c08dd"
+    },
+    "schema": "ptlc-observation-enrollment-signature-request-v1",
+    "signature_hex": "b158859c7f5f8b72666606aac4c33deb34694d00113f16728f6705632b96470020e93645e5ce085662bfd76502f5a75fee6ed28d293662e68077cbf39be3b70d"
+  },
+  "resource": {
+    "bitcoin_bundle_digest_hex": "48d2f9879142b5880197480b7b8b4a80573e5778f529ace21424c2c27eb57f68",
+    "bitcoin_context_digest_hex": "fece8ed7037a6ebd2ef926cc7896b81016d6b3a81edd3f9164114463e93d7c79",
+    "predicate": "zenon-completion-v1",
+    "release_digest_hex": "72cf1b376defeb76d0b9cc79046c08dff06587956b7d02416d32c6d9077a1939",
+    "resource_kind": "exact-paired-release-v1",
+    "schema": "ptlc-observation-retained-resource-v1",
+    "session_id": "1111111111111111111111111111111111111111111111111111111111111111",
+    "terms_digest_hex": "b2d5c9432419ec4ef569ad94afbefa3c4f94872266db706a66e35384e687a556",
+    "zenon_bundle_digest_hex": "4ac5c5bfd84c1c581be410b7221ca1cad9eafaf4fb276cb4beed3612b0931f61",
+    "zenon_context_digest_hex": "4265ebcd406649c43e2e6f0a82e0d8be4bc6deddc95fd6edd7e5a6492dcf90f0"
+  },
+  "result": {
+    "request_digest_hex": "40bf339a300359f16522be6c654bdb2d2d6bd3d455e8364b370c08813c7d9ee6",
+    "schema": "ptlc-observation-enrollment-signature-result-v1",
+    "signature_valid": true
+  },
+  "scope": {
+    "attempt_limit": 2,
+    "authority_epoch": 1,
+    "authority_id_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+    "authority_profile_digest_hex": "3333333333333333333333333333333333333333333333333333333333333333",
+    "bitcoin_bundle_digest_hex": "48d2f9879142b5880197480b7b8b4a80573e5778f529ace21424c2c27eb57f68",
+    "bitcoin_context_digest_hex": "fece8ed7037a6ebd2ef926cc7896b81016d6b3a81edd3f9164114463e93d7c79",
+    "enrollment_id_hex": "2222222222222222222222222222222222222222222222222222222222222222",
+    "pool_profile_digest_hex": "5555555555555555555555555555555555555555555555555555555555555555",
+    "predicate": "zenon-completion-v1",
+    "release_digest_hex": "72cf1b376defeb76d0b9cc79046c08dff06587956b7d02416d32c6d9077a1939",
+    "resource_profile_digest_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+    "schema": "ptlc-observation-authority-scope-v1",
+    "session_id": "1111111111111111111111111111111111111111111111111111111111111111",
+    "target_limit": 2,
+    "terms_digest_hex": "b2d5c9432419ec4ef569ad94afbefa3c4f94872266db706a66e35384e687a556",
+    "verifier_profile_digest_hex": "4444444444444444444444444444444444444444444444444444444444444444",
+    "zenon_bundle_digest_hex": "4ac5c5bfd84c1c581be410b7221ca1cad9eafaf4fb276cb4beed3612b0931f61",
+    "zenon_context_digest_hex": "4265ebcd406649c43e2e6f0a82e0d8be4bc6deddc95fd6edd7e5a6492dcf90f0"
+  },
+  "self_selected_source": {
+    "envelope": {
+      "intent": {
+        "algorithm": "BIP340-SHA256",
+        "owner_auth_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+        "purpose": "observation-enrollment",
+        "request_id_hex": "8888888888888888888888888888888888888888888888888888888888888888",
+        "resource_digest_hex": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "role": "enrollment-governor",
+        "schema": "ptlc-observation-enrollment-intent-v1",
+        "scope_digest_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "schema": "ptlc-observation-enrollment-signature-envelope-v1",
+      "signature_hex": "46d84a3979e0d2bc31d591d808010314e311473ce1dfea50d63ec939345113a07c34c9b1ccd669eddc4f0787339cc3828ed2394481f0e73604784f996ca4b932"
+    },
+    "intent": {
+      "algorithm": "BIP340-SHA256",
+      "owner_auth_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+      "purpose": "observation-enrollment",
+      "request_id_hex": "8888888888888888888888888888888888888888888888888888888888888888",
+      "resource_digest_hex": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "role": "enrollment-governor",
+      "schema": "ptlc-observation-enrollment-intent-v1",
+      "scope_digest_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "message_digest_hex": "8ce15b2332006bc7ae9d5238962080c037c7c0986afe48bd9b828d5d8739d416",
+    "request": {
+      "intent": {
+        "algorithm": "BIP340-SHA256",
+        "owner_auth_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+        "purpose": "observation-enrollment",
+        "request_id_hex": "8888888888888888888888888888888888888888888888888888888888888888",
+        "resource_digest_hex": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "role": "enrollment-governor",
+        "schema": "ptlc-observation-enrollment-intent-v1",
+        "scope_digest_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "schema": "ptlc-observation-enrollment-signature-request-v1",
+      "signature_hex": "46d84a3979e0d2bc31d591d808010314e311473ce1dfea50d63ec939345113a07c34c9b1ccd669eddc4f0787339cc3828ed2394481f0e73604784f996ca4b932"
+    },
+    "result": {
+      "request_digest_hex": "502c6ee68a5a68f44f1bcc61066eef816f43b2e9131d0a492bf8d9b5cc3037f8",
+      "schema": "ptlc-observation-enrollment-signature-result-v1",
+      "signature_valid": true
+    }
+  },
+  "wrong_domain_signature_hex": "885d01effd7b2648eba50f3d47bcb5b53d52ee52f1e348317eb9c286035128bdcf89c4e0e6b0f558bbfce2f1b4a8e1d4509c2d37da69af39d224446e4074d25a"
+}

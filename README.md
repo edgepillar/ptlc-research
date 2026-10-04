@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 32 candidate retained-resource and unsigned enrollment contract. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 33 public enrollment signature qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -65,8 +65,18 @@ commitments independently of authority/enrollment labels, epoch, profiles and
 limits. An unsigned enrollment intent binds that content key, full requested
 scope and an independently selected public owner key to a separate role/purpose
 and message domain. Exact expected bytes reject changed selections but matching
-unsigned values replay. No curve/signature verification, owner role, economic
-resource mapping, registry count or runtime admission is implemented.
+unsigned values replay. This pure codec implements no curve/signature verification, owner role, economic
+resource mapping, registry count or runtime admission.
+
+A separate public enrollment signature worker now checks that exact intent using
+the unchanged locked BIP340 backend. Its adapter matches independently prepared
+inputs before work, repeatedly measures an explicit executable pin, and accepts
+only a bounded result bound to the complete signature request. Valid signatures
+over self-selected sources/keys still establish no governor role; old expected
+intents replay without freshness. Actual checks preserve reopened source journals
+and exhausted allowance. No registry, quota allocation, signer or runtime admission
+is connected; source/role trust, aggregate work and non-rollbackable lineage remain
+external gates.
 
 Selected admission-model traces now replay against real temporary journals, with comparisons inside the admitted callback and after reopen. Python discovery uses explicit fixture oracles; a separate qualifier uses the actual public Rust executables. Exhaustion remains reproducible, with no reset, new authorization policy or signing change. External model facts are kept separate from journal fields.
 
@@ -188,6 +198,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 71. [Stage 31 validation and remaining gates](docs/STAGE31_VALIDATION.md)
 72. [Candidate retained-resource key and unsigned enrollment intent](docs/RETAINED_RESOURCE_INTENT.md)
 73. [Stage 32 validation and remaining gates](docs/STAGE32_VALIDATION.md)
+74. [Public enrollment signatures and authority limits](docs/PUBLIC_ENROLLMENT_SIGNATURES.md)
+75. [Stage 33 validation and remaining gates](docs/STAGE33_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -286,11 +298,12 @@ of a funded recovery policy.
 Virtual address space is not RSS, and per-process caps supply no cumulative rate,
 fairness, capability isolation or funded availability proof.
 
-Assess the [candidate retained-resource and unsigned intent contract](docs/RETAINED_RESOURCE_INTENT.md)
-as a selected commitment class, then specify economic/source equivalence,
-independent governor pins and namespace before allocation. Qualify an actual
-public owner-signature verifier separately; matching unsigned bytes and valid
-sender authentication supply no enrollment role. Atomic uniqueness, non-rollbackable
+Assess the [candidate retained-resource class](docs/RETAINED_RESOURCE_INTENT.md)
+and [public enrollment signature verifier](docs/PUBLIC_ENROLLMENT_SIGNATURES.md)
+separately. Define authenticated economic/source equivalence, independently trusted
+governor pins, role/namespace identity and first-registration policy before allocation.
+Matching unsigned bytes, valid signatures and sender authentication supply no
+enrollment role. Atomic uniqueness, non-rollbackable
 charged lineage, scoped idempotency and unique dispatch remain later gates.
 
 ## License and participation

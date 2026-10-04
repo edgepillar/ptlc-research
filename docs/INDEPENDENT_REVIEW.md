@@ -387,3 +387,11 @@ resolved and assessed; nonce/clone ownership, observation/admission availability
 funding/time authorization and regtest/devnet acceptance gates remain separate.
 Any later core contribution needs refreshed upstream coordination. A review
 report or green CI does not authorize node activation or real-fund use.
+
+[Stage 33 public enrollment signatures](PUBLIC_ENROLLMENT_SIGNATURES.md) are another
+explicit delta outside both fixed subjects. Actual signature checks and exact local
+expectation/result binding establish no owner-role assignment, authenticated source,
+freshness, allocation or registry idempotency. Assess the new verifier, framing,
+reused measurement/transport and actual qualifier separately. Neither manifest nor
+unfilled report changes; [validation](STAGE33_VALIDATION.md) distinguishes executed
+workers from fake callbacks and records the initial qualifier startup failure.
