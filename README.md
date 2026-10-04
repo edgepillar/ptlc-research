@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 26 explicit v4 storage-failure and poisoned-owner qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 27 separate source-pinned observation-layer review preparation. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -27,6 +27,8 @@ A separate finite recovery-admission model explores policy choices before they a
 A pure helper now constructs an unverified completion candidate from a 64-byte public signature and Bob's retained context. It accepts no remote context or provenance claims, writes nothing, and leaves ordinary recovery and comparison-guarded reconciliation unchanged. Its role labels are packet-format metadata, not evidence of an authenticated Alice message. Actual verification and caller authorization remain separate.
 
 An independent review brief now freezes the Stage 12 implementation subject, inventories all 119 source files and separates verified behavior from unresolved construction, ownership and availability obligations. The accompanying assessment template is unfilled. Preparing this package does not complete an independent review or select a production backend.
+
+A separate observation-layer brief now pins all 189 source files through Stage 26, with an offline complete-inventory checker and its own unfilled report. It identifies ownership, pool, resource and storage-failure obligations without altering the original 119-file subject. Both independent assessments remain pending.
 
 Selected admission-model traces now replay against real temporary journals, with comparisons inside the admitted callback and after reopen. Python discovery uses explicit fixture oracles; a separate qualifier uses the actual public Rust executables. Exhaustion remains reproducible, with no reset, new authorization policy or signing change. External model facts are kept separate from journal fields.
 
@@ -135,14 +137,18 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 58. [Stage 25 validation and remaining gates](docs/STAGE25_VALIDATION.md)
 59. [Explicit resource-store storage failures](docs/RESOURCE_STORE_FAULTS.md)
 60. [Stage 26 validation and remaining gates](docs/STAGE26_VALIDATION.md)
+61. [Separate pinned observation-layer review brief](docs/OBSERVATION_REVIEW.md)
+62. [Unfilled observation-layer assessment report](docs/OBSERVATION_REVIEW_REPORT_TEMPLATE.md)
+63. [Stage 27 packaging validation and remaining gates](docs/STAGE27_VALIDATION.md)
 
 ## Run the offline checks
 
-Requirements: Python 3.9 or later with SQLite, a POSIX host supporting advisory file locks, Git, and OpenSSL with Ed25519 verification support. Session tests target local Linux/macOS filesystems; only the platforms actually executed in the validation report are established. No Python packages, node software, credentials, or network access are required by the tests. OpenSSL is an independent test verifier, not a selected application dependency. Artifact-checker tests use temporary Git repositories without configuring an identity or making commits.
+Requirements: Python 3.9 or later with SQLite, a POSIX host supporting advisory file locks, Git supporting `--no-lazy-fetch` and `--no-replace-objects`, and OpenSSL with Ed25519 verification support. Acquire the two pinned source objects in the [review reproduction instructions](docs/OBSERVATION_REVIEW.md#reproduce-source-identity-offline) before discovery in a shallow checkout. Session tests target local Linux/macOS filesystems; only the platforms actually executed in the validation report are established. No Python packages, node software, credentials, or network access are required by the tests after acquisition. OpenSSL is an independent test verifier, not a selected application dependency. Artifact-checker tests use temporary Git repositories without configuring an identity or making commits; review-inventory tests write synthetic commit objects with explicit fixture metadata and no installed identity or hooks.
 
 ```sh
 REQUIRE_OPENSSL=1 python3 -m unittest discover -s tests -v
 python3 scripts/check_artifacts.py
+python3 -B scripts/check_observation_subject.py --expect-commit f81e376e96e339647bb065739b4461235f865d2c
 python3 scripts/model_swap.py --help
 python3 scripts/model_recovery_admission.py --help
 python3 scripts/model_recovery_reserve.py --help
@@ -187,7 +193,7 @@ evidence; completed exact-head hosted results must be reported separately.
 
 ## Next milestone
 
-Obtain a scoped independent assessment of the exact subject in the [review brief](docs/INDEPENDENT_REVIEW.md), with explicit assumptions, findings and unreviewed surfaces recorded in the report template. External review is pending; later source changes need a separate delta assessment. This package makes that work reviewable without introducing private signing, node access or reviewer outreach.
+Obtain scoped independent assessments of the original construction subject in the [review brief](docs/INDEPENDENT_REVIEW.md) and the separate exact subject in the [observation brief](docs/OBSERVATION_REVIEW.md). Record assumptions, findings, examined dependencies and excluded surfaces in their distinct unfilled reports. Both assessments are pending; later changes need an explicit delta assessment. This package prepares that work without introducing private signing, node access or reviewer outreach.
 
 Use the bounded admission model's counterexamples to define an explicit public-observation authorization and exhaustion/recovery policy before enforcing an envelope requirement or adding transport. The baseline model's finite shared allowance still permits recovery blockage; no safe funded policy has been selected. Durable local pin selection is available; trustworthy pin establishment remains external. Preserve a separately reviewed authorization path for public-witness recovery: Alice may reveal the Zenon signature while withholding an auxiliary authentication envelope. Observation selection, evidence retention, pin provisioning/rotation and aggregate verification-rate control remain unresolved. Connect a reviewed private signing worker only after resolving fresh entropy, secret memory, restored-copy protection, and its journal boundary. Restoring both matching database/checkpoint copies can still permit another synthetic Alice producer call or replenish Bob's allowance. Independent construction review, authenticated chain observations and funding/time authorization remain prerequisites for a current-node PTLC port and two-party regtest/devnet work.
 
@@ -206,9 +212,10 @@ per-process maxima. [Durable v4 selection](docs/DURABLE_RESOURCE_POLICY.md) now
 binds the requested profile and rejects cross-mode/policy reopen before SQLite
 access. The [v4 process-death matrix](docs/RESOURCE_STORE_CRASH_CUTS.md) and
 [storage-fault qualification](docs/RESOURCE_STORE_FAULTS.md) now make those
-boundaries separately reviewable. Prepare a pinned assessment subject for the
-observation, ownership, pool and resource deltas, preserving the original review
-subject and all unresolved native storage, restore and source obligations.
+boundaries separately reviewable. The [separate pinned subject](docs/OBSERVATION_REVIEW.md)
+now prepares assessment of the observation, ownership, pool and resource deltas,
+preserving the original subject and unresolved native storage, restore and source
+obligations. Its complete inventory and checker supply source identity only.
 Virtual address space is not RSS, and per-process caps supply no cumulative rate,
 fairness, capability isolation or funded availability proof.
 

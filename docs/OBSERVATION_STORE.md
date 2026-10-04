@@ -1,6 +1,6 @@
 # Separately owned offline observation records
 
-Status: **Stage 26 owned v3/v4 records with shared admission, explicit Linux
+Status: **Stage 27 review preparation for owned v3/v4 records with shared admission, explicit Linux
 resource continuity, v4 process-death cuts and storage-failure qualification, separate from recovery admission. No chain source,
 private signer or funded policy is connected. Arbitrary process containment,
 aggregate rate/resource policy and clone/restore protection remain open.**
@@ -203,7 +203,8 @@ See [Stage 20 historical validation](STAGE20_VALIDATION.md) and
 [Stage 22 historical validation](STAGE22_VALIDATION.md) and
 [Stage 24 historical validation](STAGE24_VALIDATION.md) and
 [Stage 25 historical validation](STAGE25_VALIDATION.md) and
-[Stage 26 current validation](STAGE26_VALIDATION.md).
+[Stage 26 implementation validation](STAGE26_VALIDATION.md) and
+[Stage 27 packaging validation](STAGE27_VALIDATION.md).
 
 [Stage 23's resource experiment](WORKER_RESOURCE_LIMITS.md) supplies a separate
 limited adapter. The ordinary v3 entry still selects `observe_admitted`. The
@@ -227,3 +228,9 @@ errors are synthetic; actual commit/replace completion is asserted separately.
 Poisoned ownership, slot release, charge/normal retention and no replay are
 checked without changing this module. Native EIO, physical sync and power-loss
 safety remain unqualified.
+
+The [separate observation subject](OBSERVATION_REVIEW.md) now pins this owner,
+its producer/guard/pool/resource dependencies and all source context through
+Stage 26. Its complete inventory and [unfilled report](OBSERVATION_REVIEW_REPORT_TEMPLATE.md)
+prepare independent assessment without changing application behavior. Neither
+source identity nor passing tests resolve the exclusions above.

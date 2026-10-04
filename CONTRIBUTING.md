@@ -1,10 +1,17 @@
 # Contributing
 
-This is an experimental offline PTLC research workspace. Read the [scope](docs/SCOPE.md), [threat model](docs/THREAT_MODEL.md), [implementation validation](docs/STAGE12_VALIDATION.md), [packaging validation](docs/STAGE13_VALIDATION.md), [correspondence validation](docs/STAGE14_VALIDATION.md), [reserve-model validation](docs/STAGE15_VALIDATION.md), [observation-model validation](docs/STAGE16_VALIDATION.md), [evidence-contract validation](docs/STAGE17_VALIDATION.md), [local-verifier validation](docs/STAGE18_VALIDATION.md), [record-contract validation](docs/STAGE19_VALIDATION.md), [disk-owner validation](docs/STAGE20_VALIDATION.md), [worker-lease validation](docs/STAGE21_VALIDATION.md), [shared-admission validation](docs/STAGE22_VALIDATION.md), [resource validation](docs/STAGE23_VALIDATION.md), [resource-continuity validation](docs/STAGE24_VALIDATION.md), [v4 crash-cut validation](docs/STAGE25_VALIDATION.md) and [current storage-fault validation](docs/STAGE26_VALIDATION.md) before proposing changes. There is no usable swap client or production signing backend.
+This is an experimental offline PTLC research workspace. Read the [scope](docs/SCOPE.md), [threat model](docs/THREAT_MODEL.md), [implementation validation](docs/STAGE12_VALIDATION.md), [packaging validation](docs/STAGE13_VALIDATION.md), [correspondence validation](docs/STAGE14_VALIDATION.md), [reserve-model validation](docs/STAGE15_VALIDATION.md), [observation-model validation](docs/STAGE16_VALIDATION.md), [evidence-contract validation](docs/STAGE17_VALIDATION.md), [local-verifier validation](docs/STAGE18_VALIDATION.md), [record-contract validation](docs/STAGE19_VALIDATION.md), [disk-owner validation](docs/STAGE20_VALIDATION.md), [worker-lease validation](docs/STAGE21_VALIDATION.md), [shared-admission validation](docs/STAGE22_VALIDATION.md), [resource validation](docs/STAGE23_VALIDATION.md), [resource-continuity validation](docs/STAGE24_VALIDATION.md), [v4 crash-cut validation](docs/STAGE25_VALIDATION.md) and [storage-fault validation](docs/STAGE26_VALIDATION.md) before proposing changes. There is no usable swap client or production signing backend.
 
 Contributions should be focused and reproducible: protocol analysis, adversarial cases, synthetic fixtures, offline qualification, recovery behavior and documentation. Explain the concrete problem, the resulting behavior and the evidence supporting the change. Keep protocol requirements, selected constructions and verified implementation behavior distinct; identify assumptions and unresolved decisions.
 
 For an independent assessment, use the [exact subject and obligations](docs/INDEPENDENT_REVIEW.md) and [unfilled report template](docs/REVIEW_REPORT_TEMPLATE.md). Identify the reviewed revision, assumptions, findings and excluded surfaces. The package is preparation, not a completed assessment; later changes require an explicit delta review.
+
+Stage 27 also prepares a [separate observation subject](docs/OBSERVATION_REVIEW.md),
+[unfilled report](docs/OBSERVATION_REVIEW_REPORT_TEMPLATE.md) and
+[packaging validation](docs/STAGE27_VALIDATION.md). Its 189-file inventory preserves
+the original 119-file subject. Establish the intended pin independently, acquire
+the required exact objects separately, and run the offline inventory checker
+alongside discovery. Neither subject's assessment is completed by its packaging.
 
 - Use English and public synthetic values only. Exclude personal identity, private conversations, local absolute paths, hostnames, credentials, wallet material and private environment logs from files, examples and reports.
 - Pin external source claims to immutable commits where possible. Check licenses before reusing material and preserve required attribution.

@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 26 - explicit v4 storage-failure and poisoned-owner qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 27 - separate source-pinned observation-layer review preparation. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -151,3 +151,16 @@ quarantine. Formats, runtime, journal, cryptography and frozen subject are
 unchanged. See [validation](STAGE26_VALIDATION.md) for execution boundaries.
 Native I/O errors, physical sync failure, power loss, clone defense, independent
 assessment and funded availability remain separate obligations.
+
+## Stage 27 separate observation subject
+
+The [observation brief](OBSERVATION_REVIEW.md) pins a complete 189-file snapshot
+through Stage 26 while preserving the original 119-file construction subject.
+An offline checker recomputes exact Git inventories, protects both working and
+indexed manifests and optionally checks a bounded plain source archive without
+extraction. It performs no object acquisition, backend execution or chain work.
+The [separate report](OBSERVATION_REVIEW_REPORT_TEMPLATE.md) is unfilled. Source
+identity and packaging regressions are not independent assessment, authenticated
+provenance or a progression decision. See [validation](STAGE27_VALIDATION.md).
+Runtime, mathematical records, cryptography, storage formats and dependencies
+are unchanged; all prior native storage, restore, resource and source gates remain.
