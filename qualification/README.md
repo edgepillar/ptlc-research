@@ -82,6 +82,17 @@ Each entry has `id`, `public_key_hex`, `message_hex`, `signature_hex`, and `vali
 
 ## Reproduction
 
+Stage 18 adds `examples/verify_observation.rs`, a public-only normal-verdict
+worker. A complete Zenon-only request-shape guard precedes reuse of the unchanged
+pure completion predicate. Normal invalid inputs return an exact request-bound
+`rejected` result with zero exit; shape, I/O and panic failures return no normal
+verdict. Eight new Rust tests bring the suite to 55 cases. No dependency, fixture,
+arithmetic or private signing API changes. Python separately pins the selected
+entry file and maps operational/result failure to `unknown`; source/host trust,
+durable evidence and journal admission remain separate. See the
+[verifier contract](../docs/OBSERVATION_VERIFIER.md) and
+[Stage 18 validation](../docs/STAGE18_VALIDATION.md).
+
 Use a configured Rust toolchain with Cargo available. The manifest requires Rust 1.85 or newer; this validation used Rust/Cargo 1.90.0. An isolated cache and target directory can be selected with `CARGO_HOME` and `CARGO_TARGET_DIR` without changing the commands below.
 
 From the repository root, populate an approved dependency cache once:

@@ -55,6 +55,8 @@ Stage 16 weakens that fixed-valid-public premise in a separate [exact-observatio
 
 Stage 17 adds a pure [observation-evidence contract and codec](OBSERVATION_EVIDENCE_CONTRACT.md). Exact candidates, both retained legs, a Zenon-only predicate request and the separately selected verifier profile determine a bound claim. [Stage 17 validation](STAGE17_VALIDATION.md) covers cross-target/profile rejection, malformed claims and unchanged exhausted journals. Parsed outcomes remain claims; no trusted producer, source, negative cache or admission policy is selected.
 
+Stage 18 adds a separate [local public verdict producer and adapter](OBSERVATION_VERIFIER.md). A complete shape guard precedes reuse of the unchanged pure predicate; normal mathematical negatives are distinct from unavailable requests or workers. The adapter requires an explicit entry-file hash and emits bound unknowns on worker/result failure. [Stage 18 validation](STAGE18_VALIDATION.md) uses synthetic process actors and actual local executables. Host/provisioning trust, source authority and aggregate resources remain external; no cache or journal policy is connected.
+
 | Component | Responsibility | Boundary for this repository |
 | --- | --- | --- |
 | Reference application | Session transcript, counterparty validation, chain observations, signing orchestration, durable recovery, and user-visible outcomes | Specify these now; implement only after the construction and transaction graph are selected. |

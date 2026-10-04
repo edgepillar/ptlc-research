@@ -1,7 +1,9 @@
 # Observation evidence: exact target and mathematical statement
 
 Status: **Stage 17 offline binding and claim codec. No trusted statement
-producer, observation source, negative cache or journal enforcement is selected.**
+producer, observation source, negative cache or journal enforcement is selected
+by this codec.** [Stage 18](OBSERVATION_VERIFIER.md) adds a separate explicitly
+selected local producer without changing this pure codec or journal policy.
 
 The source parent is Stage 16 commit
 `c90f7e2318372a3f6416e50d7c1d6bde82828214`. Its
@@ -133,7 +135,10 @@ they are not accepted as statements by the codec.
 
 `unknown_statement` creates only an exact unresolved statement and accepts no
 exception, worker output, reason text or environment data. There is no helper
-that fabricates a positive or negative decision. No actual worker is connected.
+in this codec that fabricates a positive or negative decision. No actual worker
+is connected inside this module. Stage 18's separate adapter binds explicit
+normal decisions from its selected local worker to this statement contract;
+legacy error channels remain unknown under that adapter as well.
 
 ## Prospective cache and source gates
 
@@ -158,8 +163,10 @@ Neither the source mechanism nor chain verification is selected by this codec.
 
 **Go:** review this exact data contract and qualify a separate public-only
 producer that explicitly distinguishes normal positive/negative decisions from
-unknown work. Keep its local trust and resource boundary explicit before any
-negative cache or journal policy is connected.
+unknown work. [Stage 18's selected producer](OBSERVATION_VERIFIER.md) now has
+bounded local qualification; independent review remains pending. Keep its local
+trust and resource boundary explicit before any negative cache or journal
+policy is connected.
 
 **No-go:** treat parsed claims as authentication, cryptographic certificates,
 funded recovery guarantees or authorization for live swaps or a core port.

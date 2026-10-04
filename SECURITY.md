@@ -2,7 +2,7 @@
 
 This repository contains experimental offline PTLC research and synthetic qualification code. It has no production signing backend, wallet integration or supported live settlement path. Do not use its fixtures, fixed scalars, nonce inputs or reference arithmetic with real funds.
 
-The [threat model](docs/THREAT_MODEL.md), [Stage 12 implementation report](docs/STAGE12_VALIDATION.md), [Stage 13 packaging report](docs/STAGE13_VALIDATION.md), [Stage 14 correspondence report](docs/STAGE14_VALIDATION.md), [Stage 15 reserve experiment](docs/STAGE15_VALIDATION.md), [Stage 16 observation experiment](docs/STAGE16_VALIDATION.md) and [Stage 17 evidence contract](docs/STAGE17_VALIDATION.md) describe the current evidence and known limits. The [independent review brief](docs/INDEPENDENT_REVIEW.md) prepares an exact source subject; external assessment remains pending. In particular:
+The [threat model](docs/THREAT_MODEL.md), [Stage 12 implementation report](docs/STAGE12_VALIDATION.md), [Stage 13 packaging report](docs/STAGE13_VALIDATION.md), [Stage 14 correspondence report](docs/STAGE14_VALIDATION.md), [Stage 15 reserve experiment](docs/STAGE15_VALIDATION.md), [Stage 16 observation experiment](docs/STAGE16_VALIDATION.md), [Stage 17 evidence contract](docs/STAGE17_VALIDATION.md) and [Stage 18 local verifier](docs/STAGE18_VALIDATION.md) describe the current evidence and known limits. The [independent review brief](docs/INDEPENDENT_REVIEW.md) prepares an exact source subject; external assessment remains pending. In particular:
 
 - Alice's completion producer returns a public fixture; it does not manage private signing material.
 - Restoring both matching journal and checkpoint copies can reenable a synthetic producer. Local consistency checks do not provide clone or rollback protection.
@@ -19,6 +19,8 @@ The [threat model](docs/THREAT_MODEL.md), [Stage 12 implementation report](docs/
 - The evidence codec binds claims to exact inputs and a selected profile but cannot authenticate their producer or establish a mathematical outcome. Forged claims can match every field. Legacy completion failures do not establish normal negatives; no statement producer, negative cache or journal enforcement is selected.
 - Public-signature candidate construction is pure formatting from retained context. It verifies no signature, authenticates no source and grants no recovery authority. Locally constructed Alice/Bob role labels do not prove who transmitted a packet, and coherent snapshot hashes do not prove hostile-storage integrity.
 - Local tests and review are not an independent cryptographic audit or production security guarantee.
+
+The separate local observation adapter requires a caller-provisioned entry-file hash and distinguishes normal mathematical verdicts from unknown work. File measurement authenticates neither source/build provenance nor host/runtime behavior and is not atomic with launch. It adds no durable evidence, cache, source authority or journal enforcement; caller cancellation produces no statement or persisted attempt. Review its fixed request domain and reused pure error paths before applying a negative to any recovery policy.
 
 ## Reporting a concern
 
