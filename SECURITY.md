@@ -111,8 +111,8 @@ change the full unsigned owner intent. Source/economic equivalence, namespace
 and first-registration capture remain external. The public-key encoding checks
 no curve membership, key control or role, and matching unsigned values replay.
 Current snapshot consistency is not current-source authentication; stable keys
-do not preserve charged history through restore. No owner verifier, registry,
-worker permission or existing runtime integration exists. See
+do not preserve charged history through restore. This pure codec includes no
+owner verifier, registry, worker permission or runtime integration. See
 [validation](docs/STAGE32_VALIDATION.md); both subjects and reports are unchanged.
 
 ## Reporting a concern
@@ -120,3 +120,11 @@ worker permission or existing runtime integration exists. See
 Use GitHub private vulnerability reporting through the repository's Security tab **when that feature is enabled**. This document does not claim that private reporting has been configured. If it is unavailable, a public issue may request a private reporting channel without including sensitive details or an exploit that affects live systems.
 
 A useful report identifies the affected commit, expected and observed behavior, and a minimal offline reproduction using synthetic inputs. Include a proposed fix or relevant public source references when available. Do not submit credentials, private keys, seed phrases, wallet files, real signing nonces, personal identifiers, private conversations or unredacted environment logs. Do not test against live funds or third-party systems to demonstrate a finding.
+
+Stage 33's [public enrollment signatures](docs/PUBLIC_ENROLLMENT_SIGNATURES.md)
+check the exact local intent with the locked BIP340 backend and an explicit entry
+pin. Valid self-selected keys/sources, stale signed expectations and repeated checks
+supply no role, provenance, freshness or allowance. A malicious selected verifier
+can forge positive result bytes. Measurement is not atomic launch or host trust;
+legacy bounded transport adds no global work policy. Both review subjects/reports
+are unchanged; governor/bootstrap, registry, signer and funded gates remain open.

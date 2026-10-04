@@ -1,6 +1,6 @@
 # Threat model and evidence limits
 
-Status: **DRAFT, carried through Stage 32 retained-resource and unsigned intent contract.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
+Status: **DRAFT, carried through Stage 33 public enrollment signature qualification.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
 
 ## Security objective
 
@@ -183,3 +183,13 @@ including against retained old expectations. Stable resource bytes alone do not
 preserve spent history after coherent restore. No registry, dispatcher or
 existing entry point uses the new values. This delta needs separate assessment;
 fixed subjects/reports and all private-signing/funds exclusions remain unchanged.
+
+[Stage 33's public signature qualifier](PUBLIC_ENROLLMENT_SIGNATURES.md) checks the
+unchanged owner-intent message against an independent expected key/scope/source.
+A valid signature over a self-selected source or under another key authenticates
+no governor role or canonical source. Old expected intents and reused IDs remain
+replayable with no registry/current-source check. A malicious selected executable
+can forge result bytes; an entry hash is neither provenance nor atomic launch.
+Legacy bounded owner checks consume no existing recovery allowance and provide
+no aggregate work policy. Actual source-journal preservation is separate from
+owner/bootstrap, uniqueness, non-rollbackable lineage and funded security.

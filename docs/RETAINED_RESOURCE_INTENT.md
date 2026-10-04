@@ -1,7 +1,12 @@
 # Candidate retained-resource key and unsigned enrollment intent
 
-Status: **Stage 32 pure bounded encoding experiment. No source equivalence
-authority, owner verifier, enrollment registry or runtime integration exists.**
+Status: **Stage 32 pure bounded encoding experiment. This codec implements no
+source equivalence authority, owner verifier, registry or runtime integration.**
+
+The later [Stage 33 public signature qualifier](PUBLIC_ENROLLMENT_SIGNATURES.md)
+adds a separate check of this exact message, leaving this unsigned codec unchanged.
+Signature validity still proves no governor role, source/economic equivalence,
+freshness, enrollment or allowance; the remaining gates below are not resolved.
 The selected class is equality of an exact public commitment tuple. It is not
 economic resource identity, authenticated chain evidence or enrollment permission.
 

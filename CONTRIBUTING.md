@@ -58,3 +58,10 @@ preserve both fixed subjects and existing entry-point boundaries.
 Use the [reproduction commands](README.md#run-the-offline-checks). Run the offline suite and artifact checks after relevant edits, plus the affected Rust, Go or subprocess integration checks. Report the commands, outcomes, failures and skipped checks without private environment data. Distinguish local results from hosted CI, process termination from power loss, and code review from independent cryptographic review.
 
 For potential vulnerabilities, follow [SECURITY.md](SECURITY.md). Review the exact file set, commit metadata and destination before publication; do not implicitly use an installed Git identity. Artifact scans are a limited check, not proof that a contribution contains no sensitive information.
+
+Stage 33 adds a [separate public enrollment signature layer](docs/PUBLIC_ENROLLMENT_SIGNATURES.md)
+and [validation](docs/STAGE33_VALIDATION.md). Preserve the unchanged Stage 32
+message and independent expected inputs; signature validity is no governor role,
+source trust or permission. Real worker evidence, fake callback sequencing and
+hosted execution must remain separate. This delta lies outside both fixed review
+subjects; neither unfilled assessment or existing runtime entry point changes.

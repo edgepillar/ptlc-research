@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 32 - candidate retained-resource and unsigned enrollment contract. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 33 - public enrollment signature qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 32 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 33 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -232,3 +232,18 @@ runtime, formats, models, qualifiers, workflows, dependencies and both fixed
 subjects remain unchanged. See [validation](STAGE32_VALIDATION.md). Source and
 owner provisioning, actual public verification, registry lineage and unique
 dispatch must be selected and assessed before integration; funds remain no-go.
+
+## Stage 33 public enrollment signature qualification
+
+The [separate signature layer](PUBLIC_ENROLLMENT_SIGNATURES.md) preserves the
+Stage 32 message and verifies it with the unchanged locked BIP340 backend.
+Independent exact intent matching precedes the public worker; an explicit entry
+hash is repeatedly measured and results bind the complete signature request.
+Actual valid/rejected checks preserve an exhausted reopened source journal.
+The same unsigned intent is returned, with no governor authority, source trust,
+freshness, registration, allowance or permission. Correctly signed alternate
+keys/sources remain valid standalone facts and refuse relative to the local
+expectation. Legacy bounded transport supplies no enrollment rate/pool policy.
+See [validation](STAGE33_VALIDATION.md). Both fixed subjects and reports remain
+unchanged. Role/bootstrap, economic-source equivalence, non-rollbackable atomic
+uniqueness, idempotency, trusted dispatch, signer and funded gates remain unresolved.
