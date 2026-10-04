@@ -1,0 +1,40 @@
+{
+  "assignment": {
+    "algorithm": "BIP340-SHA256",
+    "governor_profile": {
+      "algorithm": "BIP340-SHA256",
+      "authority_epoch": 1,
+      "authority_id_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "authority_profile_digest_hex": "3333333333333333333333333333333333333333333333333333333333333333",
+      "max_attempt_limit": 2,
+      "max_target_limit": 2,
+      "owner_auth_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+      "pool_profile_digest_hex": "5555555555555555555555555555555555555555555555555555555555555555",
+      "purpose": "observation-enrollment",
+      "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+      "resource_profile_digest_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+      "role": "enrollment-governor",
+      "schema": "ptlc-observation-governor-profile-v1",
+      "verifier_profile_digest_hex": "4444444444444444444444444444444444444444444444444444444444444444"
+    },
+    "issuer_auth_key_hex": "1162ffa0f68dda9783c9e3c419ed824a086c1594dc8d3333306016611739dfc1",
+    "purpose": "observation-governor-assignment",
+    "schema": "ptlc-observation-governor-assignment-v1"
+  },
+  "assignment_digest_hex": "b8c21b8cf783d0ddd93e2fa4aa8a50ad65d3bdf7605aaa0a23d3b18f9fe0c8e8",
+  "bound_intent": {
+    "algorithm": "BIP340-SHA256",
+    "governor_assignment_digest_hex": "b8c21b8cf783d0ddd93e2fa4aa8a50ad65d3bdf7605aaa0a23d3b18f9fe0c8e8",
+    "owner_auth_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+    "purpose": "observation-enrollment",
+    "request_id_hex": "8888888888888888888888888888888888888888888888888888888888888888",
+    "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+    "role": "enrollment-governor",
+    "schema": "ptlc-observation-enrollment-intent-v2",
+    "scope_digest_hex": "76054926d7a5683e6a44e88b228d81cd7d3f60f55dba675463f9a01c8f2c08dd"
+  },
+  "bound_message_digest_hex": "7761235b5d41ece34aa06d8970cf1d7531a20089b19d90b63760a5c805f8e352",
+  "governor_profile_digest_hex": "af4061ddb936f7e2425043db74f745fbbec0b6d61d35238519cb19141ae4f80e",
+  "legacy_message_digest_hex": "658bac856897469310f3f2ef024800741c3f9b07f51e1e21dd1393d52585e384",
+  "schema": "ptlc-governor-contract-unsigned-vector-v1"
+}

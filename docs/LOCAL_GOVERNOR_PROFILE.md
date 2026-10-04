@@ -141,3 +141,10 @@ Static signatures/binding still allow old policy/key authority; cached-current
 checks and coherent local anchor restore have distinct failures. The ideal
 current oracle is not implemented and repeated packet admission remains possible.
 The existing profile and v1 message are unchanged; see [validation](STAGE36_VALIDATION.md).
+
+[Stage 37's unsigned assignment](GOVERNOR_ASSIGNMENT_CONTRACT.md) embeds every
+field of this unchanged local profile, plus an independently selected issuer.
+Its separate unsigned v2 intent commits the assignment digest, including complete
+caps. The old profile digest, opaque authority pin and v1 message remain separate.
+Byte binding supplies no issued role, real signature, provisioning or current
+state; old expectations still parse. See [validation](STAGE37_VALIDATION.md).

@@ -144,3 +144,10 @@ certificate nor a use-time Boolean implements those mechanisms.
 **NO-GO:** use the model transition as application admission, claim real bootstrap
 or restore defense, connect a registry/dispatcher, integrate private signing,
 port current-node consensus rules or use real funds.
+
+[Stage 37 assignment/intent framing](GOVERNOR_ASSIGNMENT_CONTRACT.md) selects
+unsigned complete-profile and issuer bytes plus a separate v2 owner binding.
+This makes one candidate content binding concrete; it executes none of this
+model's ideal signature, trusted-root or current-oracle premises. The finite
+model and all existing v1 signatures remain unchanged. Static new bytes supply
+no revocation, restore defense or real atomic use. See [validation](STAGE37_VALIDATION.md).

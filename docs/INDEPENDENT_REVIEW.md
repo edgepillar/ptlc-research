@@ -421,3 +421,12 @@ and coherent local anchors add distinct counterexamples. Even the ideal use-time
 gate permits repeated packet admission. This selects no provisioning, certificate,
 new intent or runtime policy. Neither fixed manifest/report changes; assess this
 exact delta separately. See [validation](STAGE36_VALIDATION.md).
+
+[Stage 37 assignment/intent framing](GOVERNOR_ASSIGNMENT_CONTRACT.md) is another
+later unsigned codec delta outside this fixed subject. Its complete profile and
+issuer binding supply no issued credential, actual signature or current authority.
+Old v1 signatures remain separate; stale local expectations still parse. The new
+synthetic unsigned vector is not independent cross-language evidence. Assess
+this exact construction and any later verifiers/integration separately. The
+119-file subject, manifest and unfilled report remain unchanged; see
+[validation](STAGE37_VALIDATION.md), including the corrected first affected run.

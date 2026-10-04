@@ -158,3 +158,12 @@ Repeated packet admission remains possible with no registry/idempotency or worke
 proof. No real certificate, provisioning, cryptographic check or new wire format
 is supplied; existing application behavior and both fixed subjects/reports remain
 unchanged. Source, lineage, dispatch, signer and funded gates remain open.
+
+[Stage 37 unsigned assignment and v2 intent](docs/GOVERNOR_ASSIGNMENT_CONTRACT.md)
+commit an independently selected issuer and complete local profile; matching is
+still only unsigned byte agreement. Format-valid zero keys, self-selected roots
+and old retained expectations remain representable. No signature math, issued
+role, source truth, latest head, revocation or indivisible use-time rule follows.
+Old v1 signatures cannot be reused as v2 proof. New actual verifier/construction
+assessment is required; the fixed subjects and unfilled reports are unchanged.
+See [validation](docs/STAGE37_VALIDATION.md), including the initial fixture error.

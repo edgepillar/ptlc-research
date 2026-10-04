@@ -229,3 +229,14 @@ premises, not implemented credential or source proofs. The stronger profile-boun
 intent is hypothetical and leaves existing v1 bytes unchanged. Root compromise,
 additional updates, source mapping, provisioning, native persistence and funded
 availability are outside this finite domain; both assessments remain pending.
+
+[Stage 37's unsigned assignment/intent](GOVERNOR_ASSIGNMENT_CONTRACT.md) binds
+full local profile content and issuer selection rather than an opaque label.
+Broader caps change the new v2 message under identical v1 source/scope/owner.
+This fixes only the candidate byte-binding gap. A peer-selected issuer, matching
+unsigned bytes, invalid format-valid curve keys or retained old expectation still
+establish no trusted/current role. No root/owner signature, latest-state oracle,
+revocation, restore defense, registry uniqueness or dispatch is implemented.
+Keep the finite model's trusted-current and use-time premises explicit; actual
+signature and construction assessment remain separate gates. Both fixed subjects
+and unfilled reports are unchanged; see [validation](STAGE37_VALIDATION.md).

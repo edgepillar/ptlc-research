@@ -92,3 +92,12 @@ their recorded use instant and preserve cached-current/restore counterexamples
 and repeated-packet boundaries. A capped search is incomplete. Run the affected
 model and seven complete CLI searches, then full offline/artifact checks. Neither
 fixed subject or unfilled report changes; assess this later delta separately.
+
+For [Stage 37 assignment/intent changes](docs/GOVERNOR_ASSIGNMENT_CONTRACT.md),
+keep five-field issuer and nine-field owner framing unsigned until the exact
+construction and independent public verifiers are qualified. Bind every embedded
+profile field, including caps, without equating an opaque pin with its own hash.
+Preserve v1 schemas and fixtures; never reinterpret their signatures as v2.
+Keep issuer provisioning, current-state evidence, atomic use and registry lineage
+separate. Report the first fixture-selection failure and corrected run in
+[validation](docs/STAGE37_VALIDATION.md); keep independent assessments unfilled.

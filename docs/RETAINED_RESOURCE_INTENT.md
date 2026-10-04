@@ -174,3 +174,11 @@ research. **No-go:** use hashes/parsed intents as owner authentication, claim
 implemented canonical economic equivalence, restore/clone defense or shared quota,
 connect private signing, select production activation, port core rules or use funds.
 See [Stage 32 validation](STAGE32_VALIDATION.md) for executed evidence and limits.
+
+[Stage 37's separate unsigned v2 intent](GOVERNOR_ASSIGNMENT_CONTRACT.md) adds
+an explicit complete assignment digest to new owner bytes with a distinct schema
+and message domain. The existing v1 object, scope/resource domains, public
+signature fixture and workers remain unchanged. No old signature is migrated.
+The new assignment wraps a complete local profile and independently selected
+issuer; neither matching bytes nor an epoch label is current role authority.
+See [validation](STAGE37_VALIDATION.md) for new evidence and remaining gates.
