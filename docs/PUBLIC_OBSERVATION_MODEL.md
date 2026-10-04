@@ -159,6 +159,11 @@ regression tests.
 
 ## Decision and remaining gates
 
+The later [Stage 17 evidence contract](OBSERVATION_EVIDENCE_CONTRACT.md) makes
+the exact target and statement vocabulary concrete without selecting a source,
+normal-verdict producer or negative cache. The experiments and their assumptions
+remain unchanged; a parsed statement alone supplies no truth or authority.
+
 **Go:** specify an offline observation-evidence contract with exact session,
 signature identity, context bindings, source/trust assumptions, mathematical
 verification and resource accounting kept distinct. A later adapter must state

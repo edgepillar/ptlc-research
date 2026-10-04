@@ -74,6 +74,12 @@ separate per-ID authority from inner validity and normal rejection from worker
 interruption. This later delta also remains outside the frozen subject; its
 ideal-filter comparison implements no observation trust source or funded policy.
 
+[Stage 17's exact evidence codec](OBSERVATION_EVIDENCE_CONTRACT.md) is another
+later delta. Its claims remain untrusted without an independently selected and
+qualified producer. The frozen source identity and manifest are preserved; this
+later code requires separate review before any verdict cache or admission policy
+is connected.
+
 ## Claims and open obligations
 
 | Bounded evidence at the subject | Obligation still open |
