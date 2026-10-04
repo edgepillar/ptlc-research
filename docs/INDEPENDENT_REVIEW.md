@@ -68,6 +68,14 @@ rewind. Charges are abstract reservations; no authenticated mapping, backend,
 durability or unique worker entry is implemented. Assess this exact model and
 later mechanisms separately; neither manifest nor unfilled report is changed.
 
+[Stage 32's candidate content key and unsigned intent](RETAINED_RESOURCE_INTENT.md)
+also lies outside both subjects. Its exact seven-commitment class is an encoding
+choice, not source/economic equivalence authority. Independent public-key input
+and full-scope/role/purpose binding implement no curve/signature check, owner
+role, registry or freshness. Matching unsigned bytes replay. Assess this exact
+contract and later verifier/backend deltas separately; neither fixed manifest
+nor unfilled report changes.
+
 ## Reading and implementation map
 
 Links below locate files in this repository. For the material assessment, read

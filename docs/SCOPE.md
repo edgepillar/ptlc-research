@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 31 - finite canonical observation-enrollment comparison. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 32 - candidate retained-resource and unsigned enrollment contract. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 31 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 32 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -217,3 +217,18 @@ native transaction, target set or funded policy. Existing runtime/codec, formats
 models, qualifiers, dependencies and both fixed subjects are unchanged. See
 [validation](STAGE31_VALIDATION.md). Define actual canonical resource/owner
 provenance and non-rollbackable lineage before selecting an enrollment backend.
+
+## Stage 32 candidate content key and unsigned owner intent
+
+The [pure contract](RETAINED_RESOURCE_INTENT.md) selects equality of seven paired
+source commitments, excludes all nine external scope selections from that key,
+and binds the full scope, independent owner public-key selection and request ID
+in unsigned role/purpose-separated bytes. Preparing intent rechecks the supplied
+retained snapshot; parsing a retained expectation proves no current-source
+freshness. Matching unsigned bytes replay, and key formatting validates no
+curve point, ownership or governor role. Changed source remains representable
+without economic equivalence or new allowance authority. Existing codecs,
+runtime, formats, models, qualifiers, workflows, dependencies and both fixed
+subjects remain unchanged. See [validation](STAGE32_VALIDATION.md). Source and
+owner provisioning, actual public verification, registry lineage and unique
+dispatch must be selected and assessed before integration; funds remain no-go.

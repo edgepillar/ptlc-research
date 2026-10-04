@@ -50,6 +50,13 @@ are premises, and its charges execute no worker or native persistence. This
 delta also needs separate assessment; neither fixed manifest nor unfilled report
 is extended, and no enrollment backend is selected.
 
+The later [Stage 32 retained-resource and unsigned intent contract](RETAINED_RESOURCE_INTENT.md)
+also requires separate exact delta assessment. A selected public commitment
+tuple and unsigned owner binding authenticate no source, economic equivalence,
+governor role or registry. Matching intent replays, and old expectations do not
+prove freshness. Neither manifest or unfilled report is extended; no existing
+entry point, actual verifier or enrollment backend is changed.
+
 ## Requested assessment surfaces
 
 Relative links locate files in this checkout. Assess their exact source versions
