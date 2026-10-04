@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 33 public enrollment signature qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 34 independent public enrollment signature checks. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -200,6 +200,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 73. [Stage 32 validation and remaining gates](docs/STAGE32_VALIDATION.md)
 74. [Public enrollment signatures and authority limits](docs/PUBLIC_ENROLLMENT_SIGNATURES.md)
 75. [Stage 33 validation and remaining gates](docs/STAGE33_VALIDATION.md)
+76. [Independent Go enrollment signature checks](docs/INDEPENDENT_ENROLLMENT_SIGNATURES.md)
+77. [Stage 34 validation and remaining gates](docs/STAGE34_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -305,6 +307,12 @@ governor pins, role/namespace identity and first-registration policy before allo
 Matching unsigned bytes, valid signatures and sender authentication supply no
 enrollment role. Atomic uniqueness, non-rollbackable
 charged lineage, scoped idempotency and unique dispatch remain later gates.
+
+The [independent Go checks](docs/INDEPENDENT_ENROLLMENT_SIGNATURES.md) reconstruct
+the unchanged public enrollment messages and verify their mathematics with a
+separate implementation. Cross-verifier agreement supplies no independent
+security assessment or governor/source trust. Define and assess bootstrap/role
+policy and canonical source authority before selecting an enrollment backend.
 
 ## License and participation
 

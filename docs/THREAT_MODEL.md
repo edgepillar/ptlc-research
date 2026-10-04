@@ -193,3 +193,13 @@ can forge result bytes; an entry hash is neither provenance nor atomic launch.
 Legacy bounded owner checks consume no existing recovery allowance and provide
 no aggregate work policy. Actual source-journal preservation is separate from
 owner/bootstrap, uniqueness, non-rollbackable lineage and funded security.
+
+[Stage 34's independent Go checks](INDEPENDENT_ENROLLMENT_SIGNATURES.md) confirm
+the same public signatures and reconstruct the committed messages, resource and
+scope with separate arithmetic and standard-library hashing. That agreement
+does not authenticate expectations or role assignment. Another valid signature
+has another complete request digest without a new registry ID; repeated IDs and
+self-selected source/key signatures remain valid mathematics. Outer permission
+fields are not part of the signed intent and must refuse at exact application
+parsing. Existing runtime behavior and all enrollment/registry/funded gates remain
+unchanged; cross-checking is not an independent security assessment.

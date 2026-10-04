@@ -395,3 +395,11 @@ freshness, allocation or registry idempotency. Assess the new verifier, framing,
 reused measurement/transport and actual qualifier separately. Neither manifest nor
 unfilled report changes; [validation](STAGE33_VALIDATION.md) distinguishes executed
 workers from fake callbacks and records the initial qualifier startup failure.
+
+[Stage 34 independent enrollment checks](INDEPENDENT_ENROLLMENT_SIGNATURES.md)
+are a test/documentation delta outside both fixed subjects. Separate Go hash
+reconstruction and signature arithmetic qualify unchanged synthetic fixtures,
+not hostile-input application parsing or governor/source trust. Valid alternate
+keys/sources, replay and reused IDs remain positives. Neither manifest nor
+unfilled report changes; assess this delta separately. See
+[validation](STAGE34_VALIDATION.md) for local and hosted evidence boundaries.

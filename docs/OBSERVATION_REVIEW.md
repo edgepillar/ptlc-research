@@ -205,3 +205,10 @@ quota allocation, freshness, non-rollbackable lineage or unique dispatch. The
 reused bounded runner adds no aggregate enrollment work policy. Neither manifest
 nor unfilled report changes; assess this delta and its [validation](STAGE33_VALIDATION.md)
 separately before any backend or integration.
+
+[Stage 34 independent enrollment checks](INDEPENDENT_ENROLLMENT_SIGNATURES.md)
+are later qualification outside this immutable source and the original subject.
+Separate Go mathematics and framing checks change no application behavior and
+supply no governor/source authority, freshness, enrollment uniqueness or quota.
+Both fixed manifests and unfilled reports remain unchanged; this delta requires
+separate assessment. See [validation](STAGE34_VALIDATION.md).
