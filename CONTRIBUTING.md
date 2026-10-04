@@ -1,6 +1,6 @@
 # Contributing
 
-This is an experimental offline PTLC research workspace. Read the [scope](docs/SCOPE.md), [threat model](docs/THREAT_MODEL.md), [implementation validation](docs/STAGE12_VALIDATION.md), [packaging validation](docs/STAGE13_VALIDATION.md) and [current correspondence validation](docs/STAGE14_VALIDATION.md) before proposing changes. There is no usable swap client or production signing backend.
+This is an experimental offline PTLC research workspace. Read the [scope](docs/SCOPE.md), [threat model](docs/THREAT_MODEL.md), [implementation validation](docs/STAGE12_VALIDATION.md), [packaging validation](docs/STAGE13_VALIDATION.md), [correspondence validation](docs/STAGE14_VALIDATION.md) and [current reserve-model validation](docs/STAGE15_VALIDATION.md) before proposing changes. There is no usable swap client or production signing backend.
 
 Contributions should be focused and reproducible: protocol analysis, adversarial cases, synthetic fixtures, offline qualification, recovery behavior and documentation. Explain the concrete problem, the resulting behavior and the evidence supporting the change. Keep protocol requirements, selected constructions and verified implementation behavior distinct; identify assumptions and unresolved decisions.
 

@@ -2,7 +2,7 @@
 
 This repository contains experimental offline PTLC research and synthetic qualification code. It has no production signing backend, wallet integration or supported live settlement path. Do not use its fixtures, fixed scalars, nonce inputs or reference arithmetic with real funds.
 
-The [threat model](docs/THREAT_MODEL.md), [Stage 12 implementation report](docs/STAGE12_VALIDATION.md), [Stage 13 packaging report](docs/STAGE13_VALIDATION.md) and [Stage 14 correspondence report](docs/STAGE14_VALIDATION.md) describe the current evidence and known limits. The [independent review brief](docs/INDEPENDENT_REVIEW.md) prepares an exact source subject; external assessment remains pending. In particular:
+The [threat model](docs/THREAT_MODEL.md), [Stage 12 implementation report](docs/STAGE12_VALIDATION.md), [Stage 13 packaging report](docs/STAGE13_VALIDATION.md), [Stage 14 correspondence report](docs/STAGE14_VALIDATION.md) and [Stage 15 reserve experiment](docs/STAGE15_VALIDATION.md) describe the current evidence and known limits. The [independent review brief](docs/INDEPENDENT_REVIEW.md) prepares an exact source subject; external assessment remains pending. In particular:
 
 - Alice's completion producer returns a public fixture; it does not manage private signing material.
 - Restoring both matching journal and checkpoint copies can reenable a synthetic producer. Local consistency checks do not provide clone or rollback protection.
@@ -14,6 +14,7 @@ The [threat model](docs/THREAT_MODEL.md), [Stage 12 implementation report](docs/
 - A durable allowance bounds only Bob recovery admissions within one owned journal session. It does not authenticate peers or prevent new-session/restore bypass; exhaustion can prevent a later valid recovery.
 - The separate admission model assumes ideal verification and externally supplied local authorization. Exhaustive search applies only to its configured finite graph. Its reference policy preserves modeled state constraints while still permitting recovery blockage; no funded-swap availability policy is selected.
 - Selected model/journal trace comparisons qualify only their projected local fields and operations. External authentication, authorization, disclosure and inclusion facts are not journal policy or chain evidence; injected cancellation is not a process-death test.
+- The separate reserve experiment protects attempts only under ideal public authorization. Finite reserves remain exhaustible under public-worker interruptions; a configured interruption bound is an external environment assumption, not an implemented guarantee. It provides neither fair scheduling nor a funded recovery policy, and changes no journal allowance.
 - Public-signature candidate construction is pure formatting from retained context. It verifies no signature, authenticates no source and grants no recovery authority. Locally constructed Alice/Bob role labels do not prove who transmitted a packet, and coherent snapshot hashes do not prove hostile-storage integrity.
 - Local tests and review are not an independent cryptographic audit or production security guarantee.
 

@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 14 selected model/journal correspondence. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 15 offline public recovery reserve experiment. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -29,6 +29,8 @@ A pure helper now constructs an unverified completion candidate from a 64-byte p
 An independent review brief now freezes the Stage 12 implementation subject, inventories all 119 source files and separates verified behavior from unresolved construction, ownership and availability obligations. The accompanying assessment template is unfilled. Preparing this package does not complete an independent review or select a production backend.
 
 Selected admission-model traces now replay against real temporary journals, with comparisons inside the admitted callback and after reopen. Python discovery uses explicit fixture oracles; a separate qualifier uses the actual public Rust executables. Exhaustion remains reproducible, with no reset, new authorization policy or signing change. External model facts are kept separate from journal fields.
+
+A separate reserve experiment compares equal aggregate budgets under shared and protected public lanes. Reserving attempts prevents general peer work from spending them under ideal public authorization, but public-worker interruptions can still exhaust them. Conditional path evidence requires an explicit environment restriction, not an implemented worker guarantee. The journal retains its shared allowance.
 
 ## Repository boundaries
 
@@ -78,6 +80,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 34. [Stage 13 packaging validation and remaining gates](docs/STAGE13_VALIDATION.md)
 35. [Selected model/journal correspondence](docs/RECOVERY_MODEL_CORRESPONDENCE.md)
 36. [Stage 14 validation and remaining gates](docs/STAGE14_VALIDATION.md)
+37. [Offline public recovery reserve experiment](docs/RECOVERY_RESERVE_MODEL.md)
+38. [Stage 15 validation and remaining gates](docs/STAGE15_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -88,6 +92,7 @@ REQUIRE_OPENSSL=1 python3 -m unittest discover -s tests -v
 python3 scripts/check_artifacts.py
 python3 scripts/model_swap.py --help
 python3 scripts/model_recovery_admission.py --help
+python3 scripts/model_recovery_reserve.py --help
 ```
 
 The required mode must fail if independent OpenSSL verification cannot run. Any optional run that skips that verifier is incomplete evidence. The CI definition uses required mode; preparing that definition does not establish that hosted CI has run.
@@ -121,6 +126,8 @@ Use the corresponding executable paths if `CARGO_TARGET_DIR` is set. These check
 Obtain a scoped independent assessment of the exact subject in the [review brief](docs/INDEPENDENT_REVIEW.md), with explicit assumptions, findings and unreviewed surfaces recorded in the report template. External review is pending; later source changes need a separate delta assessment. This package makes that work reviewable without introducing private signing, node access or reviewer outreach.
 
 Use the bounded admission model's counterexamples to define an explicit public-observation authorization and exhaustion/recovery policy before enforcing an envelope requirement or adding transport. The baseline model's finite shared allowance still permits recovery blockage; no safe funded policy has been selected. Durable local pin selection is available; trustworthy pin establishment remains external. Preserve a separately reviewed authorization path for public-witness recovery: Alice may reveal the Zenon signature while withholding an auxiliary authentication envelope. Observation selection, evidence retention, pin provisioning/rotation and aggregate verification-rate control remain unresolved. Connect a reviewed private signing worker only after resolving fresh entropy, secret memory, restored-copy protection, and its journal boundary. Restoring both matching database/checkpoint copies can still permit another synthetic Alice producer call or replenish Bob's allowance. Independent construction review, authenticated chain observations and funding/time authorization remain prerequisites for a current-node PTLC port and two-party regtest/devnet work.
+
+The [reserve comparison](docs/RECOVERY_RESERVE_MODEL.md) narrows that policy decision: protected attempts alone do not guarantee recovery. Any reliance on bounded public interruptions or eventual worker availability needs a separately specified, implementable and reviewed mechanism before changing the journal or funding a swap.
 
 All checked-in content is English and contains no user identity or private operational data. The artifact checker detects a limited set of accidental disclosures; source, metadata, and destination still require review before publication.
 

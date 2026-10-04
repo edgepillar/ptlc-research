@@ -63,6 +63,12 @@ qualification evidence outside this immutable subject. It leaves the frozen
 manifest unchanged and does not extend a pending or completed assessment to
 later code without an explicit delta review.
 
+[Stage 15 public reserve experiments](RECOVERY_RESERVE_MODEL.md) also sit outside
+this frozen subject. They compare policy assumptions only; their conditional
+finite path evidence selects no journal implementation or funded guarantee.
+The fixed source inventory remains unchanged, and any review of this later
+wrapper requires a separately identified delta.
+
 ## Claims and open obligations
 
 | Bounded evidence at the subject | Obligation still open |

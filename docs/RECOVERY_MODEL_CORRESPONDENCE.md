@@ -104,6 +104,12 @@ an expected finding asserted by those tests, not a safe policy verdict.
 actual-executable results and intermediate failures. This new evidence is
 outside the immutable Stage 12 subject in the [review brief](INDEPENDENT_REVIEW.md).
 It does not update the frozen inventory or replace independent assessment.
+
+The separate [Stage 15 reserve experiment](RECOVERY_RESERVE_MODEL.md) is not a
+policy covered by this bridge. It adds model-only resource lanes and explicit
+environment restrictions; the journal and this selected baseline qualifier
+retain their existing shared-allowance behavior.
+
 Observation authorization, funded availability, private signer/clone ownership
 and chain/funding/time acceptance remain open gates. Live swaps and a core port
 remain no-go.

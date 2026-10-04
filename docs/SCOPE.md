@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 14 - selected model/journal correspondence. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 15 - offline public recovery reserve experiment. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 14 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 15 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -48,6 +48,8 @@ Stage 12 adds [pure candidate construction from a public signature](PUBLIC_SIGNA
 Stage 13 prepares an [independent review brief](INDEPENDENT_REVIEW.md), a complete Git-object inventory of the exact Stage 12 source subject and an unfilled report template. [Stage 13 validation](STAGE13_VALIDATION.md) records packaging and regression checks. No independent assessment, production backend choice, reviewer outreach or execution change is implied by this preparation.
 
 Stage 14 adds [selected model/journal correspondence](RECOVERY_MODEL_CORRESPONDENCE.md). Baseline exhaustion traces and concrete positive/negative cases are replayed against real public journals, with a separate actual-worker qualifier in existing CI. [Stage 14 validation](STAGE14_VALIDATION.md) separates fake-oracle checks, actual qualification and intermediate bridge errors. No journal/model policy, source authority or private signing is implemented by this evidence.
+
+Stage 15 compares shared and reserved budgets in a separate [public recovery reserve model](RECOVERY_RESERVE_MODEL.md). Protected attempts can survive general peer exhaustion under ideal authorization, yet interrupted public work can drain them. [Stage 15 validation](STAGE15_VALIDATION.md) records complete bounded searches, explicit environment assumptions and independent resource checks. No reserve, failure bound or funded availability guarantee is implemented in the journal.
 
 | Component | Responsibility | Boundary for this repository |
 | --- | --- | --- |

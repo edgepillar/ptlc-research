@@ -130,6 +130,12 @@ connects some baseline traces to real journal operations and actual public
 workers. It compares a documented projection, does not implement the model's
 external authorization/authentication premises, and is not exhaustive refinement.
 
+[Stage 15 reserve experiments](RECOVERY_RESERVE_MODEL.md) reuse this unchanged
+engine to compare equal aggregate budgets and explicit interruption assumptions.
+Protected attempts survive general exhaustion under ideal public authority,
+but a finite reserve remains blockable under unrestricted public interruption.
+No new policy is connected to the journal.
+
 Private signing, restored-copy protection, authenticated chain identity and
 independent construction review remain open gates. Live swaps and a core port
 remain no-go.
