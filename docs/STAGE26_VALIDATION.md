@@ -62,6 +62,18 @@ jobs and the native Linux paths remain required. Rust/Go primitives and locked
 dependencies are unchanged and are not rerun locally for this test delta.
 Completed hosted results must be recorded separately from this source report.
 
+The [first hosted attempt](https://github.com/edgepillar/ptlc-research/actions/runs/37197914016)
+at [`c9d7826cbf8d3b9a66bdb1452bd0c1f8b585cd86`](https://github.com/edgepillar/ptlc-research/tree/c9d7826cbf8d3b9a66bdb1452bd0c1f8b585cd86)
+completed six jobs successfully. All three completed Python jobs ran 609 tests
+without skips and checked 378 artifact versions. Rust ran 55 tests and 64 actual
+qualifier cases, including all 13 v4 cases; both Go jobs passed. Linux Python 3.13
+was cancelled at the configured 20-minute job limit, with 562 test-method log
+lines and no completed suite summary. GitHub's annotation explicitly identifies
+the job time limit; this attempt is incomplete evidence, not seven-job success.
+The follow-up raises only the Python CI job allowance to 30 minutes. It removes
+no test and changes no per-worker deadline, CPU/address-space cap or native
+assertion. A new exact-head seven-job run remains required.
+
 ## Progression decision
 
 The [fault design](RESOURCE_STORE_FAULTS.md) separates desired failure behavior,
