@@ -5,7 +5,8 @@ Cooperating POSIX owners retain both locks through admission, work and result.
 The selected guard and cooperative worker retain inherited lock references.
 A required shared pool slot is acquired before pending persistence and retained
 through selected work/result commit. Matching restored copies, a hostile host,
-CPU/memory accounting and fairness are not solved.
+Aggregate CPU/memory accounting and fairness are not solved. A separate explicit
+Linux v4 entry binds a requested per-process policy; v3 remains ordinary work.
 """
 
 import copy
@@ -28,9 +29,11 @@ except ImportError:
 from . import exchange, observation_evidence as evidence, observation_records as records
 from .observation_verifier import SubprocessObservation
 from .worker_pool import PublicWorkerPool, PoolBusy, PoolError
+from .worker_resources import _supported
 
 
 VERSION = 3
+RESOURCE_VERSION = 4
 MAX_DATABASE_BYTES = 8 * 1024 * 1024
 MAX_CHECKPOINT_BYTES = 1024
 
@@ -70,12 +73,22 @@ def _sync_directory(path):
         os.close(descriptor)
 
 
-def _checkpoint(store_id, revision, wire, pool_profile):
-    value = {"version": VERSION, "store_id_hex": store_id, "revision": revision,
+def _checkpoint(store_id, revision, wire, pool_profile, *, version=VERSION, resource_profile=None):
+    if type(version) is not int or version not in (VERSION, RESOURCE_VERSION):
+        raise StoreQuarantined("invalid observation store version")
+    if version == RESOURCE_VERSION:
+        evidence._profile(resource_profile)
+    elif resource_profile is not None:
+        raise StoreQuarantined("unexpected observation resource profile")
+    value = {"version": version, "store_id_hex": store_id, "revision": revision,
              "records_digest_hex": hashlib.sha256(wire).hexdigest(),
              "worker_pool_profile_digest_hex": pool_profile}
+    if version == RESOURCE_VERSION:
+        value["worker_resource_profile_digest_hex"] = resource_profile
+    domain = (b"PTLC/observation-store-checkpoint/v4\x00" if version == RESOURCE_VERSION
+              else b"PTLC/observation-store-checkpoint/v3\x00")
     value["digest_hex"] = hashlib.sha256(
-        b"PTLC/observation-store-checkpoint/v3\x00" + exchange.canonical(value)).hexdigest()
+        domain + exchange.canonical(value)).hexdigest()
     return value
 
 
@@ -87,13 +100,31 @@ class ObservationStore:
     Guard and cooperative worker retain the two lock references through exit.
     Owner death is watched; a live inherited reference excludes another owner.
     A selected shared pool bounds simultaneous admitted work for cooperating
-    stores using the same physical pool. CPU/memory, fairness, host containment
-    and restored-copy protection remain separate requirements.
+    stores using the same physical pool. The separate v4 entry selects explicit
+    Linux per-process limits. Aggregate budgets, fairness, host containment and
+    restored-copy protection remain separate requirements.
     """
 
     @classmethod
     def open(cls, directory, checkpoint, *, store_id_hex, verifier, worker_pool,
              attempt_limit, target_limit, hook=None):
+        """Open ordinary v3 work; never adopt or migrate a limited v4 pair."""
+        return cls._open_selected(directory, checkpoint, store_id_hex=store_id_hex,
+            verifier=verifier, worker_pool=worker_pool, attempt_limit=attempt_limit,
+            target_limit=target_limit, hook=hook, version=VERSION, resource_limits=None)
+
+    @classmethod
+    def open_limited(cls, directory, checkpoint, *, store_id_hex, verifier, worker_pool,
+                     resource_limits, attempt_limit, target_limit, hook=None):
+        """Open explicit Linux v4 work; policy must match before any recovery."""
+        return cls._open_selected(directory, checkpoint, store_id_hex=store_id_hex,
+            verifier=verifier, worker_pool=worker_pool, attempt_limit=attempt_limit,
+            target_limit=target_limit, hook=hook, version=RESOURCE_VERSION,
+            resource_limits=resource_limits)
+
+    @classmethod
+    def _open_selected(cls, directory, checkpoint, *, store_id_hex, verifier, worker_pool,
+                       attempt_limit, target_limit, hook, version, resource_limits):
         self = cls()
         self._pid = os.getpid()
         self._thread = threading.current_thread()
@@ -109,6 +140,17 @@ class ObservationStore:
                     or type(worker_pool) is not PublicWorkerPool
                     or (hook is not None and not callable(hook))):
                 raise StoreError("unsupported observation store configuration")
+            if version == RESOURCE_VERSION:
+                try:
+                    _supported(resource_limits)
+                except Exception:
+                    raise StoreError("unsupported limited observation store configuration") from None
+            elif version != VERSION or resource_limits is not None:
+                raise StoreError("invalid observation store selection")
+            self._version = version
+            self._resource_limits = resource_limits
+            self._resource_profile = (resource_limits.profile_digest_hex
+                                      if version == RESOURCE_VERSION else None)
             evidence._profile(store_id_hex)
             self._store_id = store_id_hex
             self._verifier = verifier
@@ -178,6 +220,10 @@ class ObservationStore:
         if existed:
             _private_regular(self._database, MAX_DATABASE_BYTES)
             _private_regular(anchor, MAX_CHECKPOINT_BYTES)
+            # Reject mode/policy mismatch before SQLite can recover a journal.
+            # This bounded selection preflight authenticates no storage state;
+            # the complete pair is still checked by _load before record recovery.
+            self._check_anchor_selection()
         else:
             descriptor = os.open(self._database, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
             os.close(descriptor)
@@ -228,23 +274,44 @@ class ObservationStore:
         finally:
             os.close(descriptor)
 
+    def _check_anchor_selection(self):
+        value = json.loads(self._read_anchor())
+        if (type(value) is not dict or type(value.get("version")) is not int
+                or value["version"] != self._version):
+            raise StoreQuarantined("observation storage mode differs")
+        if self._version == RESOURCE_VERSION:
+            if value.get("worker_resource_profile_digest_hex") != self._resource_profile:
+                raise StoreQuarantined("selected worker resource profile differs")
+        elif "worker_resource_profile_digest_hex" in value:
+            raise StoreQuarantined("unexpected observation resource profile")
+
     def _load(self):
         rows = self._connection.execute(
             "SELECT slot, version, store_id, revision, length(record_bytes), digest FROM checkpoint LIMIT 2").fetchall()
         if len(rows) != 1:
             raise StoreQuarantined("invalid observation checkpoint rows")
         slot, version, identity, revision, length, digest = rows[0]
-        if (type(slot) is not int or slot != 1 or type(version) is not int or version != VERSION
+        if (type(slot) is not int or slot != 1 or type(version) is not int or version != self._version
                 or identity != self._store_id or type(revision) is not int or not 0 <= revision <= 128
                 or type(length) is not int or not 0 < length <= records.MAX_RECORD_BYTES):
             raise StoreQuarantined("invalid observation checkpoint metadata")
         pool_length = self._connection.execute("SELECT length(worker_pool_profile) FROM checkpoint WHERE slot=1").fetchone()[0]
         if type(pool_length) is not int or pool_length != 64:
             raise StoreQuarantined("invalid worker pool profile length")
+        if self._version == RESOURCE_VERSION:
+            resource_length = self._connection.execute(
+                "SELECT length(worker_resource_profile) FROM checkpoint WHERE slot=1").fetchone()[0]
+            if type(resource_length) is not int or resource_length != 64:
+                raise StoreQuarantined("invalid worker resource profile length")
+            resource_profile = self._connection.execute(
+                "SELECT worker_resource_profile FROM checkpoint WHERE slot=1").fetchone()[0]
+            if resource_profile != self._resource_profile:
+                raise StoreQuarantined("selected worker resource profile differs")
         wire = self._connection.execute("SELECT record_bytes FROM checkpoint WHERE slot=1").fetchone()[0]
         summary = self._validated(wire)
         pool_profile = self._connection.execute("SELECT worker_pool_profile FROM checkpoint WHERE slot=1").fetchone()[0]
-        expected = _checkpoint(self._store_id, summary.revision, wire, self._pool_profile)
+        expected = _checkpoint(self._store_id, summary.revision, wire, self._pool_profile,
+                               version=self._version, resource_profile=self._resource_profile)
         if (revision != summary.revision or digest != expected["digest_hex"]
                 or pool_profile != self._pool_profile or self._read_anchor() != exchange.canonical(expected)):
             raise StoreQuarantined("observation checkpoint divergence")
@@ -262,6 +329,16 @@ class ObservationStore:
         self._owned()
         if self._active:
             raise StoreConflict("observation store operation already active")
+        self._check_resource_policy()
+
+    def _check_resource_policy(self):
+        if self._version == RESOURCE_VERSION:
+            try:
+                _supported(self._resource_limits)
+                if self._resource_limits.profile_digest_hex != self._resource_profile:
+                    raise StoreError("selected worker resource policy changed")
+            except Exception:
+                raise StoreError("selected worker resource policy is unavailable") from None
 
     def _checkpoint(self, name):
         try:
@@ -293,15 +370,20 @@ class ObservationStore:
         summary = self._validated(wire)
         if not initializing and summary.revision <= self._validated(self._wire).revision:
             raise StoreQuarantined("observation revision cannot regress")
-        value = _checkpoint(self._store_id, summary.revision, wire, self._pool_profile)
+        value = _checkpoint(self._store_id, summary.revision, wire, self._pool_profile,
+                            version=self._version, resource_profile=self._resource_profile)
         try:
             self._connection.execute("BEGIN IMMEDIATE")
             if initializing:
                 self._connection.execute("CREATE TABLE checkpoint (slot INTEGER PRIMARY KEY CHECK (slot=1), "
                     "version INTEGER NOT NULL, store_id TEXT NOT NULL, revision INTEGER NOT NULL, "
-                    "record_bytes BLOB NOT NULL, digest TEXT NOT NULL, worker_pool_profile TEXT NOT NULL)")
-            self._connection.execute("INSERT OR REPLACE INTO checkpoint VALUES (1, ?, ?, ?, ?, ?, ?)",
-                (VERSION, self._store_id, summary.revision, wire, value["digest_hex"], self._pool_profile))
+                    "record_bytes BLOB NOT NULL, digest TEXT NOT NULL, worker_pool_profile TEXT NOT NULL" +
+                    (", worker_resource_profile TEXT NOT NULL)" if self._version == RESOURCE_VERSION else ")"))
+            values = (self._version, self._store_id, summary.revision, wire, value["digest_hex"], self._pool_profile)
+            if self._version == RESOURCE_VERSION:
+                values += (self._resource_profile,)
+            self._connection.execute("INSERT OR REPLACE INTO checkpoint VALUES (1, " +
+                                     ", ".join("?" for _ in values) + ")", values)
             self._checkpoint(phase + ".before_db_commit")
             self._connection.commit()
             self._checkpoint(phase + ".after_db_commit")
@@ -357,8 +439,14 @@ class ObservationStore:
             self._persist(wire, "admission")
             self._checkpoint("admission.committed")
             try:
-                statement = self._verifier.observe_admitted(snapshot, signature,
-                    ownership_descriptors=tuple(self._locks), admission_descriptor=lease.fileno())
+                if self._version == RESOURCE_VERSION:
+                    self._check_resource_policy()
+                    statement = self._verifier.observe_limited(snapshot, signature,
+                        ownership_descriptors=tuple(self._locks), admission_descriptor=lease.fileno(),
+                        resource_limits=self._resource_limits)
+                else:
+                    statement = self._verifier.observe_admitted(snapshot, signature,
+                        ownership_descriptors=tuple(self._locks), admission_descriptor=lease.fileno())
             except Exception:
                 statement = evidence.unknown_statement(snapshot, signature, verifier_profile_digest_hex=self._profile)
             except BaseException:

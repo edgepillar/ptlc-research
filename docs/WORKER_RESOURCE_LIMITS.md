@@ -67,11 +67,11 @@ remain in place. An uninterruptible task still has no hard elapsed-time guarante
 
 ## Store and evidence boundaries
 
-`ObservationStore` remains v3 and invokes `observe_admitted`, with no resource
-policy field or automatic selection of this new path. Session journal, pure
-records, pool profile and cryptographic sources remain unchanged. Before store
-integration, explicitly select and persist the runtime policy, preserve its
-continuity on reopen, and qualify unsupported hosts and admission ordering. A
+The ordinary `ObservationStore.open` entry remains v3 and invokes
+`observe_admitted`, with no resource policy field or automatic limited selection. Session journal, pure
+records, pool profile and cryptographic sources remain unchanged. The separate
+[Stage 24 v4 entry](DURABLE_RESOURCE_POLICY.md) explicitly binds requested policy
+and checks continuity before SQLite/recovery; it requires its own delta assessment. A
 mathematical verdict is not an attestation of resource policy or source authority.
 
 Native Linux tests separately check a denied 256 MiB anonymous mapping under a
@@ -101,7 +101,7 @@ is historical documentation, not current macOS memory qualification. No external
 source code is copied by this construction.
 
 **Go:** assess this exact launcher/policy/adapter delta and specify durable
-resource-policy selection separately. **No-go:** claim RSS or aggregate RAM/CPU,
+the v4 selection delta separately and qualify its full real storage/recovery cut matrix. **No-go:** claim RSS or aggregate RAM/CPU,
 cumulative rate, fairness, trusted enrollment, anti-clone/restore defense, funded
 recovery availability, independent security review or core activation. The frozen
 119-file subject remains unchanged; this later delta needs its own assessment.

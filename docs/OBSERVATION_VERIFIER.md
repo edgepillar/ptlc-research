@@ -198,6 +198,8 @@ actual admission; caller, selected worker and runtime cooperation remain premise
 CPU/address-space maxima and all three descriptors. A child installer checks exact
 limit readback and execs the selected entry without changing the mathematical
 profile. Missing policy, unsupported platform, setup/exec failure and interrupted
-work yield unknown with no fallback. The ordinary owned store still selects
-observe_admitted and persists no resource-policy choice. Profile equality is not
+work yield unknown with no fallback. The ordinary v3 store still selects
+observe_admitted and persists no resource-policy choice. The explicit
+[Stage 24 v4 entry](DURABLE_RESOURCE_POLICY.md) selects observe_limited and binds
+its requested resource profile separately. Profile equality is not
 a resource attestation; virtual address space is not RSS or aggregate availability.
