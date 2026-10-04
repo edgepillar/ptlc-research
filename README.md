@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 16 exact public authority and inner-validity experiment. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 17 exact observation evidence and mathematical claim codec. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -33,6 +33,8 @@ Selected admission-model traces now replay against real temporary journals, with
 A separate reserve experiment compares equal aggregate budgets under shared and protected public lanes. Reserving attempts prevents general peer work from spending them under ideal public authorization, but public-worker interruptions can still exhaust them. Conditional path evidence requires an explicit environment restriction, not an implemented worker guarantee. The journal retains its shared allowance.
 
 A further observation experiment permits independently authorized valid and invalid public candidates. It separates normal mathematical rejection from interruption and reproduces reserve exhaustion with zero worker failures, cancellations or crashes. The older positive cases require an ideal pre-admission validity filter; exact local authority alone supplies no such filter. These remain separate models with no journal observation policy.
+
+A pure observation-evidence codec now binds exact candidate bytes, both retained legs, a Zenon-only verification request and an externally selected verifier profile. It parses explicit positive, negative or unresolved claims without making them true or authoritative. Legacy completion failure cannot establish a normal negative. No statement producer, source mechanism, cache or journal enforcement is selected.
 
 ## Repository boundaries
 
@@ -86,6 +88,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 38. [Stage 15 validation and remaining gates](docs/STAGE15_VALIDATION.md)
 39. [Exact public authority and inner-validity experiment](docs/PUBLIC_OBSERVATION_MODEL.md)
 40. [Stage 16 validation and remaining gates](docs/STAGE16_VALIDATION.md)
+41. [Exact observation evidence contract](docs/OBSERVATION_EVIDENCE_CONTRACT.md)
+42. [Stage 17 validation and remaining gates](docs/STAGE17_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -135,6 +139,8 @@ Use the bounded admission model's counterexamples to define an explicit public-o
 The [reserve comparison](docs/RECOVERY_RESERVE_MODEL.md) narrows that policy decision: protected attempts alone do not guarantee recovery. Any reliance on bounded public interruptions or eventual worker availability needs a separately specified, implementable and reviewed mechanism before changing the journal or funding a swap.
 
 The [public-observation comparison](docs/PUBLIC_OBSERVATION_MODEL.md) further separates observation authority from inner validity. Specify exact evidence, context bindings, trust assumptions, mathematical verification and aggregate resource handling before treating any source or local authorization as a recovery guarantee.
+
+The [observation-evidence contract](docs/OBSERVATION_EVIDENCE_CONTRACT.md) makes the exact target and outcome vocabulary concrete. Qualify an explicitly trusted producer of normal mathematical verdicts before applying claims to a negative cache or admission decision; legacy errors, matching hashes and profile labels supply no such trust.
 
 All checked-in content is English and contains no user identity or private operational data. The artifact checker detects a limited set of accidental disclosures; source, metadata, and destination still require review before publication.
 
