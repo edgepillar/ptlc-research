@@ -66,6 +66,8 @@ jobs:
         run: python3 -B scripts/qualify_observation_records.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange --observation qualification/target/debug/examples/verify_observation
       - name: Qualify separately owned observation storage and actual result-loss recovery
         run: python3 -B scripts/qualify_observation_store.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange --observation qualification/target/debug/examples/verify_observation
+      - name: Qualify explicit Linux CPU and address-space limits with actual observation work
+        run: python3 -B scripts/qualify_worker_resources.py --verifier qualification/target/debug/examples/verify_exchange --observation qualification/target/debug/examples/verify_observation
       - name: Check Rust formatting
         run: cargo +1.90.0 fmt --manifest-path qualification/Cargo.toml -- --check
 

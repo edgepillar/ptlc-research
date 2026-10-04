@@ -12,7 +12,8 @@ from pathlib import Path
 import stat
 
 from . import exchange, observation_evidence as evidence
-from .public_worker import WorkerError, run_admitted_public_worker, run_guarded_public_worker, run_public_worker
+from .public_worker import (WorkerError, run_admitted_public_worker, run_guarded_public_worker,
+                           run_limited_public_worker, run_public_worker)
 
 
 RESULT_SCHEMA = "ptlc-observation-verifier-result-v1"
@@ -100,8 +101,14 @@ class SubprocessObservation:
         return self._observe(state, signature, ownership_descriptors, owned=True,
                              admitted=True, admission_descriptor=admission_descriptor)
 
+    def observe_limited(self, state, signature, *, ownership_descriptors, admission_descriptor, resource_limits):
+        """Explicit Linux resource experiment outside persistent store policy."""
+        return self._observe(state, signature, ownership_descriptors, owned=True,
+                             admitted=True, limited=True, admission_descriptor=admission_descriptor,
+                             resource_limits=resource_limits)
+
     def _observe(self, state, signature, ownership_descriptors, *, owned, admitted,
-                 admission_descriptor=None):
+                 admission_descriptor=None, limited=False, resource_limits=None):
         # Invalid local targets are configuration/input errors, not statements.
         target = evidence.prepare(state, signature)
         fields = evidence._fields(target, self._profile_digest)
@@ -117,12 +124,18 @@ class SubprocessObservation:
                     timeout=self._timeout, max_input_bytes=65536, max_output_bytes=evidence.MAX_STATEMENT_BYTES,
                     expected_executable_sha256_hex=self._executable_digest,
                     ownership_descriptors=ownership_descriptors)
-            else:
+            elif not limited:
                 response = run_admitted_public_worker(str(self._executable), target.verification_request,
                     timeout=self._timeout, max_input_bytes=65536, max_output_bytes=evidence.MAX_STATEMENT_BYTES,
                     expected_executable_sha256_hex=self._executable_digest,
                     ownership_descriptors=ownership_descriptors,
                     admission_descriptor=admission_descriptor)
+            else:
+                response = run_limited_public_worker(str(self._executable), target.verification_request,
+                    timeout=self._timeout, max_input_bytes=65536, max_output_bytes=evidence.MAX_STATEMENT_BYTES,
+                    expected_executable_sha256_hex=self._executable_digest,
+                    ownership_descriptors=ownership_descriptors, admission_descriptor=admission_descriptor,
+                    resource_limits=resource_limits)
             value = json.loads(response.decode("ascii"))
             if (type(value) is not dict
                     or set(value) != {"schema", "predicate", "request_digest_hex", "outcome"}

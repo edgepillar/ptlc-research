@@ -135,3 +135,9 @@ treat it as funded recovery availability, authenticate a source/profile clone,
 connect private signing or chain submission, port client admission into core or
 activate PTLC. The 119-file frozen subject and pending independent review remain
 unchanged; later deltas need their own exact assessment.
+
+[Stage 23](WORKER_RESOURCE_LIMITS.md) separately qualifies explicit Linux CPU and
+virtual-address-space caps before worker exec. The v3 owned store does not select
+that experimental path or persist its profile. The pool's physical concurrency
+scope and clone counterexamples remain unchanged; per-process maxima supply no
+RSS accounting, cumulative rate, fairness, enrollment or funded availability.

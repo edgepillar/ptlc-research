@@ -14,6 +14,12 @@ admitted work only across participants selecting the same physical files. The
 legacy and two-lease guarded paths described here acquire no shared slot; CPU,
 memory, cumulative rate, fairness and trusted enrollment remain separate gates.
 
+[Stage 23 resources](WORKER_RESOURCE_LIMITS.md) add a separate explicit Linux-only
+limited path after three-capability admission. The child installer verifies lowered
+CPU/address-space caps and disabled core dumps before exec; caller/guard limits
+remain unchanged. Legacy/admitted paths select no resource policy. No RSS,
+aggregate budget, privilege isolation, hard elapsed time or funded guarantee follows.
+
 ## Problem and scope
 
 The original adapters accepted at most 4,096 output bytes but first sent all stdout to a temporary file. A faulty executable could exhaust temporary storage before that acceptance check or the timeout. Both adapters now share `offline_session.public_worker`, which bounds output while transferring it through pipes and creates no output spool file.

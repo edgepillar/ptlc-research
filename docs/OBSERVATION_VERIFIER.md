@@ -193,3 +193,11 @@ Store v3 binds the separately selected pool profile and quarantines v1/v2 pairs.
 The adapter's ordinary callable and two-lease observe_owned method acquire no
 pool slot. Descriptor metadata alone authenticates neither a physical pool nor
 actual admission; caller, selected worker and runtime cooperation remain premises.
+
+[Stage 23](WORKER_RESOURCE_LIMITS.md) adds observe_limited with explicit Linux
+CPU/address-space maxima and all three descriptors. A child installer checks exact
+limit readback and execs the selected entry without changing the mathematical
+profile. Missing policy, unsupported platform, setup/exec failure and interrupted
+work yield unknown with no fallback. The ordinary owned store still selects
+observe_admitted and persists no resource-policy choice. Profile equality is not
+a resource attestation; virtual address space is not RSS or aggregate availability.
