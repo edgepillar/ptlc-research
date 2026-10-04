@@ -54,6 +54,13 @@ non-rollbackable external state and unique dispatch. No real authority, backend,
 wire protocol or restore defense is supplied; model assessment and any future
 implementation assessment are separate obligations. Neither report is filled.
 
+[Stage 30's candidate authority contract](OBSERVATION_AUTHORITY_CONTRACT.md) is a
+later pure codec outside both fixed subjects. Matching scope/request bytes and
+declared reply transitions prove no authenticated authority, enrollment, latest
+head, durable state or one-use dispatch. Assess its exact delta and reused pure
+parsers separately; it changes neither manifest nor unfilled report and does not
+connect existing journal/store entry points or a signer.
+
 ## Reading and implementation map
 
 Links below locate files in this repository. For the material assessment, read

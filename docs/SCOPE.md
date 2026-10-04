@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 28 - explicit v4 restore and copied-history qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 30 - candidate observation-authority scope and message contract. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 26 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 30 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -190,3 +190,16 @@ are ideal premises, not an implemented service or protocol. Application,
 qualifiers, formats, dependencies and both fixed subjects are unchanged. See
 [validation](STAGE29_VALIDATION.md). Native storage, trusted source, backend
 review, secret ownership, aggregate resources and funded availability remain open.
+
+## Stage 30 candidate authority contract
+
+The [pure bounded codec](OBSERVATION_AUTHORITY_CONTRACT.md) fixes public scope,
+full expected-head, exact target and operation bindings for assessing a future
+authority construction. Candidate signatures and local paths cannot refresh the
+same selected scope. New labels or changed contexts still require externally
+authenticated canonical enrollment; no quota owner, target set, latest-head
+source, idempotency table or dispatcher exists here. Matching replies are
+forgeable and replayable claims, not entry permission. Existing journal/store,
+worker/resource paths, formats, models, qualifiers, dependencies and fixed
+subjects are unchanged. See [validation](STAGE30_VALIDATION.md). Backend selection,
+private signing, core port, chain integration and real funds remain no-go.

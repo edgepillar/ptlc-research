@@ -132,3 +132,9 @@ production backend, claim implemented anti-rollback/clone defense, connect secre
 signing or funded recovery, port core rules, activate a node or broadcast funds
 from these results. Both fixed review subjects and their unfilled reports remain
 unchanged; this later model needs its own explicit assessment.
+
+The later [Stage 30 candidate contract](OBSERVATION_AUTHORITY_CONTRACT.md) supplies
+a separate pure scope/request/reply encoding for reviewing those bindings. It
+does not implement this model's ideal state, enrollment or dispatcher. Matching
+reply claims remain forgeable/replayable, and existing entry points are unchanged.
+Its assessment and any selected backend remain separate gates.

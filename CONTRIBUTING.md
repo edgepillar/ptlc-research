@@ -25,6 +25,14 @@ state, canonical enrollment and unique dispatch as explicit model premises;
 none is an implemented service or restore defense. Assess this later delta
 separately and do not extend either fixed manifest or unfilled report.
 
+Stage 30 adds a [candidate authority message contract](docs/OBSERVATION_AUTHORITY_CONTRACT.md)
+and [separate validation](docs/STAGE30_VALIDATION.md). Scope/request matching and
+declared reply transitions are pure byte checks; matching replies remain forgeable
+and replayable. Preserve external enrollment/head provenance, target-set ownership,
+idempotency and durable unique dispatch as missing mechanisms. Run the affected
+contract suite and full offline/artifact checks; assess this delta separately
+without changing either fixed subject or connecting existing entry points.
+
 - Use English and public synthetic values only. Exclude personal identity, private conversations, local absolute paths, hostnames, credentials, wallet material and private environment logs from files, examples and reports.
 - Pin external source claims to immutable commits where possible. Check licenses before reusing material and preserve required attribution.
 - Keep reference arithmetic and synthetic signing helpers out of application cryptography. Passing tests do not establish that the swap construction is secure.

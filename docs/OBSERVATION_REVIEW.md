@@ -36,6 +36,13 @@ both fixed subjects. Its finite external-state/dispatch premises supply no
 implemented service, enrollment or restore defense. Assess that exact delta
 separately; neither manifest nor unfilled report is extended or completed.
 
+The later [Stage 30 candidate authority contract](OBSERVATION_AUTHORITY_CONTRACT.md)
+is likewise outside both subjects. Its pure scope/request/reply checks leave
+enrollment, authentication, current-head evidence, target-set ownership and
+durable single-use dispatch unimplemented. Existing entry points do not consume
+its replayable public claims. Assess this exact codec and pure parsing
+dependencies separately without altering either manifest or unfilled report.
+
 ## Requested assessment surfaces
 
 Relative links locate files in this checkout. Assess their exact source versions

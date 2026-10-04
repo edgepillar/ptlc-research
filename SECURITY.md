@@ -84,6 +84,16 @@ authority outage can prevent progress. Both fixed subjects and unfilled reports
 remain unchanged; model results supply no restore defense, signer protection,
 native storage or funded recovery guarantee. See [validation](docs/STAGE29_VALIDATION.md).
 
+Stage 30 adds a [pure candidate authority codec](docs/OBSERVATION_AUTHORITY_CONTRACT.md).
+It binds selected context, target and full expected head, checks exact types and
+declared no-refund transitions, and returns only replayable public claims. Anyone
+can forge a matching reply; digests, profile equality and changed head labels
+prove no authentication, freshness, durability or actual worker entry. The codec
+owns no target set, quota, idempotency table or dispatcher, and does not mutate
+an exhausted journal. It is disconnected from existing entry points. Both fixed
+subjects and unfilled reports remain unchanged; production integration, signer
+ownership and funded recovery remain unresolved. See [validation](docs/STAGE30_VALIDATION.md).
+
 ## Reporting a concern
 
 Use GitHub private vulnerability reporting through the repository's Security tab **when that feature is enabled**. This document does not claim that private reporting has been configured. If it is unavailable, a public issue may request a private reporting channel without including sensitive details or an exploit that affects live systems.

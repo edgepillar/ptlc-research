@@ -1,6 +1,6 @@
 # Threat model and evidence limits
 
-Status: **DRAFT, carried through Stage 28 explicit v4 restore qualification.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
+Status: **DRAFT, carried through Stage 30 candidate authority contract.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
 
 ## Security objective
 
@@ -147,3 +147,15 @@ running, and receipt loss can exhaust allowance before any entry. Neither a
 real service, crash-safe actuation, source authentication, signer protection nor
 funded recovery follows. This later model needs its own assessment outside both
 fixed subjects and leaves their reports unfilled.
+
+[Stage 30's candidate authority contract](OBSERVATION_AUTHORITY_CONTRACT.md) binds
+locally selected enrollment/epoch/profiles, candidate-independent retained scope,
+exact target and full expected head to each operation. Strict canonical bytes
+and declared no-refund transitions supply no authority authentication, latest
+head, target-set ownership, quota enforcement or one-use entry. Forged matching
+successes and replay deliberately parse; changed opaque state digests prove no
+commit. Caller-controlled enrollment/context changes need an external duplicate
+rule or can evade any later digest-indexed allowance. Missing replies establish
+no absence of charge or safe retry. Existing entry points do not consume these
+claims. This delta needs separate assessment; both fixed subjects and reports
+remain unchanged and funded recovery, private signing and activation stay no-go.
