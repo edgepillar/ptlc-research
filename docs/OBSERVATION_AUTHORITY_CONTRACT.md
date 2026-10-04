@@ -189,3 +189,10 @@ authority, durable dispatch and recovery mechanisms. **No-go:** claim implemente
 restore/clone defense, use a parsed reply as worker authorization, connect private
 signing or real funds, select production activation or port core rules.
 See [Stage 30 validation](STAGE30_VALIDATION.md) for executed evidence and gates.
+
+The later [Stage 31 enrollment comparison](OBSERVATION_ENROLLMENT_MODEL.md)
+separately exposes quota splitting, unauthorized canonical registration, cached
+absence races and registry rewind. Its stronger resource/owner facts and atomic
+lineage are model premises, not mechanisms added to this codec. Existing codec
+behavior and replayable claim limits remain unchanged. See
+[Stage 31 validation](STAGE31_VALIDATION.md) for that finite delta's evidence.

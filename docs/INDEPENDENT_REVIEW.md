@@ -61,6 +61,13 @@ head, durable state or one-use dispatch. Assess its exact delta and reused pure
 parsers separately; it changes neither manifest nor unfilled report and does not
 connect existing journal/store entry points or a signer.
 
+[Stage 31's canonical enrollment comparison](OBSERVATION_ENROLLMENT_MODEL.md)
+also lies outside both subjects. It assumes environmental resource equivalence
+and owner facts, then contrasts cached absence with atomic uniqueness and registry
+rewind. Charges are abstract reservations; no authenticated mapping, backend,
+durability or unique worker entry is implemented. Assess this exact model and
+later mechanisms separately; neither manifest nor unfilled report is changed.
+
 ## Reading and implementation map
 
 Links below locate files in this repository. For the material assessment, read
