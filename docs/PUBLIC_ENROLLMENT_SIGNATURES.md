@@ -144,3 +144,10 @@ their signatures with separate arithmetic. That test-only path adds no applicati
 parser or service. Exact framing, trusted expectations and governor/bootstrap
 policy remain separate requirements; repeated IDs and self-selected source/key
 positives remain. See [validation](STAGE34_VALIDATION.md).
+
+The later [Stage 35 local governor profile](LOCAL_GOVERNOR_PROFILE.md) makes
+independent key/resource/namespace/profile/cap rules explicit and returns the
+same unsigned intent after matching. It adds no role certificate or enforced
+admission. The old signed message does not commit the local profile digest;
+malicious/stale selection, broader local caps and replay remain positives with
+no policy or source authority. See [validation](STAGE35_VALIDATION.md).

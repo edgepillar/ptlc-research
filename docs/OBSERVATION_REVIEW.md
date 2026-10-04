@@ -212,3 +212,11 @@ Separate Go mathematics and framing checks change no application behavior and
 supply no governor/source authority, freshness, enrollment uniqueness or quota.
 Both fixed manifests and unfilled reports remain unchanged; this delta requires
 separate assessment. See [validation](STAGE34_VALIDATION.md).
+
+[Stage 35 local governor profiles](LOCAL_GOVERNOR_PROFILE.md) are later pure
+proposal rules outside this immutable source and the original subject. Role
+provenance, current policy/source authority and allocation remain external;
+matching wrong/stale rules or broader caps can still succeed with the unchanged
+signed intent. Assess independent selection, exact framing and optional
+composition separately. Both fixed manifests and unfilled reports remain
+unchanged; see [validation](STAGE35_VALIDATION.md) for executed evidence limits.

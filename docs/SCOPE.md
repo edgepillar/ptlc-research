@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 34 - independent public enrollment signature checks. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 35 - explicit local governor-role profile qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -259,3 +259,19 @@ application parsing remains separate from raw intent mathematics. This adds no
 signer, application verifier, registry, dependency or workflow. See
 [validation](STAGE34_VALIDATION.md). Both review subjects and unfilled reports
 remain unchanged; this qualification delta needs separate assessment.
+
+## Stage 35 explicit local governor-role profiles
+
+The [pure local profile](LOCAL_GOVERNOR_PROFILE.md) makes key, retained resource,
+namespace/epoch, four profile pins and separate proposal caps explicit. Exact
+parsing refuses replacement of independently selected bytes; matching checks
+the full role constraints and returns the same unsigned intent. Valid alternate
+signatures cannot override a different selected key, scope or cap. Selecting
+untrusted rules instead, stale profile replay, new IDs and broader local caps
+remain positives without role provenance, current policy or allowance. The
+unchanged signed intent does not commit this profile digest. Existing journal,
+observation and enrollment signature paths do not require the optional helper.
+See [validation](STAGE35_VALIDATION.md). Models, workers, packets, dependencies,
+fixtures and both fixed subjects/reports remain unchanged; the new pure helper
+and qualifier need separate assessment. Bootstrap, policy binding, revocation,
+source authority, registry lineage and unique dispatch remain unresolved.

@@ -403,3 +403,12 @@ not hostile-input application parsing or governor/source trust. Valid alternate
 keys/sources, replay and reused IDs remain positives. Neither manifest nor
 unfilled report changes; assess this delta separately. See
 [validation](STAGE34_VALIDATION.md) for local and hosted evidence boundaries.
+
+[Stage 35 local governor profiles](LOCAL_GOVERNOR_PROFILE.md) are a pure helper
+and actual-worker qualification delta outside both fixed subjects. Explicit
+selected rules and exact matching authenticate no role provenance, current
+policy or source. The profile digest is absent from the unchanged signed intent;
+malicious/stale selection, broader-cap matches and replay remain positives.
+Assess framing, independent selection and composition boundaries separately.
+Neither fixed manifest or unfilled report changes; [validation](STAGE35_VALIDATION.md)
+separates unit oracles, actual signatures and hosted execution.

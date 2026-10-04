@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 34 independent public enrollment signature checks. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 35 explicit local governor-role profile qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -77,6 +77,14 @@ intents replay without freshness. Actual checks preserve reopened source journal
 and exhausted allowance. No registry, quota allocation, signer or runtime admission
 is connected; source/role trust, aggregate work and non-rollbackable lineage remain
 external gates.
+
+A separate pure governor-role profile now makes independent local key, resource,
+namespace/epoch, profile pins and proposal caps explicit. Exact profile parsing
+refuses peer replacement; matching still returns the same unsigned intent.
+Wrong or stale locally selected rules can match, and broader local caps change
+the profile digest without changing the old signed message. This is no role
+certificate, policy-version binding, registration or allocation. Existing entry
+points do not enforce it; bootstrap, revocation and trusted selection remain open.
 
 Selected admission-model traces now replay against real temporary journals, with comparisons inside the admitted callback and after reopen. Python discovery uses explicit fixture oracles; a separate qualifier uses the actual public Rust executables. Exhaustion remains reproducible, with no reset, new authorization policy or signing change. External model facts are kept separate from journal fields.
 
@@ -202,6 +210,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 75. [Stage 33 validation and remaining gates](docs/STAGE33_VALIDATION.md)
 76. [Independent Go enrollment signature checks](docs/INDEPENDENT_ENROLLMENT_SIGNATURES.md)
 77. [Stage 34 validation and remaining gates](docs/STAGE34_VALIDATION.md)
+78. [Explicit local governor-role profiles and bootstrap limits](docs/LOCAL_GOVERNOR_PROFILE.md)
+79. [Stage 35 validation and remaining gates](docs/STAGE35_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -239,6 +249,8 @@ cargo build --locked --offline --manifest-path qualification/Cargo.toml --exampl
 python3 -B scripts/qualify_exchange.py --verifier qualification/target/debug/examples/verify_exchange
 python3 -B scripts/qualify_completion.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
 python3 -B scripts/qualify_authentication.py --authentication qualification/target/debug/examples/verify_authentication --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
+python3 -B scripts/qualify_enrollment_signature.py --enrollment qualification/target/debug/examples/verify_enrollment --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
+python3 -B scripts/qualify_governor_profile.py --enrollment qualification/target/debug/examples/verify_enrollment --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
 python3 -B scripts/qualify_recovery_model.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
 python3 -B scripts/qualify_observation.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange --observation qualification/target/debug/examples/verify_observation
 python3 -B scripts/qualify_observation_records.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange --observation qualification/target/debug/examples/verify_observation
@@ -313,6 +325,14 @@ the unchanged public enrollment messages and verify their mathematics with a
 separate implementation. Cross-verifier agreement supplies no independent
 security assessment or governor/source trust. Define and assess bootstrap/role
 policy and canonical source authority before selecting an enrollment backend.
+
+The [explicit local governor profile](docs/LOCAL_GOVERNOR_PROFILE.md) supplies
+proposal matching, with independently chosen rules as an external trust premise.
+Select and assess governor provisioning/role provenance, binding to the current
+policy and rotation/revocation before selecting an enrollment backend. Profile
+equality and the old valid signature do not implement these mechanisms; replay,
+coherent profile restore, first-registration capture and namespace quota splits
+remain outside this helper. Keep later uniqueness and charged lineage separate.
 
 ## License and participation
 
