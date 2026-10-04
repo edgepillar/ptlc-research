@@ -66,6 +66,15 @@ The original 119-file subject is unchanged. All runtime, restore, source,
 resource, storage and funded-availability exclusions above remain unresolved.
 See [packaging validation](docs/STAGE27_VALIDATION.md).
 
+Stage 28 separately qualifies [v4 coherent rewind and copied histories](docs/RESOURCE_STORE_RESTORES.md).
+Consistent old pairs can replenish local allowances or erase later claims under
+the same profiles; separately owned copies use separate histories even with the
+same physical pool. Mismatched-pair quarantine and resource selection supply no
+external freshness, clone defense or global quota. The synthetic conflict case
+does not demonstrate contradictory actual mathematical verdicts. Application
+behavior, both fixed subjects and pending assessments are unchanged. See
+[validation](docs/STAGE28_VALIDATION.md).
+
 ## Reporting a concern
 
 Use GitHub private vulnerability reporting through the repository's Security tab **when that feature is enabled**. This document does not claim that private reporting has been configured. If it is unavailable, a public issue may request a private reporting channel without including sensitive details or an exploit that affects live systems.

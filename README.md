@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 27 separate source-pinned observation-layer review preparation. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 28 explicit v4 restore and copied-history qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -29,6 +29,12 @@ A pure helper now constructs an unverified completion candidate from a 64-byte p
 An independent review brief now freezes the Stage 12 implementation subject, inventories all 119 source files and separates verified behavior from unresolved construction, ownership and availability obligations. The accompanying assessment template is unfilled. Preparing this package does not complete an independent review or select a production backend.
 
 A separate observation-layer brief now pins all 189 source files through Stage 26, with an offline complete-inventory checker and its own unfilled report. It identifies ownership, pool, resource and storage-failure obligations without altering the original 119-file subject. Both independent assessments remain pending.
+
+V4 restore experiments now distinguish mismatched-pair quarantine from coherent
+old-pair acceptance. Restoring an earlier complete history can replenish quota
+or erase later claims; same-profile copies can consume independent allowances
+even with the same physical pool. These are explicit counterexamples, not a
+restore defense or application restore API. The fixed review subjects are unchanged.
 
 Selected admission-model traces now replay against real temporary journals, with comparisons inside the admitted callback and after reopen. Python discovery uses explicit fixture oracles; a separate qualifier uses the actual public Rust executables. Exhaustion remains reproducible, with no reset, new authorization policy or signing change. External model facts are kept separate from journal fields.
 
@@ -140,6 +146,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 61. [Separate pinned observation-layer review brief](docs/OBSERVATION_REVIEW.md)
 62. [Unfilled observation-layer assessment report](docs/OBSERVATION_REVIEW_REPORT_TEMPLATE.md)
 63. [Stage 27 packaging validation and remaining gates](docs/STAGE27_VALIDATION.md)
+64. [Explicit v4 restore and copied-history boundaries](docs/RESOURCE_STORE_RESTORES.md)
+65. [Stage 28 validation and remaining gates](docs/STAGE28_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -216,6 +224,9 @@ boundaries separately reviewable. The [separate pinned subject](docs/OBSERVATION
 now prepares assessment of the observation, ownership, pool and resource deltas,
 preserving the original subject and unresolved native storage, restore and source
 obligations. Its complete inventory and checker supply source identity only.
+The [v4 restore experiments](docs/RESOURCE_STORE_RESTORES.md) separately qualify
+coherent rewind and copied-history limits without adding protection. This later
+qualification delta lies outside both fixed subjects and needs explicit assessment.
 Virtual address space is not RSS, and per-process caps supply no cumulative rate,
 fairness, capability isolation or funded availability proof.
 

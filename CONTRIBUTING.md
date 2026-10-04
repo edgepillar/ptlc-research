@@ -13,6 +13,12 @@ the original 119-file subject. Establish the intended pin independently, acquire
 the required exact objects separately, and run the offline inventory checker
 alongside discovery. Neither subject's assessment is completed by its packaging.
 
+Stage 28 adds [v4 restore counterexamples](docs/RESOURCE_STORE_RESTORES.md) and
+[separate validation](docs/STAGE28_VALIDATION.md). These later tests and actual
+qualifier methods lie outside both fixed subjects, leave application behavior
+unchanged and implement no restore or freshness authority. Identify their exact
+qualification revision separately before using them in an assessment.
+
 - Use English and public synthetic values only. Exclude personal identity, private conversations, local absolute paths, hostnames, credentials, wallet material and private environment logs from files, examples and reports.
 - Pin external source claims to immutable commits where possible. Check licenses before reusing material and preserve required attribution.
 - Keep reference arithmetic and synthetic signing helpers out of application cryptography. Passing tests do not establish that the swap construction is secure.

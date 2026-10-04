@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 27 - separate source-pinned observation-layer review preparation. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 28 - explicit v4 restore and copied-history qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -164,3 +164,16 @@ identity and packaging regressions are not independent assessment, authenticated
 provenance or a progression decision. See [validation](STAGE27_VALIDATION.md).
 Runtime, mathematical records, cryptography, storage formats and dependencies
 are unchanged; all prior native storage, restore, resource and source gates remain.
+
+## Stage 28 explicit v4 restore boundaries
+
+The [restore experiments](RESOURCE_STORE_RESTORES.md) qualify mismatched-pair
+refusal, coherent old-pair quota/claim rewind, copied histories with the same
+physical pool and pending recovery without replay or refund. Discovery uses real
+files/locks with synthetic host selection and verdicts; separate Linux methods
+require actual limited Rust positives and preserve source-journal state/bytes.
+This adds test evidence only, with no application restore API, format change or
+monotonic/enrollment authority. Both fixed review subjects remain unchanged;
+the later qualification needs its own explicit assessment. See
+[validation](STAGE28_VALIDATION.md). Restore/clone defense, source authority,
+native storage, aggregate budgets and funded availability remain unresolved.

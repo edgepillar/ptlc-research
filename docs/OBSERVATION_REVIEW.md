@@ -164,3 +164,10 @@ unresolved.
 **No-go:** private signing, trusted chain observation, funded swap recovery,
 transaction broadcast, a core PTLC port or activation. Preparing this subject
 does not resolve any of those gates or extend the original subject's assessment.
+
+[Stage 28's v4 restore qualification](RESOURCE_STORE_RESTORES.md) adds later
+test/qualifier evidence outside this fixed source: coherent pair rewind, copied
+history, single-sided quarantine and repeat pending recovery. It changes no
+application behavior or frozen manifest. Both unfilled assessments remain
+pending; review this later qualification delta explicitly instead of silently
+extending the 189-file subject. See [validation](STAGE28_VALIDATION.md).

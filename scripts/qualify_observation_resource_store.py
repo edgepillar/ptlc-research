@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tests"))
 
-from offline_session import exchange, observation_evidence as evidence
+from offline_session import exchange, observation_evidence as evidence, observation_records as records
 from offline_session.artifact_verifier import SubprocessVerifier
 from offline_session.journal import Journal
 from offline_session.observation_store import ObservationStore, StoreBusy, StoreError, StoreQuarantined
@@ -75,6 +75,19 @@ class RealResourceStoreTests(unittest.TestCase):
 
     def pair(self):
         return (self.root / "observations.sqlite3").read_bytes(), self.anchor.read_bytes()
+
+    def copy_pair(self, pair):
+        # Offline fixture copying with closed owners; never a recovery API.
+        self.root.mkdir(mode=0o700, exist_ok=True)
+        for path, raw in zip((self.root / "observations.sqlite3", self.anchor), pair):
+            path.write_bytes(raw)
+            path.chmod(0o600)
+
+    def profiles(self):
+        value = json.loads(self.anchor.read_bytes())
+        self.assertEqual(value["version"], 4)
+        return (value["store_id_hex"], value["worker_pool_profile_digest_hex"],
+                value["worker_resource_profile_digest_hex"])
 
     def outcome(self, wire, signature):
         return evidence.parse_statement(self.state, signature, wire,
@@ -165,6 +178,94 @@ class RealResourceStoreTests(unittest.TestCase):
         self.assertEqual(self.storage(), before)
         self.assertEqual(json.loads(self.anchor.read_bytes())["worker_resource_profile_digest_hex"],
                          self.policy.profile_digest_hex)
+
+    def test_matching_empty_pair_restore_repeats_actual_positive_after_exhaustion(self):
+        with self.open(attempt_limit=1):
+            pass
+        old, profiles = self.pair(), self.profiles()
+        with self.open(attempt_limit=1) as store, self.actual_normal():
+            first = store.observe(self.state, self.signature)
+            self.assertEqual(self.outcome(first, self.signature), "verified")
+            self.assertEqual(store.summary().attempts_remaining, 0)
+            with self.no_work(), self.assertRaises(records.RecordExhausted):
+                store.observe(self.state, self.signature, recheck=True)
+        self.copy_pair(old)
+        with self.no_work(), self.open(attempt_limit=1) as store:
+            self.assertEqual((store.summary().revision, store.summary().attempts_remaining), (0, 1))
+            self.assertIsNone(store.known_statement(self.state, self.signature))
+        self.assertEqual(self.pair(), old)
+        self.assertEqual(self.profiles(), profiles)
+        with self.open(attempt_limit=1) as store, self.actual_normal():
+            second = store.observe(self.state, self.signature)
+            self.assertEqual(second, first)
+            self.assertEqual(store.summary().attempts_consumed, 1)
+        self.assertEqual(self.profiles(), profiles)
+
+    def test_matching_normal_pair_restore_undoes_charged_actual_recheck(self):
+        with self.open(attempt_limit=2) as store, self.actual_normal():
+            normal = store.observe(self.state, self.signature)
+        old = self.pair()
+        def hook(name):
+            if name == "worker.returned":
+                raise RuntimeError("synthetic actual-result publication loss")
+        with self.open(attempt_limit=2, hook=hook) as store, self.actual_normal():
+            with self.assertRaises(StoreQuarantined):
+                store.observe(self.state, self.signature, recheck=True)
+        with self.no_work(), self.open(attempt_limit=2) as store:
+            self.assertEqual((store.summary().revision, store.summary().attempts_remaining), (4, 0))
+            self.assertEqual(store.known_statement(self.state, self.signature), normal)
+        self.copy_pair(old)
+        with self.no_work(), self.open(attempt_limit=2) as store:
+            self.assertEqual((store.summary().revision, store.summary().attempts_consumed), (2, 1))
+            self.assertEqual(store.known_statement(self.state, self.signature), normal)
+        self.assertEqual(self.pair(), old)
+        with self.open(attempt_limit=2) as store, self.actual_normal():
+            self.assertEqual(store.observe(self.state, self.signature, recheck=True), normal)
+            self.assertEqual(store.summary().attempts_consumed, 2)
+
+    def test_matching_empty_pair_copy_has_independent_quota_with_same_pool_and_policy(self):
+        with self.open(attempt_limit=1):
+            pass
+        old, profiles = self.pair(), self.profiles()
+        original_root, original_anchor = self.root, self.anchor
+        with self.open(attempt_limit=1) as original, self.actual_normal():
+            normal = original.observe(self.state, self.signature)
+            original_pair = self.pair()
+        self.root, self.anchor = self.base / "copied-observations", self.base / "copied-head.json"
+        self.copy_pair(old)
+        self.assertEqual(self.profiles(), profiles)
+        with self.open(attempt_limit=1) as copied, self.actual_normal():
+            self.assertEqual(copied.summary().attempts_consumed, 0)
+            self.assertEqual(copied.observe(self.state, self.signature), normal)
+            self.assertEqual(copied.summary().attempts_consumed, 1)
+        self.root, self.anchor = original_root, original_anchor
+        with self.no_work(), self.open(attempt_limit=1) as original:
+            self.assertEqual(original.summary().attempts_remaining, 0)
+            self.assertEqual(original.known_statement(self.state, self.signature), normal)
+            with self.assertRaises(records.RecordExhausted):
+                original.observe(self.state, self.signature, recheck=True)
+        self.assertEqual(self.pair(), original_pair)
+        with self.pool.acquire():
+            pass
+
+    def test_single_sided_restores_quarantine_after_actual_positive_without_repair(self):
+        with self.open():
+            pass
+        old = self.pair()
+        with self.open() as store, self.actual_normal():
+            normal = store.observe(self.state, self.signature)
+        current = self.pair()
+        for pair in ((old[0], current[1]), (current[0], old[1])):
+            with self.subTest(old_database=pair[0] == old[0]):
+                self.copy_pair(pair)
+                with self.no_work(), self.assertRaises(StoreQuarantined):
+                    self.open()
+                self.assertEqual(self.pair(), pair)
+        self.copy_pair(current)
+        with self.no_work(), self.open() as store:
+            self.assertEqual(store.known_statement(self.state, self.signature), normal)
+            self.assertEqual(store.summary().attempts_consumed, 1)
+        self.assertEqual(self.pair(), current)
 
     def test_actual_normal_storage_faults_distinguish_rollback_divergence_and_committed_result(self):
         cases = (("sqlite.commit", "before", "unknown"), ("sqlite.commit", "after", "quarantine"),
@@ -419,7 +520,7 @@ class RealResourceStoreTests(unittest.TestCase):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Qualify durable Linux worker resource selection")
+    parser = argparse.ArgumentParser(description="Qualify durable Linux policy, storage failures and restore limits")
     parser.add_argument("--verifier", required=True)
     parser.add_argument("--observation", required=True)
     options = parser.parse_args()
