@@ -1,6 +1,6 @@
 # Threat model and evidence limits
 
-Status: **DRAFT, carried through Stage 24 durable explicit worker resource selection.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
+Status: **DRAFT, carried through Stage 25 v4 process-death qualification.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
 
 ## Security objective
 
@@ -99,6 +99,16 @@ admitted unavailable work stays unknown without fallback. The ordinary v3 entry
 remains separate; neither API migrates or rotates an existing pair. Pure records,
 mathematical profile, journal and pool configuration are unchanged. Profile
 consistency authenticates no effective cap, source, host, enrollment or restored
-copy. Full real v4 write/recovery crash cuts remain unqualified by the inherited
-v3 matrix. Aggregate budgets, arbitrary containment, fairness, independent
+copy. The inherited v3 matrix supplies no full v4 write/recovery proof.
+Aggregate budgets, arbitrary containment, fairness, independent
 assessment and funded availability remain open.
+
+[Stage 25's v4 cut matrix](RESOURCE_STORE_CRASH_CUTS.md) separately exercises
+real POSIX owner death during initialization, admission/result and recovery.
+Real hot rollback journals retain exact bytes under wrong resource/mode selection
+before SQLite access; matched selection recovers pending as charged unknown
+without replay. Repeated interrupted recovery preserves the charge and prior
+normal evidence. Python verdicts and macOS host selection are explicit synthetic
+inputs; actual limited Rust results have a separate Linux qualifier. These cuts
+exercise no power loss, hostile storage, sync/write failure, clone defense,
+effective-cap attestation or independent assessment. Runtime behavior is unchanged.
