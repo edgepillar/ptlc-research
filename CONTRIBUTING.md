@@ -72,3 +72,13 @@ raw signature mathematics, exact application framing and governor/source policy
 separate. Cross-verifier agreement is not an independent security assessment,
 registry or production dependency selection. Both fixed subjects/reports and all
 application behavior remain unchanged; assess the test/documentation delta.
+
+Stage 35 adds an [explicit local governor profile](docs/LOCAL_GOVERNOR_PROFILE.md)
+and [validation](docs/STAGE35_VALIDATION.md). Select local rules independently of
+peer data; matching is no role assignment, policy certificate, fresh allowance
+or signature check. Preserve positive malicious/stale selection and broader-cap
+controls: the profile digest is not committed by the unchanged signed intent.
+Keep fixture-derived rule helpers confined to synthetic qualification. Run both
+the affected unit suite and separate actual-worker qualifier, then required full
+offline/artifact checks; distinguish real math from fake callback sequencing.
+Assess this delta outside both unchanged fixed subjects and unfilled reports.

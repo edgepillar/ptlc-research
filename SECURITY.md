@@ -136,3 +136,15 @@ governor-role assignment, provenance, uniqueness or freshness. Raw intent signin
 authenticates no extra outer permission field. Exact application framing and
 trusted local expectations remain required; independent assessment, registry,
 signer and funded gates are unresolved. Application behavior is unchanged.
+
+Stage 35's [explicit local governor profile](docs/LOCAL_GOVERNOR_PROFILE.md)
+matches independently selected key/resource/namespace/profile/cap rules without
+producing a role certificate or permission. Caller-selected malicious or stale
+rules can still match; parsing exact expected bytes supplies no bootstrap or
+revocation proof. The unchanged signed intent does not commit the local profile
+digest, and broader local caps can match the same signature. Format checks prove
+no curve or source math and cannot repair a forged trusted-verifier positive.
+Existing entry points do not require the helper; matching and repeated actual
+signature checks preserve exhausted quota without creating allocation authority.
+Current policy/source trust, registry lineage, dispatch, signer and funds remain
+unresolved. Both fixed review subjects/reports remain unchanged.

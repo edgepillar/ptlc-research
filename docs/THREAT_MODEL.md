@@ -203,3 +203,17 @@ self-selected source/key signatures remain valid mathematics. Outer permission
 fields are not part of the signed intent and must refuse at exact application
 parsing. Existing runtime behavior and all enrollment/registry/funded gates remain
 unchanged; cross-checking is not an independent security assessment.
+
+[Stage 35's local governor-role profile](LOCAL_GOVERNOR_PROFILE.md) refuses peer
+replacement of explicit expected rules and rejects key/resource/scope/cap
+mismatch. Its caller still selects the trust root. A maliciously or previously
+selected profile can match a valid old signature; format-valid non-curve keys
+and structurally invalid source artifacts can match without public math. The
+profile digest is not in the unchanged signed intent, and the opaque authority
+profile pin does not authenticate its fields: broader local caps can match the
+same signed message. IDs carry no registration uniqueness, and no clock,
+revocation or restored-profile defense exists. Profile and real signature checks
+preserve an exhausted journal but bound no aggregate work or fresh allocation.
+The helper is optional and cannot repair a forged trusted-verifier positive.
+Trusted provisioning, role/policy/source authority and non-rollbackable registry
+or dispatch remain separate missing mechanisms; funded and signer gates stay open.
