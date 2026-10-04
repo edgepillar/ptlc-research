@@ -36,6 +36,13 @@ Changing reviewed implementation or assumptions requires an explicit new
 subject and delta assessment; do not silently treat a later branch tip as the
 reviewed commit.
 
+[Stage 27's separate observation brief](OBSERVATION_REVIEW.md) now prepares a
+distinct complete 189-file subject through Stage 26 and an
+[unfilled observation report](OBSERVATION_REVIEW_REPORT_TEMPLATE.md). It preserves
+this original 119-file manifest and assessment scope. Neither report is a
+completed independent assessment, and unchanged dependencies are not implicitly
+reviewed. Read the separate brief for the later ownership/pool/resource targets.
+
 ## Reading and implementation map
 
 Links below locate files in this repository. For the material assessment, read

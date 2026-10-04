@@ -58,6 +58,14 @@ discovery verdicts and macOS host selection. Runtime and frozen review subject
 remain unchanged. Power loss, restore defense, independent review and funded
 availability remain open. See [fault design](docs/RESOURCE_STORE_FAULTS.md).
 
+Stage 27 prepares a [separate complete observation inventory](docs/OBSERVATION_REVIEW.md)
+and [unfilled assessment report](docs/OBSERVATION_REVIEW_REPORT_TEMPLATE.md). The
+checker uses local exact objects and protects working/indexed manifest bytes;
+it establishes neither authenticated provenance nor independent security review.
+The original 119-file subject is unchanged. All runtime, restore, source,
+resource, storage and funded-availability exclusions above remain unresolved.
+See [packaging validation](docs/STAGE27_VALIDATION.md).
+
 ## Reporting a concern
 
 Use GitHub private vulnerability reporting through the repository's Security tab **when that feature is enabled**. This document does not claim that private reporting has been configured. If it is unavailable, a public issue may request a private reporting channel without including sensitive details or an exploit that affects live systems.
