@@ -10,6 +10,16 @@ Stage 3 also checks both completed signatures in `qualification/fixtures/nonce_r
 
 Stage 9 adds a fifth top-level test over `qualification/fixtures/authentication.json`. It independently reconstructs the domain-separated 32-byte envelope message and verifies both public authentication signatures, including the envelope with an invalid inner Zenon signature. Changed payload and wrong sender key reject. This is independent fixture verification, not peer enrollment, a reusable authentication service or a contract test. See the [Stage 9 report](../docs/STAGE9_VALIDATION.md).
 
+Stage 34 adds seven [public enrollment tests](enrollment_signature_test.go), for
+12 top-level tests in this module. They independently rebuild all three unchanged
+fixture messages/request hashes, retained resource and complete scope; separate
+Go arithmetic verifies valid controls and rejects field/domain, key/encoding,
+scalar and every signature-byte mutation. Replay, reused IDs, self-selected
+source/key positives and outer framing remain explicit authority limits. No
+signing, hostile-input application codec or registry is added. See the
+[cross-check design](../docs/INDEPENDENT_ENROLLMENT_SIGNATURES.md) and
+[Stage 34 validation](../docs/STAGE34_VALIDATION.md). Dependencies are unchanged.
+
 Dependency acquisition needs network access once. With Go 1.23.12 and the cache populated:
 
 ```sh

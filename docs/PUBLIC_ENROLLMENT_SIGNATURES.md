@@ -137,3 +137,10 @@ subjects. Neither unfilled assessment is completed or expanded.
 **No-go:** treat positive bytes as governor authorization, allocate fresh quota,
 claim authenticated canonical source or restore/clone defense, integrate private
 signing, select production activation, port core rules or use real funds.
+
+The later [Stage 34 Go cross-check](INDEPENDENT_ENROLLMENT_SIGNATURES.md) rebuilds
+these unchanged public fixture messages/resource/scope/request digests and verifies
+their signatures with separate arithmetic. That test-only path adds no application
+parser or service. Exact framing, trusted expectations and governor/bootstrap
+policy remain separate requirements; repeated IDs and self-selected source/key
+positives remain. See [validation](STAGE34_VALIDATION.md).

@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 33 - public enrollment signature qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 34 - independent public enrollment signature checks. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 33 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 34 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -247,3 +247,15 @@ expectation. Legacy bounded transport supplies no enrollment rate/pool policy.
 See [validation](STAGE33_VALIDATION.md). Both fixed subjects and reports remain
 unchanged. Role/bootstrap, economic-source equivalence, non-rollbackable atomic
 uniqueness, idempotency, trusted dispatch, signer and funded gates remain unresolved.
+
+## Stage 34 independent public enrollment signature checks
+
+The [test-only Go cross-check](INDEPENDENT_ENROLLMENT_SIGNATURES.md) independently
+reconstructs message/resource/scope/request hashes and verifies the unchanged
+public fixture through the existing locked BIP340 module. Invalid bindings,
+encodings and mutations reject; valid self-selected source/key signatures and
+reused request IDs remain positives without authority or freshness. Exact
+application parsing remains separate from raw intent mathematics. This adds no
+signer, application verifier, registry, dependency or workflow. See
+[validation](STAGE34_VALIDATION.md). Both review subjects and unfilled reports
+remain unchanged; this qualification delta needs separate assessment.

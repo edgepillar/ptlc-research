@@ -128,3 +128,11 @@ supply no role, provenance, freshness or allowance. A malicious selected verifie
 can forge positive result bytes. Measurement is not atomic launch or host trust;
 legacy bounded transport adds no global work policy. Both review subjects/reports
 are unchanged; governor/bootstrap, registry, signer and funded gates remain open.
+
+Stage 34's [independent Go checks](docs/INDEPENDENT_ENROLLMENT_SIGNATURES.md)
+confirm public intent mathematics and hash framing through a separate backend.
+Valid self-selected source/key signatures, replay and reused IDs establish no
+governor-role assignment, provenance, uniqueness or freshness. Raw intent signing
+authenticates no extra outer permission field. Exact application framing and
+trusted local expectations remain required; independent assessment, registry,
+signer and funded gates are unresolved. Application behavior is unchanged.

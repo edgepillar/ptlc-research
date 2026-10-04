@@ -65,3 +65,10 @@ message and independent expected inputs; signature validity is no governor role,
 source trust or permission. Real worker evidence, fake callback sequencing and
 hosted execution must remain separate. This delta lies outside both fixed review
 subjects; neither unfilled assessment or existing runtime entry point changes.
+
+Stage 34 adds [independent Go enrollment checks](docs/INDEPENDENT_ENROLLMENT_SIGNATURES.md)
+and [validation](docs/STAGE34_VALIDATION.md) over unchanged public fixtures. Keep
+raw signature mathematics, exact application framing and governor/source policy
+separate. Cross-verifier agreement is not an independent security assessment,
+registry or production dependency selection. Both fixed subjects/reports and all
+application behavior remain unchanged; assess the test/documentation delta.
