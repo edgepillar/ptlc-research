@@ -18,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from offline_session.observation_verifier import _file_digest
 from offline_session.public_worker import (MAX_INPUT_BYTES, MAX_OUTPUT_BYTES,
     WorkerError, _OWNER_POLL_SECONDS, _admission_descriptor, _lease_descriptors, _remaining, _run, _validate)
+from offline_session.worker_resources import _decode
 
 
 def _input(deadline, owner_pid):
@@ -42,9 +43,9 @@ def _input(deadline, owner_pid):
 
 def main():
     try:
-        if len(sys.argv) != 7:
+        if len(sys.argv) != 8:
             raise WorkerError("invalid guard arguments")
-        entry, pin, raw_owner, raw_timeout, raw_leases, raw_admission = sys.argv[1:]
+        entry, pin, raw_owner, raw_timeout, raw_leases, raw_admission, raw_limits = sys.argv[1:]
         owner_pid, timeout = int(raw_owner), float(raw_timeout)
         if str(owner_pid) != raw_owner or owner_pid <= 0:
             raise WorkerError("invalid guard owner")
@@ -57,6 +58,11 @@ def main():
             if str(admission) != raw_admission:
                 raise WorkerError("invalid guard admission encoding")
             leases += (_admission_descriptor(admission, leases),)
+        limits = None
+        if raw_limits != "-":
+            limits = _decode(raw_limits)
+            if len(leases) != 3:
+                raise WorkerError("resource-limited work requires shared admission")
         _validate(entry, b"", timeout, MAX_INPUT_BYTES, MAX_OUTPUT_BYTES)
         signal.signal(signal.SIGCHLD, signal.SIG_DFL)
         deadline = time.monotonic() + timeout
@@ -67,7 +73,12 @@ def main():
         remaining = _remaining(deadline, owner_pid)
         # The outer caller owns this guard's process group. The guard separately
         # owns/reaps this direct child and never signals its own shared group.
-        response = _run([entry], request, timeout=remaining, max_output_bytes=MAX_OUTPUT_BYTES,
+        command = [entry]
+        if limits is not None:
+            launcher = Path(__file__).with_name("resource_launcher.py").resolve()
+            command = [str(Path(sys.executable).resolve()), "-B", str(launcher), entry, pin,
+                       raw_limits, raw_leases, raw_admission]
+        response = _run(command, request, timeout=remaining, max_output_bytes=MAX_OUTPUT_BYTES,
                         pass_fds=leases, start_new_session=False, owner_pid=owner_pid)
         _remaining(deadline, owner_pid)
         sys.stdout.buffer.write(response)

@@ -16,19 +16,20 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from offline_session.observation_store import ObservationStore
 from offline_session.observation_verifier import SubprocessObservation, _file_digest
-from offline_session.public_worker import run_guarded_public_worker, run_public_worker
+from offline_session.public_worker import run_guarded_public_worker, run_limited_public_worker, run_public_worker
+from offline_session.worker_resources import WorkerResourceLimits
 from observation_store_test_support import STORE_ID, synthetic_pool
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", choices=("store", "raw", "legacy"))
+    parser.add_argument("mode", choices=("store", "raw", "legacy", "limited"))
     parser.add_argument("root")
     parser.add_argument("checkpoint")
     parser.add_argument("marker")
     parser.add_argument("release")
     parser.add_argument("--target")
-    parser.add_argument("--worker", choices=("hold", "never-read", "eof-held"), default="hold")
+    parser.add_argument("--worker", choices=("hold", "never-read", "eof-held", "cpu-burn", "address-space"), default="hold")
     parser.add_argument("--pause-after-guard", action="store_true")
     parser.add_argument("--timeout", type=float, default=30)
     parser.add_argument("--pool")
@@ -47,7 +48,7 @@ def main():
     pool_directory = Path(options.pool) if options.pool else root.parent / "worker-pool"
     arguments = (sys.executable, "-B", str(actor), options.worker, options.marker,
                  options.release, str(first), str(second), str(unrelated),
-                 str(pool_directory) if options.mode == "store" else "-")
+                 str(pool_directory) if options.mode in ("store", "limited") else "-")
     executable.write_text("#!/bin/sh\nexec " + " ".join(shlex.quote(value) for value in arguments) + "\n", encoding="ascii")
     executable.chmod(0o700)
     actual_spawn = subprocess.Popen
@@ -106,6 +107,11 @@ def main():
                 request = b"i" * 65536 if options.worker == "never-read" else b"synthetic-public-input"
                 if options.mode == "legacy":
                     run_public_worker(str(executable.resolve()), request, timeout=options.timeout, max_input_bytes=65536)
+                elif options.mode == "limited":
+                    with synthetic_pool(root.parent, directory=pool_directory, slot_limit=options.pool_slots).acquire() as lease:
+                        run_limited_public_worker(str(executable.resolve()), request, timeout=options.timeout, max_input_bytes=65536,
+                            expected_executable_sha256_hex=_file_digest(executable), ownership_descriptors=tuple(descriptors),
+                            admission_descriptor=lease.fileno(), resource_limits=WorkerResourceLimits(1, 128 * 1024 * 1024))
                 else:
                     run_guarded_public_worker(str(executable.resolve()), request, timeout=options.timeout, max_input_bytes=65536,
                         expected_executable_sha256_hex=_file_digest(executable), ownership_descriptors=tuple(descriptors))

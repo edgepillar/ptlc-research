@@ -3,6 +3,8 @@
 import json
 import os
 from pathlib import Path
+import resource
+import signal
 import sys
 import time
 
@@ -31,15 +33,32 @@ def main():
         os.close(sys.stdout.fileno())
     target = Path(marker)
     temporary = target.with_name(target.name + ".tmp")
-    temporary.write_text(json.dumps({"worker": os.getpid(), "guard": os.getppid(),
-        "leases": len(retained), "admission_leases": len(admitted), "unrelated_leaked": leaked}), encoding="ascii")
+    value = {"worker": os.getpid(), "guard": os.getppid(), "leases": len(retained),
+             "admission_leases": len(admitted), "unrelated_leaked": leaked}
+    if mode in ("cpu-burn", "address-space"):
+        value["resource_limits"] = {"cpu": resource.getrlimit(resource.RLIMIT_CPU),
+            "address_space": resource.getrlimit(resource.RLIMIT_AS),
+            "core": resource.getrlimit(resource.RLIMIT_CORE)}
+    if mode == "address-space":
+        import mmap
+        try:
+            block = mmap.mmap(-1, 256 * 1024 * 1024)
+            block.close()
+            value["oversized_mapping_rejected"] = False
+        except (OSError, MemoryError):
+            value["oversized_mapping_rejected"] = True
+    temporary.write_text(json.dumps(value), encoding="ascii")
     os.replace(temporary, target)
     heartbeat = target.with_name(target.name + ".heartbeat")
     sequence = 0
-    while not Path(release).exists():
+    while mode != "address-space" and not Path(release).exists():
         sequence += 1
         heartbeat.write_text(str(sequence), encoding="ascii")
         time.sleep(0.005)
+    if mode == "cpu-burn":
+        signal.signal(signal.SIGXCPU, signal.SIG_IGN)
+        while True:
+            pass
     # Let the legacy control wait until the loop has stopped before removing
     # its temporary directory. No filesystem access follows this marker.
     target.with_name(target.name + ".released").touch()

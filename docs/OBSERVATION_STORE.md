@@ -199,3 +199,9 @@ Stage 12 review subject and pending independent assessment remain unchanged.
 See [Stage 20 historical validation](STAGE20_VALIDATION.md) and
 [Stage 21 historical validation](STAGE21_VALIDATION.md) and
 [Stage 22 current validation](STAGE22_VALIDATION.md).
+
+[Stage 23's resource experiment](WORKER_RESOURCE_LIMITS.md) is a separate adapter
+path and does not change this v3 store. Observe still selects observe_admitted,
+not observe_limited, and neither pool profile nor database/checkpoint records bind
+CPU/address-space maxima. Select and persist an explicit runtime policy and
+qualify continuity/order before claiming limited resources for this managed store.

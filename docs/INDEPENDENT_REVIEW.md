@@ -119,6 +119,15 @@ and cumulative-rate policy, fairness, hostile-worker containment and restored-co
 defense remain unimplemented. The 119-file subject and unfilled report are unchanged;
 this delta's tests do not supply independent assessment or funded availability.
 
+[Stage 23's separate resource delta](WORKER_RESOURCE_LIMITS.md) adds explicit
+Linux CPU/address-space caps installed and read back before same-process exec.
+Assess inherited-limit preservation, partial-setup refusal, descriptor survival,
+privilege/runtime assumptions, CPU signal and mapping probes, unsupported hosts
+and unknown-versus-negative partition separately. Store v3 still selects ordinary
+admitted work, so resource-policy persistence/continuity and later integration
+are not assessed by this experiment. The frozen subject is unchanged. No RSS,
+aggregate budget, sandbox, external assessment or funded guarantee follows.
+
 ## Claims and open obligations
 
 | Bounded evidence at the subject | Obligation still open |

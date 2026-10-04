@@ -240,11 +240,17 @@ def _admission_descriptor(descriptor, ownership_descriptors):
 
 def _guarded(executable, request_bytes, *, timeout, max_input_bytes,
              expected_executable_sha256_hex, ownership_descriptors,
-             max_output_bytes, admission_descriptor=None):
+             max_output_bytes, admission_descriptor=None, resource_limits=None):
     path = _validate(executable, request_bytes, timeout, max_input_bytes, max_output_bytes)
     leases = _lease_descriptors(ownership_descriptors)
     if admission_descriptor is not None:
         leases += (_admission_descriptor(admission_descriptor, leases),)
+    encoded_limits = "-"
+    if resource_limits is not None:
+        from .worker_resources import _encode
+        if admission_descriptor is None:
+            raise WorkerError("resource-limited work requires shared admission")
+        encoded_limits = _encode(resource_limits)
     if (type(expected_executable_sha256_hex) is not str or len(expected_executable_sha256_hex) != 64
             or any(item not in "0123456789abcdef" for item in expected_executable_sha256_hex)):
         raise WorkerError("an exact selected executable pin is required")
@@ -252,7 +258,7 @@ def _guarded(executable, request_bytes, *, timeout, max_input_bytes,
     interpreter = Path(sys.executable).resolve()
     command = [str(interpreter), "-B", str(guard), str(path), expected_executable_sha256_hex,
                str(os.getpid()), repr(float(timeout)), ",".join(str(fd) for fd in leases[:2]),
-               "-" if admission_descriptor is None else str(admission_descriptor)]
+               "-" if admission_descriptor is None else str(admission_descriptor), encoded_limits]
     return _run(command, request_bytes, timeout=timeout, max_output_bytes=max_output_bytes,
                 pass_fds=leases)
 
@@ -283,3 +289,23 @@ def run_admitted_public_worker(executable, request_bytes, *, timeout,
         expected_executable_sha256_hex=expected_executable_sha256_hex,
         ownership_descriptors=leases, max_output_bytes=max_output_bytes,
         admission_descriptor=admission_descriptor)
+
+
+def run_limited_public_worker(executable, request_bytes, *, timeout,
+                              max_input_bytes, expected_executable_sha256_hex,
+                              ownership_descriptors, admission_descriptor, resource_limits,
+                              max_output_bytes=MAX_OUTPUT_BYTES):
+    """Require explicit Linux CPU/address-space limits and three held leases.
+
+    Invalid or unsupported policy rejects before guard creation. Only the exec
+    launcher lowers limits; neither the caller nor guard is reconfigured. This
+    supplies no RSS, process-tree, rate, fairness or trusted enrollment policy.
+    """
+    from .worker_resources import _supported
+    _supported(resource_limits)
+    leases = _lease_descriptors(ownership_descriptors)
+    _admission_descriptor(admission_descriptor, leases)
+    return _guarded(executable, request_bytes, timeout=timeout, max_input_bytes=max_input_bytes,
+        expected_executable_sha256_hex=expected_executable_sha256_hex,
+        ownership_descriptors=leases, admission_descriptor=admission_descriptor,
+        resource_limits=resource_limits, max_output_bytes=max_output_bytes)
