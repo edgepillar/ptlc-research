@@ -134,3 +134,10 @@ dispatch. Existing journal and observation APIs enforce none of this profile.
 **NO-GO:** treat profile matching or a valid signature as a governor certificate,
 allocate fresh quota, connect a registry or dispatch path, integrate private
 signing, port current-node consensus rules or use real funds.
+
+The later [Stage 36 comparison](GOVERNOR_AUTHORITY_MODEL.md) separates trusted
+assignment, hypothetical complete intent binding and current authority at use.
+Static signatures/binding still allow old policy/key authority; cached-current
+checks and coherent local anchor restore have distinct failures. The ideal
+current oracle is not implemented and repeated packet admission remains possible.
+The existing profile and v1 message are unchanged; see [validation](STAGE36_VALIDATION.md).

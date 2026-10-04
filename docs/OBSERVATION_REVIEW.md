@@ -220,3 +220,12 @@ matching wrong/stale rules or broader caps can still succeed with the unchanged
 signed intent. Assess independent selection, exact framing and optional
 composition separately. Both fixed manifests and unfilled reports remain
 unchanged; see [validation](STAGE35_VALIDATION.md) for executed evidence limits.
+
+[Stage 36 governor authority comparison](GOVERNOR_AUTHORITY_MODEL.md) is a later
+standalone model outside this immutable source and the original subject. Its
+trusted root, assignment/intent signature facts and current oracle implement no
+credential or freshness mechanism. Cached-check and old-anchor admissions are
+counterexamples; conditional current checking provides no idempotency or worker
+entry. Hypothetical complete profile binding changes no existing message. Neither
+fixed manifest or unfilled report changes; assess this model separately. See
+[validation](STAGE36_VALIDATION.md) for complete finite counts and evidence limits.

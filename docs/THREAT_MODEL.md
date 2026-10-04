@@ -217,3 +217,15 @@ preserve an exhausted journal but bound no aggregate work or fresh allocation.
 The helper is optional and cannot repair a forged trusted-verifier positive.
 Trusted provisioning, role/policy/source authority and non-rollbackable registry
 or dispatch remain separate missing mechanisms; funded and signer gates stay open.
+
+[Stage 36's governor model](GOVERNOR_AUTHORITY_MODEL.md) shows that key possession,
+scoped assignment and complete profile binding do not establish current authority.
+A cached positive can admit after update, rotation or revocation. A coherent old
+local anchor can defeat a use-time check while the independent trusted world
+continues forward; refresh is an assumed external event. Conditional atomic-current
+authorization still permits repeated packet admission with no registry or one-use
+entry. Root trust, assignment/signature facts and semantic resource identity are
+premises, not implemented credential or source proofs. The stronger profile-bound
+intent is hypothetical and leaves existing v1 bytes unchanged. Root compromise,
+additional updates, source mapping, provisioning, native persistence and funded
+availability are outside this finite domain; both assessments remain pending.

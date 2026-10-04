@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 35 - explicit local governor-role profile qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 36 - finite governor provenance and current-policy comparison. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -275,3 +275,18 @@ See [validation](STAGE35_VALIDATION.md). Models, workers, packets, dependencies,
 fixtures and both fixed subjects/reports remain unchanged; the new pure helper
 and qualifier need separate assessment. Bootstrap, policy binding, revocation,
 source authority, registry lineage and unique dispatch remain unresolved.
+
+## Stage 36 finite governor authority comparison
+
+The [standalone model](GOVERNOR_AUTHORITY_MODEL.md) separates independently trusted
+root/assignment facts, complete hypothetical profile binding and current authority
+at abstract use. Cached positives survive policy change, key rotation and
+revocation; restoring a coherent old local view can bypass a use-time check.
+Conditional atomic-current safety requires ideal inputs and a non-rollbackable
+current oracle. Both callers can still admit the same proposal. No provisioning,
+certificate format, v2 intent, crypto verification, registry, quota or worker
+entry is implemented. Existing code, packets, public workers, models, journals,
+dependencies and workflow remain unchanged. See [validation](STAGE36_VALIDATION.md).
+Both fixed subjects/reports remain unchanged and this later model needs separate
+assessment. Select actual role/current-policy evidence and credential framing
+before any backend; source, lineage, dispatch, signer and funded gates remain open.
