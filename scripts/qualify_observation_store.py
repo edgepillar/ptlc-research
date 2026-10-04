@@ -64,7 +64,7 @@ class RealStoreTests(unittest.TestCase):
                 for signature, outcome in ((self.signature, "verified"), (bytes(64), "rejected")):
                     self.assertEqual(json.loads(store.observe(self.state, signature))["outcome"], outcome)
                 self.assertEqual(store.summary().attempts_remaining, 0)
-            with self.open(base, limit=2) as store, patch.object(SubprocessObservation, "__call__") as worker:
+            with self.open(base, limit=2) as store, patch.object(SubprocessObservation, "observe_owned") as worker:
                 self.assertEqual(json.loads(store.known_statement(self.state, self.signature))["outcome"], "verified")
                 self.assertEqual(json.loads(store.known_statement(self.state, bytes(64)))["outcome"], "rejected")
                 with self.assertRaises(records.RecordExhausted):
@@ -112,7 +112,7 @@ class RealStoreTests(unittest.TestCase):
                 if child.poll() is None:
                     child.kill()
                 child.communicate(timeout=10)
-            with self.open(base, limit=2) as store, patch.object(SubprocessObservation, "__call__") as worker:
+            with self.open(base, limit=2) as store, patch.object(SubprocessObservation, "observe_owned") as worker:
                 self.assertEqual(store.summary().attempts_consumed, 1)
                 self.assertEqual(store.summary().pending_attempts, 0)
                 self.assertIsNone(store.known_statement(self.state, self.signature))
@@ -128,7 +128,7 @@ class RealStoreTests(unittest.TestCase):
             with self.open(base, observer=observer) as store:
                 with entry.open("ab") as output:
                     output.write(b"synthetic entry change")
-                with patch("offline_session.observation_verifier.run_public_worker",
+                with patch("offline_session.observation_verifier.run_guarded_public_worker",
                            side_effect=AssertionError("changed entry launched")) as worker:
                     self.assertEqual(json.loads(store.observe(self.state, self.signature))["outcome"], "unknown")
                     worker.assert_not_called()

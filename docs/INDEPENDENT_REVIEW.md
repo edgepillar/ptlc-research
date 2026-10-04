@@ -99,6 +99,15 @@ orphan computation and restore boundaries need their own exact delta assessment.
 It changes neither the frozen source manifest nor recovery admission, and does
 not supply external review, process containment or funded availability evidence.
 
+[Stage 21's guard/lease delta](OBSERVATION_LEASES.md) changes the current disk
+owner to version 2 and carries two locked descriptions into a selected
+cooperative nonforking worker. Parent monitoring, inherited-lock close versus
+unlock behavior, exclusive child reaping, guard loss, trusted runtime and old-v1
+quarantine need their own exact delta assessment. Arbitrary containment, global
+resources and matching-pair rollback remain unresolved. The frozen subject and
+unfilled assessment report remain unchanged; these tests are not an external
+review.
+
 ## Claims and open obligations
 
 | Bounded evidence at the subject | Obligation still open |

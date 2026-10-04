@@ -2,7 +2,8 @@
 
 This offline store is separate from recovery admission and the session journal.
 Cooperating POSIX owners retain both locks through admission, work and result.
-Matching restored copies, a hostile host and orphan computation are not solved.
+The selected guard and cooperative worker retain inherited lock references.
+Matching restored copies, a hostile host and aggregate resources are not solved.
 """
 
 import copy
@@ -26,7 +27,7 @@ from . import exchange, observation_evidence as evidence, observation_records as
 from .observation_verifier import SubprocessObservation
 
 
-VERSION = 1
+VERSION = 2
 MAX_DATABASE_BYTES = 8 * 1024 * 1024
 MAX_CHECKPOINT_BYTES = 1024
 
@@ -70,7 +71,7 @@ def _checkpoint(store_id, revision, wire):
     value = {"version": VERSION, "store_id_hex": store_id, "revision": revision,
              "records_digest_hex": hashlib.sha256(wire).hexdigest()}
     value["digest_hex"] = hashlib.sha256(
-        b"PTLC/observation-store-checkpoint/v1\x00" + exchange.canonical(value)).hexdigest()
+        b"PTLC/observation-store-checkpoint/v2\x00" + exchange.canonical(value)).hexdigest()
     return value
 
 
@@ -79,8 +80,9 @@ class ObservationStore:
 
     Only this owner invokes the selected SubprocessObservation and commits its
     return; workers receive public verification bytes, never a storage handle.
-    Owner death can leave computation alive, but its result cannot be published
-    by the dead owner. This is record-writer exclusion, not process containment.
+    Guard and cooperative worker retain the two lock references through exit.
+    Owner death is watched; a live inherited reference excludes another owner.
+    This is neither a sandbox nor global resource or restored-copy protection.
     """
 
     @classmethod
@@ -184,7 +186,9 @@ class ObservationStore:
             return
         self._load()
         # Locked publisher ownership excludes a live/stale managed record writer.
-        # An orphan pure public worker has no database handle or return recipient.
+        # A cooperative live worker retains the locks, so this reopen cannot
+        # acquire ownership until those references are closed. Workers receive
+        # only lock capabilities, never the database/checkpoint connection.
         pending = [item["id"] for item in json.loads(self._wire)["attempts"] if item["outcome"] is None]
         if pending:
             wire = self._wire
@@ -328,7 +332,8 @@ class ObservationStore:
             self._persist(wire, "admission")
             self._checkpoint("admission.committed")
             try:
-                statement = self._verifier(snapshot, signature)
+                statement = self._verifier.observe_owned(snapshot, signature,
+                    ownership_descriptors=tuple(self._locks))
             except Exception:
                 statement = evidence.unknown_statement(snapshot, signature, verifier_profile_digest_hex=self._profile)
             except BaseException:
@@ -363,10 +368,10 @@ class ObservationStore:
                 self._poisoned = True
             self._connection = None
         for descriptor in reversed(self._locks):
-            try:
-                fcntl.flock(descriptor, fcntl.LOCK_UN)
-            finally:
-                os.close(descriptor)
+            # Explicit LOCK_UN would release a still-live worker's shared lock.
+            # Close only this owner's reference; the last cooperative holder
+            # releases the lock when its own reference closes.
+            os.close(descriptor)
         self._locks = []
         self._closed = True
 

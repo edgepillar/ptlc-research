@@ -167,9 +167,18 @@ for these statements and unknown attempts. Its canonical values and actual
 verdict exercises implement no owned persistent cache or journal policy. The
 required disk ownership and commit ordering remain a separate next-stage gate.
 
-[Stage 20](OBSERVATION_STORE.md) now implements a separate offline disk owner
-around this unchanged adapter. It commits pending work before invocation and a
+[Stage 20](OBSERVATION_STORE.md) originally added a separate offline disk owner
+around this mathematical profile. It commits pending work before invocation and a
 bound result before return; restart recovers unfinished publication as charged
 unknown. Record-writer exclusion does not contain orphan workers or establish
 paired-restore protection, source authority or recovery admission. The producer
 alone still performs no persistence, and both deltas need separate assessment.
+
+[Stage 21](OBSERVATION_LEASES.md) adds an explicit observe_owned method that uses
+the same mathematical profile with two inherited store lock references and a
+parent-watching guard. Invalid/missing descriptors yield unknown without legacy
+fallback. The guard remeasures the selected entry; interpreter/modules/runtime
+remain separately trusted. The ordinary callable retains its unowned path and
+supplies no lifetime supervision. Store v2 identifies the new ownership epoch
+and quarantines old v1 pairs without migration. Cooperative exclusion is neither
+arbitrary containment nor aggregate resource or paired-restore protection.

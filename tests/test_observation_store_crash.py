@@ -100,7 +100,7 @@ class ObservationStoreCrashTests(unittest.TestCase):
                 self.wait_line(child, b"paused")
                 self.kill(child)
                 self.assertEqual(len(marker.read_bytes()) if marker.exists() else 0, calls)
-                with patch.object(SubprocessObservation, "__call__") as worker:
+                with patch.object(SubprocessObservation, "observe_owned") as worker:
                     if attempts is None:
                         before = ((self.root / "observations.sqlite3").read_bytes(), self.anchor.read_bytes())
                         with self.assertRaises(StoreQuarantined):
@@ -115,14 +115,14 @@ class ObservationStoreCrashTests(unittest.TestCase):
                 self.assertEqual(len(marker.read_bytes()) if marker.exists() else 0, calls)
 
     def test_killed_recheck_retains_old_normal_and_consumed_allowance(self):
-        with self.open() as store, patch.object(SubprocessObservation, "__call__", return_value=self.verified):
+        with self.open() as store, patch.object(SubprocessObservation, "observe_owned", return_value=self.verified):
             store.observe(self.state, self.signature)
         marker = self.base / "recheck.calls"
         child = self.start("crash", "--recheck", "--point", "worker.returned",
                            "--target", str(self.target), "--marker", str(marker))
         self.wait_line(child, b"paused")
         self.kill(child)
-        with self.open() as store, patch.object(SubprocessObservation, "__call__") as worker:
+        with self.open() as store, patch.object(SubprocessObservation, "observe_owned") as worker:
             self.assertEqual(store.known_statement(self.state, self.signature), self.verified)
             self.assertEqual(store.summary().attempts_consumed, 2)
             with self.assertRaises(records.RecordExhausted):

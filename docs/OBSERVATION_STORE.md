@@ -1,12 +1,14 @@
 # Separately owned offline observation records
 
-Status: **Stage 20 local SQLite/checkpoint ownership and persistence, separate
+Status: **Stage 21 local SQLite/checkpoint ownership with worker-held leases, separate
 from recovery admission. No chain source, private signer or funded policy is
-connected. Process containment and paired-restore protection remain open.**
+connected. Arbitrary process containment and paired-restore protection remain open.**
 
-Source parent: [`eda29365089ebf99008e779afaffbcbc3299015c`](https://github.com/edgepillar/ptlc-research/tree/eda29365089ebf99008e779afaffbcbc3299015c).
+Original Stage 20 source parent: [`eda29365089ebf99008e779afaffbcbc3299015c`](https://github.com/edgepillar/ptlc-research/tree/eda29365089ebf99008e779afaffbcbc3299015c).
+The [Stage 21 lease design](OBSERVATION_LEASES.md) identifies the current source
+parent and supervision boundary.
 The [pure record contract](OBSERVATION_RECORDS.md) and
-[selected public worker](OBSERVATION_VERIFIER.md) remain unchanged. The separate
+[selected mathematical profile/predicate](OBSERVATION_VERIFIER.md) remain unchanged. The separate
 [module](../offline_session/observation_store.py) supplies local record ownership
 and ordering around those two surfaces. It imports no signing implementation and
 accepts no incoming statement or arbitrary verification callback.
@@ -18,18 +20,19 @@ accepts no incoming statement or arbitrary verification callback.
 | Prevent cooperating stale writers | Two lifetime advisory locks, before SQLite/checkpoint load, owned by the opening PID and thread object | Native concurrent-owner, foreign-thread, fork and owner-death tests; trusted local filesystem and cooperating writers only |
 | Charge before work | Commit pending records using SQLite DELETE/FULL, then file fsync, checkpoint replacement and directory fsync before calling the selected adapter | Real SIGKILL boundary matrix; failed or uncertain admission invokes no worker |
 | Commit before returning a result | Append exact normal/unknown finish and checkpoint before return | Synthetic boundaries plus actual Rust result-loss and restart tests; power loss is not exercised |
-| Recover unfinished publication | A separately successful locked reopen commits pending work as unknown, retaining its charge and earlier normal claims | No replayed worker; original record publisher must be excluded, while orphan computation can remain alive |
+| Recover unfinished publication | A separately successful locked reopen commits pending work as unknown, retaining its charge and earlier normal claims | No replayed worker; cooperative live holders exclude reopen even after guard death |
 | Detect inconsistent storage | Expected public store ID, profile/limits, bounded canonical history, and exact database/checkpoint pair | Wrong config, corruption, missing half and one-sided restore quarantine; matching old pairs and coherent rewrites remain indistinguishable |
 | Keep recovery authority separate | No session-journal reference, output signer, reconciliation call or source input | Actual positive leaves an exhausted reopened journal's exact state and bytes unchanged |
 
-This stage qualifies a local record-publishing mechanism. It does not meet the
-stronger [Stage 19 worker-lifetime requirement](OBSERVATION_RECORDS.md#required-owned-backend-ordering)
-as a process-containment guarantee: SIGKILL of an owner can leave its public
-subprocess computing. Workers receive only verification request bytes, with no
-store handle or path; only the owning synchronous caller can commit a result.
-A dead or inherited caller cannot publish a late result through this API.
-Containment across owner death and aggregate resource admission need a separate
-mechanism and assessment before a funded application depends on them.
+The current owner conditionally meets the
+[Stage 19 worker-lifetime requirement](OBSERVATION_RECORDS.md#required-owned-backend-ordering)
+for a selected cooperative nonforking worker. An internal guard watches owner
+death; the guard and worker retain both lock references. A killed guard can leave
+computing work alive, but those references block a new owner until exit. Workers
+receive public request bytes and lock capabilities, never a database/checkpoint
+handle; only the synchronous owner commits a result. Malicious/escaped workers,
+uninterruptible tasks and aggregate resource admission remain outside this
+construction. A dead/inherited caller cannot publish through the managed API.
 
 ## Local ownership and configuration
 
@@ -72,7 +75,7 @@ Diagnostic hooks are trusted local test instrumentation, never peer-controlled.
 ## Storage pair and validation
 
 The private directory contains `observations.sqlite3`. One `checkpoint` row has
-exactly the selected version 1, slot one, expected store ID, record revision,
+exactly the selected version 2, slot one, expected store ID, record revision,
 bounded canonical record bytes and checkpoint digest. Before fetching a record
 BLOB, load checks its SQLite length against the existing 1 MiB record limit and
 reads at most two metadata rows. Database and rollback-journal files have an
@@ -85,7 +88,7 @@ The separate checkpoint is exact compact ASCII JSON with no trailing LF:
 `version`, `store_id_hex`, `revision`, `records_digest_hex`, `digest_hex`.
 The records digest is SHA256 of the exact canonical record bytes. The outer
 digest is SHA256 of the first four canonical fields under
-`PTLC/observation-store-checkpoint/v1` followed by a NUL byte. These hashes are
+`PTLC/observation-store-checkpoint/v2` followed by a NUL byte. These hashes are
 consistency commitments, not authenticators. Record limits, profile, complete
 transition replay and at most one pending attempt are validated before a claim
 is exposed or pending publication recovered. This synchronous backend does not
@@ -94,7 +97,9 @@ produce parallel pending attempts.
 A missing pair half is never reinitialized. A divergent pair is quarantined
 without selecting whichever copy appears newer or replaying work. The separate
 checkpoint is a logically distinct local file; physical storage independence or
-an external trusted anchor is not established.
+an external trusted anchor is not established. A consistent v1 pair, including
+pending work, is quarantined unchanged; no automatic migration or old-work
+recovery is performed. Existing unleased work cannot be retroactively excluded.
 
 ## Admission, result and interrupted publication
 
@@ -103,7 +108,11 @@ public snapshot. Exhausted attempt quota rejects before target preparation.
 The unchanged pure begin validates the target/recheck choice and produces a
 charged pending revision. That revision is committed to SQLite first, then to
 the separately fsynced/replaced checkpoint, with a directory fsync before work.
-The selected adapter is called only after those operations return successfully.
+The selected adapter's explicit owned method is called only after those
+operations return successfully. It passes exactly the two held lock descriptors
+through the guard to the cooperative worker, with no invalid-lease fallback to
+legacy transport. The owner releases only its references by closing them; an
+explicit shared LOCK_UN would release a still-live worker's exclusion.
 
 The returned statement must finish that exact target and profile. A malformed
 or cross-target return becomes an explicitly charged unknown, never a normal
@@ -123,6 +132,9 @@ Any interrupted/uncertain storage operation poisons the handle. It can be
 closed by its owner but cannot inspect, retry or expose a retained claim. A
 separately successful locked reopen first validates both files. Matching pending
 records become unknown under ownership and are committed before open returns.
+The guarded worker's live references block that ownership acquisition before
+SQLite access, including after its guard dies. Owner-death monitoring and
+descriptor cooperation are specified in the [lease design](OBSERVATION_LEASES.md).
 If that recovery commit leaves a database/checkpoint gap, reopen quarantines too.
 
 ## Tested crash boundaries and restore limits
@@ -148,13 +160,14 @@ One-sided old restores fail closed in either direction. Restoring both matching
 old files demonstrably replenishes quota and permits another worker call.
 Coherently rewriting both files under the same public ID/profile is likewise
 outside the trust boundary. New directories, IDs, profiles and histories can
-bypass per-history limits. No global CPU, memory, orphan-process, session or
+bypass per-history limits. No global CPU, memory, process, session or
 verification-resource defense is supplied by these quotas.
 
 **Go:** assess this exact storage/producer delta and specify aggregate admission,
-worker containment, source authority and external restore handling separately.
+arbitrary worker containment, source authority and external restore handling separately.
 **No-go:** connect these retained claims as a funded recovery guarantee, bypass
 journal exhaustion, infer a chain fact from a mathematical verdict, introduce
 private signing, port the client store into core or activate PTLC. The frozen
 Stage 12 review subject and pending independent assessment remain unchanged.
-See [Stage 20 validation](STAGE20_VALIDATION.md).
+See [Stage 20 historical validation](STAGE20_VALIDATION.md) and
+[Stage 21 current validation](STAGE21_VALIDATION.md).
