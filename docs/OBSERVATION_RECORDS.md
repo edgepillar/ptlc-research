@@ -176,3 +176,11 @@ backend around these unchanged pure transitions. It qualifies managed record
 publication and commit ordering, not containment of a worker orphaned by owner
 death. That stronger lifetime/resource requirement, paired-restore protection,
 source authority and any funded admission policy remain explicit open gates.
+
+[Stage 21](OBSERVATION_LEASES.md) adds a parent-watching guard and inherited
+ownership locks for a selected cooperative nonforking worker. Its live references
+block reopening even after the guard dies; owner closure never explicitly
+unlocks the shared descriptions. This conditionally implements the lifetime
+requirement above. Old store v1 pairs quarantine without migration. Malicious
+or escaped workers, uninterruptible tasks, aggregate resources, matching pair
+rollback and any funded availability policy remain outside the evidence.

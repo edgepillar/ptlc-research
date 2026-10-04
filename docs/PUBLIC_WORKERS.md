@@ -2,6 +2,12 @@
 
 Status: offline subprocess qualification on Linux/macOS. This transport runs explicitly selected trusted local executables with public synthetic inputs. It is not a private signing boundary or an operating-system sandbox.
 
+The sections below describe the legacy run_public_worker path. [Stage 21's
+owned observation path](OBSERVATION_LEASES.md) adds a separate parent-watching
+guard and inherited lock descriptions for the selected cooperative nonforking
+worker. The legacy artifact/completion/authentication adapters and direct
+observation callable retain their earlier ownership boundary.
+
 ## Problem and scope
 
 The original adapters accepted at most 4,096 output bytes but first sent all stdout to a temporary file. A faulty executable could exhaust temporary storage before that acceptance check or the timeout. Both adapters now share `offline_session.public_worker`, which bounds output while transferring it through pipes and creates no output spool file.

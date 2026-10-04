@@ -42,7 +42,7 @@ def main():
         finally:
             os.close(descriptor)
 
-    def work(state, signature):
+    def work(state, signature, *, ownership_descriptors):
         mark()
         return exchange.canonical(target["statement"])
 
@@ -64,15 +64,15 @@ def main():
             target = json.loads(Path(args.target).read_bytes())
             armed = True
             if args.actual_observation:
-                actual_call = SubprocessObservation.__call__
-                def actual_work(state, signature):
-                    statement = actual_call(verifier, state, signature)
+                actual_call = SubprocessObservation.observe_owned
+                def actual_work(state, signature, *, ownership_descriptors):
+                    statement = actual_call(verifier, state, signature, ownership_descriptors=ownership_descriptors)
                     mark(json.loads(statement)["outcome"].encode("ascii"))
                     return statement
-                with patch.object(SubprocessObservation, "__call__", side_effect=actual_work):
+                with patch.object(SubprocessObservation, "observe_owned", side_effect=actual_work):
                     store.observe(target["state"], bytes.fromhex(target["signature_hex"]), recheck=args.recheck)
             else:
-                with patch.object(SubprocessObservation, "__call__", side_effect=work):
+                with patch.object(SubprocessObservation, "observe_owned", side_effect=work):
                     store.observe(target["state"], bytes.fromhex(target["signature_hex"]), recheck=args.recheck)
             print("completed", flush=True)
 

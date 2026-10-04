@@ -5,14 +5,18 @@ unreaped direct child's process group is killed before a bounded reap attempt.
 Once the child has been reaped, its cached process-group identifier is not used:
 descendants that already closed inherited pipes or escaped the group are outside
 this cleanup guarantee. Process creation and kernel scheduling have no hard
-wall-clock bound here. The caller must not independently reap these children or
-configure automatic SIGCHLD reaping.
+wall-clock bound here. The leased observation path adds a parent-watching guard
+and inherited lock references for one cooperative nonforking worker. The caller
+must not independently reap these children or configure automatic SIGCHLD
+reaping. Leases prevent another cooperating owner while a live holder remains;
+they do not contain malicious workers or bound aggregate resource consumption.
 """
 
 import os
 from pathlib import Path
 import selectors
 import signal
+import stat
 import subprocess
 import sys
 import time
@@ -22,13 +26,16 @@ MAX_INPUT_BYTES = 65536
 MAX_OUTPUT_BYTES = 4096
 _REAP_GRACE_SECONDS = 1.0
 _IO_CHUNK_BYTES = 4096
+_OWNER_POLL_SECONDS = 0.05
 
 
 class WorkerError(Exception):
     """Sanitized worker failure without executable paths or process output."""
 
 
-def _remaining(deadline):
+def _remaining(deadline, owner_pid=None):
+    if owner_pid is not None and os.getppid() != owner_pid:
+        raise WorkerError("public worker owner is unavailable")
     remaining = deadline - time.monotonic()
     if remaining <= 0:
         raise WorkerError("public worker deadline exceeded")
@@ -43,7 +50,7 @@ def _close(stream):
             pass
 
 
-def _cleanup(process):
+def _cleanup(process, *, kill_group=True):
     """Reap the owned child without signaling a group after its known reap."""
     if process is None:
         return True
@@ -55,7 +62,10 @@ def _cleanup(process):
     # its process-group ID cannot have been reassigned. Escaped descendants are
     # not contained.
     try:
-        os.killpg(process.pid, signal.SIGKILL)
+        if kill_group:
+            os.killpg(process.pid, signal.SIGKILL)
+        else:
+            process.kill()
     except ProcessLookupError:
         pass
     except OSError:
@@ -70,15 +80,7 @@ def _cleanup(process):
     return True
 
 
-def run_public_worker(executable, request_bytes, *, timeout, max_input_bytes,
-                      max_output_bytes=MAX_OUTPUT_BYTES):
-    """Deliver bounded input while collecting at most the output limit plus one.
-
-    The one monotonic deadline covers pipe exchange and direct-child completion.
-    Success requires complete input delivery, stdout EOF and a zero exit status.
-    Cleanup requests a bounded additional reap wait; an uninterruptible process
-    may remain unreaped and is reported as failure.
-    """
+def _validate(executable, request_bytes, timeout, max_input_bytes, max_output_bytes):
     if os.name != "posix" or sys.platform not in {"linux", "darwin"}:
         raise WorkerError("public workers require a supported POSIX host")
     if (type(timeout) not in (int, float) or not 0 < timeout <= 30
@@ -92,16 +94,28 @@ def run_public_worker(executable, request_bytes, *, timeout, max_input_bytes,
             raise WorkerError("an existing absolute public worker executable is required")
     except (OSError, TypeError, ValueError):
         raise WorkerError("invalid public worker executable") from None
+    return path
+
+
+def _run(command, request_bytes, *, timeout, max_output_bytes,
+         pass_fds=(), start_new_session=True, owner_pid=None):
+    """Internal transport: watched guards signal only their owned direct child.
+
+    The outer guard has its own group; its nonforking worker stays in that group.
+    The guard watches its actual parent relationship, not a kill(pid, 0) probe.
+    Inherited leases remain held by a cooperative worker even if its guard dies.
+    """
 
     process = None
     selection = None
     deadline = time.monotonic() + timeout
     try:
         process = subprocess.Popen(
-            [str(path)], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL, bufsize=0, close_fds=True, start_new_session=True,
+            command, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL, bufsize=0, close_fds=True,
+            start_new_session=start_new_session, pass_fds=pass_fds,
         )
-        _remaining(deadline)
+        _remaining(deadline, owner_pid)
         selection = selectors.DefaultSelector()
         os.set_blocking(process.stdin.fileno(), False)
         os.set_blocking(process.stdout.fileno(), False)
@@ -113,8 +127,11 @@ def run_public_worker(executable, request_bytes, *, timeout, max_input_bytes,
         offset = 0
         response = bytearray()
         while selection.get_map():
-            for key, _ in selection.select(_remaining(deadline)):
-                _remaining(deadline)
+            interval = _remaining(deadline, owner_pid)
+            if owner_pid is not None:
+                interval = min(interval, _OWNER_POLL_SECONDS)
+            for key, _ in selection.select(interval):
+                _remaining(deadline, owner_pid)
                 if key.data == "input":
                     try:
                         count = os.write(key.fd, request_bytes[offset:offset + _IO_CHUNK_BYTES])
@@ -141,12 +158,22 @@ def run_public_worker(executable, request_bytes, *, timeout, max_input_bytes,
                         response.extend(chunk)
                         if len(response) > max_output_bytes:
                             raise WorkerError("public worker exceeded its output bound")
-        if process.wait(timeout=_remaining(deadline)) != 0:
+        while True:
+            interval = _remaining(deadline, owner_pid)
+            if owner_pid is not None:
+                interval = min(interval, _OWNER_POLL_SECONDS)
+            try:
+                status = process.wait(timeout=interval)
+                break
+            except subprocess.TimeoutExpired:
+                if owner_pid is None:
+                    raise
+        if status != 0:
             raise WorkerError("public worker rejected the request")
-        _remaining(deadline)
+        _remaining(deadline, owner_pid)
         return bytes(response)
     except BaseException as error:
-        if not _cleanup(process):
+        if not _cleanup(process, kill_group=start_new_session):
             raise WorkerError("public worker cleanup could not reap the child") from None
         if isinstance(error, (WorkerError, KeyboardInterrupt, SystemExit)):
             raise
@@ -160,3 +187,58 @@ def run_public_worker(executable, request_bytes, *, timeout, max_input_bytes,
         if process is not None:
             _close(process.stdin)
             _close(process.stdout)
+
+
+def run_public_worker(executable, request_bytes, *, timeout, max_input_bytes,
+                      max_output_bytes=MAX_OUTPUT_BYTES):
+    """Legacy bounded transport without ownership leases or parent monitoring.
+
+    The deadline covers pipe exchange and direct-child completion. Failure
+    attempts bounded cleanup; descendants and uninterruptible children retain
+    the existing limitations. This path acquires or inherits no store lock.
+    """
+    path = _validate(executable, request_bytes, timeout, max_input_bytes, max_output_bytes)
+    return _run([str(path)], request_bytes, timeout=timeout, max_output_bytes=max_output_bytes)
+
+
+def _lease_descriptors(descriptors):
+    try:
+        if (type(descriptors) is not tuple or len(descriptors) != 2
+                or any(type(fd) is not int or fd < 3 for fd in descriptors)
+                or len(set(descriptors)) != 2):
+            raise WorkerError("two explicit ownership descriptors are required")
+        identities = set()
+        for descriptor in descriptors:
+            metadata = os.fstat(descriptor)
+            if (not stat.S_ISREG(metadata.st_mode) or metadata.st_mode & 0o077
+                    or metadata.st_uid != os.geteuid()):
+                raise WorkerError("invalid ownership descriptor")
+            identities.add((metadata.st_dev, metadata.st_ino))
+        if len(identities) != 2:
+            raise WorkerError("distinct ownership files are required")
+        return descriptors
+    except (OSError, ValueError, TypeError):
+        raise WorkerError("invalid ownership descriptors") from None
+
+
+def run_guarded_public_worker(executable, request_bytes, *, timeout,
+                              max_input_bytes, expected_executable_sha256_hex,
+                              ownership_descriptors, max_output_bytes=MAX_OUTPUT_BYTES):
+    """Pass already-held private ownership files to a guard and trusted worker.
+
+    Only cooperating workers that retain these descriptors without unlocking,
+    closing, forking or escaping the guard group are supported. These are lock
+    capabilities, not database/checkpoint handles or a sandbox. Metadata checks
+    do not prove that an arbitrary caller actually acquired the two locks.
+    """
+    path = _validate(executable, request_bytes, timeout, max_input_bytes, max_output_bytes)
+    leases = _lease_descriptors(ownership_descriptors)
+    if (type(expected_executable_sha256_hex) is not str or len(expected_executable_sha256_hex) != 64
+            or any(item not in "0123456789abcdef" for item in expected_executable_sha256_hex)):
+        raise WorkerError("an exact selected executable pin is required")
+    guard = Path(__file__).with_name("worker_guard.py").resolve()
+    interpreter = Path(sys.executable).resolve()
+    command = [str(interpreter), "-B", str(guard), str(path), expected_executable_sha256_hex,
+               str(os.getpid()), repr(float(timeout)), ",".join(str(fd) for fd in leases)]
+    return _run(command, request_bytes, timeout=timeout, max_output_bytes=max_output_bytes,
+                pass_fds=leases)

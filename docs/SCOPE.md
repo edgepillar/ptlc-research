@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 20 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 21 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -60,6 +60,8 @@ Stage 18 adds a separate [local public verdict producer and adapter](OBSERVATION
 Stage 19 adds a pure [bounded observation-record contract](OBSERVATION_RECORDS.md). Pending and finished attempts retain their charges; normal claims survive unknown work and conflicts remain explicit. Exact local targets/profiles, complete event replay and finite quotas are checked without I/O or worker invocation. [Stage 19 validation](STAGE19_VALIDATION.md) separates fixture claims from actual-verdict exercises and exposes old-value quota restoration. Owned persistence, storage identity, aggregate resources and recovery admission remain unimplemented.
 
 Stage 20 adds [separately owned local disk records](OBSERVATION_STORE.md). Lifetime process/thread locks precede load and span pending commit, selected work, result commit and return. Reopen commits unfinished publication as unknown without refund or worker replay; mismatched database/checkpoint pairs quarantine. [Stage 20 validation](STAGE20_VALIDATION.md) covers native owner death, inherited handles, wrong configuration and one-sided/paired restores, plus actual worker restart/result-loss cases. Orphan computation, paired rollback, hostile host integrity, aggregate resources and source authority remain open. The session/recovery journal and frozen review subject are unchanged.
+
+Stage 21 adds [worker-held ownership leases](OBSERVATION_LEASES.md) and a parent-watching guard for the selected cooperative nonforking observation worker. Owner death triggers direct-child cleanup; guard death can leave work alive but its lock references block reopen until exit. Store v2 quarantines consistent old v1 pairs without migration or recovery. [Stage 21 validation](STAGE21_VALIDATION.md) covers native death during input/output/wait, guard loss, deadline/cancellation and old-format rejection, separately from actual mathematical qualification. Arbitrary containment, aggregate resources, paired rollback and independent delta review remain open; no recovery or core policy is connected.
 
 | Component | Responsibility | Boundary for this repository |
 | --- | --- | --- |

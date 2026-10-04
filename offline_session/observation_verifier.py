@@ -12,7 +12,7 @@ from pathlib import Path
 import stat
 
 from . import exchange, observation_evidence as evidence
-from .public_worker import WorkerError, run_public_worker
+from .public_worker import WorkerError, run_guarded_public_worker, run_public_worker
 
 
 RESULT_SCHEMA = "ptlc-observation-verifier-result-v1"
@@ -84,6 +84,18 @@ class SubprocessObservation:
         return self._profile_digest
 
     def __call__(self, state, signature):
+        return self._observe(state, signature, None, owned=False)
+
+    def observe_owned(self, state, signature, *, ownership_descriptors):
+        """Use the same mathematical profile with guarded store-held leases.
+
+        Runtime supervision is separate from predicate/profile identity, as is
+        the configured deadline. Unsupported lease/guard failures are unknown.
+        Only the selected cooperative, nonforking public worker is supported.
+        """
+        return self._observe(state, signature, ownership_descriptors, owned=True)
+
+    def _observe(self, state, signature, ownership_descriptors, *, owned):
         # Invalid local targets are configuration/input errors, not statements.
         target = evidence.prepare(state, signature)
         fields = evidence._fields(target, self._profile_digest)
@@ -91,9 +103,14 @@ class SubprocessObservation:
         try:
             if _file_digest(self._executable) != self._executable_digest:
                 raise evidence.EvidenceError("selected observation executable changed")
-            response = run_public_worker(
-                str(self._executable), target.verification_request, timeout=self._timeout,
-                max_input_bytes=65536, max_output_bytes=evidence.MAX_STATEMENT_BYTES)
+            if not owned:
+                response = run_public_worker(str(self._executable), target.verification_request,
+                    timeout=self._timeout, max_input_bytes=65536, max_output_bytes=evidence.MAX_STATEMENT_BYTES)
+            else:
+                response = run_guarded_public_worker(str(self._executable), target.verification_request,
+                    timeout=self._timeout, max_input_bytes=65536, max_output_bytes=evidence.MAX_STATEMENT_BYTES,
+                    expected_executable_sha256_hex=self._executable_digest,
+                    ownership_descriptors=ownership_descriptors)
             value = json.loads(response.decode("ascii"))
             if (type(value) is not dict
                     or set(value) != {"schema", "predicate", "request_digest_hex", "outcome"}
