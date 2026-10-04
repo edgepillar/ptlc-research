@@ -34,7 +34,9 @@ A separate reserve experiment compares equal aggregate budgets under shared and 
 
 A further observation experiment permits independently authorized valid and invalid public candidates. It separates normal mathematical rejection from interruption and reproduces reserve exhaustion with zero worker failures, cancellations or crashes. The older positive cases require an ideal pre-admission validity filter; exact local authority alone supplies no such filter. These remain separate models with no journal observation policy.
 
-A pure observation-evidence codec now binds exact candidate bytes, both retained legs, a Zenon-only verification request and an externally selected verifier profile. It parses explicit positive, negative or unresolved claims without making them true or authoritative. Legacy completion failure cannot establish a normal negative. No statement producer, source mechanism, cache or journal enforcement is selected.
+A pure observation-evidence codec now binds exact candidate bytes, both retained legs, a Zenon-only verification request and an externally selected verifier profile. It parses explicit positive, negative or unresolved claims without making them true or authoritative. Legacy completion failure cannot establish a normal negative. The codec itself selects no producer, source mechanism, cache or journal enforcement.
+
+A separate public-only observation worker now emits explicit normal verdicts after a complete request-shape check and reuses the existing pure cryptographic predicate. Its adapter requires a caller-provisioned executable hash and binds results to the exact target/profile; process or result failure becomes unknown. The selected local host and verifier remain trusted. Real verdicts preserve reopened journals and exhausted budgets; no evidence cache, source policy or journal admission is connected.
 
 ## Repository boundaries
 
@@ -90,6 +92,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 40. [Stage 16 validation and remaining gates](docs/STAGE16_VALIDATION.md)
 41. [Exact observation evidence contract](docs/OBSERVATION_EVIDENCE_CONTRACT.md)
 42. [Stage 17 validation and remaining gates](docs/STAGE17_VALIDATION.md)
+43. [Explicit local observation verifier and trust boundary](docs/OBSERVATION_VERIFIER.md)
+44. [Stage 18 validation and remaining gates](docs/STAGE18_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -126,6 +130,7 @@ python3 -B scripts/qualify_exchange.py --verifier qualification/target/debug/exa
 python3 -B scripts/qualify_completion.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
 python3 -B scripts/qualify_authentication.py --authentication qualification/target/debug/examples/verify_authentication --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
 python3 -B scripts/qualify_recovery_model.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
+python3 -B scripts/qualify_observation.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange --observation qualification/target/debug/examples/verify_observation
 ```
 
 Use the corresponding executable paths if `CARGO_TARGET_DIR` is set. These checks use temporary public journals, fixture artifacts and explicitly selected local executables. Ordinary Python tests use clearly labeled fake callbacks for sequencing and do not require Rust. Journal storage v7 quarantines older v1-v6 state without migration; incoming Bob releases require v2 packets with both partials. Starting managed Bob exchange requires an explicit `recovery_limit` from 1 through 64. Optional `authentication_pins` are copied at that start and cannot be added, changed or removed later; omitting them is also a frozen choice.
@@ -140,7 +145,7 @@ The [reserve comparison](docs/RECOVERY_RESERVE_MODEL.md) narrows that policy dec
 
 The [public-observation comparison](docs/PUBLIC_OBSERVATION_MODEL.md) further separates observation authority from inner validity. Specify exact evidence, context bindings, trust assumptions, mathematical verification and aggregate resource handling before treating any source or local authorization as a recovery guarantee.
 
-The [observation-evidence contract](docs/OBSERVATION_EVIDENCE_CONTRACT.md) makes the exact target and outcome vocabulary concrete. Qualify an explicitly trusted producer of normal mathematical verdicts before applying claims to a negative cache or admission decision; legacy errors, matching hashes and profile labels supply no such trust.
+The [observation-evidence contract](docs/OBSERVATION_EVIDENCE_CONTRACT.md) makes the exact target and outcome vocabulary concrete. The [local producer](docs/OBSERVATION_VERIFIER.md) adds explicit normal verdicts under a caller-provisioned executable pin and trusted host. Review that error partition and provisioning separately, then specify durable attempt/evidence ordering and aggregate resource policy before connecting a negative cache or admission decision. Legacy errors, received claims, matching hashes and profile labels supply no such trust.
 
 All checked-in content is English and contains no user identity or private operational data. The artifact checker detects a limited set of accidental disclosures; source, metadata, and destination still require review before publication.
 

@@ -80,6 +80,12 @@ qualified producer. The frozen source identity and manifest are preserved; this
 later code requires separate review before any verdict cache or admission policy
 is connected.
 
+[Stage 18's local observation producer](OBSERVATION_VERIFIER.md) further adds a
+fixed request domain, explicit normal verdicts and caller-provisioned executable
+measurement. Its reuse of earlier pure error paths, local profile, provisioning,
+host assumptions and absence of durable evidence/resource policy require their
+own delta assessment. The frozen subject and manifest remain unchanged.
+
 ## Claims and open obligations
 
 | Bounded evidence at the subject | Obligation still open |
