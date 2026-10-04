@@ -1,5 +1,9 @@
 # Stage 21 validation: owned observation worker leases
 
+Historical version 2 evidence. [Stage 22](STAGE22_VALIDATION.md) adds an explicit
+shared admission pool and store version 3. Existing v1/v2 pairs quarantine without
+migration or recovery. The original checks below describe the Stage 21 source.
+
 Scope: retain the disk owner's two lock descriptions in a parent-watching guard
 and selected cooperative nonforking public worker. Source parent:
 `652e54824d32d4f230de822b2432becb20a01917`.

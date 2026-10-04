@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 20 - separately owned offline observation records. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 22 - shared admission for owned offline observation workers. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 21 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 22 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -62,6 +62,8 @@ Stage 19 adds a pure [bounded observation-record contract](OBSERVATION_RECORDS.m
 Stage 20 adds [separately owned local disk records](OBSERVATION_STORE.md). Lifetime process/thread locks precede load and span pending commit, selected work, result commit and return. Reopen commits unfinished publication as unknown without refund or worker replay; mismatched database/checkpoint pairs quarantine. [Stage 20 validation](STAGE20_VALIDATION.md) covers native owner death, inherited handles, wrong configuration and one-sided/paired restores, plus actual worker restart/result-loss cases. Orphan computation, paired rollback, hostile host integrity, aggregate resources and source authority remain open. The session/recovery journal and frozen review subject are unchanged.
 
 Stage 21 adds [worker-held ownership leases](OBSERVATION_LEASES.md) and a parent-watching guard for the selected cooperative nonforking observation worker. Owner death triggers direct-child cleanup; guard death can leave work alive but its lock references block reopen until exit. Store v2 quarantines consistent old v1 pairs without migration or recovery. [Stage 21 validation](STAGE21_VALIDATION.md) covers native death during input/output/wait, guard loss, deadline/cancellation and old-format rejection, separately from actual mathematical qualification. Arbitrary containment, aggregate resources, paired rollback and independent delta review remain open; no recovery or core policy is connected.
+
+Stage 22 adds [explicit shared worker admission](SHARED_WORKER_ADMISSION.md). Cooperating stores selecting the same physical pool acquire one of its fixed slots before pending persistence; saturation makes no attempt or worker call. The guard and selected worker retain that third reference until exit, including after guard loss. Store v3 binds the pool profile and rejects old v1/v2 pairs without migration. [Stage 22 validation](STAGE22_VALIDATION.md) covers cross-store saturation/retry, capacity after owner/guard death and cancellation, plus actual selected verification. Matching profiles in separate physical pools remain a deliberate bypass counterexample. CPU/memory accounting, cumulative rate, fairness, trusted enrollment, clone/restore protection and independent delta review remain open.
 
 | Component | Responsibility | Boundary for this repository |
 | --- | --- | --- |

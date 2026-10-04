@@ -15,7 +15,7 @@ from offline_session import exchange, observation_evidence as evidence, observat
 from offline_session.observation_store import ObservationStore, StoreOwnershipError, StoreQuarantined
 from offline_session.observation_verifier import SubprocessObservation
 from completion_test_support import final_signatures, released_bob
-from observation_store_test_support import STORE_ID, synthetic_verifier
+from observation_store_test_support import STORE_ID, synthetic_pool, synthetic_verifier
 
 
 @unittest.skipUnless(os.name == "posix", "owner-death qualification requires POSIX signals and locks")
@@ -41,7 +41,7 @@ class ObservationStoreCrashTests(unittest.TestCase):
 
     def open(self, **options):
         return ObservationStore.open(self.root, self.anchor, store_id_hex=STORE_ID,
-            verifier=self.verifier, attempt_limit=2, target_limit=2, **options)
+            verifier=self.verifier, worker_pool=synthetic_pool(self.base), attempt_limit=2, target_limit=2, **options)
 
     def initialize(self):
         with self.open():
@@ -100,7 +100,7 @@ class ObservationStoreCrashTests(unittest.TestCase):
                 self.wait_line(child, b"paused")
                 self.kill(child)
                 self.assertEqual(len(marker.read_bytes()) if marker.exists() else 0, calls)
-                with patch.object(SubprocessObservation, "observe_owned") as worker:
+                with patch.object(SubprocessObservation, "observe_admitted") as worker:
                     if attempts is None:
                         before = ((self.root / "observations.sqlite3").read_bytes(), self.anchor.read_bytes())
                         with self.assertRaises(StoreQuarantined):
@@ -115,14 +115,14 @@ class ObservationStoreCrashTests(unittest.TestCase):
                 self.assertEqual(len(marker.read_bytes()) if marker.exists() else 0, calls)
 
     def test_killed_recheck_retains_old_normal_and_consumed_allowance(self):
-        with self.open() as store, patch.object(SubprocessObservation, "observe_owned", return_value=self.verified):
+        with self.open() as store, patch.object(SubprocessObservation, "observe_admitted", return_value=self.verified):
             store.observe(self.state, self.signature)
         marker = self.base / "recheck.calls"
         child = self.start("crash", "--recheck", "--point", "worker.returned",
                            "--target", str(self.target), "--marker", str(marker))
         self.wait_line(child, b"paused")
         self.kill(child)
-        with self.open() as store, patch.object(SubprocessObservation, "observe_owned") as worker:
+        with self.open() as store, patch.object(SubprocessObservation, "observe_admitted") as worker:
             self.assertEqual(store.known_statement(self.state, self.signature), self.verified)
             self.assertEqual(store.summary().attempts_consumed, 2)
             with self.assertRaises(records.RecordExhausted):

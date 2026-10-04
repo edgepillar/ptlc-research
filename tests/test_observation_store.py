@@ -16,7 +16,7 @@ from offline_session.observation_store import (ObservationStore, StoreBusy, Stor
     StoreError, StoreOwnershipError, StoreQuarantined, MAX_CHECKPOINT_BYTES, MAX_DATABASE_BYTES)
 from offline_session.observation_verifier import SubprocessObservation
 from completion_test_support import final_signatures, released_bob
-from observation_store_test_support import STORE_ID, synthetic_verifier
+from observation_store_test_support import STORE_ID, synthetic_pool, synthetic_verifier
 
 
 @unittest.skipUnless(os.name == "posix", "owned store qualification requires POSIX locks")
@@ -39,13 +39,14 @@ class ObservationStoreTests(unittest.TestCase):
         self.root, self.anchor = self.base / "records", self.base / "head.json"
 
     def open(self, **options):
-        config = dict(store_id_hex=STORE_ID, verifier=self.verifier, attempt_limit=3, target_limit=2)
+        config = dict(store_id_hex=STORE_ID, verifier=self.verifier, worker_pool=synthetic_pool(self.base),
+                      attempt_limit=3, target_limit=2)
         config.update(options)
         return ObservationStore.open(self.root, self.anchor, **config)
 
     def call(self, store, statement=None, **options):
         statement = self.verified if statement is None else statement
-        with patch.object(SubprocessObservation, "observe_owned", return_value=statement) as worker:
+        with patch.object(SubprocessObservation, "observe_admitted", return_value=statement) as worker:
             result = store.observe(self.state, self.signature, **options)
         self.assertEqual(worker.call_count, 1)
         return result
@@ -67,14 +68,14 @@ class ObservationStoreTests(unittest.TestCase):
 
     def test_pending_is_in_both_files_before_worker_and_result_before_return(self):
         seen = []
-        def worker(state, signature, *, ownership_descriptors):
+        def worker(state, signature, *, ownership_descriptors, admission_descriptor):
             with sqlite3.connect(self.root / "observations.sqlite3") as connection:
                 wire = connection.execute("SELECT record_bytes FROM checkpoint").fetchone()[0]
             self.assertEqual(json.loads(wire)["attempts"][0]["outcome"], None)
             self.assertEqual(json.loads(self.anchor.read_bytes())["revision"], 1)
             seen.append("worker")
             return self.verified
-        with self.open() as store, patch.object(SubprocessObservation, "observe_owned", side_effect=worker):
+        with self.open() as store, patch.object(SubprocessObservation, "observe_admitted", side_effect=worker):
             self.assertEqual(store.observe(self.state, self.signature), self.verified)
             self.assertEqual(store.summary().revision, 2)
             self.assertEqual(json.loads(self.anchor.read_bytes())["revision"], 2)
@@ -100,7 +101,7 @@ class ObservationStoreTests(unittest.TestCase):
             self.assertEqual(self.call(store, self.unknown, recheck=True), self.unknown)
             self.assertEqual(store.known_statement(self.state, self.signature), self.verified)
             self.assertEqual(store.summary().attempts_remaining, 0)
-            with patch.object(SubprocessObservation, "observe_owned") as worker, \
+            with patch.object(SubprocessObservation, "observe_admitted") as worker, \
                     patch.object(evidence, "prepare", side_effect=AssertionError("target work after exhaustion")):
                 with self.assertRaises(records.RecordExhausted):
                     store.observe(self.state, self.signature, recheck=True)
@@ -113,7 +114,7 @@ class ObservationStoreTests(unittest.TestCase):
         with self.open() as store:
             self.call(store)
             before = self.pair()
-            with patch.object(SubprocessObservation, "observe_owned") as worker:
+            with patch.object(SubprocessObservation, "observe_admitted") as worker:
                 with self.assertRaises(records.RecordKnown):
                     store.observe(self.state, self.signature)
                 worker.assert_not_called()
@@ -122,11 +123,11 @@ class ObservationStoreTests(unittest.TestCase):
     def test_conflicting_normal_is_committed_then_no_claim_or_further_worker_is_selected(self):
         with self.open() as store:
             self.call(store)
-            with patch.object(SubprocessObservation, "observe_owned", return_value=self.rejected):
+            with patch.object(SubprocessObservation, "observe_admitted", return_value=self.rejected):
                 with self.assertRaises(records.RecordConflict):
                     store.observe(self.state, self.signature, recheck=True)
             self.assertEqual(store.summary().conflicting_targets, 1)
-        with self.open() as store, patch.object(SubprocessObservation, "observe_owned") as worker:
+        with self.open() as store, patch.object(SubprocessObservation, "observe_admitted") as worker:
             with self.assertRaises(records.RecordConflict):
                 store.known_statement(self.state, self.signature)
             with self.assertRaises(records.RecordConflict):
@@ -138,7 +139,7 @@ class ObservationStoreTests(unittest.TestCase):
             with self.subTest(result=result):
                 self.root = self.base / ("records-" + str(len(str(result))))
                 self.anchor = self.base / (self.root.name + ".json")
-                with self.open() as store, patch.object(SubprocessObservation, "observe_owned", return_value=result):
+                with self.open() as store, patch.object(SubprocessObservation, "observe_admitted", return_value=result):
                     self.assertEqual(store.observe(self.state, self.signature), self.unknown)
                     self.assertEqual(store.summary().attempts_consumed, 1)
                     self.assertEqual(store.summary().pending_attempts, 0)
@@ -153,7 +154,7 @@ class ObservationStoreTests(unittest.TestCase):
             self.assertEqual(store.summary().verified_claims, 0)
 
     def test_worker_exception_has_no_diagnostics_and_commits_unknown(self):
-        with self.open() as store, patch.object(SubprocessObservation, "observe_owned", side_effect=RuntimeError("synthetic diagnostic")):
+        with self.open() as store, patch.object(SubprocessObservation, "observe_admitted", side_effect=RuntimeError("synthetic diagnostic")):
             self.assertEqual(store.observe(self.state, self.signature), self.unknown)
             self.assertEqual(store.summary().attempts_consumed, 1)
         self.assertNotIn(b"synthetic diagnostic", b"".join(self.pair()))
@@ -162,7 +163,7 @@ class ObservationStoreTests(unittest.TestCase):
         for index, exception in enumerate((KeyboardInterrupt, SystemExit, GeneratorExit)):
             with self.subTest(exception=exception.__name__):
                 self.root, self.anchor = self.base / str(index), self.base / (str(index) + ".json")
-                with self.open() as store, patch.object(SubprocessObservation, "observe_owned", side_effect=exception):
+                with self.open() as store, patch.object(SubprocessObservation, "observe_admitted", side_effect=exception):
                     with self.assertRaises(exception):
                         store.observe(self.state, self.signature)
                     self.assertEqual(store.summary().attempts_consumed, 1)
@@ -172,7 +173,7 @@ class ObservationStoreTests(unittest.TestCase):
                     self.assertEqual(store.summary().attempts_consumed, 1)
 
     def test_invalid_target_recheck_choice_or_input_never_charges_or_runs_worker(self):
-        with self.open() as store, patch.object(SubprocessObservation, "observe_owned") as worker:
+        with self.open() as store, patch.object(SubprocessObservation, "observe_admitted") as worker:
             before = self.pair()
             for state, signature, recheck in (({}, self.signature, False), (self.state, bytes(63), False),
                                                (self.state, None, False), (self.state, self.signature, 1),
@@ -186,7 +187,7 @@ class ObservationStoreTests(unittest.TestCase):
         with self.open(target_limit=1) as store:
             self.call(store)
             before = self.pair()
-            with patch.object(SubprocessObservation, "observe_owned") as worker:
+            with patch.object(SubprocessObservation, "observe_admitted") as worker:
                 with self.assertRaises(records.RecordExhausted):
                     store.observe(self.state, bytes(64))
                 worker.assert_not_called()
@@ -215,7 +216,7 @@ class ObservationStoreTests(unittest.TestCase):
 
     def test_reentrant_read_mutate_and_close_are_blocked_until_worker_result_is_committed(self):
         with self.open() as store:
-            def worker(state, signature, *, ownership_descriptors):
+            def worker(state, signature, *, ownership_descriptors, admission_descriptor):
                 for call in (store.summary, lambda: store.known_statement(state, signature),
                              lambda: store.observe(state, signature), store.close):
                     with self.assertRaises(StoreConflict):
@@ -223,7 +224,7 @@ class ObservationStoreTests(unittest.TestCase):
                 with self.assertRaises(StoreBusy):
                     self.open()
                 return self.verified
-            with patch.object(SubprocessObservation, "observe_owned", side_effect=worker):
+            with patch.object(SubprocessObservation, "observe_admitted", side_effect=worker):
                 self.assertEqual(store.observe(self.state, self.signature), self.verified)
 
     def test_closed_handle_cannot_read_or_start_work_and_close_is_idempotent(self):
@@ -232,7 +233,7 @@ class ObservationStoreTests(unittest.TestCase):
         store.close()
         with self.assertRaises(StoreOwnershipError):
             store.summary()
-        with patch.object(SubprocessObservation, "observe_owned") as worker:
+        with patch.object(SubprocessObservation, "observe_admitted") as worker:
             with self.assertRaises(StoreOwnershipError):
                 store.observe(self.state, self.signature)
             worker.assert_not_called()
@@ -244,7 +245,7 @@ class ObservationStoreTests(unittest.TestCase):
         altered = copy.copy(self.verifier)
         altered._profile_digest = "44" * 32
         for config in (dict(store_id_hex="33" * 32), dict(verifier=altered), dict(attempt_limit=4), dict(target_limit=3)):
-            with self.subTest(config=tuple(config)), patch.object(SubprocessObservation, "observe_owned") as worker:
+            with self.subTest(config=tuple(config)), patch.object(SubprocessObservation, "observe_admitted") as worker:
                 with self.assertRaises(StoreQuarantined):
                     self.open(**config)
                 worker.assert_not_called()
@@ -271,7 +272,7 @@ class ObservationStoreTests(unittest.TestCase):
         def hook(name):
             if name == "admission.before_db_commit":
                 raise OSError("synthetic admission failure")
-        with self.open(hook=hook) as store, patch.object(SubprocessObservation, "observe_owned") as worker:
+        with self.open(hook=hook) as store, patch.object(SubprocessObservation, "observe_admitted") as worker:
             with self.assertRaises(StoreQuarantined):
                 store.observe(self.state, self.signature)
             with self.assertRaises(StoreQuarantined):
@@ -286,7 +287,7 @@ class ObservationStoreTests(unittest.TestCase):
         def hook(name):
             if name == "admission.after_db_commit":
                 raise OSError("synthetic checkpoint failure")
-        with self.open(hook=hook) as store, patch.object(SubprocessObservation, "observe_owned") as worker:
+        with self.open(hook=hook) as store, patch.object(SubprocessObservation, "observe_admitted") as worker:
             with self.assertRaises(StoreQuarantined):
                 store.observe(self.state, self.signature)
             worker.assert_not_called()
@@ -299,7 +300,7 @@ class ObservationStoreTests(unittest.TestCase):
         def hook(name):
             if name == "result.before_db_commit":
                 raise OSError("synthetic result failure")
-        with self.open(hook=hook) as store, patch.object(SubprocessObservation, "observe_owned", return_value=self.verified) as worker:
+        with self.open(hook=hook) as store, patch.object(SubprocessObservation, "observe_admitted", return_value=self.verified) as worker:
             with self.assertRaises(StoreQuarantined):
                 store.observe(self.state, self.signature)
             worker.assert_called_once()
@@ -312,7 +313,7 @@ class ObservationStoreTests(unittest.TestCase):
         def hook(name):
             if name == "result.after_db_commit":
                 raise OSError("synthetic cancellation checkpoint gap")
-        with self.open(hook=hook) as store, patch.object(SubprocessObservation, "observe_owned", side_effect=KeyboardInterrupt):
+        with self.open(hook=hook) as store, patch.object(SubprocessObservation, "observe_admitted", side_effect=KeyboardInterrupt):
             with self.assertRaises(StoreQuarantined):
                 store.observe(self.state, self.signature)
             with self.assertRaises(StoreQuarantined):
@@ -324,7 +325,7 @@ class ObservationStoreTests(unittest.TestCase):
         def hook(name):
             if name == "result.after_checkpoint_replace":
                 raise OSError("synthetic directory sync failure")
-        with self.open(hook=hook) as store, patch.object(SubprocessObservation, "observe_owned", return_value=self.verified):
+        with self.open(hook=hook) as store, patch.object(SubprocessObservation, "observe_admitted", return_value=self.verified):
             with self.assertRaises(StoreQuarantined):
                 store.observe(self.state, self.signature)
             with self.assertRaises(StoreQuarantined):
@@ -336,14 +337,14 @@ class ObservationStoreTests(unittest.TestCase):
         def stop(name):
             if name == "admission.committed":
                 raise OSError("synthetic stop before work")
-        with self.open(hook=stop) as store, patch.object(SubprocessObservation, "observe_owned") as worker:
+        with self.open(hook=stop) as store, patch.object(SubprocessObservation, "observe_admitted") as worker:
             with self.assertRaises(StoreQuarantined):
                 store.observe(self.state, self.signature)
             worker.assert_not_called()
         def fail(name):
             if name == "recovery.after_db_commit":
                 raise OSError("synthetic recovery checkpoint gap")
-        with patch.object(SubprocessObservation, "observe_owned") as worker:
+        with patch.object(SubprocessObservation, "observe_admitted") as worker:
             with self.assertRaises(StoreQuarantined):
                 self.open(hook=fail)
             with self.assertRaises(StoreQuarantined):
@@ -354,12 +355,12 @@ class ObservationStoreTests(unittest.TestCase):
         mutable = copy.deepcopy(self.state)
         before = copy.deepcopy(mutable)
         with self.open() as store:
-            def worker(state, signature, *, ownership_descriptors):
+            def worker(state, signature, *, ownership_descriptors, admission_descriptor):
                 self.assertIsNot(state, mutable)
                 mutable.clear()
                 self.assertEqual(state, before)
                 return self.verified
-            with patch.object(SubprocessObservation, "observe_owned", side_effect=worker):
+            with patch.object(SubprocessObservation, "observe_admitted", side_effect=worker):
                 self.assertEqual(store.observe(mutable, self.signature), self.verified)
             self.assertEqual(store.known_statement(before, self.signature), self.verified)
 
@@ -429,7 +430,7 @@ class ObservationStoreTests(unittest.TestCase):
                     self.open()
                 self.assertEqual(self.pair(), before)
 
-    def test_consistent_v1_pending_pair_quarantines_without_migration_or_recovery(self):
+    def test_consistent_v1_v2_pending_pairs_quarantine_without_migration_or_recovery(self):
         def stop(name):
             if name == "admission.committed":
                 raise OSError("synthetic pre-worker interruption")
@@ -437,21 +438,32 @@ class ObservationStoreTests(unittest.TestCase):
             with self.assertRaises(StoreQuarantined):
                 store.observe(self.state, self.signature)
         database = self.root / "observations.sqlite3"
-        with sqlite3.connect(database) as connection:
-            wire = connection.execute("SELECT record_bytes FROM checkpoint").fetchone()[0]
-            self.assertEqual(records.inspect(wire, expected_verifier_profile_digest_hex=self.profile).pending_attempts, 1)
-            old = dict(json.loads(self.anchor.read_bytes()), version=1)
-            del old["digest_hex"]
-            old["digest_hex"] = hashlib.sha256(
-                b"PTLC/observation-store-checkpoint/v1\x00" + exchange.canonical(old)).hexdigest()
-            connection.execute("UPDATE checkpoint SET version=1, digest=?", (old["digest_hex"],))
-        self.anchor.write_bytes(exchange.canonical(old))
-        before = self.pair()
-        with patch.object(SubprocessObservation, "observe_owned") as worker:
-            with self.assertRaises(StoreQuarantined):
-                self.open()
-            worker.assert_not_called()
-        self.assertEqual(self.pair(), before)
+        original = self.pair()
+        for version in (1, 2):
+            with self.subTest(version=version):
+                database.write_bytes(original[0])
+                with sqlite3.connect(database) as connection:
+                    wire = connection.execute("SELECT record_bytes FROM checkpoint").fetchone()[0]
+                    self.assertEqual(records.inspect(wire, expected_verifier_profile_digest_hex=self.profile).pending_attempts, 1)
+                    old = dict(json.loads(original[1]), version=version)
+                    del old["digest_hex"]
+                    del old["worker_pool_profile_digest_hex"]
+                    old["digest_hex"] = hashlib.sha256(
+                        ("PTLC/observation-store-checkpoint/v" + str(version)).encode("ascii")
+                        + b"\x00" + exchange.canonical(old)).hexdigest()
+                    connection.execute("DROP TABLE checkpoint")
+                    connection.execute("CREATE TABLE checkpoint (slot INTEGER PRIMARY KEY CHECK (slot=1), "
+                        "version INTEGER NOT NULL, store_id TEXT NOT NULL, revision INTEGER NOT NULL, "
+                        "record_bytes BLOB NOT NULL, digest TEXT NOT NULL)")
+                    connection.execute("INSERT INTO checkpoint VALUES (1, ?, ?, ?, ?, ?)",
+                        (version, STORE_ID, old["revision"], wire, old["digest_hex"]))
+                self.anchor.write_bytes(exchange.canonical(old))
+                before = self.pair()
+                with patch.object(SubprocessObservation, "observe_admitted") as worker:
+                    with self.assertRaises(StoreQuarantined):
+                        self.open()
+                    worker.assert_not_called()
+                self.assertEqual(self.pair(), before)
 
     def test_oversized_database_is_rejected_before_sqlite_connect(self):
         with self.open():
@@ -492,4 +504,5 @@ class ObservationStoreTests(unittest.TestCase):
             sidecar.unlink()
         with self.assertRaises(StoreQuarantined):
             ObservationStore.open(self.base / "internal", self.base / "internal/head.json",
-                store_id_hex=STORE_ID, verifier=self.verifier, attempt_limit=2, target_limit=2)
+                store_id_hex=STORE_ID, verifier=self.verifier, worker_pool=synthetic_pool(self.base),
+                attempt_limit=2, target_limit=2)

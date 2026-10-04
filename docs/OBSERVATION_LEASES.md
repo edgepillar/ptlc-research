@@ -5,7 +5,13 @@ nonforking public worker on a trusted local Linux/macOS host. No signing,
 chain source, funded admission or global resource policy is connected.**
 
 Source parent: [`652e54824d32d4f230de822b2432becb20a01917`](https://github.com/edgepillar/ptlc-research/tree/652e54824d32d4f230de822b2432becb20a01917).
-The [disk owner](OBSERVATION_STORE.md) now uses store version 2 and an internal
+This document describes Stage 21's two-lease construction and historical store
+version 2. [Stage 22 shared admission](SHARED_WORKER_ADMISSION.md) now requires a
+third pool-slot reference for owned store work and identifies storage with version
+3. Existing v1/v2 pairs quarantine without migration. The two-lease guarded API
+remains separately callable outside shared admission.
+
+At Stage 21, the [disk owner](OBSERVATION_STORE.md) used store version 2 and an internal
 [guard](../offline_session/worker_guard.py). The pure record contract,
 mathematical predicate, verifier profile, public schemas, session journal and
 frozen review manifest remain unchanged. Stage 20's original version 1 remains

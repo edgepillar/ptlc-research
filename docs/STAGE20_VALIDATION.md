@@ -1,8 +1,9 @@
 # Stage 20 validation: separately owned observation storage
 
-Historical version 1 evidence. [Stage 21](STAGE21_VALIDATION.md) changes the
-current module to version 2 with cooperative worker-held leases and an owner
-guard; existing version 1 pairs quarantine without migration or recovery.
+Historical version 1 evidence. [Stage 21](STAGE21_VALIDATION.md) changed the
+module to version 2 with cooperative worker-held leases and an owner guard.
+[Stage 22](STAGE22_VALIDATION.md) now requires an explicit shared admission pool
+and store version 3; existing v1/v2 pairs quarantine without migration or recovery.
 The original checks and limitations below describe the Stage 20 source only.
 
 Scope: add a separate local disk owner around the unchanged bounded record

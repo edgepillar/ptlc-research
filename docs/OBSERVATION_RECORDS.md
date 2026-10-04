@@ -184,3 +184,11 @@ unlocks the shared descriptions. This conditionally implements the lifetime
 requirement above. Old store v1 pairs quarantine without migration. Malicious
 or escaped workers, uninterruptible tasks, aggregate resources, matching pair
 rollback and any funded availability policy remain outside the evidence.
+
+[Stage 22](SHARED_WORKER_ADMISSION.md) adds a separate explicit finite pool before
+owned store pending persistence and carries its slot through the guard and worker.
+Pure record bytes/transitions and mathematical profile identity remain unchanged;
+store v3 separately binds the pool profile. Saturation records no attempt and
+launches no selected work. Matching profiles in distinct physical pools do not
+share capacity. This qualified concurrency bound supplies no cumulative rate,
+CPU/memory accounting, fairness, trusted enrollment or restored-copy defense.

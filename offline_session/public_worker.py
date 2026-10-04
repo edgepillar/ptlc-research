@@ -221,6 +221,42 @@ def _lease_descriptors(descriptors):
         raise WorkerError("invalid ownership descriptors") from None
 
 
+def _admission_descriptor(descriptor, ownership_descriptors):
+    """Validate one additional private capability, not its actual enrollment."""
+    try:
+        if type(descriptor) is not int or descriptor < 3 or descriptor in ownership_descriptors:
+            raise WorkerError("one distinct admission descriptor is required")
+        metadata = os.fstat(descriptor)
+        if (not stat.S_ISREG(metadata.st_mode) or metadata.st_mode & 0o077
+                or metadata.st_uid != os.geteuid()):
+            raise WorkerError("invalid admission descriptor")
+        identity = metadata.st_dev, metadata.st_ino
+        if any(identity == (os.fstat(fd).st_dev, os.fstat(fd).st_ino) for fd in ownership_descriptors):
+            raise WorkerError("admission and ownership files must differ")
+        return descriptor
+    except (OSError, ValueError, TypeError):
+        raise WorkerError("invalid admission descriptor") from None
+
+
+def _guarded(executable, request_bytes, *, timeout, max_input_bytes,
+             expected_executable_sha256_hex, ownership_descriptors,
+             max_output_bytes, admission_descriptor=None):
+    path = _validate(executable, request_bytes, timeout, max_input_bytes, max_output_bytes)
+    leases = _lease_descriptors(ownership_descriptors)
+    if admission_descriptor is not None:
+        leases += (_admission_descriptor(admission_descriptor, leases),)
+    if (type(expected_executable_sha256_hex) is not str or len(expected_executable_sha256_hex) != 64
+            or any(item not in "0123456789abcdef" for item in expected_executable_sha256_hex)):
+        raise WorkerError("an exact selected executable pin is required")
+    guard = Path(__file__).with_name("worker_guard.py").resolve()
+    interpreter = Path(sys.executable).resolve()
+    command = [str(interpreter), "-B", str(guard), str(path), expected_executable_sha256_hex,
+               str(os.getpid()), repr(float(timeout)), ",".join(str(fd) for fd in leases[:2]),
+               "-" if admission_descriptor is None else str(admission_descriptor)]
+    return _run(command, request_bytes, timeout=timeout, max_output_bytes=max_output_bytes,
+                pass_fds=leases)
+
+
 def run_guarded_public_worker(executable, request_bytes, *, timeout,
                               max_input_bytes, expected_executable_sha256_hex,
                               ownership_descriptors, max_output_bytes=MAX_OUTPUT_BYTES):
@@ -231,14 +267,19 @@ def run_guarded_public_worker(executable, request_bytes, *, timeout,
     capabilities, not database/checkpoint handles or a sandbox. Metadata checks
     do not prove that an arbitrary caller actually acquired the two locks.
     """
-    path = _validate(executable, request_bytes, timeout, max_input_bytes, max_output_bytes)
+    return _guarded(executable, request_bytes, timeout=timeout, max_input_bytes=max_input_bytes,
+        expected_executable_sha256_hex=expected_executable_sha256_hex,
+        ownership_descriptors=ownership_descriptors, max_output_bytes=max_output_bytes)
+
+
+def run_admitted_public_worker(executable, request_bytes, *, timeout,
+                               max_input_bytes, expected_executable_sha256_hex,
+                               ownership_descriptors, admission_descriptor,
+                               max_output_bytes=MAX_OUTPUT_BYTES):
+    """Retain a required shared admission lease as well as both owner leases."""
     leases = _lease_descriptors(ownership_descriptors)
-    if (type(expected_executable_sha256_hex) is not str or len(expected_executable_sha256_hex) != 64
-            or any(item not in "0123456789abcdef" for item in expected_executable_sha256_hex)):
-        raise WorkerError("an exact selected executable pin is required")
-    guard = Path(__file__).with_name("worker_guard.py").resolve()
-    interpreter = Path(sys.executable).resolve()
-    command = [str(interpreter), "-B", str(guard), str(path), expected_executable_sha256_hex,
-               str(os.getpid()), repr(float(timeout)), ",".join(str(fd) for fd in leases)]
-    return _run(command, request_bytes, timeout=timeout, max_output_bytes=max_output_bytes,
-                pass_fds=leases)
+    _admission_descriptor(admission_descriptor, leases)
+    return _guarded(executable, request_bytes, timeout=timeout, max_input_bytes=max_input_bytes,
+        expected_executable_sha256_hex=expected_executable_sha256_hex,
+        ownership_descriptors=leases, max_output_bytes=max_output_bytes,
+        admission_descriptor=admission_descriptor)

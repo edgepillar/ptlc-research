@@ -8,6 +8,12 @@ guard and inherited lock descriptions for the selected cooperative nonforking
 worker. The legacy artifact/completion/authentication adapters and direct
 observation callable retain their earlier ownership boundary.
 
+[Stage 22 shared admission](SHARED_WORKER_ADMISSION.md) adds a third retained slot
+reference for explicitly pooled owned observations. It bounds simultaneous
+admitted work only across participants selecting the same physical files. The
+legacy and two-lease guarded paths described here acquire no shared slot; CPU,
+memory, cumulative rate, fairness and trusted enrollment remain separate gates.
+
 ## Problem and scope
 
 The original adapters accepted at most 4,096 output bytes but first sent all stdout to a temporary file. A faulty executable could exhaust temporary storage before that acceptance check or the timeout. Both adapters now share `offline_session.public_worker`, which bounds output while transferring it through pipes and creates no output spool file.
