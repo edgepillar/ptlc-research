@@ -3,6 +3,7 @@
 The selected nonforking worker and this guard retain the owner's lock references.
 Guard death cannot release a cooperative live worker's references. A worker that
 closes/unlocks them or escapes the group violates the selected trust boundary.
+Admitted work also retains one distinct shared-pool slot through worker exit.
 """
 
 import os
@@ -16,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from offline_session.observation_verifier import _file_digest
 from offline_session.public_worker import (MAX_INPUT_BYTES, MAX_OUTPUT_BYTES,
-    WorkerError, _OWNER_POLL_SECONDS, _lease_descriptors, _remaining, _run, _validate)
+    WorkerError, _OWNER_POLL_SECONDS, _admission_descriptor, _lease_descriptors, _remaining, _run, _validate)
 
 
 def _input(deadline, owner_pid):
@@ -41,9 +42,9 @@ def _input(deadline, owner_pid):
 
 def main():
     try:
-        if len(sys.argv) != 6:
+        if len(sys.argv) != 7:
             raise WorkerError("invalid guard arguments")
-        entry, pin, raw_owner, raw_timeout, raw_leases = sys.argv[1:]
+        entry, pin, raw_owner, raw_timeout, raw_leases, raw_admission = sys.argv[1:]
         owner_pid, timeout = int(raw_owner), float(raw_timeout)
         if str(owner_pid) != raw_owner or owner_pid <= 0:
             raise WorkerError("invalid guard owner")
@@ -51,6 +52,11 @@ def main():
         if ",".join(str(value) for value in leases) != raw_leases:
             raise WorkerError("invalid guard ownership encoding")
         _lease_descriptors(leases)
+        if raw_admission != "-":
+            admission = int(raw_admission)
+            if str(admission) != raw_admission:
+                raise WorkerError("invalid guard admission encoding")
+            leases += (_admission_descriptor(admission, leases),)
         _validate(entry, b"", timeout, MAX_INPUT_BYTES, MAX_OUTPUT_BYTES)
         signal.signal(signal.SIGCHLD, signal.SIG_DFL)
         deadline = time.monotonic() + timeout

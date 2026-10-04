@@ -8,10 +8,12 @@ import time
 
 
 def main():
-    mode, marker, release, first, second, unrelated = sys.argv[1:]
+    mode, marker, release, first, second, unrelated, pool = sys.argv[1:]
     expected = {(Path(value).stat().st_dev, Path(value).stat().st_ino) for value in (first, second)}
     forbidden = (Path(unrelated).stat().st_dev, Path(unrelated).stat().st_ino)
-    retained, leaked = [], False
+    admission = set() if pool == "-" else {(path.stat().st_dev, path.stat().st_ino)
+                                          for path in Path(pool).glob("slot-*.lock")}
+    retained, admitted, leaked = [], [], False
     for descriptor in range(3, 256):
         try:
             value = os.fstat(descriptor)
@@ -20,6 +22,8 @@ def main():
         identity = (value.st_dev, value.st_ino)
         if identity in expected:
             retained.append(descriptor)
+        if identity in admission:
+            admitted.append(descriptor)
         leaked = leaked or identity == forbidden
     if mode != "never-read":
         sys.stdin.buffer.read()
@@ -28,7 +32,7 @@ def main():
     target = Path(marker)
     temporary = target.with_name(target.name + ".tmp")
     temporary.write_text(json.dumps({"worker": os.getpid(), "guard": os.getppid(),
-        "leases": len(retained), "unrelated_leaked": leaked}), encoding="ascii")
+        "leases": len(retained), "admission_leases": len(admitted), "unrelated_leaked": leaked}), encoding="ascii")
     os.replace(temporary, target)
     heartbeat = target.with_name(target.name + ".heartbeat")
     sequence = 0

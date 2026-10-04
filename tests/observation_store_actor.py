@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from offline_session import exchange
 from offline_session.observation_store import ObservationStore
 from offline_session.observation_verifier import SubprocessObservation, _file_digest
-from observation_store_test_support import STORE_ID, synthetic_verifier
+from observation_store_test_support import STORE_ID, synthetic_pool, synthetic_verifier
 
 
 def main():
@@ -42,7 +42,7 @@ def main():
         finally:
             os.close(descriptor)
 
-    def work(state, signature, *, ownership_descriptors):
+    def work(state, signature, *, ownership_descriptors, admission_descriptor):
         mark()
         return exchange.canonical(target["statement"])
 
@@ -53,7 +53,8 @@ def main():
             path = Path(args.actual_observation).resolve()
             verifier = SubprocessObservation(path, expected_executable_sha256_hex=_file_digest(path))
         with ObservationStore.open(args.root, args.checkpoint, store_id_hex=STORE_ID,
-                verifier=verifier, attempt_limit=2, target_limit=2, hook=hook) as store:
+                verifier=verifier, worker_pool=synthetic_pool(Path(args.root).parent),
+                attempt_limit=2, target_limit=2, hook=hook) as store:
             if args.mode == "probe":
                 print("opened", flush=True)
                 return
@@ -64,15 +65,15 @@ def main():
             target = json.loads(Path(args.target).read_bytes())
             armed = True
             if args.actual_observation:
-                actual_call = SubprocessObservation.observe_owned
-                def actual_work(state, signature, *, ownership_descriptors):
-                    statement = actual_call(verifier, state, signature, ownership_descriptors=ownership_descriptors)
+                actual_call = SubprocessObservation.observe_admitted
+                def actual_work(state, signature, *, ownership_descriptors, admission_descriptor):
+                    statement = actual_call(verifier, state, signature, ownership_descriptors=ownership_descriptors, admission_descriptor=admission_descriptor)
                     mark(json.loads(statement)["outcome"].encode("ascii"))
                     return statement
-                with patch.object(SubprocessObservation, "observe_owned", side_effect=actual_work):
+                with patch.object(SubprocessObservation, "observe_admitted", side_effect=actual_work):
                     store.observe(target["state"], bytes.fromhex(target["signature_hex"]), recheck=args.recheck)
             else:
-                with patch.object(SubprocessObservation, "observe_owned", side_effect=work):
+                with patch.object(SubprocessObservation, "observe_admitted", side_effect=work):
                     store.observe(target["state"], bytes.fromhex(target["signature_hex"]), recheck=args.recheck)
             print("completed", flush=True)
 

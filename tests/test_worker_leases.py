@@ -21,9 +21,9 @@ from unittest.mock import patch
 from offline_session import observation_evidence as evidence
 from offline_session.observation_store import ObservationStore, StoreBusy
 from offline_session.observation_verifier import SubprocessObservation, _file_digest
-from offline_session.public_worker import WorkerError, run_guarded_public_worker
+from offline_session.public_worker import WorkerError, run_admitted_public_worker, run_guarded_public_worker
 from completion_test_support import final_signatures, released_bob
-from observation_store_test_support import STORE_ID
+from observation_store_test_support import STORE_ID, synthetic_pool
 
 
 @unittest.skipUnless(os.name == "posix", "lease qualification requires local POSIX locks and signals")
@@ -126,6 +126,26 @@ class WorkerLeaseTransportTests(unittest.TestCase):
                                 capture_output=True, timeout=5)
         self.assertEqual((result.returncode, result.stdout, result.stderr),
                          (2, b"", b"public worker ownership unavailable\n"))
+
+    def test_admitted_transport_retains_a_distinct_slot_and_parent_flags(self):
+        with synthetic_pool(self.base, slot_limit=1).acquire() as lease:
+            self.assertFalse(os.get_inheritable(lease.fileno()))
+            output = run_admitted_public_worker(str(self.entry), b"synthetic", timeout=2,
+                max_input_bytes=65536, expected_executable_sha256_hex=self.pin,
+                ownership_descriptors=self.leases, admission_descriptor=lease.fileno())
+            self.assertEqual(output, b"synthetic-public-output")
+            self.assertFalse(os.get_inheritable(lease.fileno()))
+
+    def test_invalid_or_overlapping_admission_descriptor_never_launches(self):
+        duplicate = os.dup(self.leases[0])
+        self.addCleanup(os.close, duplicate)
+        with patch("offline_session.public_worker.subprocess.Popen") as spawn:
+            for descriptor in (None, True, [], 0, -1, 999999, self.leases[0], duplicate):
+                with self.subTest(kind=type(descriptor).__name__), self.assertRaises(WorkerError):
+                    run_admitted_public_worker(str(self.entry), b"synthetic", timeout=2,
+                        max_input_bytes=65536, expected_executable_sha256_hex=self.pin,
+                        ownership_descriptors=self.leases, admission_descriptor=descriptor)
+            spawn.assert_not_called()
 
 
 @unittest.skipUnless(os.name == "posix", "native lease ownership requires POSIX locks and signals")
@@ -273,12 +293,12 @@ class WorkerLeaseDeathTests(unittest.TestCase):
             expected_executable_sha256_hex=_file_digest(self.root / "controlled-worker"))
         with patch("sqlite3.connect", side_effect=AssertionError("live worker must block before database read")) as connect:
             with self.assertRaises(StoreBusy):
-                ObservationStore.open(self.root, self.anchor, store_id_hex=STORE_ID,
+                ObservationStore.open(self.root, self.anchor, store_id_hex=STORE_ID, worker_pool=synthetic_pool(self.base),
                     verifier=verifier, attempt_limit=2, target_limit=2)
             connect.assert_not_called()
         self.release.touch()
         self.wait_unlocked("store")
-        with ObservationStore.open(self.root, self.anchor, store_id_hex=STORE_ID,
+        with ObservationStore.open(self.root, self.anchor, store_id_hex=STORE_ID, worker_pool=synthetic_pool(self.base),
                 verifier=verifier, attempt_limit=2, target_limit=2) as store:
             self.assertEqual(store.summary().attempts_consumed, 1)
             self.assertEqual(store.summary().pending_attempts, 0)
@@ -291,8 +311,8 @@ class WorkerLeaseDeathTests(unittest.TestCase):
         self.wait_unlocked("store")
         verifier = SubprocessObservation(self.root / "controlled-worker",
             expected_executable_sha256_hex=_file_digest(self.root / "controlled-worker"))
-        with patch.object(SubprocessObservation, "observe_owned") as worker:
-            with ObservationStore.open(self.root, self.anchor, store_id_hex=STORE_ID,
+        with patch.object(SubprocessObservation, "observe_admitted") as worker:
+            with ObservationStore.open(self.root, self.anchor, store_id_hex=STORE_ID, worker_pool=synthetic_pool(self.base),
                     verifier=verifier, attempt_limit=2, target_limit=2) as store:
                 self.assertEqual(store.summary().attempts_consumed, 1)
                 self.assertEqual(store.summary().pending_attempts, 0)
@@ -311,7 +331,7 @@ class WorkerLeaseDeathTests(unittest.TestCase):
         self.assertFalse(self.marker.exists())
         verifier = SubprocessObservation(self.root / "controlled-worker",
             expected_executable_sha256_hex=_file_digest(self.root / "controlled-worker"))
-        with ObservationStore.open(self.root, self.anchor, store_id_hex=STORE_ID,
+        with ObservationStore.open(self.root, self.anchor, store_id_hex=STORE_ID, worker_pool=synthetic_pool(self.base),
                 verifier=verifier, attempt_limit=2, target_limit=2) as store:
             self.assertEqual(store.summary().attempts_consumed, 1)
             self.assertEqual(store.summary().pending_attempts, 0)
@@ -347,7 +367,7 @@ class WorkerLeaseDeathTests(unittest.TestCase):
         self.assertFalse(self.release.exists())
         verifier = SubprocessObservation(self.root / "controlled-worker",
             expected_executable_sha256_hex=_file_digest(self.root / "controlled-worker"))
-        with ObservationStore.open(self.root, self.anchor, store_id_hex=STORE_ID,
+        with ObservationStore.open(self.root, self.anchor, store_id_hex=STORE_ID, worker_pool=synthetic_pool(self.base),
                 verifier=verifier, attempt_limit=2, target_limit=2) as store:
             self.assertEqual(store.summary().attempts_consumed, 1)
             self.assertEqual(store.summary().pending_attempts, 0)
@@ -373,3 +393,27 @@ class OwnedObservationAdapterTests(unittest.TestCase):
                         ownership_descriptors=leases), expected)
             spawn.assert_not_called()
             legacy.assert_not_called()
+
+    def test_missing_admission_never_falls_back_to_a_guarded_or_legacy_path(self):
+        path = Path(sys.executable).resolve()
+        observer = SubprocessObservation(path, expected_executable_sha256_hex=_file_digest(path))
+        expected = evidence.unknown_statement(self.state, self.signature,
+            verifier_profile_digest_hex=observer.profile_digest_hex)
+        with tempfile.TemporaryDirectory(prefix="synthetic-admitted-adapter-") as directory:
+            descriptors = []
+            try:
+                for name in ("a.lock", "b.lock"):
+                    descriptor = os.open(Path(directory) / name, os.O_RDWR | os.O_CREAT, 0o600)
+                    descriptors.append(descriptor)
+                    fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                with patch("offline_session.public_worker.subprocess.Popen") as spawn, \
+                        patch("offline_session.observation_verifier.run_guarded_public_worker") as guarded, \
+                        patch("offline_session.observation_verifier.run_public_worker") as legacy:
+                    self.assertEqual(observer.observe_admitted(self.state, self.signature,
+                        ownership_descriptors=tuple(descriptors), admission_descriptor=None), expected)
+                    spawn.assert_not_called()
+                    guarded.assert_not_called()
+                    legacy.assert_not_called()
+            finally:
+                for descriptor in descriptors:
+                    os.close(descriptor)

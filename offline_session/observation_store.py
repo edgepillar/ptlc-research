@@ -3,7 +3,9 @@
 This offline store is separate from recovery admission and the session journal.
 Cooperating POSIX owners retain both locks through admission, work and result.
 The selected guard and cooperative worker retain inherited lock references.
-Matching restored copies, a hostile host and aggregate resources are not solved.
+A required shared pool slot is acquired before pending persistence and retained
+through selected work/result commit. Matching restored copies, a hostile host,
+CPU/memory accounting and fairness are not solved.
 """
 
 import copy
@@ -25,9 +27,10 @@ except ImportError:
 
 from . import exchange, observation_evidence as evidence, observation_records as records
 from .observation_verifier import SubprocessObservation
+from .worker_pool import PublicWorkerPool, PoolBusy, PoolError
 
 
-VERSION = 2
+VERSION = 3
 MAX_DATABASE_BYTES = 8 * 1024 * 1024
 MAX_CHECKPOINT_BYTES = 1024
 
@@ -67,11 +70,12 @@ def _sync_directory(path):
         os.close(descriptor)
 
 
-def _checkpoint(store_id, revision, wire):
+def _checkpoint(store_id, revision, wire, pool_profile):
     value = {"version": VERSION, "store_id_hex": store_id, "revision": revision,
-             "records_digest_hex": hashlib.sha256(wire).hexdigest()}
+             "records_digest_hex": hashlib.sha256(wire).hexdigest(),
+             "worker_pool_profile_digest_hex": pool_profile}
     value["digest_hex"] = hashlib.sha256(
-        b"PTLC/observation-store-checkpoint/v2\x00" + exchange.canonical(value)).hexdigest()
+        b"PTLC/observation-store-checkpoint/v3\x00" + exchange.canonical(value)).hexdigest()
     return value
 
 
@@ -82,11 +86,13 @@ class ObservationStore:
     return; workers receive public verification bytes, never a storage handle.
     Guard and cooperative worker retain the two lock references through exit.
     Owner death is watched; a live inherited reference excludes another owner.
-    This is neither a sandbox nor global resource or restored-copy protection.
+    A selected shared pool bounds simultaneous admitted work for cooperating
+    stores using the same physical pool. CPU/memory, fairness, host containment
+    and restored-copy protection remain separate requirements.
     """
 
     @classmethod
-    def open(cls, directory, checkpoint, *, store_id_hex, verifier,
+    def open(cls, directory, checkpoint, *, store_id_hex, verifier, worker_pool,
              attempt_limit, target_limit, hook=None):
         self = cls()
         self._pid = os.getpid()
@@ -100,12 +106,16 @@ class ObservationStore:
         try:
             if (os.name != "posix" or sys.platform not in {"linux", "darwin"}
                     or fcntl is None or type(verifier) is not SubprocessObservation
+                    or type(worker_pool) is not PublicWorkerPool
                     or (hook is not None and not callable(hook))):
                 raise StoreError("unsupported observation store configuration")
             evidence._profile(store_id_hex)
             self._store_id = store_id_hex
             self._verifier = verifier
             self._profile = verifier.profile_digest_hex
+            worker_pool.check_store_locations(directory, checkpoint)
+            self._pool = worker_pool
+            self._pool_profile = worker_pool.profile_digest_hex
             self._attempt_limit = attempt_limit
             self._target_limit = target_limit
             self._wire = records.create(verifier_profile_digest_hex=self._profile,
@@ -228,11 +238,15 @@ class ObservationStore:
                 or identity != self._store_id or type(revision) is not int or not 0 <= revision <= 128
                 or type(length) is not int or not 0 < length <= records.MAX_RECORD_BYTES):
             raise StoreQuarantined("invalid observation checkpoint metadata")
+        pool_length = self._connection.execute("SELECT length(worker_pool_profile) FROM checkpoint WHERE slot=1").fetchone()[0]
+        if type(pool_length) is not int or pool_length != 64:
+            raise StoreQuarantined("invalid worker pool profile length")
         wire = self._connection.execute("SELECT record_bytes FROM checkpoint WHERE slot=1").fetchone()[0]
         summary = self._validated(wire)
-        expected = _checkpoint(self._store_id, summary.revision, wire)
+        pool_profile = self._connection.execute("SELECT worker_pool_profile FROM checkpoint WHERE slot=1").fetchone()[0]
+        expected = _checkpoint(self._store_id, summary.revision, wire, self._pool_profile)
         if (revision != summary.revision or digest != expected["digest_hex"]
-                or self._read_anchor() != exchange.canonical(expected)):
+                or pool_profile != self._pool_profile or self._read_anchor() != exchange.canonical(expected)):
             raise StoreQuarantined("observation checkpoint divergence")
         self._wire = wire
 
@@ -279,15 +293,15 @@ class ObservationStore:
         summary = self._validated(wire)
         if not initializing and summary.revision <= self._validated(self._wire).revision:
             raise StoreQuarantined("observation revision cannot regress")
-        value = _checkpoint(self._store_id, summary.revision, wire)
+        value = _checkpoint(self._store_id, summary.revision, wire, self._pool_profile)
         try:
             self._connection.execute("BEGIN IMMEDIATE")
             if initializing:
                 self._connection.execute("CREATE TABLE checkpoint (slot INTEGER PRIMARY KEY CHECK (slot=1), "
                     "version INTEGER NOT NULL, store_id TEXT NOT NULL, revision INTEGER NOT NULL, "
-                    "record_bytes BLOB NOT NULL, digest TEXT NOT NULL)")
-            self._connection.execute("INSERT OR REPLACE INTO checkpoint VALUES (1, ?, ?, ?, ?, ?)",
-                (VERSION, self._store_id, summary.revision, wire, value["digest_hex"]))
+                    "record_bytes BLOB NOT NULL, digest TEXT NOT NULL, worker_pool_profile TEXT NOT NULL)")
+            self._connection.execute("INSERT OR REPLACE INTO checkpoint VALUES (1, ?, ?, ?, ?, ?, ?)",
+                (VERSION, self._store_id, summary.revision, wire, value["digest_hex"], self._pool_profile))
             self._checkpoint(phase + ".before_db_commit")
             self._connection.commit()
             self._checkpoint(phase + ".after_db_commit")
@@ -314,7 +328,8 @@ class ObservationStore:
         """Charge before selected work and commit its bound result before return.
 
         No incoming statement, arbitrary callback, retry loop or journal mutation
-        is accepted. Unknown is charged; a conflicting normal result is retained
+        is accepted. Shared pool saturation rejects before pending persistence
+        without a charge or worker. Unknown after admission is charged; a conflicting normal result is retained
         before RecordConflict is raised. Caller cancellation is committed unknown
         before propagation when storage succeeds; persistence uncertainty poisons
         the handle and requires a separately successful locked reopen.
@@ -322,18 +337,28 @@ class ObservationStore:
         self._public()
         if self._verifier.profile_digest_hex != self._profile:
             raise StoreError("selected observation profile changed")
+        if self._pool.profile_digest_hex != self._pool_profile:
+            raise StoreError("selected worker pool profile changed")
         if not self._validated(self._wire).attempts_remaining:
             raise records.RecordExhausted("observation attempt limit exhausted")
         snapshot = copy.deepcopy(state)
         self._active = True
+        lease = None
         try:
             wire, number = records.begin(self._wire, snapshot, signature,
                 expected_verifier_profile_digest_hex=self._profile, recheck=recheck)
+            try:
+                lease = self._pool.acquire()
+            except PoolBusy:
+                raise StoreBusy("shared worker capacity is unavailable") from None
+            except PoolError:
+                self._poisoned = True
+                raise StoreQuarantined("shared worker admission rejected") from None
             self._persist(wire, "admission")
             self._checkpoint("admission.committed")
             try:
-                statement = self._verifier.observe_owned(snapshot, signature,
-                    ownership_descriptors=tuple(self._locks))
+                statement = self._verifier.observe_admitted(snapshot, signature,
+                    ownership_descriptors=tuple(self._locks), admission_descriptor=lease.fileno())
             except Exception:
                 statement = evidence.unknown_statement(snapshot, signature, verifier_profile_digest_hex=self._profile)
             except BaseException:
@@ -356,6 +381,8 @@ class ObservationStore:
             return statement
         finally:
             self._active = False
+            if lease is not None:
+                lease.close()
 
     def _release(self):
         # A fork/foreign thread must not unlock the original owner's description.

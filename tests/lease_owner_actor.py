@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from offline_session.observation_store import ObservationStore
 from offline_session.observation_verifier import SubprocessObservation, _file_digest
 from offline_session.public_worker import run_guarded_public_worker, run_public_worker
-from observation_store_test_support import STORE_ID
+from observation_store_test_support import STORE_ID, synthetic_pool
 
 
 def main():
@@ -31,6 +31,8 @@ def main():
     parser.add_argument("--worker", choices=("hold", "never-read", "eof-held"), default="hold")
     parser.add_argument("--pause-after-guard", action="store_true")
     parser.add_argument("--timeout", type=float, default=30)
+    parser.add_argument("--pool")
+    parser.add_argument("--pool-slots", type=int, default=2)
     options = parser.parse_args()
     root = Path(options.root)
     root.mkdir(mode=0o700, exist_ok=True)
@@ -42,8 +44,10 @@ def main():
     extra_descriptor = os.open(unrelated, os.O_RDONLY)
     executable = root / "controlled-worker"
     actor = Path(__file__).with_name("lease_worker_actor.py").resolve()
+    pool_directory = Path(options.pool) if options.pool else root.parent / "worker-pool"
     arguments = (sys.executable, "-B", str(actor), options.worker, options.marker,
-                 options.release, str(first), str(second), str(unrelated))
+                 options.release, str(first), str(second), str(unrelated),
+                 str(pool_directory) if options.mode == "store" else "-")
     executable.write_text("#!/bin/sh\nexec " + " ".join(shlex.quote(value) for value in arguments) + "\n", encoding="ascii")
     executable.chmod(0o700)
     actual_spawn = subprocess.Popen
@@ -90,6 +94,7 @@ def main():
                 value = json.loads(Path(options.target).read_bytes())
                 verifier = SubprocessObservation(executable.resolve(), expected_executable_sha256_hex=_file_digest(executable), timeout=options.timeout)
                 with ObservationStore.open(root, options.checkpoint, store_id_hex=STORE_ID, verifier=verifier,
+                        worker_pool=synthetic_pool(root.parent, directory=pool_directory, slot_limit=options.pool_slots),
                         attempt_limit=2, target_limit=2) as store:
                     statement = store.observe(value["state"], bytes.fromhex(value["signature_hex"]))
                     print(json.loads(statement)["outcome"], flush=True)

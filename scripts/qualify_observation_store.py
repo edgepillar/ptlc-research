@@ -26,12 +26,12 @@ sys.path.insert(0, str(ROOT / "tests"))
 from offline_session import completion, exchange, observation_records as records
 from offline_session.artifact_verifier import SubprocessVerifier
 from offline_session.completion_verifier import SubprocessCompletion
-from offline_session.observation_store import ObservationStore
+from offline_session.observation_store import ObservationStore, StoreBusy
 from offline_session.observation_verifier import SubprocessObservation, _file_digest
 from offline_session.journal import Conflict, Journal, RecoveryExhausted
 from completion_test_support import final_signatures
 from exchange_test_support import prepare
-from observation_store_test_support import STORE_ID
+from observation_store_test_support import STORE_ID, synthetic_pool
 
 
 class RealStoreTests(unittest.TestCase):
@@ -55,6 +55,7 @@ class RealStoreTests(unittest.TestCase):
     def open(self, base, *, limit=3, observer=None):
         return ObservationStore.open(base / "evidence", base / "evidence-head.json",
             store_id_hex=STORE_ID, verifier=self.observer if observer is None else observer,
+            worker_pool=synthetic_pool(base),
             attempt_limit=limit, target_limit=2)
 
     def test_actual_positive_negative_are_committed_and_reused_after_restart_without_more_work(self):
@@ -64,12 +65,30 @@ class RealStoreTests(unittest.TestCase):
                 for signature, outcome in ((self.signature, "verified"), (bytes(64), "rejected")):
                     self.assertEqual(json.loads(store.observe(self.state, signature))["outcome"], outcome)
                 self.assertEqual(store.summary().attempts_remaining, 0)
-            with self.open(base, limit=2) as store, patch.object(SubprocessObservation, "observe_owned") as worker:
+            with self.open(base, limit=2) as store, patch.object(SubprocessObservation, "observe_admitted") as worker:
                 self.assertEqual(json.loads(store.known_statement(self.state, self.signature))["outcome"], "verified")
                 self.assertEqual(json.loads(store.known_statement(self.state, bytes(64)))["outcome"], "rejected")
                 with self.assertRaises(records.RecordExhausted):
                     store.observe(self.state, self.signature, recheck=True)
                 worker.assert_not_called()
+
+    def test_actual_work_requires_shared_capacity_before_charge_and_explicit_retry_verifies(self):
+        with tempfile.TemporaryDirectory(prefix="synthetic-store-capacity-") as directory:
+            base = Path(directory)
+            pool = synthetic_pool(base)
+            with self.open(base) as store:
+                before = ((base / "evidence/observations.sqlite3").read_bytes(),
+                          (base / "evidence-head.json").read_bytes())
+                with pool.acquire(), pool.acquire(), \
+                        patch("offline_session.observation_verifier.run_admitted_public_worker") as worker:
+                    with self.assertRaises(StoreBusy):
+                        store.observe(self.state, self.signature)
+                    worker.assert_not_called()
+                self.assertEqual(store.summary().attempts_consumed, 0)
+                self.assertEqual(((base / "evidence/observations.sqlite3").read_bytes(),
+                                  (base / "evidence-head.json").read_bytes()), before)
+                self.assertEqual(json.loads(store.observe(self.state, self.signature))["outcome"], "verified")
+                self.assertEqual(store.summary().attempts_consumed, 1)
 
     def test_actual_deadline_unknown_retry_and_recheck_survive_each_reopen_and_preserve_normal(self):
         with tempfile.TemporaryDirectory(prefix="synthetic-store-unknown-") as directory:
@@ -112,7 +131,7 @@ class RealStoreTests(unittest.TestCase):
                 if child.poll() is None:
                     child.kill()
                 child.communicate(timeout=10)
-            with self.open(base, limit=2) as store, patch.object(SubprocessObservation, "observe_owned") as worker:
+            with self.open(base, limit=2) as store, patch.object(SubprocessObservation, "observe_admitted") as worker:
                 self.assertEqual(store.summary().attempts_consumed, 1)
                 self.assertEqual(store.summary().pending_attempts, 0)
                 self.assertIsNone(store.known_statement(self.state, self.signature))
@@ -128,7 +147,7 @@ class RealStoreTests(unittest.TestCase):
             with self.open(base, observer=observer) as store:
                 with entry.open("ab") as output:
                     output.write(b"synthetic entry change")
-                with patch("offline_session.observation_verifier.run_guarded_public_worker",
+                with patch("offline_session.observation_verifier.run_admitted_public_worker",
                            side_effect=AssertionError("changed entry launched")) as worker:
                     self.assertEqual(json.loads(store.observe(self.state, self.signature))["outcome"], "unknown")
                     worker.assert_not_called()

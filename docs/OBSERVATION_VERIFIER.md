@@ -182,3 +182,14 @@ remain separately trusted. The ordinary callable retains its unowned path and
 supplies no lifetime supervision. Store v2 identifies the new ownership epoch
 and quarantines old v1 pairs without migration. Cooperative exclusion is neither
 arbitrary containment nor aggregate resource or paired-restore protection.
+
+[Stage 22](SHARED_WORKER_ADMISSION.md) adds an explicit observe_admitted method
+with the same mathematical profile and predicate. It requires the two owner
+descriptors plus a distinct private admission descriptor; missing or invalid
+admission yields unknown without falling back to either earlier transport. The
+owned store obtains that slot before persisting pending work and retains it
+through result commit; guard and worker hold inherited references until exit.
+Store v3 binds the separately selected pool profile and quarantines v1/v2 pairs.
+The adapter's ordinary callable and two-lease observe_owned method acquire no
+pool slot. Descriptor metadata alone authenticates neither a physical pool nor
+actual admission; caller, selected worker and runtime cooperation remain premises.

@@ -99,7 +99,7 @@ orphan computation and restore boundaries need their own exact delta assessment.
 It changes neither the frozen source manifest nor recovery admission, and does
 not supply external review, process containment or funded availability evidence.
 
-[Stage 21's guard/lease delta](OBSERVATION_LEASES.md) changes the current disk
+[Stage 21's guard/lease delta](OBSERVATION_LEASES.md) changed the disk
 owner to version 2 and carries two locked descriptions into a selected
 cooperative nonforking worker. Parent monitoring, inherited-lock close versus
 unlock behavior, exclusive child reaping, guard loss, trusted runtime and old-v1
@@ -107,6 +107,17 @@ quarantine need their own exact delta assessment. Arbitrary containment, global
 resources and matching-pair rollback remain unresolved. The frozen subject and
 unfilled assessment report remain unchanged; these tests are not an external
 review.
+
+[Stage 22's shared-admission delta](SHARED_WORKER_ADMISSION.md) now requires a
+fixed explicit pool and storage version 3. Review slot acquisition before pending
+commit, third-descriptor inheritance and close-only lifetime, configuration/slot
+identity, partial initialization quarantine, nonblocking saturation, charged
+failure/cancellation and old-v1/v2 rejection separately. Native cross-store and
+guard-loss tests qualify physical-pool concurrency; deliberate matching-profile
+clone counterexamples exclude trusted enrollment or host-wide control. CPU/memory
+and cumulative-rate policy, fairness, hostile-worker containment and restored-copy
+defense remain unimplemented. The 119-file subject and unfilled report are unchanged;
+this delta's tests do not supply independent assessment or funded availability.
 
 ## Claims and open obligations
 
