@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 25 - explicit v4 storage and recovery process-death qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 26 - explicit v4 storage-failure and poisoned-owner qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 25 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 26 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -137,3 +137,17 @@ and all runtime/cryptographic behavior remain unchanged. See
 [validation](STAGE25_VALIDATION.md) for execution boundaries and initial fixture
 failures. Controlled write/sync/replace faults, power loss, clone defense,
 independent review and funded availability remain separate gates.
+
+## Stage 26 explicit v4 storage-failure qualification
+
+The separate [fault design](RESOURCE_STORE_FAULTS.md) qualifies before/after
+SQLite, write, flush, fsync and replacement failures, secondary rollback/cleanup
+errors, poisoned handles, charge retention and caller-slot release. The exact
+application persistence method still runs; injected errors and discovery verdicts
+are synthetic. Separate disposable-writer cases require actual kernel file-size
+refusal; Linux result-side qualification requires an actual Rust positive first.
+Consistent reopen recovers charged unknown without replay, while divergent pairs
+quarantine. Formats, runtime, journal, cryptography and frozen subject are
+unchanged. See [validation](STAGE26_VALIDATION.md) for execution boundaries.
+Native I/O errors, physical sync failure, power loss, clone defense, independent
+assessment and funded availability remain separate obligations.

@@ -31,6 +31,7 @@ from offline_session.worker_resources import WorkerResourceLimits, _supported
 from completion_test_support import final_signatures
 from exchange_test_support import prepare
 from observation_store_test_support import STORE_ID, synthetic_pool
+from observation_store_fault_support import StorageFaults
 
 
 class RealResourceStoreTests(unittest.TestCase):
@@ -131,6 +132,108 @@ class RealResourceStoreTests(unittest.TestCase):
             spawn.assert_not_called()
             limited.assert_not_called()
             ordinary.assert_not_called()
+
+    @contextmanager
+    def actual_normal(self):
+        actual = SubprocessObservation.observe_limited
+        results = []
+        def worker(observer, *arguments, **options):
+            statement = actual(observer, *arguments, **options)
+            if self.outcome(statement, self.signature) == "verified":
+                results.append(statement)
+            return statement
+        with patch.object(SubprocessObservation, "observe_limited", worker), \
+                patch.object(SubprocessObservation, "observe_admitted") as ordinary:
+            yield results
+            ordinary.assert_not_called()
+        self.assertEqual(len(results), 1, "actual normal result required before storage failure")
+
+    def check_fault_reopen(self, expected, *, attempts=1, normal=None):
+        if expected == "quarantine":
+            before = self.storage()
+            with self.no_work(), self.assertRaises(StoreQuarantined):
+                self.open()
+            self.assertEqual(self.storage(), before)
+            return
+        with self.no_work(), self.open() as store:
+            self.assertEqual((store.summary().attempts_consumed, store.summary().pending_attempts), (attempts, 0))
+            self.assertEqual(store.known_statement(self.state, self.signature), normal)
+        before = self.storage()
+        with self.no_work(), self.open() as store:
+            self.assertEqual(store.summary().attempts_consumed, attempts)
+            self.assertEqual(store.known_statement(self.state, self.signature), normal)
+        self.assertEqual(self.storage(), before)
+        self.assertEqual(json.loads(self.anchor.read_bytes())["worker_resource_profile_digest_hex"],
+                         self.policy.profile_digest_hex)
+
+    def test_actual_normal_storage_faults_distinguish_rollback_divergence_and_committed_result(self):
+        cases = (("sqlite.commit", "before", "unknown"), ("sqlite.commit", "after", "quarantine"),
+            ("checkpoint.write", "before", "quarantine"), ("checkpoint.fsync", "before", "quarantine"),
+            ("checkpoint.replace", "after", "normal"), ("directory.fsync", "before", "normal"),
+            ("directory.fsync", "after", "normal"))
+        for index, (operation, timing, expected) in enumerate(cases):
+            with self.subTest(operation=operation, timing=timing):
+                self.root, self.anchor = self.base / ("fault-" + str(index)), self.base / ("fault-" + str(index) + ".json")
+                store = self.open()
+                faults = StorageFaults(("result", operation, timing))
+                try:
+                    with faults.inject(store), self.actual_normal() as normal:
+                        with self.assertRaises(StoreQuarantined):
+                            store.observe(self.state, self.signature)
+                        for call in (store.summary, lambda: store.known_statement(self.state, self.signature),
+                                     lambda: store.observe(self.state, self.signature, recheck=True)):
+                            with self.assertRaises(StoreQuarantined):
+                                call()
+                        with self.pool.acquire():
+                            pass
+                        probe = subprocess.run(self.actor_command("probe", "--forbid-connect"),
+                            capture_output=True, text=True, timeout=15)
+                        self.assertEqual((probe.returncode, probe.stdout.strip(), probe.stderr), (20, "StoreBusy", ""))
+                    faults.assert_fired(self)
+                finally:
+                    store.close()
+                self.check_fault_reopen(expected, normal=normal[0] if expected == "normal" else None)
+
+    def test_actual_recheck_with_recovery_fault_preserves_old_normal_and_charge(self):
+        cases = (("sqlite.commit", "before", "unknown"), ("sqlite.commit", "after", "quarantine"),
+                 ("checkpoint.replace", "after", "unknown"), ("directory.fsync", "before", "unknown"))
+        for index, (operation, timing, expected) in enumerate(cases):
+            with self.subTest(operation=operation, timing=timing):
+                self.root, self.anchor = self.base / ("fault-recovery-" + str(index)), self.base / ("fault-recovery-" + str(index) + ".json")
+                with self.open() as store:
+                    normal = store.observe(self.state, self.signature)
+                    self.assertEqual(self.outcome(normal, self.signature), "verified")
+                def hook(name):
+                    if name == "worker.returned":
+                        raise RuntimeError("synthetic pending recheck")
+                with self.open(hook=hook) as store, self.actual_normal():
+                    with self.assertRaises(StoreQuarantined):
+                        store.observe(self.state, self.signature, recheck=True)
+                faults = StorageFaults(("recovery", operation, timing))
+                with faults.inject(), self.no_work(), self.assertRaises(StoreQuarantined):
+                    self.open()
+                faults.assert_fired(self)
+                self.check_fault_reopen(expected, attempts=2, normal=normal)
+
+    def test_native_writer_file_limit_before_work_and_after_actual_normal_preserves_journal(self):
+        for phase, calls, attempts in (("admission", b"", 0), ("result", b"verified", 1)):
+            with self.subTest(phase=phase):
+                self.root, self.anchor = self.base / ("native-fault-" + phase), self.base / ("native-fault-" + phase + ".json")
+                with self.open():
+                    pass
+                target, marker = self.base / (phase + "-fsize-target.json"), self.base / (phase + "-fsize-calls")
+                target.write_bytes(exchange.canonical({"state": self.state, "signature_hex": self.signature.hex()}))
+                result = subprocess.run(self.actor_command("crash", "--file-size-at", phase,
+                    "--target", str(target), "--marker", str(marker)), capture_output=True, text=True, timeout=15)
+                probe = self.base / "synthetic-fsize-probe"
+                if probe.exists():
+                    probe.unlink()
+                self.assertEqual((result.returncode, result.stdout.strip(), result.stderr),
+                                 (20, "fsize-refused\nStoreQuarantined", ""))
+                self.assertEqual(marker.read_bytes() if marker.exists() else b"", calls)
+                self.check_fault_reopen("unknown", attempts=attempts)
+                with self.pool.acquire():
+                    pass
 
     def test_sigkill_after_actual_limited_verdict_and_at_result_write_boundaries(self):
         for index, (point, normal) in enumerate((("worker.returned", False),

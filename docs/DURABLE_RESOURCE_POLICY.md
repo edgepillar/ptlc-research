@@ -111,8 +111,11 @@ See [Stage 24 validation](STAGE24_VALIDATION.md) for executed versus pending gat
 **Go:** assess this exact v4 selection delta and the separately added
 [Stage 25 process-death matrix](RESOURCE_STORE_CRASH_CUTS.md). The inherited
 v3 SIGKILL matrix and v4 synthetic hooks alone do not establish that full v4
-matrix. Controlled write/sync/replace faults and uncertain outcomes remain a
-later gate before wider resource admission; see [Stage 25 validation](STAGE25_VALIDATION.md).
+matrix. [Stage 26 storage-fault qualification](RESOURCE_STORE_FAULTS.md) adds
+controlled before/after API errors, poisoned ownership and a separate native
+writer file limit. Prepare an exact assessment subject for these later deltas
+before wider resource admission; native I/O errors and power loss remain open.
+See [Stage 26 validation](STAGE26_VALIDATION.md).
 **No-go:** claim RSS or aggregate budgets, process-tree/capability containment,
 fairness, trusted enrollment, paired-restore/clone defense, power-loss safety,
 funded recovery availability, private signing or core activation.
