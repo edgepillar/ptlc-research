@@ -125,6 +125,11 @@ aggregate admission limits, emergency recovery and exhaustion handling still
 need review. More retries or a reserved budget alone cannot establish
 availability against an unbounded adversary or uncertain computation.
 
+[Stage 14 selected trace correspondence](RECOVERY_MODEL_CORRESPONDENCE.md) now
+connects some baseline traces to real journal operations and actual public
+workers. It compares a documented projection, does not implement the model's
+external authorization/authentication premises, and is not exhaustive refinement.
+
 Private signing, restored-copy protection, authenticated chain identity and
 independent construction review remain open gates. Live swaps and a core port
 remain no-go.

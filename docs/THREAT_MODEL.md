@@ -1,6 +1,6 @@
 # Threat model and evidence limits
 
-Status: **DRAFT, carried through Stage 13 review preparation.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
+Status: **DRAFT, carried through Stage 14 selected model/journal correspondence.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
 
 ## Security objective
 
@@ -70,3 +70,5 @@ The report must identify exact commits, dependency versions, environment and ass
 [Stage 12 candidate construction](PUBLIC_SIGNATURE_CANDIDATES.md) imports only public signature bytes into a locally reconstructed packet. Structural acceptance is neither cryptographic validity nor evidence that Alice transmitted it. The helper has no source authorization, journal mutation or allowance bypass; a later admitted invalid candidate can still poison ordinary selection or exhaust recovery. A coherent local snapshot remains a trusted input, not independently authenticated storage evidence.
 
 [Stage 13 review preparation](INDEPENDENT_REVIEW.md) freezes the exact Stage 12 implementation subject and maps its evidence to unresolved assessment obligations. The inventory establishes source identity only; the report template is unfilled. External construction review, signer ownership, recovery availability and chain/funding/time evidence remain required before progression.
+
+[Stage 14 correspondence](RECOVERY_MODEL_CORRESPONDENCE.md) replays selected baseline traces against journal admission snapshots and reopened state, using separate fake-oracle and actual-public-worker runs. It reproduces exhaustion without deriving observation authority, chain inclusion or Alice ownership. This is bounded implementation evidence, not a general refinement or funded-availability proof.
