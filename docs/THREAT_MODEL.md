@@ -1,6 +1,6 @@
 # Threat model and evidence limits
 
-Status: **DRAFT, carried through Stage 15 offline public recovery reserve experiments.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
+Status: **DRAFT, carried through Stage 16 exact public authority and inner-validity experiments.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
 
 ## Security objective
 
@@ -74,3 +74,5 @@ The report must identify exact commits, dependency versions, environment and ass
 [Stage 14 correspondence](RECOVERY_MODEL_CORRESPONDENCE.md) replays selected baseline traces against journal admission snapshots and reopened state, using separate fake-oracle and actual-public-worker runs. It reproduces exhaustion without deriving observation authority, chain inclusion or Alice ownership. This is bounded implementation evidence, not a general refinement or funded-availability proof.
 
 [Stage 15 reserve experiments](RECOVERY_RESERVE_MODEL.md) separate protected public attempts from general work while retaining the baseline candidate/history rules. A finite reserve remains exhaustible if authorized public work is repeatedly interrupted. Conditional absence of blocked states requires ideal public authorization and an externally imposed interruption bound; eventual worker outcomes and fair scheduling are not modeled. No reserve or environment guarantee is implemented, and invalid public observations or compromised authorization remain outside this fixed-witness model.
+
+[Stage 16 exact-observation experiments](PUBLIC_OBSERVATION_MODEL.md) allow each of two fixed public candidates to have separate local authority, without making authority an inner-validity oracle. Normal invalid rejection can drain a reserve even with no worker interruption. The stronger comparison filter is an explicit unimplemented premise; exact observation evidence, trustworthy context/source binding and aggregate verification-resource policy remain required. These models supply no chain trust source or funded recovery guarantee.

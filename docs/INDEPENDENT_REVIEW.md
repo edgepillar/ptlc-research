@@ -69,6 +69,11 @@ finite path evidence selects no journal implementation or funded guarantee.
 The fixed source inventory remains unchanged, and any review of this later
 wrapper requires a separately identified delta.
 
+[Stage 16 exact-observation experiments](PUBLIC_OBSERVATION_MODEL.md) further
+separate per-ID authority from inner validity and normal rejection from worker
+interruption. This later delta also remains outside the frozen subject; its
+ideal-filter comparison implements no observation trust source or funded policy.
+
 ## Claims and open obligations
 
 | Bounded evidence at the subject | Obligation still open |

@@ -154,3 +154,9 @@ interrupted attempts, bypass worker verification, or proceed to live swaps/core
 activation on these results. A finite reserve improves separation under ideal
 authority but remains exhaustible. The existing journal's shared allowance and
 its verified exhaustion behavior are unchanged.
+
+[Stage 16's exact-observation experiment](PUBLIC_OBSERVATION_MODEL.md) deliberately
+weakens this model's valid-public-witness premise. It finds reserve blockage
+from normal invalid rejection even with zero interruptions. The stronger
+valid-only comparison remains ideal; no journal policy is selected by either
+model.

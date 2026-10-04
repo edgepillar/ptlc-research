@@ -136,6 +136,11 @@ Protected attempts survive general exhaustion under ideal public authority,
 but a finite reserve remains blockable under unrestricted public interruption.
 No new policy is connected to the journal.
 
+[Stage 16 exact-observation experiments](PUBLIC_OBSERVATION_MODEL.md) add a
+separate generalized public-admission model. Authority is bound to either fixed
+candidate ID, while normal invalid rejection can spend a reserved attempt with
+no worker interruption. The earlier engine and journal remain unchanged.
+
 Private signing, restored-copy protection, authenticated chain identity and
 independent construction review remain open gates. Live swaps and a core port
 remain no-go.
