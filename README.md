@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 23 explicit Linux worker CPU/address-space qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 24 durable explicit Linux worker resource selection. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -44,7 +44,7 @@ A separate owned SQLite/checkpoint store now retains those records across local 
 
 Owned observations now require an explicitly selected finite worker pool. Stores sharing the same physical slots cannot start more admitted invocations than its fixed capacity; saturation writes nothing and charges no attempt. The guard and selected worker retain a third slot reference, including after guard death. Store v3 binds the pool profile and quarantines old v1/v2 pairs without migration. Matching profiles in different physical pools still admit independent work. CPU/memory accounting, cumulative rate, fairness, trusted pool enrollment and clone/restore protection remain unresolved.
 
-A separate opt-in Linux experiment now lowers explicit per-process CPU and virtual address-space caps before exec, checks exact readback and disables core dumps. Missing policy, unsupported host or incomplete setup runs no selected entry and never falls back. Both ownership references and the shared slot survive exec. macOS rejects this profile; it supplies no portable RSS guarantee. The owned store still uses ordinary admitted work and has no durable resource-policy selection. Aggregate budgets, fairness, capability isolation and independent assessment remain separate gates.
+A separate opt-in Linux experiment now lowers explicit per-process CPU and virtual address-space caps before exec, checks exact readback and disables core dumps. Missing policy, unsupported host or incomplete setup runs no selected entry and never falls back. Both ownership references and the shared slot survive exec. macOS rejects this profile; it supplies no portable RSS guarantee. The ordinary v3 store still selects admitted work. A separate explicit v4 entry now binds the requested resource profile in SQLite/checkpoint storage, rejects mode or policy mismatch before SQLite opens, and dispatches only limited work. Aggregate budgets, fairness, capability isolation and independent assessment remain separate gates.
 
 ## Repository boundaries
 
@@ -112,6 +112,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 52. [Stage 22 validation and remaining gates](docs/STAGE22_VALIDATION.md)
 53. [Explicit resources for one admitted public worker](docs/WORKER_RESOURCE_LIMITS.md)
 54. [Stage 23 validation and remaining gates](docs/STAGE23_VALIDATION.md)
+55. [Durable explicit worker resource selection](docs/DURABLE_RESOURCE_POLICY.md)
+56. [Stage 24 validation and remaining gates](docs/STAGE24_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -152,11 +154,12 @@ python3 -B scripts/qualify_observation.py --verifier qualification/target/debug/
 python3 -B scripts/qualify_observation_records.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange --observation qualification/target/debug/examples/verify_observation
 python3 -B scripts/qualify_observation_store.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange --observation qualification/target/debug/examples/verify_observation
 python3 -B scripts/qualify_worker_resources.py --verifier qualification/target/debug/examples/verify_exchange --observation qualification/target/debug/examples/verify_observation
+python3 -B scripts/qualify_observation_resource_store.py --verifier qualification/target/debug/examples/verify_exchange --observation qualification/target/debug/examples/verify_observation
 ```
 
 Use the corresponding executable paths if `CARGO_TARGET_DIR` is set. These checks use temporary public journals, fixture artifacts and explicitly selected local executables. Ordinary Python tests use clearly labeled fake callbacks for sequencing and do not require Rust. Journal storage v7 quarantines older v1-v6 state without migration; incoming Bob releases require v2 packets with both partials. Starting managed Bob exchange requires an explicit `recovery_limit` from 1 through 64. Optional `authentication_pins` are copied at that start and cannot be added, changed or removed later; omitting them is also a frozen choice.
 
-The resource qualifier requires an unprivileged supported Linux host. On macOS,
+Both resource qualifiers require an unprivileged supported Linux host. On macOS,
 the resource platform cases assert explicit refusal and do not execute Linux
 enforcement probes. Local refusal and configured CI supply no Linux execution
 evidence; completed exact-head hosted results must be reported separately.
@@ -177,10 +180,11 @@ The [record contract](docs/OBSERVATION_RECORDS.md) defines bounded attempt/claim
 
 All checked-in content is English and contains no user identity or private operational data. The artifact checker detects a limited set of accidental disclosures; source, metadata, and destination still require review before publication.
 
-The [resource experiment](docs/WORKER_RESOURCE_LIMITS.md) adds explicit per-process
-Linux maxima outside persistent store selection. Assess that launcher/policy delta,
-then select and persist runtime policy with reopen continuity before connecting it
-to owned admission. Virtual address space is not RSS, and per-process caps supply
+The [resource experiment](docs/WORKER_RESOURCE_LIMITS.md) supplies explicit Linux
+per-process maxima. [Durable v4 selection](docs/DURABLE_RESOURCE_POLICY.md) now
+binds the requested profile and rejects cross-mode/policy reopen before SQLite
+access. Assess both deltas, then qualify real process-death cuts through all v4
+storage and recovery boundaries. Virtual address space is not RSS, and per-process caps supply
 no cumulative rate, fairness, capability isolation or funded availability proof.
 
 ## License and participation

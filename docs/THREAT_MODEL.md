@@ -1,6 +1,6 @@
 # Threat model and evidence limits
 
-Status: **DRAFT, carried through Stage 23 explicit Linux worker resources.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
+Status: **DRAFT, carried through Stage 24 durable explicit worker resource selection.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
 
 ## Security objective
 
@@ -90,3 +90,15 @@ The report must identify exact commits, dependency versions, environment and ass
 [Stage 22's shared admission](SHARED_WORKER_ADMISSION.md) bounds simultaneous owned observation invocations across cooperating stores selecting the same physical slot files. A busy pool rejects before pending persistence without charging or launching. Guard/worker references keep a live admitted worker's slot occupied even after guard loss; admitted interruption retains its attempt charge. Store v3 freezes pool-profile consistency and rejects old v1/v2 pairs without migration. Separate physical pools with matching profiles still admit independent work and can reopen matching store copies. CPU/memory accounting, cumulative rate, fairness, trusted pool enrollment, anti-clone protection, power loss and funded availability remain unresolved. The public profile is not enrollment authentication or a host-wide resource boundary.
 
 [Stage 23's separate resource experiment](WORKER_RESOURCE_LIMITS.md) installs explicit Linux CPU-time and virtual-address-space caps in a child before exec, preserving three capabilities and stricter inherited maxima. Unsupported hosts, root, missing policy or incomplete readback select no entry without fallback. Resource interruption remains unknown, never a mathematical negative. This is neither RSS accounting nor a process-tree sandbox; nonzero UID does not prove absence of capabilities. Guard/caller/preflight resources, cumulative rate/fairness, runtime/source trust and hostile privilege remain outside the construction. Store v3 selects no resource policy, so persistence/continuity and integration ordering need separate qualification. Independent assessment, clone/restore defense and funded availability remain open.
+
+[Stage 24's durable resource selection](DURABLE_RESOURCE_POLICY.md) adds an explicit
+Linux v4 store entry that binds the requested resource profile to the canonical
+SQLite/checkpoint pair. Mode/profile selection rejects before SQLite connect,
+then full pair validation precedes pending recovery. Saturation stays uncharged;
+admitted unavailable work stays unknown without fallback. The ordinary v3 entry
+remains separate; neither API migrates or rotates an existing pair. Pure records,
+mathematical profile, journal and pool configuration are unchanged. Profile
+consistency authenticates no effective cap, source, host, enrollment or restored
+copy. Full real v4 write/recovery crash cuts remain unqualified by the inherited
+v3 matrix. Aggregate budgets, arbitrary containment, fairness, independent
+assessment and funded availability remain open.

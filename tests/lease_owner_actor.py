@@ -23,7 +23,7 @@ from observation_store_test_support import STORE_ID, synthetic_pool
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", choices=("store", "raw", "legacy", "limited"))
+    parser.add_argument("mode", choices=("store", "store-limited", "raw", "legacy", "limited"))
     parser.add_argument("root")
     parser.add_argument("checkpoint")
     parser.add_argument("marker")
@@ -37,7 +37,7 @@ def main():
     options = parser.parse_args()
     root = Path(options.root)
     root.mkdir(mode=0o700, exist_ok=True)
-    first = root / ("observations.lock" if options.mode == "store" else "lease-a.lock")
+    first = root / ("observations.lock" if options.mode in ("store", "store-limited") else "lease-a.lock")
     second = Path(options.checkpoint + ".lock")
     unrelated = root / "unrelated.data"
     unrelated.write_bytes(b"synthetic unrelated data")
@@ -48,7 +48,7 @@ def main():
     pool_directory = Path(options.pool) if options.pool else root.parent / "worker-pool"
     arguments = (sys.executable, "-B", str(actor), options.worker, options.marker,
                  options.release, str(first), str(second), str(unrelated),
-                 str(pool_directory) if options.mode in ("store", "limited") else "-")
+                 str(pool_directory) if options.mode in ("store", "store-limited", "limited") else "-")
     executable.write_text("#!/bin/sh\nexec " + " ".join(shlex.quote(value) for value in arguments) + "\n", encoding="ascii")
     executable.chmod(0o700)
     actual_spawn = subprocess.Popen
@@ -91,12 +91,15 @@ def main():
     try:
         with patch("offline_session.public_worker.subprocess.Popen", side_effect=spawn), \
                 patch("offline_session.public_worker.selectors.DefaultSelector", ControlSelector):
-            if options.mode == "store":
+            if options.mode in ("store", "store-limited"):
                 value = json.loads(Path(options.target).read_bytes())
                 verifier = SubprocessObservation(executable.resolve(), expected_executable_sha256_hex=_file_digest(executable), timeout=options.timeout)
-                with ObservationStore.open(root, options.checkpoint, store_id_hex=STORE_ID, verifier=verifier,
+                opener = ObservationStore.open_limited if options.mode == "store-limited" else ObservationStore.open
+                limits = ({"resource_limits": WorkerResourceLimits(1, 128 * 1024 * 1024)}
+                          if options.mode == "store-limited" else {})
+                with opener(root, options.checkpoint, store_id_hex=STORE_ID, verifier=verifier,
                         worker_pool=synthetic_pool(root.parent, directory=pool_directory, slot_limit=options.pool_slots),
-                        attempt_limit=2, target_limit=2) as store:
+                        attempt_limit=2, target_limit=2, **limits) as store:
                     statement = store.observe(value["state"], bytes.fromhex(value["signature_hex"]))
                     print(json.loads(statement)["outcome"], flush=True)
             else:

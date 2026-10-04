@@ -1,14 +1,16 @@
 # Separately owned offline observation records
 
-Status: **Stage 22 local SQLite/checkpoint ownership with worker-held leases and
-explicit shared admission, separate from recovery admission. No chain source,
+Status: **Stage 24 owned v3/v4 records with shared admission and separately
+selected Linux resource continuity, separate from recovery admission. No chain source,
 private signer or funded policy is connected. Arbitrary process containment,
-rate/resource policy and clone/restore protection remain open.**
+aggregate rate/resource policy and clone/restore protection remain open.**
 
 Original Stage 20 source parent: [`eda29365089ebf99008e779afaffbcbc3299015c`](https://github.com/edgepillar/ptlc-research/tree/eda29365089ebf99008e779afaffbcbc3299015c).
 The [Stage 21 lease design](OBSERVATION_LEASES.md) identifies the original
 supervision boundary; [Stage 22 shared admission](SHARED_WORKER_ADMISSION.md)
-identifies the current source parent and third-reference construction.
+identifies the original admitted-store parent and third-reference construction.
+[Stage 24 resource continuity](DURABLE_RESOURCE_POLICY.md) specifies the separate
+v4 entry and its exact parent.
 The [pure record contract](OBSERVATION_RECORDS.md) and
 [selected mathematical profile/predicate](OBSERVATION_VERIFIER.md) remain unchanged. The separate
 [module](../offline_session/observation_store.py) supplies local record ownership
@@ -85,7 +87,7 @@ Diagnostic hooks are trusted local test instrumentation, never peer-controlled.
 ## Storage pair and validation
 
 The private directory contains `observations.sqlite3`. One `checkpoint` row has
-exactly the selected version 3, slot one, expected store ID, record revision,
+exactly the selected ordinary version 3, slot one, expected store ID, record revision,
 bounded canonical record bytes, pool-profile digest and checkpoint digest. The
 pool-profile column must have length 64 before fetch and match the selected
 pool. Before fetching a record
@@ -198,10 +200,17 @@ private signing, port the client store into core or activate PTLC. The frozen
 Stage 12 review subject and pending independent assessment remain unchanged.
 See [Stage 20 historical validation](STAGE20_VALIDATION.md) and
 [Stage 21 historical validation](STAGE21_VALIDATION.md) and
-[Stage 22 current validation](STAGE22_VALIDATION.md).
+[Stage 22 historical validation](STAGE22_VALIDATION.md) and
+[Stage 24 current validation](STAGE24_VALIDATION.md).
 
-[Stage 23's resource experiment](WORKER_RESOURCE_LIMITS.md) is a separate adapter
-path and does not change this v3 store. Observe still selects observe_admitted,
-not observe_limited, and neither pool profile nor database/checkpoint records bind
-CPU/address-space maxima. Select and persist an explicit runtime policy and
-qualify continuity/order before claiming limited resources for this managed store.
+[Stage 23's resource experiment](WORKER_RESOURCE_LIMITS.md) supplies a separate
+limited adapter. The ordinary v3 entry still selects `observe_admitted`. The
+explicit [v4 entry](DURABLE_RESOURCE_POLICY.md), `ObservationStore.open_limited`,
+requires a supported Linux `resource_limits` choice and binds its profile in an
+additional SQLite column and v4-domain checkpoint. Mode/profile selection is
+checked under both locks before SQLite connect; the complete pair is checked
+before pending recovery. Missing/changed policy and cross-version open reject
+without migration or fallback. Live policy is rechecked before reads/work and
+limited dispatch. Pending/result ordering, shared capacity, mathematical records
+and journal separation remain unchanged. The v3 crash matrix above is historical
+v3 evidence; a complete real v4 storage/recovery cut matrix remains a next gate.

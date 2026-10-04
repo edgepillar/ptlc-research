@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 23 - explicit Linux worker CPU/address-space qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 24 - durable explicit Linux worker resource selection. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 23 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 24 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -112,3 +112,15 @@ The Stage 13 brief defines a concrete subject and assessment obligations for tha
 A later core port must preserve pre-activation historical behavior and compose PTLC with other activated features. Existing expiry and replay tests must be retained and extended; their presence must not be reported as absent. Any core contribution needs coordination with current maintainers and overlapping work before changes are proposed.
 
 No result from this repository authorizes production activation. A later activation decision requires its own reviewed core commit, protocol implementation, operational assumptions, and network evidence.
+
+## Stage 24 explicit resource continuity
+
+The separate Linux v4 observation entry persists the requested CPU/address-space
+profile beside the existing pool profile. It rejects missing/unsupported policy
+before creation and cross-mode/policy reopen before SQLite access, then checks
+the complete pair before pending recovery. Ordinary v3 behavior and pure math
+records remain separate. Limited work still uses three cooperative references;
+interruption is charged unknown with no ordinary-work fallback. Full real v4
+storage/recovery crash cuts, aggregate budgets, enrollment, independent review
+and funded availability remain open. See [design](DURABLE_RESOURCE_POLICY.md)
+and [validation](STAGE24_VALIDATION.md).

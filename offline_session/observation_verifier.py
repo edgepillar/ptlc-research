@@ -102,7 +102,7 @@ class SubprocessObservation:
                              admitted=True, admission_descriptor=admission_descriptor)
 
     def observe_limited(self, state, signature, *, ownership_descriptors, admission_descriptor, resource_limits):
-        """Explicit Linux resource experiment outside persistent store policy."""
+        """Require explicit Linux limits, independent of the math profile."""
         return self._observe(state, signature, ownership_descriptors, owned=True,
                              admitted=True, limited=True, admission_descriptor=admission_descriptor,
                              resource_limits=resource_limits)

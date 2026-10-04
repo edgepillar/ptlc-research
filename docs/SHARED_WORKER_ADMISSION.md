@@ -141,3 +141,9 @@ virtual-address-space caps before worker exec. The v3 owned store does not selec
 that experimental path or persist its profile. The pool's physical concurrency
 scope and clone counterexamples remain unchanged; per-process maxima supply no
 RSS accounting, cumulative rate, fairness, enrollment or funded availability.
+
+[Stage 24](DURABLE_RESOURCE_POLICY.md) adds a separate explicit v4 store entry
+that binds requested resources and selects the limited adapter. Its additional
+profile does not change pool configuration, physical admission scope or matching
+clone counterexamples. Saturation remains uncharged before durable pending;
+limited work retains the same two ownership descriptions and distinct slot.

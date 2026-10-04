@@ -128,6 +128,15 @@ admitted work, so resource-policy persistence/continuity and later integration
 are not assessed by this experiment. The frozen subject is unchanged. No RSS,
 aggregate budget, sandbox, external assessment or funded guarantee follows.
 
+[Stage 24's v4 resource-selection delta](DURABLE_RESOURCE_POLICY.md) separately
+binds requested limits in SQLite/checkpoint storage and rejects cross-mode/policy
+open before SQLite/recovery. Assess explicit provisioning, canonical versioned
+commitments, preflight versus complete-pair validation, charged unknown and
+no-fallback routing, synthetic host cases versus native Linux evidence, and all
+real v4 storage/recovery crash cuts. Mathematical records, journal and the frozen
+subject remain unchanged. Tests and requested-profile consistency provide no
+independent assessment, effective-cap attestation or clone defense.
+
 ## Claims and open obligations
 
 | Bounded evidence at the subject | Obligation still open |
