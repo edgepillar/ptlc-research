@@ -2,12 +2,19 @@
 
 import argparse
 from contextlib import ExitStack
+import errno
 import json
 import os
 from pathlib import Path
 import sqlite3
+import signal
 import sys
 from unittest.mock import patch
+
+try:
+    import resource
+except ImportError:
+    resource = None
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -36,6 +43,7 @@ def main():
     parser.add_argument("--pool-slots", type=int, default=2)
     parser.add_argument("--spill-cache", action="store_true")
     parser.add_argument("--synthetic-policy-host", action="store_true")
+    parser.add_argument("--file-size-at", choices=("admission", "result"))
     args = parser.parse_args()
     if args.synthetic_policy_host and (not args.limited or args.actual_observation
             or sys.platform not in {"linux", "darwin"} or os.geteuid() == 0):
@@ -45,7 +53,30 @@ def main():
     armed = args.mode in {"recover", "initialize"}
     controlled_connection = None
 
+    def file_size_failure():
+        if resource is None or not hasattr(resource, "RLIMIT_FSIZE") or not hasattr(signal, "SIGXFSZ"):
+            raise ValueError("synthetic file-size probe unsupported")
+        # Restrict only this disposable writer, never the controller or a signer.
+        signal.signal(signal.SIGXFSZ, signal.SIG_IGN)
+        resource.setrlimit(resource.RLIMIT_FSIZE, (0, 0))
+        assert resource.getrlimit(resource.RLIMIT_FSIZE) == (0, 0)
+        descriptor = os.open(Path(args.root).parent / "synthetic-fsize-probe",
+                             os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        try:
+            try:
+                os.write(descriptor, b"1")
+            except OSError as error:
+                if error.errno != errno.EFBIG:
+                    raise
+            else:
+                raise AssertionError("native file-size refusal required")
+        finally:
+            os.close(descriptor)
+        print("fsize-refused", flush=True)
+
     def hook(name):
+        if armed and args.file_size_at == "result" and name == "worker.returned":
+            file_size_failure()
         if armed and name == args.point:
             if args.spill_cache:
                 # Tiny managed rows can remain below SQLite's minimum cache.
@@ -90,6 +121,8 @@ def main():
                 return
             target = json.loads(Path(args.target).read_bytes())
             armed = True
+            if args.file_size_at == "admission":
+                file_size_failure()
             method = "observe_limited" if args.limited else "observe_admitted"
             if args.actual_observation:
                 actual_call = getattr(SubprocessObservation, method)

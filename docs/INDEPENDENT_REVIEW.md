@@ -146,6 +146,17 @@ markers. macOS explicitly simulates only host selection in synthetic-worker
 cuts. Runtime, cryptographic sources, journal and frozen review subject remain
 unchanged. Power loss, storage faults and external assessment are still separate.
 
+[Stage 26's test-only storage-fault delta](RESOURCE_STORE_FAULTS.md) adds
+before/after real operations with synthetic reported failures, secondary
+rollback/cleanup errors and poisoned-owner/slot behavior. Assess actual commit
+completion versus pre-commit failure, consistent versus divergent pairs, retained
+charge and old normal evidence, no replay and exact actual-positive gates. A
+separate disposable-writer file limit requires native EFBIG; it does not qualify
+native EIO, disk exhaustion or physical sync failure. These later observation,
+ownership, pool and resource changes need their own pinned assessment subject;
+the original 119-file manifest and source remain unchanged. Preparing or testing
+that subject supplies no independent assessment.
+
 ## Claims and open obligations
 
 | Bounded evidence at the subject | Obligation still open |

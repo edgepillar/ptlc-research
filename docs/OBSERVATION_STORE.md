@@ -1,7 +1,7 @@
 # Separately owned offline observation records
 
-Status: **Stage 25 owned v3/v4 records with shared admission, explicit Linux
-resource continuity and v4 process-death cuts, separate from recovery admission. No chain source,
+Status: **Stage 26 owned v3/v4 records with shared admission, explicit Linux
+resource continuity, v4 process-death cuts and storage-failure qualification, separate from recovery admission. No chain source,
 private signer or funded policy is connected. Arbitrary process containment,
 aggregate rate/resource policy and clone/restore protection remain open.**
 
@@ -202,7 +202,8 @@ See [Stage 20 historical validation](STAGE20_VALIDATION.md) and
 [Stage 21 historical validation](STAGE21_VALIDATION.md) and
 [Stage 22 historical validation](STAGE22_VALIDATION.md) and
 [Stage 24 historical validation](STAGE24_VALIDATION.md) and
-[Stage 25 current validation](STAGE25_VALIDATION.md).
+[Stage 25 historical validation](STAGE25_VALIDATION.md) and
+[Stage 26 current validation](STAGE26_VALIDATION.md).
 
 [Stage 23's resource experiment](WORKER_RESOURCE_LIMITS.md) supplies a separate
 limited adapter. The ordinary v3 entry still selects `observe_admitted`. The
@@ -219,4 +220,10 @@ nineteen initialization/admission/result/recovery cuts, real hot-journal
 cross-mode/policy refusal and actual Linux returned-result/recheck death. It
 changes qualification only. Python verdicts and local macOS host selection are
 synthetic; process, lock and SQLite behavior remain real. Neither matrix tests
-power loss or controlled write/sync/replace failures.
+power loss or controlled write/sync/replace failures. The separate
+[Stage 26 fault matrix](RESOURCE_STORE_FAULTS.md) now qualifies controlled API
+failures and native file-size refusal in a disposable writer. Reported API
+errors are synthetic; actual commit/replace completion is asserted separately.
+Poisoned ownership, slot release, charge/normal retention and no replay are
+checked without changing this module. Native EIO, physical sync and power-loss
+safety remain unqualified.

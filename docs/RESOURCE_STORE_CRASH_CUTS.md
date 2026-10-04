@@ -115,7 +115,10 @@ for local versus hosted execution; subcases are not separate top-level test coun
 replacement failures with precise poisoned-handle, quarantine, charge and slot
 release expectations. Include uncertain outcomes; do not add implicit retry,
 repair, migration or quota reset. Keep native execution and synthetic faults
-separate from effective-resource or cryptographic claims.
+separate from effective-resource or cryptographic claims. The later
+[Stage 26 fault matrix](RESOURCE_STORE_FAULTS.md) supplies those controlled API
+cases and a separate native writer file-limit gate; it leaves this process-death
+evidence and all native I/O/power-loss boundaries distinct.
 
 **No-go:** policy rotation, a production swap client, live sources, private
 signing, core activation, power-loss guarantees, clone/restore defense, aggregate

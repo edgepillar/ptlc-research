@@ -1,6 +1,6 @@
 # Threat model and evidence limits
 
-Status: **DRAFT, carried through Stage 25 v4 process-death qualification.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
+Status: **DRAFT, carried through Stage 26 v4 storage-failure qualification.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
 
 ## Security objective
 
@@ -112,3 +112,13 @@ normal evidence. Python verdicts and macOS host selection are explicit synthetic
 inputs; actual limited Rust results have a separate Linux qualifier. These cuts
 exercise no power loss, hostile storage, sync/write failure, clone defense,
 effective-cap attestation or independent assessment. Runtime behavior is unchanged.
+
+[Stage 26 storage faults](RESOURCE_STORE_FAULTS.md) separately distinguish
+pre-commit rollback, committed-database divergence and consistent post-replacement
+pairs. Injected API errors qualify the unchanged failure response, not native
+I/O or physical durability. Poisoned live handles retain ownership until close
+and release caller capacity; consistent reopen preserves charge and prior normal
+evidence without replay. Native file-size refusal runs only in a disposable
+writer and supplies no disk-full, native EIO, power-loss or anti-clone guarantee.
+Actual Linux verdicts and resource enforcement remain separate executed gates;
+independent assessment and funded recovery policy remain pending.

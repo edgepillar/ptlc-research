@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 25 explicit v4 storage and recovery process-death qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 26 explicit v4 storage-failure and poisoned-owner qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -53,6 +53,15 @@ or the sidecar. Python discovery uses synthetic verdicts; macOS also simulates
 only host selection. A separate Linux qualifier requires actual limited Rust
 verification before result/recheck loss and tests interrupted recovery. This
 changes qualification only and supplies no power-loss or funded-swap guarantee.
+
+Controlled storage faults now distinguish actual rollback, committed database
+change with an old checkpoint, and a consistent pair after replacement. Failed
+live handles retain store ownership and reject reads/retries while releasing the
+caller slot; matched reopen preserves charge and earlier normal evidence without
+replay. API failures are synthetic. Separate disposable-writer cases require
+actual kernel file-size refusal, including an actual Rust positive before the
+Linux result-side fault. Native I/O errors, power loss and independent assessment
+remain open; application behavior and the frozen review subject are unchanged.
 
 ## Repository boundaries
 
@@ -124,6 +133,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 56. [Stage 24 validation and remaining gates](docs/STAGE24_VALIDATION.md)
 57. [Explicit resource-store process-death cuts](docs/RESOURCE_STORE_CRASH_CUTS.md)
 58. [Stage 25 validation and remaining gates](docs/STAGE25_VALIDATION.md)
+59. [Explicit resource-store storage failures](docs/RESOURCE_STORE_FAULTS.md)
+60. [Stage 26 validation and remaining gates](docs/STAGE26_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -193,9 +204,13 @@ All checked-in content is English and contains no user identity or private opera
 The [resource experiment](docs/WORKER_RESOURCE_LIMITS.md) supplies explicit Linux
 per-process maxima. [Durable v4 selection](docs/DURABLE_RESOURCE_POLICY.md) now
 binds the requested profile and rejects cross-mode/policy reopen before SQLite
-access. Assess both deltas, then qualify real process-death cuts through all v4
-storage and recovery boundaries. Virtual address space is not RSS, and per-process caps supply
-no cumulative rate, fairness, capability isolation or funded availability proof.
+access. The [v4 process-death matrix](docs/RESOURCE_STORE_CRASH_CUTS.md) and
+[storage-fault qualification](docs/RESOURCE_STORE_FAULTS.md) now make those
+boundaries separately reviewable. Prepare a pinned assessment subject for the
+observation, ownership, pool and resource deltas, preserving the original review
+subject and all unresolved native storage, restore and source obligations.
+Virtual address space is not RSS, and per-process caps supply no cumulative rate,
+fairness, capability isolation or funded availability proof.
 
 ## License and participation
 
