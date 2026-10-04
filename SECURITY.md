@@ -94,6 +94,17 @@ an exhausted journal. It is disconnected from existing entry points. Both fixed
 subjects and unfilled reports remain unchanged; production integration, signer
 ownership and funded recovery remain unresolved. See [validation](docs/STAGE30_VALIDATION.md).
 
+Stage 31 separately [compares canonical enrollment](docs/OBSERVATION_ENROLLMENT_MODEL.md).
+Caller label/profile/epoch variants can split a scope-keyed quota, claimed
+resource equality can misbind charges, canonical source knowledge can lack owner
+permission, and two cached absences can allocate duplicate canonical records.
+The strongest result assumes independently trusted resource/owner facts, atomic
+uniqueness and non-rollbackable registry lineage. A coherent rewind still refills
+the allowance under otherwise identical rules. These are abstract charges, not
+worker entries, authentication or native persistence evidence. No backend or
+application integration is supplied; fixed subjects and assessments remain
+unchanged. See [validation](docs/STAGE31_VALIDATION.md).
+
 ## Reporting a concern
 
 Use GitHub private vulnerability reporting through the repository's Security tab **when that feature is enabled**. This document does not claim that private reporting has been configured. If it is unavailable, a public issue may request a private reporting channel without including sensitive details or an exploit that affects live systems.

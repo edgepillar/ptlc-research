@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 30 - candidate observation-authority scope and message contract. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 31 - finite canonical observation-enrollment comparison. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 30 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 31 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -203,3 +203,17 @@ forgeable and replayable claims, not entry permission. Existing journal/store,
 worker/resource paths, formats, models, qualifiers, dependencies and fixed
 subjects are unchanged. See [validation](STAGE30_VALIDATION.md). Backend selection,
 private signing, core port, chain integration and real funds remain no-go.
+
+## Stage 31 finite canonical enrollment comparison
+
+The [separate model](OBSERVATION_ENROLLMENT_MODEL.md) compares scope/caller keys,
+canonical source knowledge, independently authorized owner facts, cached missing
+checks, atomic uniqueness and registry rewind. It fixes two protected classes,
+five single-field proposals per class and finite enrollment/charge/loss bounds.
+Conditional atomic ownership preserves one shared allowance per class; source
+or authorization claims alone do not implement its premises, and registry rewind
+refills quota. Charges are abstract events with no worker entry, authentication,
+native transaction, target set or funded policy. Existing runtime/codec, formats,
+models, qualifiers, dependencies and both fixed subjects are unchanged. See
+[validation](STAGE31_VALIDATION.md). Define actual canonical resource/owner
+provenance and non-rollbackable lineage before selecting an enrollment backend.

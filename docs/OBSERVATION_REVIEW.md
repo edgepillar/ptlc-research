@@ -43,6 +43,13 @@ durable single-use dispatch unimplemented. Existing entry points do not consume
 its replayable public claims. Assess this exact codec and pure parsing
 dependencies separately without altering either manifest or unfilled report.
 
+The later [Stage 31 canonical enrollment model](OBSERVATION_ENROLLMENT_MODEL.md)
+compares mutable quota keys, source-only knowledge, owner facts, cached absence,
+atomic uniqueness and registry rewind. Its resource equivalence and owner facts
+are premises, and its charges execute no worker or native persistence. This
+delta also needs separate assessment; neither fixed manifest nor unfilled report
+is extended, and no enrollment backend is selected.
+
 ## Requested assessment surfaces
 
 Relative links locate files in this checkout. Assess their exact source versions

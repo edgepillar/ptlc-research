@@ -1,6 +1,6 @@
 # Threat model and evidence limits
 
-Status: **DRAFT, carried through Stage 30 candidate authority contract.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
+Status: **DRAFT, carried through Stage 31 canonical enrollment comparison.** These are review requirements for a future bilateral reference swap, not guarantees from an implemented client. Read alongside [PROTOCOL.md](PROTOCOL.md), [CANDIDATE-01](TRANSACTION_GRAPH.md), [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md) and the [public journal boundary](SESSION_JOURNAL.md).
 
 ## Security objective
 
@@ -159,3 +159,15 @@ rule or can evade any later digest-indexed allowance. Missing replies establish
 no absence of charge or safe retry. Existing entry points do not consume these
 claims. This delta needs separate assessment; both fixed subjects and reports
 remain unchanged and funded recovery, private signing and activation stay no-go.
+
+[Stage 31's enrollment comparison](OBSERVATION_ENROLLMENT_MODEL.md) fixes resource
+equivalence and independent owner permission as external premises. Mutable scope
+keys can open multiple allowances; caller resource claims can charge another
+binding, and canonical knowledge alone admits unauthorized events. Two checked
+absences can create duplicate records despite owner authorization. Conditional
+atomic uniqueness still fails if the registry itself rewinds and loses charge
+lineage. The audit generation is not an authenticated epoch or restore detector.
+No resource equivalence proof, owner key/pin, service, native durability or
+worker-entry enforcer is implemented. A Boolean model input cannot authenticate
+a real caller. This exact delta lies outside both fixed subjects; their reports
+remain unfilled and no funded recovery or signer integration is authorized.

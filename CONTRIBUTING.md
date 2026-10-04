@@ -33,6 +33,14 @@ idempotency and durable unique dispatch as missing mechanisms. Run the affected
 contract suite and full offline/artifact checks; assess this delta separately
 without changing either fixed subject or connecting existing entry points.
 
+Stage 31 adds a [canonical enrollment comparison](docs/OBSERVATION_ENROLLMENT_MODEL.md)
+and [separate validation](docs/STAGE31_VALIDATION.md). Resource equivalence and
+owner authorization are environmental facts; cached absence is not atomic
+uniqueness, and a coherent registry restore can replenish quota. Keep abstract
+charges separate from worker entry, credential verification and durability.
+Assess this exact model delta without changing either fixed subject or using
+the model as application admission.
+
 - Use English and public synthetic values only. Exclude personal identity, private conversations, local absolute paths, hostnames, credentials, wallet material and private environment logs from files, examples and reports.
 - Pin external source claims to immutable commits where possible. Check licenses before reusing material and preserve required attribution.
 - Keep reference arithmetic and synthetic signing helpers out of application cryptography. Passing tests do not establish that the swap construction is secure.
