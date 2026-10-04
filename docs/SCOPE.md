@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 24 - durable explicit Linux worker resource selection. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 25 - explicit v4 storage and recovery process-death qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 24 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 25 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -120,7 +120,20 @@ profile beside the existing pool profile. It rejects missing/unsupported policy
 before creation and cross-mode/policy reopen before SQLite access, then checks
 the complete pair before pending recovery. Ordinary v3 behavior and pure math
 records remain separate. Limited work still uses three cooperative references;
-interruption is charged unknown with no ordinary-work fallback. Full real v4
-storage/recovery crash cuts, aggregate budgets, enrollment, independent review
-and funded availability remain open. See [design](DURABLE_RESOURCE_POLICY.md)
-and [validation](STAGE24_VALIDATION.md).
+interruption is charged unknown with no ordinary-work fallback. Stage 24 leaves
+the full v4 cut matrix to a separate gate. Aggregate budgets, enrollment,
+independent review and funded availability remain open. See
+[design](DURABLE_RESOURCE_POLICY.md) and [validation](STAGE24_VALIDATION.md).
+
+## Stage 25 explicit v4 process-death qualification
+
+The separate [cut matrix](RESOURCE_STORE_CRASH_CUTS.md) covers nineteen initial,
+admission/result and recovery boundaries, real hot-journal refusal before
+SQLite access, repeated interrupted recovery and retained old normal evidence.
+Processes, SIGKILL and SQLite are real; Python discovery uses synthetic verdicts
+and macOS explicitly simulates only v4 host selection. The actual Linux qualifier
+requires limited Rust verification before publisher death. Source journal bytes
+and all runtime/cryptographic behavior remain unchanged. See
+[validation](STAGE25_VALIDATION.md) for execution boundaries and initial fixture
+failures. Controlled write/sync/replace faults, power loss, clone defense,
+independent review and funded availability remain separate gates.

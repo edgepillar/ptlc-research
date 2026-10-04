@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 24 durable explicit Linux worker resource selection. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 25 explicit v4 storage and recovery process-death qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -45,6 +45,14 @@ A separate owned SQLite/checkpoint store now retains those records across local 
 Owned observations now require an explicitly selected finite worker pool. Stores sharing the same physical slots cannot start more admitted invocations than its fixed capacity; saturation writes nothing and charges no attempt. The guard and selected worker retain a third slot reference, including after guard death. Store v3 binds the pool profile and quarantines old v1/v2 pairs without migration. Matching profiles in different physical pools still admit independent work. CPU/memory accounting, cumulative rate, fairness, trusted pool enrollment and clone/restore protection remain unresolved.
 
 A separate opt-in Linux experiment now lowers explicit per-process CPU and virtual address-space caps before exec, checks exact readback and disables core dumps. Missing policy, unsupported host or incomplete setup runs no selected entry and never falls back. Both ownership references and the shared slot survive exec. macOS rejects this profile; it supplies no portable RSS guarantee. The ordinary v3 store still selects admitted work. A separate explicit v4 entry now binds the requested resource profile in SQLite/checkpoint storage, rejects mode or policy mismatch before SQLite opens, and dispatches only limited work. Aggregate budgets, fairness, capability isolation and independent assessment remain separate gates.
+
+The v4 store now has a separate nineteen-cut SIGKILL matrix for initial creation,
+admission/result publication and pending recovery. Real SQLite hot journals
+reject cross-mode/resource choices before connect, without changing either file
+or the sidecar. Python discovery uses synthetic verdicts; macOS also simulates
+only host selection. A separate Linux qualifier requires actual limited Rust
+verification before result/recheck loss and tests interrupted recovery. This
+changes qualification only and supplies no power-loss or funded-swap guarantee.
 
 ## Repository boundaries
 
@@ -114,6 +122,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 54. [Stage 23 validation and remaining gates](docs/STAGE23_VALIDATION.md)
 55. [Durable explicit worker resource selection](docs/DURABLE_RESOURCE_POLICY.md)
 56. [Stage 24 validation and remaining gates](docs/STAGE24_VALIDATION.md)
+57. [Explicit resource-store process-death cuts](docs/RESOURCE_STORE_CRASH_CUTS.md)
+58. [Stage 25 validation and remaining gates](docs/STAGE25_VALIDATION.md)
 
 ## Run the offline checks
 

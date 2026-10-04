@@ -108,9 +108,11 @@ checks normal results, cached reopen, mismatch/downgrade/unsupported refusal,
 saturation and actual returned-result loss while preserving journal bytes.
 See [Stage 24 validation](STAGE24_VALIDATION.md) for executed versus pending gates.
 
-**Go:** assess this exact v4 selection delta, then qualify real process-death cuts
-through every v4 database/checkpoint write and recovery boundary. The inherited
-v3 SIGKILL matrix and v4 synthetic hooks do not establish that full v4 matrix.
+**Go:** assess this exact v4 selection delta and the separately added
+[Stage 25 process-death matrix](RESOURCE_STORE_CRASH_CUTS.md). The inherited
+v3 SIGKILL matrix and v4 synthetic hooks alone do not establish that full v4
+matrix. Controlled write/sync/replace faults and uncertain outcomes remain a
+later gate before wider resource admission; see [Stage 25 validation](STAGE25_VALIDATION.md).
 **No-go:** claim RSS or aggregate budgets, process-tree/capability containment,
 fairness, trusted enrollment, paired-restore/clone defense, power-loss safety,
 funded recovery availability, private signing or core activation.

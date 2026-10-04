@@ -137,6 +137,15 @@ real v4 storage/recovery crash cuts. Mathematical records, journal and the froze
 subject remain unchanged. Tests and requested-profile consistency provide no
 independent assessment, effective-cap attestation or clone defense.
 
+[Stage 25's test-only v4 cut delta](RESOURCE_STORE_CRASH_CUTS.md) adds nineteen
+named owner-death cuts, real hot-journal cross-policy/mode refusal and actual
+limited-Rust result/recheck death followed by interrupted recovery. Assess
+fixture pressure versus default cache behavior, forbidden-connect observability,
+charge/normal retention, torn-pair quarantine, no replay and actual-verdict
+markers. macOS explicitly simulates only host selection in synthetic-worker
+cuts. Runtime, cryptographic sources, journal and frozen review subject remain
+unchanged. Power loss, storage faults and external assessment are still separate.
+
 ## Claims and open obligations
 
 | Bounded evidence at the subject | Obligation still open |

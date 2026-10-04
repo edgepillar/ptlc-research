@@ -2,7 +2,7 @@
 
 This repository contains experimental offline PTLC research and synthetic qualification code. It has no production signing backend, wallet integration or supported live settlement path. Do not use its fixtures, fixed scalars, nonce inputs or reference arithmetic with real funds.
 
-The [threat model](docs/THREAT_MODEL.md), [Stage 12 implementation report](docs/STAGE12_VALIDATION.md), [Stage 13 packaging report](docs/STAGE13_VALIDATION.md), [Stage 14 correspondence report](docs/STAGE14_VALIDATION.md), [Stage 15 reserve experiment](docs/STAGE15_VALIDATION.md), [Stage 16 observation experiment](docs/STAGE16_VALIDATION.md), [Stage 17 evidence contract](docs/STAGE17_VALIDATION.md), [Stage 18 local verifier](docs/STAGE18_VALIDATION.md), [Stage 19 record contract](docs/STAGE19_VALIDATION.md), [Stage 20 separate disk owner](docs/STAGE20_VALIDATION.md), [Stage 21 worker-held leases](docs/STAGE21_VALIDATION.md), [Stage 22 shared admission](docs/STAGE22_VALIDATION.md), [Stage 23 explicit worker resources](docs/STAGE23_VALIDATION.md) and [Stage 24 durable resource selection](docs/STAGE24_VALIDATION.md) describe the current evidence and known limits. The [independent review brief](docs/INDEPENDENT_REVIEW.md) prepares an exact source subject; external assessment remains pending. In particular:
+The [threat model](docs/THREAT_MODEL.md), [Stage 12 implementation report](docs/STAGE12_VALIDATION.md), [Stage 13 packaging report](docs/STAGE13_VALIDATION.md), [Stage 14 correspondence report](docs/STAGE14_VALIDATION.md), [Stage 15 reserve experiment](docs/STAGE15_VALIDATION.md), [Stage 16 observation experiment](docs/STAGE16_VALIDATION.md), [Stage 17 evidence contract](docs/STAGE17_VALIDATION.md), [Stage 18 local verifier](docs/STAGE18_VALIDATION.md), [Stage 19 record contract](docs/STAGE19_VALIDATION.md), [Stage 20 separate disk owner](docs/STAGE20_VALIDATION.md), [Stage 21 worker-held leases](docs/STAGE21_VALIDATION.md), [Stage 22 shared admission](docs/STAGE22_VALIDATION.md), [Stage 23 explicit worker resources](docs/STAGE23_VALIDATION.md) [Stage 24 durable resource selection](docs/STAGE24_VALIDATION.md) and [Stage 25 v4 process-death cuts](docs/STAGE25_VALIDATION.md) describe the current evidence and known limits. The [independent review brief](docs/INDEPENDENT_REVIEW.md) prepares an exact source subject; external assessment remains pending. In particular:
 
 - Alice's completion producer returns a public fixture; it does not manage private signing material.
 - Restoring both matching journal and checkpoint copies can reenable a synthetic producer. Local consistency checks do not provide clone or rollback protection.
@@ -34,9 +34,19 @@ before creation; cross-mode/policy reopen refuses before SQLite connect and
 pending recovery. Live selection is checked before work and limited dispatch.
 Saturation is uncharged; admitted failure/cancellation remains charged unknown
 without fallback. Ordinary v3, pure records, pool configuration, math and journal
-remain unchanged. Full real v4 storage/recovery crash cuts, requested-versus-
-effective limits, aggregate budgets and independent assessment remain separate
-boundaries. See [v4 design](docs/DURABLE_RESOURCE_POLICY.md).
+remain unchanged. Requested-versus-effective limits, aggregate budgets and
+independent assessment remain separate boundaries. See
+[v4 design](docs/DURABLE_RESOURCE_POLICY.md).
+
+Stage 25 separately qualifies all nineteen named v4 initialization/admission/
+result/recovery SIGKILL cuts. Real SQLite hot journals reject wrong resource/mode
+selection before connect and remain byte-identical. Recovery retains charge and
+old normal evidence without replay; divergent pairs quarantine. Python verdicts
+and macOS host selection are explicit synthetic inputs; actual limited Rust
+result/recheck death runs in a separate Linux qualifier. Production behavior and
+the frozen subject are unchanged. Power loss, write/sync/replace faults, hostile
+storage and funded availability remain outside this evidence. See
+[cut design](docs/RESOURCE_STORE_CRASH_CUTS.md).
 
 ## Reporting a concern
 

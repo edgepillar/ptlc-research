@@ -5,9 +5,13 @@ anti-clone defense, source authority, a signer or a funded recovery guarantee.
 """
 
 import argparse
+from contextlib import contextmanager
 import copy
 import json
 from pathlib import Path
+import selectors
+import signal
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -17,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tests"))
 
-from offline_session import observation_evidence as evidence
+from offline_session import exchange, observation_evidence as evidence
 from offline_session.artifact_verifier import SubprocessVerifier
 from offline_session.journal import Journal
 from offline_session.observation_store import ObservationStore, StoreBusy, StoreError, StoreQuarantined
@@ -32,6 +36,7 @@ from observation_store_test_support import STORE_ID, synthetic_pool
 class RealResourceStoreTests(unittest.TestCase):
     verifier = None
     observer = None
+    observation_path = None
 
     @classmethod
     def setUpClass(cls):
@@ -73,6 +78,130 @@ class RealResourceStoreTests(unittest.TestCase):
     def outcome(self, wire, signature):
         return evidence.parse_statement(self.state, signature, wire,
             expected_verifier_profile_digest_hex=self.observer.profile_digest_hex).outcome
+
+    def actor_command(self, mode, *extra, ordinary=False):
+        selection = [] if ordinary else ["--limited"]
+        return [sys.executable, "-B", str(ROOT / "tests/observation_store_actor.py"), mode,
+            str(self.root), str(self.anchor), "--actual-observation", str(self.observation_path),
+            "--attempt-limit", "3", "--pool-slots", "1", *selection, *extra]
+
+    def kill_at(self, mode, point, marker, *, recheck=False, spill=False):
+        target = self.base / "public-cut-target.json"
+        target.write_bytes(exchange.canonical({"state": self.state, "signature_hex": self.signature.hex()}))
+        extra = ["--point", point, "--target", str(target), "--marker", str(marker)]
+        if recheck:
+            extra.append("--recheck")
+        if spill:
+            extra.append("--spill-cache")
+        child = subprocess.Popen(self.actor_command(mode, *extra), stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        try:
+            with selectors.DefaultSelector() as selector:
+                selector.register(child.stdout, selectors.EVENT_READ)
+                self.assertTrue(selector.select(timeout=15), "actual limited actor did not reach storage cut")
+            self.assertEqual(child.stdout.readline().strip(), b"paused")
+            child.kill()
+            _, diagnostics = child.communicate(timeout=10)
+            self.assertEqual((child.returncode, diagnostics), (-signal.SIGKILL, b""))
+        finally:
+            if child.poll() is None:
+                child.kill()
+            child.communicate(timeout=10)
+
+    def storage(self):
+        database = self.root / "observations.sqlite3"
+        journal = database.with_name(database.name + "-journal")
+        return (*self.pair(), journal.read_bytes() if journal.exists() else None)
+
+    def reject_changes_before_connect(self):
+        before = self.storage()
+        for extra, ordinary in ((("--cpu-seconds", "1"), False),
+                (("--address-space-bytes", str(96 * 1024 * 1024)), False), ((), True)):
+            result = subprocess.run(self.actor_command("probe", "--forbid-connect", *extra, ordinary=ordinary),
+                capture_output=True, text=True, timeout=15)
+            self.assertEqual((result.returncode, result.stdout.strip(), result.stderr), (20, "StoreQuarantined", ""))
+            self.assertEqual(self.storage(), before)
+
+    @contextmanager
+    def no_work(self):
+        with patch("offline_session.public_worker.subprocess.Popen") as spawn, \
+                patch.object(SubprocessObservation, "observe_limited") as limited, \
+                patch.object(SubprocessObservation, "observe_admitted") as ordinary:
+            yield
+            spawn.assert_not_called()
+            limited.assert_not_called()
+            ordinary.assert_not_called()
+
+    def test_sigkill_after_actual_limited_verdict_and_at_result_write_boundaries(self):
+        for index, (point, normal) in enumerate((("worker.returned", False),
+                ("result.before_db_commit", False), ("result.after_db_commit", None),
+                ("result.after_checkpoint_replace", True), ("result.after_checkpoint_commit", True),
+                ("result.committed", True))):
+            with self.subTest(point=point):
+                self.root, self.anchor = self.base / ("result-" + str(index)), self.base / ("result-" + str(index) + ".json")
+                with self.open():
+                    pass
+                initial_database = self.pair()[0]
+                marker = self.base / ("normal-" + str(index))
+                self.kill_at("crash", point, marker, spill=point == "result.before_db_commit")
+                self.assertEqual(marker.read_bytes(), b"verified", "actual normal result required before SIGKILL")
+                if point == "result.before_db_commit":
+                    journal = self.storage()[2]
+                    self.assertIsNotNone(journal)
+                    self.assertGreater(len(journal), 512)
+                    self.assertEqual(journal[:8], bytes.fromhex("d9d505f920a163d7"))
+                    self.assertGreater(len(self.pair()[0]), len(initial_database), "real fixture pages must spill")
+                self.reject_changes_before_connect()
+                if normal is None:
+                    before = self.storage()
+                    with self.no_work(), self.assertRaises(StoreQuarantined):
+                        self.open()
+                    self.assertEqual(self.storage(), before)
+                else:
+                    with self.no_work(), self.open() as store:
+                        self.assertEqual((store.summary().attempts_consumed, store.summary().pending_attempts), (1, 0))
+                        statement = store.known_statement(self.state, self.signature)
+                        if normal:
+                            self.assertEqual(self.outcome(statement, self.signature), "verified")
+                        else:
+                            self.assertIsNone(statement)
+                    before = self.storage()
+                    with self.no_work(), self.open() as store:
+                        self.assertEqual(store.known_statement(self.state, self.signature), statement)
+                        self.assertEqual(store.summary().attempts_consumed, 1)
+                    self.assertEqual(self.storage(), before)
+                    self.assertEqual(json.loads(self.anchor.read_bytes())["worker_resource_profile_digest_hex"],
+                                     self.policy.profile_digest_hex)
+
+    def test_sigkill_at_actual_recheck_recovery_cuts_retains_normal_and_charge(self):
+        for index, (point, consistent) in enumerate((("recovery.before_db_commit", True),
+                ("recovery.after_db_commit", False), ("recovery.after_checkpoint_replace", True),
+                ("recovery.after_checkpoint_commit", True))):
+            with self.subTest(point=point):
+                self.root, self.anchor = self.base / ("recovery-" + str(index)), self.base / ("recovery-" + str(index) + ".json")
+                with self.open() as store:
+                    normal = store.observe(self.state, self.signature)
+                    self.assertEqual(self.outcome(normal, self.signature), "verified")
+                marker = self.base / ("recheck-" + str(index))
+                self.kill_at("crash", "worker.returned", marker, recheck=True)
+                self.assertEqual(marker.read_bytes(), b"verified", "actual recheck result required before loss")
+                self.kill_at("recover", point, marker)
+                self.reject_changes_before_connect()
+                if consistent:
+                    with self.no_work(), self.open() as store:
+                        self.assertEqual((store.summary().attempts_consumed, store.summary().pending_attempts), (2, 0))
+                        self.assertEqual(store.known_statement(self.state, self.signature), normal)
+                    before = self.storage()
+                    with self.no_work(), self.open() as store:
+                        self.assertEqual(store.summary().attempts_consumed, 2)
+                        self.assertEqual(store.known_statement(self.state, self.signature), normal)
+                    self.assertEqual(self.storage(), before)
+                else:
+                    before = self.storage()
+                    with self.no_work(), self.assertRaises(StoreQuarantined):
+                        self.open()
+                    self.assertEqual(self.storage(), before)
+                self.assertEqual(marker.read_bytes(), b"verified", "recovery must never replay the worker")
 
     def test_actual_positive_is_cached_under_matching_policy_without_more_work(self):
         profile = self.observer.profile_digest_hex
@@ -197,6 +326,7 @@ def main():
         parser.error("resource-store qualification requires an unprivileged supported Linux host")
     RealResourceStoreTests.verifier = SubprocessVerifier(Path(options.verifier).resolve())
     path = Path(options.observation).resolve()
+    RealResourceStoreTests.observation_path = path
     RealResourceStoreTests.observer = SubprocessObservation(path, expected_executable_sha256_hex=_file_digest(path))
     result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(RealResourceStoreTests))
     return 0 if result.wasSuccessful() else 1
