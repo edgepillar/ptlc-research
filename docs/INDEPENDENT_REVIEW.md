@@ -48,6 +48,12 @@ rewind and copied-history evidence outside both fixed subjects. It implements no
 restore/enrollment authority or defense, and neither manifest or unfilled report
 is changed. Its execution and exclusions require a separate explicit assessment.
 
+[Stage 29's authority comparison](OBSERVATION_AUTHORITY_MODEL.md) is also outside
+both subjects. Its finite conditional results assume canonical enrollment,
+non-rollbackable external state and unique dispatch. No real authority, backend,
+wire protocol or restore defense is supplied; model assessment and any future
+implementation assessment are separate obligations. Neither report is filled.
+
 ## Reading and implementation map
 
 Links below locate files in this repository. For the material assessment, read

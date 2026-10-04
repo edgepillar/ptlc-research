@@ -112,3 +112,9 @@ signing, trusted chain source integration, core port, activation and transaction
 broadcast remain excluded. Independent construction/backend review, secret nonce
 ownership, native storage/power failure, aggregate budgets and timely valid
 witness handling remain unresolved.
+
+The separate [Stage 29 authority comparison](OBSERVATION_AUTHORITY_MODEL.md)
+now tests finite design alternatives for those freshness/enrollment obligations.
+Read checks and external charge alone have distinct counterexamples. Ideal
+non-rollbackable state and unique dispatch are conditional premises, with no
+application integration or restore defense added to this v4 store.

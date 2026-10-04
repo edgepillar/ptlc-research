@@ -177,3 +177,16 @@ monotonic/enrollment authority. Both fixed review subjects remain unchanged;
 the later qualification needs its own explicit assessment. See
 [validation](STAGE28_VALIDATION.md). Restore/clone defense, source authority,
 native storage, aggregate budgets and funded availability remain unresolved.
+
+## Stage 29 finite observation-authority comparison
+
+The [authority model](OBSERVATION_AUTHORITY_MODEL.md) compares local restore,
+cached head checks, charged copyable receipts, ideal unique dispatch and
+external authority rollback. Default exploration covers two copies, allowance
+one and two worker entries, with exact counterexample traces and explicit
+incomplete-search reporting. A separate allowance-two trace shows result fencing
+without terminating prior work. External state, scope enrollment and dispatch
+are ideal premises, not an implemented service or protocol. Application,
+qualifiers, formats, dependencies and both fixed subjects are unchanged. See
+[validation](STAGE29_VALIDATION.md). Native storage, trusted source, backend
+review, secret ownership, aggregate resources and funded availability remain open.

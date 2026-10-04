@@ -136,3 +136,14 @@ without external latest-head authority. Synthetic conflict erasure is not an
 actual contradictory-verifier result. Actual Linux positives, resource selection
 and source-journal preservation have a separate execution gate. No defense,
 global quota or funded recovery policy is implemented.
+
+[Stage 29's finite authority comparison](OBSERVATION_AUTHORITY_MODEL.md) exposes
+stale cached-check admission and copied-receipt entry despite external charging.
+Conditional unique entry assumes one canonical enrolled scope, non-rollbackable
+external history and an ideal trusted dispatcher. Copyable acknowledgments and
+local spawn do not supply that premise; rollback of the authority replenishes
+quota again. History recovery can fence a late result while old work remains
+running, and receipt loss can exhaust allowance before any entry. Neither a
+real service, crash-safe actuation, source authentication, signer protection nor
+funded recovery follows. This later model needs its own assessment outside both
+fixed subjects and leaves their reports unfilled.
