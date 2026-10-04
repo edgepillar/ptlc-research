@@ -58,6 +58,11 @@ The detailed stage reports retain intermediate findings and evidence limits.
 The current subject's [Stage 12 report](STAGE12_VALIDATION.md) is the latest
 implementation report; [Stage 13](STAGE13_VALIDATION.md) validates packaging.
 
+[Stage 14 selected trace correspondence](RECOVERY_MODEL_CORRESPONDENCE.md) adds
+qualification evidence outside this immutable subject. It leaves the frozen
+manifest unchanged and does not extend a pending or completed assessment to
+later code without an explicit delta review.
+
 ## Claims and open obligations
 
 | Bounded evidence at the subject | Obligation still open |
