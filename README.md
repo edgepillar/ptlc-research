@@ -388,3 +388,14 @@ selected verifier remain explicit counterexamples. No existing admission path
 requires this helper. [Validation](docs/STAGE38_VALIDATION.md) records the first
 Go cache-selection setup failure and executed evidence. Current-state/use ordering
 and separate independent review remain gates before any runtime integration.
+
+[Stage 39 current-authority requirements](docs/CURRENT_AUTHORITY_EVIDENCE.md)
+separate independently provisioned source/root identity, policy checkpoints and
+current-use ordering. A new pure query binds those selected inputs to both public
+signatures and the complete decoded scope/resource. Its active, revoked, absent
+and unavailable replies are forgeable read claims; matching them establishes no
+current authority or permission. Coherent old-context restore and request replay
+remain possible. No source backend, authenticator, clock, storage or admission
+integration is selected. [Validation](docs/STAGE39_VALIDATION.md) reports directed
+counterexamples and required offline checks. Define and independently assess the
+actual source and protected-use instant before implementing a source adapter.

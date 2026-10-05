@@ -178,3 +178,15 @@ malicious selected verifier positives remain forgeable. Entry-file measurement
 is not atomic launch or provenance. No registry, use-time oracle, signer or
 funded activity is connected; both assessments remain pending and fixed reports
 unchanged. See [validation](docs/STAGE38_VALIDATION.md) and its Go setup failure.
+
+[Stage 39 current-authority framing](docs/CURRENT_AUTHORITY_EVIDENCE.md) matches
+checkpoint-bound source/query/claim bytes without contacting or authenticating
+a policy source. Source root, issuer key, source incarnation and policy revision
+have distinct meanings; matching their encodings supplies no provisioning,
+latest-state proof or non-rollbackable history. Forged active claims, unchanged
+old selections and coherent copies still match. Unavailable claims have no head
+or assignment, but this pure parser implements no outage admission rule or cached
+fallback prevention. Define and assess the actual protected-use instant and its
+atomic policy/lineage/dispatch ordering before runtime integration. No existing
+worker, journal, crypto or fixed review subject changes. See
+[validation](docs/STAGE39_VALIDATION.md).
