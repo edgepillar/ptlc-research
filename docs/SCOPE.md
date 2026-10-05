@@ -401,3 +401,14 @@ process death and coherent source restore/copy controls qualify that local
 boundary. No application admission or physical-entry fence is added. Eleven
 inherited test-only SQLite contexts close without suppressing warnings. See
 [validation](STAGE45_VALIDATION.md). Both independent assessments stay unfilled.
+
+## Stage 46 original-operation read framing
+
+The [original-read contract](ORIGINAL_OPERATION_READ_CONTRACT.md) selects exact
+unsigned framing for one source incarnation, complete original request and
+independent policy/record positions. It keeps historical original and current
+head profiles separate, with explicit absence/pending/completed/unavailable
+meanings. No signature worker, source adapter, lookup authorization, automatic
+unknown-outcome recovery or protected-use gate is connected. Coherent source
+restore/copy still repeats synthetic effects. See [validation](STAGE46_VALIDATION.md).
+Both fixed independent assessments stay unfilled; production use remains NO-GO.

@@ -136,3 +136,11 @@ passage or test vector is copied. The [pinned CPython documentation reference an
 evidence limits](docs/LOCAL_SOURCE_READ_ORDERING.md#sqlite-connection-lifecycle-follow-up)
 separate the connection lifecycle contract from local allocation tracking and
 hosted Python 3.13 warning observations.
+
+## Stage 46 original-operation read framing
+
+The grammar, unsigned synthetic fixture and tests are original project MIT
+material, reusing unchanged project framing/profile/root constructions at
+`88527956a163a184dccca28590f6c7491fbb2576`. No third-party source, passage or
+vector is copied. Existing cryptographic workers/fixtures, locked dependencies
+and workflow are unchanged. See the [reuse record and limits](docs/ORIGINAL_OPERATION_READ_CONTRACT.md#reuse-record-and-remaining-gates).

@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 45 local source read ordering qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 46 original-operation read contract qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -459,3 +459,14 @@ association is unsigned and physical entry remains unimplemented. Eleven older
 test-only SQLite contexts now close after commit/rollback. See
 [validation](docs/STAGE45_VALIDATION.md); authenticated source integration, core
 port and production use remain NO-GO.
+
+## Stage 46 original-operation read framing
+
+The [separate original-read contract](docs/ORIGINAL_OPERATION_READ_CONTRACT.md)
+binds the complete original id/revision/profile/proposal, source/root, independently
+selected policy and record positions, and challenge. Historical original profile
+and current policy remain distinct; absent/pending/completed/unavailable claims
+are explicit. This is unsigned framing with no source adapter, signature worker,
+recovery permission or physical-use gate. Coherent copies/restores and freshly
+challenged old state still match. See [validation](docs/STAGE46_VALIDATION.md);
+authenticated source integration, core port and production use remain NO-GO.
