@@ -186,3 +186,9 @@ It makes lost replies, source-ledger restore and actual-entry limits explicit,
 without authenticating this read contract or connecting it to runtime admission.
 Its selected schedules and directed faults remain separate evidence; see
 [validation](STAGE40_VALIDATION.md).
+
+The later [Stage 44 public response qualification](SOURCE_RESPONSE_SIGNATURE_QUALIFICATION.md)
+checks four historical signatures over this complete read framing in an isolated
+worker. This pure read contract remains unsigned. A newly challenged old active
+response can still verify; no serialized current read or operational source is
+connected. See [validation and explicit unsafe controls](STAGE44_VALIDATION.md).
