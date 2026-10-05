@@ -1,0 +1,175 @@
+#!/usr/bin/env python3
+"""Actual historical administrator mathematics, with no policy source connection."""
+
+import argparse
+import copy
+import hashlib
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+import unittest
+from unittest.mock import patch
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path[:0] = [str(ROOT), str(ROOT / "tests")]
+
+from qualification import source_admin_command as admin, policy_effect_store as store
+from qualification.source_admin_verifier import PublicAdminCheck
+from test_source_admin_command import fixture, selection, fake_check
+
+
+class RealSourceAdminCommandTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.vectors = fixture()
+        cls.primary = cls.vectors["positive_vectors"]["primary"]
+        cls.expected = selection()
+        cls.wire = admin._canonical(cls.primary["envelope"])
+
+    def raw(self, wire):
+        return subprocess.run([str(self.entry)], input=wire, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE, timeout=3)
+
+    def test_actual_all_twelve_commands_return_only_same_unsigned_selection(self):
+        for name, vector in self.vectors["positive_vectors"].items():
+            selected = selection(name)
+            self.assertEqual(self.check(vector["request"]), vector["result"])
+            self.assertIs(admin.verify_selected_command(selected, admin._canonical(vector["envelope"]), verifier=self.check), selected)
+        for field in ("authorized", "provisioned", "current", "committed", "permit", "revision_advanced"):
+            self.assertFalse(hasattr(self.expected, field))
+
+    def test_actual_valid_peer_commands_and_roots_refuse_before_work(self):
+        for name, vector in self.vectors["positive_vectors"].items():
+            if name == "primary": continue
+            self.assertEqual(self.check(vector["request"]), vector["result"])
+            calls=[]
+            def checked(r): calls.append(True); return self.check(r)
+            with self.assertRaises(admin.AdminCommandError):
+                admin.verify_selected_command(self.expected, admin._canonical(vector["envelope"]), verifier=checked)
+            self.assertEqual(calls, [])
+
+    def test_actual_raw_worker_refuses_all_eighteen_mathematically_signed_forbidden_transitions(self):
+        for name, vector in self.vectors["signed_refusal_vectors"].items():
+            with self.subTest(command=name):
+                result = self.raw(admin._canonical(vector["request"]))
+                self.assertEqual((result.returncode, result.stdout, result.stderr), (1, b"", b""))
+
+    def test_actual_wrong_roles_domain_scalars_and_each_byte_of_both_signatures_refuse(self):
+        packet = self.primary["envelope"]
+        wrong = list(self.vectors["wrong_role_signatures"].values()) + [self.vectors["wrong_domain_admin_signature_hex"]]
+        for sig in wrong:
+            changed = dict(packet, admin_signature_hex=sig)
+            with self.assertRaises(admin.AdminCommandError):
+                admin.verify_selected_command(self.expected, admin._canonical(changed), verifier=self.check)
+        for path in (("admin_signature_hex",), ("root_envelope", "root_signature_hex")):
+            old = packet
+            for p in path: old = old[p]
+            signature = bytes.fromhex(old)
+            signatures = ["00"*64, "ff"*64, "ff"*32+"00"*32, "00"*32+"ff"*32]
+            for i in range(64):
+                c = bytearray(signature); c[i] ^= 1; signatures.append(bytes(c).hex())
+            for sig in signatures:
+                changed = copy.deepcopy(packet); target = changed
+                for p in path[:-1]: target = target[p]
+                target[path[-1]] = sig
+                with self.assertRaises(admin.AdminCommandError):
+                    admin.verify_selected_command(self.expected, admin._canonical(changed), verifier=self.check)
+
+    def test_actual_old_admin_signature_cannot_follow_changed_complete_command(self):
+        for name, vector in self.vectors["positive_vectors"].items():
+            if name == "primary": continue
+            packet = dict(vector["envelope"], admin_signature_hex=self.primary["envelope"]["admin_signature_hex"])
+            with self.assertRaises(admin.AdminCommandError):
+                admin.verify_selected_command(selection(name), admin._canonical(packet), verifier=self.check)
+
+    def test_actual_old_root_signature_cannot_follow_changed_root_declaration(self):
+        for name in ("alternate_root", "alternate_admin", "new_incarnation", "new_root_revision"):
+            packet = copy.deepcopy(self.vectors["positive_vectors"][name]["envelope"])
+            packet["root_envelope"]["root_signature_hex"] = self.primary["envelope"]["root_envelope"]["root_signature_hex"]
+            with self.assertRaises(admin.AdminCommandError):
+                admin.verify_selected_command(selection(name), admin._canonical(packet), verifier=self.check)
+
+    def test_actual_both_valid_signature_variants_change_complete_result_binding(self):
+        for field in ("alternate_admin_signature_hex", "alternate_root_signature_hex"):
+            packet = copy.deepcopy(self.primary["envelope"])
+            if field == "alternate_admin_signature_hex": packet["admin_signature_hex"] = self.vectors[field]
+            else: packet["root_envelope"]["root_signature_hex"] = self.vectors[field]
+            wire = admin._canonical(packet)
+            self.assertIs(admin.verify_selected_command(self.expected, wire, verifier=self.check), self.expected)
+            self.assertNotEqual(self.check(admin.request(self.expected, wire)), self.primary["result"])
+            with self.assertRaises(admin.AdminCommandError):
+                admin.verify_selected_command(self.expected, wire, verifier=lambda r:self.primary["result"])
+
+    def test_actual_replay_and_restored_old_selection_do_not_discover_current_revision(self):
+        for name in ("new_policy_revision", "revoke", "alternate_admin", "alternate_root", "new_incarnation", "new_root_revision"):
+            selected = selection(name)
+            self.assertIs(admin.verify_selected_command(selected, admin._canonical(self.vectors["positive_vectors"][name]["envelope"]), verifier=self.check), selected)
+            with self.assertRaises(admin.AdminCommandError): admin.verify_selected_command(selected, self.wire, verifier=self.check)
+            restored = copy.deepcopy(self.expected)
+            self.assertIs(admin.verify_selected_command(restored, self.wire, verifier=self.check), restored)
+        for _ in range(2): self.assertIs(admin.verify_selected_command(self.expected, self.wire, verifier=self.check), self.expected)
+
+    def test_malicious_selected_callback_forges_both_zero_signature_positives_actual_math_refuses(self):
+        wire = admin.envelope(self.expected, root_signature=bytes(64), admin_signature=bytes(64))
+        with self.assertRaises(admin.AdminCommandError): admin.verify_selected_command(self.expected, wire, verifier=self.check)
+        self.assertIs(admin.verify_selected_command(self.expected, wire, verifier=fake_check), self.expected)
+
+    def test_actual_commands_do_not_mutate_sqlite_reduce_charge_or_apply_pending_effect(self):
+        c = self.primary["command"]; source = c["source_context"]
+        profile = admin._canonical(c["old_profile"])
+        labels = store.SourceLabels(source["source_id_hex"], source["source_incarnation_hex"],
+            source["authority_id_hex"], source["resource_digest_hex"])
+        with tempfile.TemporaryDirectory(prefix="synthetic-admin-policy-") as directory:
+            path = Path(directory)/"policy.sqlite3"
+            with store.OfflinePolicyEffectStore(str(path), labels, initial_profile=profile) as local:
+                original = store.OriginalRequest("01"*32, 0, profile, "02"*32)
+                local.allocate_synthetic(original)
+                before = (local.local_view(), path.read_bytes())
+                self.assertIs(admin.verify_selected_command(self.expected, self.wire, verifier=self.check), self.expected)
+                self.assertEqual((local.local_view(), path.read_bytes()), before)
+                local.replace_local_policy(0, profile, active=False)
+                before = (local.local_view(), path.read_bytes())
+                revoked = selection("revoke")
+                for selected, wire in ((revoked, admin._canonical(self.vectors["positive_vectors"]["revoke"]["envelope"])), (self.expected, self.wire)):
+                    self.assertIs(admin.verify_selected_command(selected, wire, verifier=self.check), selected)
+                with self.assertRaises(store.StoreRefused): local.apply_synthetic_effect(original)
+                self.assertEqual((local.local_view(), path.read_bytes()), before)
+                self.assertEqual((local.local_view().charged_operations, local.local_view().synthetic_effects), (1,0))
+
+    def test_actual_entry_pin_and_bounded_canonical_wire_fail_quietly(self):
+        with tempfile.TemporaryDirectory(prefix="synthetic-admin-entry-") as directory:
+            entry = Path(directory)/"worker"; entry.write_bytes(self.entry.read_bytes()); entry.chmod(0o700)
+            checked = PublicAdminCheck(entry, expected_executable_sha256_hex=hashlib.sha256(entry.read_bytes()).hexdigest())
+            with entry.open("ab") as stream: stream.write(b"\0")
+            with patch("qualification.source_admin_verifier.run_public_worker") as run:
+                with self.assertRaises(admin.AdminCommandError): checked(self.primary["request"])
+                run.assert_not_called()
+        wire = admin._canonical(self.primary["request"])
+        for invalid in (b"", b"\xff", b" "*8193, b"["*512+b"]"*512, wire+b"\n\n",
+                wire.replace(b'"command":', b'"\\u0063ommand":'),
+                wire.replace(b'"expected_policy_revision":0', b'"expected_policy_revision":0,"expected_policy_revision":0'),
+                wire.replace(b'"expected_policy_revision":0', b'"expected_policy_revision":0e0'),
+                admin._canonical(self.primary["envelope"]["root_envelope"])):
+            result = self.raw(invalid)
+            self.assertEqual((result.returncode, result.stdout, result.stderr), (1, b"", b""))
+        result = self.raw(wire+b"\n")
+        self.assertEqual((result.returncode, result.stdout, result.stderr), (0, admin._canonical(self.primary["result"])+b"\n", b""))
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Offline administrator command mathematics; no source or admission")
+    parser.add_argument("--admin-verifier", required=True)
+    args = parser.parse_args()
+    try:
+        entry = Path(args.admin_verifier).resolve()
+        RealSourceAdminCommandTests.entry = entry
+        RealSourceAdminCommandTests.check = PublicAdminCheck(entry, expected_executable_sha256_hex=hashlib.sha256(entry.read_bytes()).hexdigest())
+    except (OSError, ValueError, TypeError):
+        parser.exit(1, "selected public administrator check unavailable\n")
+    result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(RealSourceAdminCommandTests))
+    return 0 if result.wasSuccessful() else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

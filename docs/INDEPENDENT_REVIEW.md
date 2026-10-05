@@ -473,3 +473,11 @@ authentication, SQLite or physical-use connection is added. See the [Stage 42
 validation](STAGE42_VALIDATION.md) for execution evidence and failures.
 Both fixed independent assessments remain unfilled; source integration, core port,
 private signing and funded execution remain NO-GO.
+
+## Stage 43 isolated administrator commands
+
+The [administrator command candidate](SOURCE_ADMIN_COMMAND_QUALIFICATION.md) permits
+only strict cap reduction and profile-preserving revocation under an independently
+selected rule. Historical signatures do not read current revisions or apply a
+command to any source/store. Replay and coherent restoration still succeed.
+See [validation](STAGE43_VALIDATION.md); source integration and production use remain NO-GO.

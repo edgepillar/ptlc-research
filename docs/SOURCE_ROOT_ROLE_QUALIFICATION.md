@@ -124,3 +124,11 @@ only original project patterns pinned at parent
 `8434d5614f2a1c06213d1fe006509691ecc09e0d`. Dependency source versus recorded crate
 bytes was not independently reproduced in this stage. Executing two backends is
 separate from provenance, key custody and protocol security.
+
+## Stage 43 isolated administrator commands
+
+The [administrator command candidate](SOURCE_ADMIN_COMMAND_QUALIFICATION.md) permits
+only strict cap reduction and profile-preserving revocation under an independently
+selected rule. Historical signatures do not read current revisions or apply a
+command to any source/store. Replay and coherent restoration still succeed.
+See [validation](STAGE43_VALIDATION.md); source integration and production use remain NO-GO.
