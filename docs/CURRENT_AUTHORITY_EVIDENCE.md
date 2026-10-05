@@ -200,3 +200,12 @@ coherent source restore and clones still replay. Original-operation association
 is unsigned, operational source authentication is absent, and a read can age
 before return. No application admission or physical-use fence is connected. See
 [validation](STAGE45_VALIDATION.md).
+
+The later [Stage 46 original-read grammar](ORIGINAL_OPERATION_READ_CONTRACT.md)
+separately binds complete original-operation identity, policy and retained-record
+positions without changing any earlier signature schema. Old originals retain
+their complete historical profile under a fixed same-incarnation lookup rule.
+The four record observations are unsigned and forgeable; matching bytes prove
+neither absence, completion, current truth nor nonrollbackable retention. No
+source adapter or unknown-outcome recovery is connected. See
+[validation](STAGE46_VALIDATION.md).

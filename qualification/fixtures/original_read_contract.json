@@ -1,0 +1,278 @@
+{
+  "observations": {
+    "absent": {
+      "claim": {
+        "challenge_hex": "0303030303030303030303030303030303030303030303030303030303030303",
+        "claimed_checkpoint": {
+          "policy_state_digest_hex": "0404040404040404040404040404040404040404040404040404040404040404",
+          "revision": 7
+        },
+        "claimed_record_checkpoint": {
+          "event_sequence": 9,
+          "record_lineage_digest_hex": "0505050505050505050505050505050505050505050505050505050505050505",
+          "retention_rule": "retained-all-originals-in-incarnation-v1"
+        },
+        "head_policy": {
+          "active": true,
+          "governor_profile": {
+            "algorithm": "BIP340-SHA256",
+            "authority_epoch": 1,
+            "authority_id_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+            "authority_profile_digest_hex": "3333333333333333333333333333333333333333333333333333333333333333",
+            "max_attempt_limit": 2,
+            "max_target_limit": 2,
+            "owner_auth_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+            "pool_profile_digest_hex": "5555555555555555555555555555555555555555555555555555555555555555",
+            "purpose": "observation-enrollment",
+            "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+            "resource_profile_digest_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+            "role": "enrollment-governor",
+            "schema": "ptlc-observation-governor-profile-v1",
+            "verifier_profile_digest_hex": "4444444444444444444444444444444444444444444444444444444444444444"
+          }
+        },
+        "observation": "absent",
+        "original_record": null,
+        "query_digest_hex": "242d0f4f63dc77dd3d64dffa3a4002a5716381899f1c0f2ff300d91862ba1721",
+        "root_declaration_digest_hex": "ae256f573c17ec4ef968c09933fa3491615043ac9e20d6a7cbb6d34abc6a2479",
+        "schema": "ptlc-observation-original-read-claim-v1",
+        "source_context_digest_hex": "bf9c6bc592fa0fe1b361c507a35345f327a550a2f842dd6c83c65c9bd2ac74aa"
+      },
+      "claim_digest_hex": "33429dd628800a469a5fd33be81bb44f4ff88b2c68ddcfbf3fec63e9f9ef79d9"
+    },
+    "completed": {
+      "claim": {
+        "challenge_hex": "0303030303030303030303030303030303030303030303030303030303030303",
+        "claimed_checkpoint": {
+          "policy_state_digest_hex": "0404040404040404040404040404040404040404040404040404040404040404",
+          "revision": 7
+        },
+        "claimed_record_checkpoint": {
+          "event_sequence": 9,
+          "record_lineage_digest_hex": "0505050505050505050505050505050505050505050505050505050505050505",
+          "retention_rule": "retained-all-originals-in-incarnation-v1"
+        },
+        "head_policy": {
+          "active": true,
+          "governor_profile": {
+            "algorithm": "BIP340-SHA256",
+            "authority_epoch": 1,
+            "authority_id_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+            "authority_profile_digest_hex": "3333333333333333333333333333333333333333333333333333333333333333",
+            "max_attempt_limit": 2,
+            "max_target_limit": 2,
+            "owner_auth_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+            "pool_profile_digest_hex": "5555555555555555555555555555555555555555555555555555555555555555",
+            "purpose": "observation-enrollment",
+            "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+            "resource_profile_digest_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+            "role": "enrollment-governor",
+            "schema": "ptlc-observation-governor-profile-v1",
+            "verifier_profile_digest_hex": "4444444444444444444444444444444444444444444444444444444444444444"
+          }
+        },
+        "observation": "completed",
+        "original_record": {
+          "charge_sequence": 2,
+          "effect_sequence": 6,
+          "original_operation": {
+            "expected_revision": 4,
+            "governor_profile": {
+              "algorithm": "BIP340-SHA256",
+              "authority_epoch": 1,
+              "authority_id_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+              "authority_profile_digest_hex": "3333333333333333333333333333333333333333333333333333333333333333",
+              "max_attempt_limit": 2,
+              "max_target_limit": 2,
+              "owner_auth_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+              "pool_profile_digest_hex": "5555555555555555555555555555555555555555555555555555555555555555",
+              "purpose": "observation-enrollment",
+              "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+              "resource_profile_digest_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+              "role": "enrollment-governor",
+              "schema": "ptlc-observation-governor-profile-v1",
+              "verifier_profile_digest_hex": "4444444444444444444444444444444444444444444444444444444444444444"
+            },
+            "operation_id_hex": "0101010101010101010101010101010101010101010101010101010101010101",
+            "proposal_digest_hex": "0202020202020202020202020202020202020202020202020202020202020202",
+            "schema": "ptlc-observation-original-operation-v1"
+          }
+        },
+        "query_digest_hex": "242d0f4f63dc77dd3d64dffa3a4002a5716381899f1c0f2ff300d91862ba1721",
+        "root_declaration_digest_hex": "ae256f573c17ec4ef968c09933fa3491615043ac9e20d6a7cbb6d34abc6a2479",
+        "schema": "ptlc-observation-original-read-claim-v1",
+        "source_context_digest_hex": "bf9c6bc592fa0fe1b361c507a35345f327a550a2f842dd6c83c65c9bd2ac74aa"
+      },
+      "claim_digest_hex": "c45edf800de8b87ec9f5ff495dbb6e3438bcf2ba908f71ab901f02dd49d613ff"
+    },
+    "pending": {
+      "claim": {
+        "challenge_hex": "0303030303030303030303030303030303030303030303030303030303030303",
+        "claimed_checkpoint": {
+          "policy_state_digest_hex": "0404040404040404040404040404040404040404040404040404040404040404",
+          "revision": 7
+        },
+        "claimed_record_checkpoint": {
+          "event_sequence": 9,
+          "record_lineage_digest_hex": "0505050505050505050505050505050505050505050505050505050505050505",
+          "retention_rule": "retained-all-originals-in-incarnation-v1"
+        },
+        "head_policy": {
+          "active": true,
+          "governor_profile": {
+            "algorithm": "BIP340-SHA256",
+            "authority_epoch": 1,
+            "authority_id_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+            "authority_profile_digest_hex": "3333333333333333333333333333333333333333333333333333333333333333",
+            "max_attempt_limit": 2,
+            "max_target_limit": 2,
+            "owner_auth_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+            "pool_profile_digest_hex": "5555555555555555555555555555555555555555555555555555555555555555",
+            "purpose": "observation-enrollment",
+            "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+            "resource_profile_digest_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+            "role": "enrollment-governor",
+            "schema": "ptlc-observation-governor-profile-v1",
+            "verifier_profile_digest_hex": "4444444444444444444444444444444444444444444444444444444444444444"
+          }
+        },
+        "observation": "pending",
+        "original_record": {
+          "charge_sequence": 2,
+          "effect_sequence": null,
+          "original_operation": {
+            "expected_revision": 4,
+            "governor_profile": {
+              "algorithm": "BIP340-SHA256",
+              "authority_epoch": 1,
+              "authority_id_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+              "authority_profile_digest_hex": "3333333333333333333333333333333333333333333333333333333333333333",
+              "max_attempt_limit": 2,
+              "max_target_limit": 2,
+              "owner_auth_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+              "pool_profile_digest_hex": "5555555555555555555555555555555555555555555555555555555555555555",
+              "purpose": "observation-enrollment",
+              "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+              "resource_profile_digest_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+              "role": "enrollment-governor",
+              "schema": "ptlc-observation-governor-profile-v1",
+              "verifier_profile_digest_hex": "4444444444444444444444444444444444444444444444444444444444444444"
+            },
+            "operation_id_hex": "0101010101010101010101010101010101010101010101010101010101010101",
+            "proposal_digest_hex": "0202020202020202020202020202020202020202020202020202020202020202",
+            "schema": "ptlc-observation-original-operation-v1"
+          }
+        },
+        "query_digest_hex": "242d0f4f63dc77dd3d64dffa3a4002a5716381899f1c0f2ff300d91862ba1721",
+        "root_declaration_digest_hex": "ae256f573c17ec4ef968c09933fa3491615043ac9e20d6a7cbb6d34abc6a2479",
+        "schema": "ptlc-observation-original-read-claim-v1",
+        "source_context_digest_hex": "bf9c6bc592fa0fe1b361c507a35345f327a550a2f842dd6c83c65c9bd2ac74aa"
+      },
+      "claim_digest_hex": "604e25d413d1695b44db5f6e41898d14986eda8cf2e94fdebfa57314ff65af61"
+    },
+    "unavailable": {
+      "claim": {
+        "challenge_hex": "0303030303030303030303030303030303030303030303030303030303030303",
+        "claimed_checkpoint": null,
+        "claimed_record_checkpoint": null,
+        "head_policy": null,
+        "observation": "unavailable",
+        "original_record": null,
+        "query_digest_hex": "242d0f4f63dc77dd3d64dffa3a4002a5716381899f1c0f2ff300d91862ba1721",
+        "root_declaration_digest_hex": "ae256f573c17ec4ef968c09933fa3491615043ac9e20d6a7cbb6d34abc6a2479",
+        "schema": "ptlc-observation-original-read-claim-v1",
+        "source_context_digest_hex": "bf9c6bc592fa0fe1b361c507a35345f327a550a2f842dd6c83c65c9bd2ac74aa"
+      },
+      "claim_digest_hex": "c88630f808cc446a368ed066335449ae6590ad1cc395d54bcba0ac568f2f7088"
+    }
+  },
+  "purpose": "Synthetic unsigned framing only; no source truth or receipt",
+  "query": {
+    "challenge_hex": "0303030303030303030303030303030303030303030303030303030303030303",
+    "expected_checkpoint": {
+      "policy_state_digest_hex": "0404040404040404040404040404040404040404040404040404040404040404",
+      "revision": 7
+    },
+    "expected_record_checkpoint": {
+      "event_sequence": 9,
+      "record_lineage_digest_hex": "0505050505050505050505050505050505050505050505050505050505050505",
+      "retention_rule": "retained-all-originals-in-incarnation-v1"
+    },
+    "operation": "read-original-at-checkpoint",
+    "original_operation": {
+      "expected_revision": 4,
+      "governor_profile": {
+        "algorithm": "BIP340-SHA256",
+        "authority_epoch": 1,
+        "authority_id_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+        "authority_profile_digest_hex": "3333333333333333333333333333333333333333333333333333333333333333",
+        "max_attempt_limit": 2,
+        "max_target_limit": 2,
+        "owner_auth_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+        "pool_profile_digest_hex": "5555555555555555555555555555555555555555555555555555555555555555",
+        "purpose": "observation-enrollment",
+        "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+        "resource_profile_digest_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+        "role": "enrollment-governor",
+        "schema": "ptlc-observation-governor-profile-v1",
+        "verifier_profile_digest_hex": "4444444444444444444444444444444444444444444444444444444444444444"
+      },
+      "operation_id_hex": "0101010101010101010101010101010101010101010101010101010101010101",
+      "proposal_digest_hex": "0202020202020202020202020202020202020202020202020202020202020202",
+      "schema": "ptlc-observation-original-operation-v1"
+    },
+    "read_rule": "same-incarnation-original-lookup-v1",
+    "root_declaration_digest_hex": "ae256f573c17ec4ef968c09933fa3491615043ac9e20d6a7cbb6d34abc6a2479",
+    "schema": "ptlc-observation-original-read-query-v1",
+    "source_context": {
+      "authority_id_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "provisioning_root_key_hex": "5b013d39d4005c2d47e1c2d8b68049687e4a7c2d42ffe7a0ffd35d1b98b6a4ac",
+      "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+      "role": "enrollment-governor",
+      "schema": "ptlc-observation-policy-source-context-v1",
+      "source_id_hex": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1",
+      "source_incarnation_hex": "a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3",
+      "source_profile_digest_hex": "a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2"
+    }
+  },
+  "query_digest_hex": "242d0f4f63dc77dd3d64dffa3a4002a5716381899f1c0f2ff300d91862ba1721",
+  "root_declaration": {
+    "algorithm": "BIP340-SHA256",
+    "declaration_revision": 1,
+    "delegated_keys": {
+      "governor_issuer_key_hex": "1162ffa0f68dda9783c9e3c419ed824a086c1594dc8d3333306016611739dfc1",
+      "policy_admin_key_hex": "e5a018b3a2e155316109d9cdc5eab739759c0e07e0c00bf9fccb8237fe4d7f02",
+      "source_response_key_hex": "cb144659ef300200912762786a173663150592d78f4408390c47e9956d9a6c31"
+    },
+    "governor_profile": {
+      "algorithm": "BIP340-SHA256",
+      "authority_epoch": 1,
+      "authority_id_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "authority_profile_digest_hex": "3333333333333333333333333333333333333333333333333333333333333333",
+      "max_attempt_limit": 2,
+      "max_target_limit": 2,
+      "owner_auth_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+      "pool_profile_digest_hex": "5555555555555555555555555555555555555555555555555555555555555555",
+      "purpose": "observation-enrollment",
+      "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+      "resource_profile_digest_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+      "role": "enrollment-governor",
+      "schema": "ptlc-observation-governor-profile-v1",
+      "verifier_profile_digest_hex": "4444444444444444444444444444444444444444444444444444444444444444"
+    },
+    "purpose": "source-role-declaration",
+    "root_transition": "independent-reprovisioning",
+    "schema": "ptlc-observation-source-root-declaration-v1",
+    "source_context": {
+      "authority_id_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "provisioning_root_key_hex": "5b013d39d4005c2d47e1c2d8b68049687e4a7c2d42ffe7a0ffd35d1b98b6a4ac",
+      "resource_digest_hex": "7fbad21c99b795e1b5a97c48fa4415f1db884da245d382de495f5111d7047499",
+      "role": "enrollment-governor",
+      "schema": "ptlc-observation-policy-source-context-v1",
+      "source_id_hex": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1",
+      "source_incarnation_hex": "a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3",
+      "source_profile_digest_hex": "a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2"
+    }
+  },
+  "schema": "ptlc-offline-original-read-framing-fixture-v1"
+}

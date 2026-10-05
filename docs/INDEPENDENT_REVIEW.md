@@ -500,3 +500,13 @@ Restore/copy, unsigned original association, operational authentication and
 physical-entry limits remain explicit. Eleven older test-only connections now
 close after their transaction context. See [validation](STAGE45_VALIDATION.md);
 this is not an independent assessment or closure of either report.
+
+## Stage 46 original-operation read framing
+
+The [separate original-read grammar](ORIGINAL_OPERATION_READ_CONTRACT.md) is
+outside both fixed subjects. It binds complete original identity and distinct
+policy/record positions; all four observation forms remain unsigned and forgeable.
+The four synchronous local-store controls preserve restore/copy and read-age
+limits without adding a source or recovery adapter. See
+[validation](STAGE46_VALIDATION.md). Neither report is filled or closed, and this
+later delta requires its own independent assessment.
