@@ -492,3 +492,14 @@ charges; coherent replacement, restore/copy and delayed returns remain explicit
 unsafe boundaries. No signer, authenticated source or recovery adapter is connected.
 See [validation](docs/STAGE48_VALIDATION.md); source integration, core port and
 production use remain NO-GO.
+
+## Stage 49 test-only signature binding of owned snapshots
+
+The [sample-to-message qualification](docs/ORIGINAL_READ_SNAPSHOT_SIGNATURE_BINDING.md)
+recreates ten actual local-store scenarios and binds their exact bytes to the
+existing historical signature grammar. A separate Rust test generates public
+synthetic signatures; Python and Go reuse existing public checks. Six validly
+signed counterclaims still expose false state, conflicting originals and stale
+heads. No application signer or source service is introduced. See
+[validation](docs/STAGE49_VALIDATION.md); source integration, recovery, core port
+and production use remain NO-GO.

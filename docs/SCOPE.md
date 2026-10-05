@@ -433,3 +433,15 @@ lost-return behavior, coherent replacement/restore/copy and delayed-use limits
 remain explicit. No source signing, authenticated lookup, recovery or physical
 entry is connected. See [validation](STAGE48_VALIDATION.md); source integration,
 core port and production use remain NO-GO. Both independent reports stay unfilled.
+
+## Stage 49 test-only signed owned snapshots
+
+The [isolated sample-to-signature harness](ORIGINAL_READ_SNAPSHOT_SIGNATURE_BINDING.md)
+recreates actual local records and signs their existing historical framing only
+inside a Rust integration test with known synthetic values. Independent Python
+expectations and separate Go public checks bind exact bytes; six validly signed
+counterclaims expose the remaining source-truth boundary. Application modules,
+workers, older fixtures, store and journals are unchanged. No application signer,
+authenticated source, lookup permission, recovery or physical-use gate is added.
+See [validation](STAGE49_VALIDATION.md); source integration, core port and funded
+execution remain NO-GO. Both independent reports stay unfilled.

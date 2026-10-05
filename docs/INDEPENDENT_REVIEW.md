@@ -533,3 +533,15 @@ and coherent substitution, restore/copy, outage/lost-return and delayed-use
 counterexamples when independently assessing this delta and any later integration.
 Neither fixed inventory nor report is changed or closed. See
 [execution evidence](STAGE48_VALIDATION.md); operational integration remains NO-GO.
+
+## Stage 49 test-only actual-snapshot signature binding
+
+The [sample-to-message delta](ORIGINAL_READ_SNAPSHOT_SIGNATURE_BINDING.md) is
+outside both fixed review subjects. It connects actual synthetic retained rows
+to the unchanged public historical message checks through test-only fixtures.
+Preserve the six validly signed counterclaims, zero-signature callback forgery,
+restored/cloned effect repetition and post-commit delivery/use controls. This
+byte-level binding supplies no authenticated source, historical issuance,
+nonrollback retention, private lookup permission or operational signer custody.
+Assess any later source/recovery integration separately. Fixed inventories and
+unfilled reports remain unchanged; see [execution evidence](STAGE49_VALIDATION.md).
