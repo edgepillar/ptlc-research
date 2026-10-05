@@ -254,3 +254,12 @@ absence can still open as history. Complete-row disclosure is test-only, and
 source authentication, current heads, nonrollback retention and authorized private
 lookup remain unresolved. See [validation](STAGE51_VALIDATION.md); both fixed
 reports remain unfilled.
+
+The later [Stage 52 retained-prefix experiment](ORIGINAL_SNAPSHOT_PREFIX.md)
+compares two complete synthetic openings relative to a retained earlier witness.
+Coherent truncation and rewritten prior rows refuse; two different futures can
+each extend one prefix, and old or coherently restored witnesses still compare.
+Source authentication, current heads and nonrollback consumer knowledge remain
+external premises. Complete-row disclosure is test-only; no application witness
+store, source service, signer, private lookup, recovery or use adapter is added.
+See [validation](STAGE52_VALIDATION.md); both fixed reports remain unfilled.

@@ -568,3 +568,14 @@ Complete synthetic disclosure does not select an application privacy protocol;
 current-head authority and nonrollback retention remain external gates. Both
 fixed inventories and unfilled reports remain unchanged; see
 [validation](STAGE51_VALIDATION.md).
+
+## Stage 52 test-only retained-prefix comparison
+
+The [two-opening experiment](ORIGINAL_SNAPSHOT_PREFIX.md) is another separate
+delta outside both fixed subjects. Independently assess complete event/policy
+prefixes, immutable original/charge/effect bindings, selection provenance and
+consumer-witness retention. Preserve coherent truncation, nonqueried-row
+rewrites, competing futures, stale extensions and source/consumer restore
+counterexamples. Full synthetic disclosure does not select a private lookup
+protocol, and root/incarnation transitions remain out of scope. Both inventories
+and unfilled reports stay unchanged; see [validation](STAGE52_VALIDATION.md).

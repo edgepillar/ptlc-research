@@ -466,3 +466,15 @@ or use adapter. Full-row disclosure is synthetic/test-only; source provenance,
 current-head authority, private lookup and nonrollback history stay open gates.
 See [validation](STAGE51_VALIDATION.md); operational source/recovery integration,
 core port and funded use remain NO-GO. Both independent reports stay unfilled.
+
+## Stage 52 test-only retained-prefix comparison
+
+The [two-opening comparison](ORIGINAL_SNAPSHOT_PREFIX.md) validates complete
+synthetic history under one exact root/source/incarnation and original tuple,
+then preserves earlier event/policy prefixes, original bindings, charges and
+completed effects. Root/profile replacement and incarnation transitions are
+outside scope. Witness origin, latest heads, nonrollback source/consumer history
+and private disclosure remain separate requirements. The helper lives under
+tests and adds no application storage, source provider, signer, lookup, recovery
+or protected-use adapter. See [validation](STAGE52_VALIDATION.md); operational
+integration, core port and funded use remain NO-GO. Both reports stay unfilled.
