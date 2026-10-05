@@ -522,3 +522,14 @@ independently selected diagnostic heads. It separates claim consistency from
 authenticated current heads and nonrollback retention. Full-row disclosure is
 test-only, with no application source, signer, lookup or recovery integration.
 See [validation](docs/STAGE51_VALIDATION.md); operational use remains NO-GO.
+
+## Stage 52 test-only retained-prefix comparison
+
+The [synthetic prefix experiment](docs/ORIGINAL_SNAPSHOT_PREFIX.md) compares two
+complete openings against their independently selected diagnostic heads and
+requires the earlier events, policies, complete originals and charges to remain
+retained. Coherent truncation and rewritten prior rows refuse relative to a
+retained witness; competing futures, stale extensions and restored witnesses
+remain explicit limits. No application witness store, source, signer, lookup or
+recovery adapter is added. See [validation](docs/STAGE52_VALIDATION.md);
+operational use remains NO-GO.
