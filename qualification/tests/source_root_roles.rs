@@ -52,6 +52,16 @@ pub fn generated_fixture() -> Value {
     let governor: Value =
         serde_json::from_str(include_str!("../fixtures/governor_signature.json")).unwrap();
     let declaration = json!({"schema":"ptlc-observation-source-root-declaration-v1","purpose":"source-role-declaration","algorithm":"BIP340-SHA256","root_transition":"independent-reprovisioning","declaration_revision":1,"source_context":current["source_context"],"governor_profile":governor["primary"]["assignment"]["governor_profile"],"delegated_keys":{"policy_admin_key_hex":public(97),"source_response_key_hex":public(98),"governor_issuer_key_hex":governor["primary"]["assignment"]["issuer_auth_key_hex"]}});
+    // Derive the two reused public fixture keys in this same process as well.
+    // Distinct role bytes remain fully reproducible from known synthetic tags.
+    assert_eq!(
+        declaration["governor_profile"]["owner_auth_key_hex"],
+        public(83)
+    );
+    assert_eq!(
+        declaration["delegated_keys"]["governor_issuer_key_hex"],
+        public(84)
+    );
     let primary = vector(declaration.clone(), 96);
     let mut admin = declaration.clone();
     admin["delegated_keys"]["policy_admin_key_hex"] = public(100);
