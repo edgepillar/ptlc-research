@@ -167,3 +167,14 @@ role, source truth, latest head, revocation or indivisible use-time rule follows
 Old v1 signatures cannot be reused as v2 proof. New actual verifier/construction
 assessment is required; the fixed subjects and unfilled reports are unchanged.
 See [validation](docs/STAGE37_VALIDATION.md), including the initial fixture error.
+
+[Stage 38 public issuer/owner verification](docs/GOVERNOR_SIGNATURE_QUALIFICATION.md)
+qualifies actual BIP340 checks for these exact new messages. This authenticates
+two statements relative to selected keys; it does not establish trusted issuer
+provisioning, current permission, scope/source truth or a secure swap protocol.
+Complete local expectations precede work, since an opaque scope hash cannot
+prove requested caps. Old retained authority and request replay still verify;
+malicious selected verifier positives remain forgeable. Entry-file measurement
+is not atomic launch or provenance. No registry, use-time oracle, signer or
+funded activity is connected; both assessments remain pending and fixed reports
+unchanged. See [validation](docs/STAGE38_VALIDATION.md) and its Go setup failure.

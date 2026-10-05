@@ -5,6 +5,11 @@ intent are unsigned. Independent issuer/profile selection is an external trust
 decision. No issued credential, signature verification, current-authority source,
 registry, worker admission or application integration is implemented.**
 
+This page describes Stage 37's unsigned objects. The later, separate
+[Stage 38 public issuer/owner qualifier](GOVERNOR_SIGNATURE_QUALIFICATION.md)
+checks signatures over their exact messages without changing these codecs or
+adding trusted provisioning, current authority or application admission.
+
 [Stage 36's finite comparison](GOVERNOR_AUTHORITY_MODEL.md) treats complete
 assignment and intent binding as ideal premises. This experiment selects exact
 candidate bytes for one of those obligations. It does not implement the model's

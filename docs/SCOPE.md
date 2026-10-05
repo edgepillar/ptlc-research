@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 37 - unsigned governor assignment and complete-profile-bound intent. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 38 - public issuer and v2 owner signature qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -288,7 +288,7 @@ certificate format, v2 intent, crypto verification, registry, quota or worker
 entry is implemented. Existing code, packets, public workers, models, journals,
 dependencies and workflow remain unchanged. See [validation](STAGE36_VALIDATION.md).
 Both fixed subjects/reports remain unchanged and this later model needs separate
-assessment. Select actual role/current-policy evidence and credential framing
+assessment. Select trusted issuer provisioning and current-policy/use evidence
 before any backend; source, lineage, dispatch, signer and funded gates remain open.
 
 ## Stage 37 unsigned assignment and complete profile binding
@@ -304,3 +304,22 @@ The old codecs/messages, signature fixture, workers, journals, dependencies and
 workflow are unchanged. Actual signature construction, provisioning, current
 state at use and both independent assessments remain gates. Current-node core
 work, private signing, deployment and funded recovery remain excluded.
+
+## Stage 38 public issuer and v2 owner signatures
+
+The [separate public verifier](GOVERNOR_SIGNATURE_QUALIFICATION.md) checks issuer
+BIP340 signatures over the complete assignment and owner signatures over the
+separate v2 message. Exact independently prepared expectations precede work;
+the four-field result binds both signatures and the entire request. Rust vector
+reproduction, independent Go checks and an actual bounded-worker qualifier are
+separate from trusted selection and construction review. No private signing,
+current-state oracle, registry or application admission is connected.
+
+Valid old authority still verifies under a retained old expectation. A signed
+opaque scope hash is no decoded scope/cap/source evidence; a forged selected
+verifier result is no mathematical fact. Real exhausted journals retain their
+charged allowance and recovery behavior. Both fixed subjects and unfilled
+reports remain unchanged. See [validation](STAGE38_VALIDATION.md), including the
+first Go setup failure. Trusted issuer provisioning, current authority at actual
+use, non-rollbackable lineage, source equivalence and independent review remain
+gates. Current-node core work, private signing and funded activity remain NO-GO.

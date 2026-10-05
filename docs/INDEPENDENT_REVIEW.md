@@ -430,3 +430,11 @@ synthetic unsigned vector is not independent cross-language evidence. Assess
 this exact construction and any later verifiers/integration separately. The
 119-file subject, manifest and unfilled report remain unchanged; see
 [validation](STAGE37_VALIDATION.md), including the corrected first affected run.
+
+[Stage 38 public issuer/owner qualification](GOVERNOR_SIGNATURE_QUALIFICATION.md)
+is another later delta outside this fixed subject. Actual Rust/Go signature facts
+and bounded-worker evidence are no issuer provisioning, current-authority source,
+construction review or admission permission. Assess the exact domains, complete
+profile binding, expected-input boundary and stale/forged-positive controls
+separately. Both fixed manifests and unfilled reports remain unchanged; see
+[validation](STAGE38_VALIDATION.md), including the first Go cache setup failure.

@@ -101,3 +101,13 @@ Preserve v1 schemas and fixtures; never reinterpret their signatures as v2.
 Keep issuer provisioning, current-state evidence, atomic use and registry lineage
 separate. Report the first fixture-selection failure and corrected run in
 [validation](docs/STAGE37_VALIDATION.md); keep independent assessments unfilled.
+
+For [Stage 38 public signature work](docs/GOVERNOR_SIGNATURE_QUALIFICATION.md),
+preserve both exact message domains and complete independent expectations. Check
+issuer assignment and owner v2 signatures separately; bind every request field,
+including both signature variants, to the four-field result. Keep math, trusted
+issuer provisioning, decoded scope compliance and current use-time authority
+distinct. Signing stays test-only in qualification, using synthetic public tags;
+no private signer or admission integration belongs in this delta. Run the offline
+suite, locked Rust/Go checks and actual-worker qualifier; retain setup failures
+and stale/forged-positive controls in [validation](docs/STAGE38_VALIDATION.md).

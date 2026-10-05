@@ -240,3 +240,14 @@ revocation, restore defense, registry uniqueness or dispatch is implemented.
 Keep the finite model's trusted-current and use-time premises explicit; actual
 signature and construction assessment remain separate gates. Both fixed subjects
 and unfilled reports are unchanged; see [validation](STAGE37_VALIDATION.md).
+
+[Stage 38's actual issuer/owner checks](GOVERNOR_SIGNATURE_QUALIFICATION.md)
+close only the public signature-verification obligation for the selected static
+bytes, relative to trusted selected workers/keys and library assumptions. Valid
+stale assignments, repeated IDs, equal-role keys and opaque noncompliant scope
+commitments remain mathematical positives. Independent complete expectations
+refuse peer replacements and scope/cap mismatch before work; they supply no
+independent latest-state oracle. A malicious selected verifier can forge the
+matching result. Root provisioning, authenticated current authority, indivisible
+actual use, restore defense and independent construction review remain open;
+both fixed reports are unchanged. See [validation](STAGE38_VALIDATION.md).
