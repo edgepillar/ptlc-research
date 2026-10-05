@@ -490,3 +490,13 @@ It checks four historical signatures without a current-policy lookup. Old or
 coherently restored selections still replay; a new challenge can be signed over
 old active state. See [validation](STAGE44_VALIDATION.md). Source integration,
 core port and production use remain NO-GO; independent assessments stay unfilled.
+
+## Stage 45 local source read ordering
+
+The [local read delta](LOCAL_SOURCE_READ_ORDERING.md) is outside both fixed source
+subjects. It samples complete policy/query bytes and original records under an
+owned SQLite transaction, with native read-return and process-death controls.
+Restore/copy, unsigned original association, operational authentication and
+physical-entry limits remain explicit. Eleven older test-only connections now
+close after their transaction context. See [validation](STAGE45_VALIDATION.md);
+this is not an independent assessment or closure of either report.

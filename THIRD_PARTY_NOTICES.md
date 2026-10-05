@@ -125,3 +125,14 @@ reusing project patterns at `586ed7bc0bd74dd82164ff74b7d7ec5e548dac22`. The reta
 root/governor workers and locked dependencies are unchanged. No upstream code or
 vectors are copied and no new dependency is added. See the [pinned specification
 and reuse record](docs/SOURCE_RESPONSE_SIGNATURE_QUALIFICATION.md#source-and-reuse-record).
+
+## Stage 45 local source read ordering
+
+The local snapshot experiment and native synthetic actor/tests are original
+project MIT code, reusing unchanged project constructions at
+`b4dbd200e185093b5cb0e521f27c749387d5f11d`. Existing test-only SQLite contexts now
+use the standard-library closing helper. No dependency, upstream implementation,
+passage or test vector is copied. The [pinned CPython documentation reference and
+evidence limits](docs/LOCAL_SOURCE_READ_ORDERING.md#sqlite-connection-lifecycle-follow-up)
+separate the connection lifecycle contract from local allocation tracking and
+hosted Python 3.13 warning observations.

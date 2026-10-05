@@ -1,5 +1,6 @@
 """Real process-death and stale-checkpoint tests with public synthetic state."""
 
+from contextlib import closing
 import json
 import os
 from pathlib import Path
@@ -266,7 +267,7 @@ class SessionCrashTests(unittest.TestCase):
 
     def test_valid_sqlite_payload_tampering_is_not_hidden_by_metadata(self):
         db = self.root / "journal.sqlite3"
-        with sqlite3.connect(str(db)) as connection:
+        with closing(sqlite3.connect(str(db))) as connection, connection:
             state_text = connection.execute("SELECT state_json FROM checkpoint WHERE slot=1").fetchone()[0]
             state = json.loads(state_text)
             state["unexpected_public_field"] = True

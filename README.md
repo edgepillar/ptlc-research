@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 42 isolated historical source root role qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 45 local source read ordering qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -448,3 +448,14 @@ It checks four historical signatures without a current-policy lookup. Old or
 coherently restored selections still replay; a new challenge can be signed over
 old active state. See [validation](docs/STAGE44_VALIDATION.md). Source integration,
 core port and production use remain NO-GO; independent assessments stay unfilled.
+
+## Stage 45 local source read ordering
+
+The [local snapshot experiment](docs/LOCAL_SOURCE_READ_ORDERING.md) serializes an
+unsigned complete policy read with owned SQLite mutations and preserves original
+operation charges. The response can age before return; coherent database restore
+and copies still repeat reads and synthetic effects. Original-operation
+association is unsigned and physical entry remains unimplemented. Eleven older
+test-only SQLite contexts now close after commit/rollback. See
+[validation](docs/STAGE45_VALIDATION.md); authenticated source integration, core
+port and production use remain NO-GO.

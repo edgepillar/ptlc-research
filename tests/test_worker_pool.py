@@ -1,5 +1,6 @@
 """Shared admission metadata, ownership and record ordering; synthetic math only."""
 
+from contextlib import closing
 import fcntl
 import json
 import os
@@ -365,7 +366,7 @@ class SharedStoreAdmissionTests(unittest.TestCase):
         for value in ("77" * 32, b"x" * 64, "x" * 2048):
             with self.subTest(kind=type(value).__name__):
                 database.write_bytes(original[0])
-                with sqlite3.connect(database) as connection:
+                with closing(sqlite3.connect(database)) as connection, connection:
                     connection.execute("UPDATE checkpoint SET worker_pool_profile=?", (value,))
                 before = self.pair()
                 with self.assertRaises(StoreQuarantined):
