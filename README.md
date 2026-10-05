@@ -470,3 +470,14 @@ are explicit. This is unsigned framing with no source adapter, signature worker,
 recovery permission or physical-use gate. Coherent copies/restores and freshly
 challenged old state still match. See [validation](docs/STAGE46_VALIDATION.md);
 authenticated source integration, core port and production use remain NO-GO.
+
+## Stage 47 isolated original-read response signatures
+
+The [historical original-response candidate](docs/ORIGINAL_READ_RESPONSE_SIGNATURE_QUALIFICATION.md)
+binds complete original identity, historical profile and both selected policy/record
+positions under a new tagged response domain. Locked Rust and separate Go public
+checks verify two historical signatures; old schemas and workers stay unchanged.
+Fresh challenges, self-selected collisions and coherent source copies/restores
+still expose unsafe limits. No source service, signer, lookup permission or recovery
+adapter is connected. See [validation](docs/STAGE47_VALIDATION.md); source integration,
+core port and production use remain NO-GO.

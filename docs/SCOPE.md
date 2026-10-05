@@ -412,3 +412,13 @@ meanings. No signature worker, source adapter, lookup authorization, automatic
 unknown-outcome recovery or protected-use gate is connected. Coherent source
 restore/copy still repeats synthetic effects. See [validation](STAGE46_VALIDATION.md).
 Both fixed independent assessments stay unfilled; production use remains NO-GO.
+
+## Stage 47 historical original-read response signatures
+
+The [separate historical response candidate](ORIGINAL_READ_RESPONSE_SIGNATURE_QUALIFICATION.md)
+checks root and response signatures over the complete selected original-read
+statement. Its exact tagged message and two-flag result have no owner/issuer
+provenance, live lookup, recovery or use semantics. Signed fixtures and local
+SQLite controls remain separate synthetic premises. Coherent source restore and
+clones still repeat effects. See [validation](STAGE47_VALIDATION.md); actual source
+integration, private signing, core port, deployment and production use remain NO-GO.

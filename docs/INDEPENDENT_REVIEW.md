@@ -510,3 +510,14 @@ The four synchronous local-store controls preserve restore/copy and read-age
 limits without adding a source or recovery adapter. See
 [validation](STAGE46_VALIDATION.md). Neither report is filled or closed, and this
 later delta requires its own independent assessment.
+
+## Stage 47 historical original-read response signatures
+
+The [isolated historical response qualification](ORIGINAL_READ_RESPONSE_SIGNATURE_QUALIFICATION.md)
+is another later delta outside both fixed subjects. Two signature checks, exact
+original binding and cross-language public math do not prove historical profile
+provenance, caller lookup authority, current source truth, nonrollback retention
+or physical entry. Preserve signed-old-state, self-selected collision, forged
+callback and actual local restore/clone controls. Assess this exact construction
+and any later source integration separately. Both fixed inventories and unfilled
+reports stay unchanged; see [validation](STAGE47_VALIDATION.md).
