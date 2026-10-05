@@ -168,3 +168,14 @@ scope checks and decide business-intent uniqueness separately. Neither fixed
 review subject nor unfilled report changes; this later delta needs its own
 assessment. Offline qualification is **GO**. Source integration, core port,
 activation, deployment, private signing and funded recovery remain **NO-GO**.
+
+## Stage 42 isolated root statement
+
+The [source root role candidate](SOURCE_ROOT_ROLE_QUALIFICATION.md) qualifies
+complete historical declaration signatures under independently selected bytes.
+Five distinct key encodings do not prove independent control; valid old statements
+and restored/copy selections still replay. No source service, administrator
+authentication, SQLite or physical-use connection is added. See the [Stage 42
+validation](STAGE42_VALIDATION.md) for execution evidence and failures.
+Both fixed independent assessments remain unfilled; source integration, core port,
+private signing and funded execution remain NO-GO.

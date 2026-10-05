@@ -462,3 +462,14 @@ lineage, physical entry and recovery remain unimplemented. Preserve actual
 restore/copy counterexamples and assess this later construction separately; do
 not fill this report from local or hosted regression success. See
 [validation](STAGE41_VALIDATION.md).
+
+## Stage 42 isolated root statement
+
+The [source root role candidate](SOURCE_ROOT_ROLE_QUALIFICATION.md) qualifies
+complete historical declaration signatures under independently selected bytes.
+Five distinct key encodings do not prove independent control; valid old statements
+and restored/copy selections still replay. No source service, administrator
+authentication, SQLite or physical-use connection is added. See the [Stage 42
+validation](STAGE42_VALIDATION.md) for execution evidence and failures.
+Both fixed independent assessments remain unfilled; source integration, core port,
+private signing and funded execution remain NO-GO.
