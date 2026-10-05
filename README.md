@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 38 public issuer and v2 owner signature qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 42 isolated historical source root role qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -420,3 +420,14 @@ The effect is a database row, with no authentication or physical-entry gate.
 Coherent database restore and copies remain successful unsafe controls. Existing
 runners and cryptographic admission are unchanged. [Validation](docs/STAGE41_VALIDATION.md)
 separates native evidence, synthetic fault controls and open integration gates.
+
+## Stage 42 isolated root statement
+
+The [source root role candidate](docs/SOURCE_ROOT_ROLE_QUALIFICATION.md) qualifies
+complete historical declaration signatures under independently selected bytes.
+Five distinct key encodings do not prove independent control; valid old statements
+and restored/copy selections still replay. No source service, administrator
+authentication, SQLite or physical-use connection is added. See the [Stage 42
+validation](docs/STAGE42_VALIDATION.md) for execution evidence and failures.
+Both fixed independent assessments remain unfilled; source integration, core port,
+private signing and funded execution remain NO-GO.

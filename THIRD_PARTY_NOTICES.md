@@ -99,3 +99,13 @@ references were reviewed on 2026-10-05; they are mutable sources. A reported
 SQLite version is an observation, not independently reproduced immutable build
 provenance. Existing locked cryptographic dependencies are unchanged. See the
 [construction and evidence limits](docs/OFFLINE_POLICY_EFFECT_STORE.md).
+
+## Stage 42 source root statement qualification
+
+The original project MIT framing, tests, public fixture and qualification worker
+reuse project patterns pinned at parent `8434d5614f2a1c06213d1fe006509691ecc09e0d`
+and the existing locked Rust Bitcoin/libsecp256k1 and btcec dependencies. No new
+dependency or third-party source/vector is copied. The [pinned BIP340 source and
+license record](docs/SOURCE_ROOT_ROLE_QUALIFICATION.md#source-and-reuse-record)
+separates specification facts, selected framing and actual execution. Mathematical
+compatibility is not custody, trusted source provisioning or independent review.

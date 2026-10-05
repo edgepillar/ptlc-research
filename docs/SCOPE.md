@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 38 - public issuer and v2 owner signature qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 42 - isolated historical source root role qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -11,7 +11,7 @@ The intended later deliverable is a reference application for one bilateral Bitc
 - Specify the safety properties, unresolved protocol choices, failure model, and later validation requirements.
 - Keep any offline algebra or regression demonstrations separate from cryptographic implementations intended to hold funds. A passing demonstration does not establish protocol security.
 
-Stages 0 through 37 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
+Stages 0 through 42 exclude node integration, wallet access, live RPC interaction, real funds, production key material, upstream node changes, and feature activation. Source inspection and local fixture checks cannot establish successful cross-chain settlement.
 
 ## Stage 1 deliverables
 
@@ -362,3 +362,14 @@ recovery. Native POSIX cuts and separate writers are executed controls; coherent
 restore/copy failure boundaries remain required. Offline qualification is GO;
 source integration, core activation, private signing and funds remain NO-GO. See
 [validation](STAGE41_VALIDATION.md).
+
+## Stage 42 isolated root statement
+
+The [source root role candidate](SOURCE_ROOT_ROLE_QUALIFICATION.md) qualifies
+complete historical declaration signatures under independently selected bytes.
+Five distinct key encodings do not prove independent control; valid old statements
+and restored/copy selections still replay. No source service, administrator
+authentication, SQLite or physical-use connection is added. See the [Stage 42
+validation](STAGE42_VALIDATION.md) for execution evidence and failures.
+Both fixed independent assessments remain unfilled; source integration, core port,
+private signing and funded execution remain NO-GO.
