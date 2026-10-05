@@ -164,6 +164,20 @@ class SourceAdminCommandTests(unittest.TestCase):
                 with self.assertRaises(admin.AdminCommandError): admin.verify_selected_command(wrong, self.wire, verifier=lambda r:calls.append(r))
                 self.assertEqual(calls, [])
 
+    def test_nonexact_command_conversion_refuses_before_descriptor_or_override_hooks(self):
+        class ForeignCommand(admin.AdminCommand):
+            @property
+            def _wire(self):
+                raise AssertionError("foreign byte descriptor invoked")
+
+            def root_dict(self):
+                raise AssertionError("foreign root override invoked")
+
+        foreign = object.__new__(ForeignCommand)
+        with self.assertRaises(admin.AdminCommandError): admin.AdminCommand.as_dict(foreign)
+        with self.assertRaises(admin.AdminCommandError): admin.AdminCommand.root_dict(foreign)
+        with self.assertRaises(admin.AdminCommandError): admin.verify_selected_command(foreign, self.wire, verifier=fake_check)
+
     def test_hostile_mapping_string_and_result_key_subclasses_refuse_without_hooks(self):
         class HostileDict(dict):
             def items(self): raise AssertionError("mapping hook invoked")
