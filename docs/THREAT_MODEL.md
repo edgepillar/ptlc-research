@@ -263,3 +263,14 @@ has no runtime effect and supplies no refund. Independent source provisioning,
 authenticated live reads, trusted rotation/compromise recovery and atomic durable
 use remain requirements, with no selected backend or adapter. Both fixed reports
 remain unfilled; see [validation](STAGE39_VALIDATION.md).
+
+[Stage 40 source/use ordering](POLICY_SOURCE_USE_MODEL.md) makes durable scoped
+operations and the revocation cutoff separate from authenticated current policy.
+A lost reply is no absent charge or refund; reconciliation uses the original ID.
+An ideal nonrewinding source bounds restored callers, while restoring source
+records repeats charge/entry under still-current policy. Different IDs can charge
+the same intent. Commit-cutoff entry may follow revocation; entry-cutoff refusal
+retains its charge. Neither abstract atomic entry nor green selected schedules
+proves crash-safe physical actuation, real nonrollback storage, undetected
+compromise handling or business-intent uniqueness. Both fixed reports remain
+unfilled; see [validation](STAGE40_VALIDATION.md).

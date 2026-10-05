@@ -50,6 +50,13 @@ unauthenticated response claims. Stage 39 introduces no external dataset,
 dependency implementation or signing material. Its source and use requirements
 are research proposals, not claims about a selected deployed authority service.
 
+Stage 40's `scripts/model_policy_source_use.py`, its tests and source/use
+comparison documentation are original project MIT material. They use standard
+library facilities and synthetic integer labels only. No third-party source,
+dataset, credential, dependency or executable artifact is added. Current policy,
+source provisioning, serialized durability and abstract entry are explicit
+research premises, not claims about an actual authority implementation.
+
 ## External qualification dependencies
 
 The [Rust manifest](qualification/Cargo.toml), [Rust lockfile](qualification/Cargo.lock), [core-verifier Go module](qualification-go/go.mod) and [Bitcoin Go module](qualification-bitcoin-go/go.mod) record the dependency selections. The corresponding Go checksum files cover downloaded module contents. Dependency source is obtained separately in an ignored cache.

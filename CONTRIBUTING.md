@@ -123,3 +123,14 @@ gate. Run the affected suite and full offline/artifact checks; unchanged crypto
 and actual-worker checks remain separate evidence. Keep both fixed manifests
 and reports unchanged and assess this later delta separately. See
 [validation](docs/STAGE39_VALIDATION.md).
+
+For [Stage 40 source/use comparison](docs/POLICY_SOURCE_USE_MODEL.md), keep current
+policy, durable scoped operation records and abstract entry as ideal premises.
+Compare commit and entry cutoffs without selecting a production revocation rule.
+Preserve lost-reply/original-operation reconciliation, source outage, cap lineage,
+client restore and unsafe source-ledger restore controls. Selected shuffle counts
+exclude those directed fault cases and the full action graph. Run the affected
+suite, eight CLI comparisons and full offline/artifact checks. The new CI step
+belongs in the existing Python jobs; keep pinned actions and other suites intact.
+Neither fixed subject/report changes; assess this later delta independently. See
+[validation](docs/STAGE40_VALIDATION.md).

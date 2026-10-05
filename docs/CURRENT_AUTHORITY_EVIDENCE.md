@@ -179,3 +179,10 @@ claims current authority, application admission, production signer, node core
 port, activation, deployment and funded recovery remain **NO-GO**. The existing
 workers, journal entry points, crypto constructions, dependencies and CI workflow
 are unchanged.
+
+The later [Stage 40 source/use model](POLICY_SOURCE_USE_MODEL.md) compares
+conditional commit and entry cutoffs with ideal durable scoped operation records.
+It makes lost replies, source-ledger restore and actual-entry limits explicit,
+without authenticating this read contract or connecting it to runtime admission.
+Its selected schedules and directed faults remain separate evidence; see
+[validation](STAGE40_VALIDATION.md).
