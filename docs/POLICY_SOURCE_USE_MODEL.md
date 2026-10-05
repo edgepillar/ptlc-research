@@ -184,3 +184,11 @@ Both [fixed review subjects](OBSERVATION_REVIEW.md), manifests and unfilled
 reports remain unchanged. This later delta needs its own independent assessment.
 Offline comparison is **GO**. Current-authority integration, core port,
 activation, deployment, private signing and funded recovery remain **NO-GO**.
+
+The [Stage 41 isolated SQLite construction](OFFLINE_POLICY_EFFECT_STORE.md)
+qualifies one local serialization and synthetic-effect cutoff with native writer
+and process tests. Its only effect is a row committed with its operation record
+inside the same database. It supplies no authenticated authority adapter,
+physical worker fence or nonrollbackable source lineage; coherent restore/copy
+controls still repeat effects. The model's broader source and integration gates
+remain open. See [validation](STAGE41_VALIDATION.md).

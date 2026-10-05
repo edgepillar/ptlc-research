@@ -264,3 +264,10 @@ Commit/entry cutoff differences and directed source-restore failures need their
 own independent assessment. Selected shuffle completion is no full graph or
 security proof. Both inventories, manifests and unfilled reports remain unchanged;
 see [validation](STAGE40_VALIDATION.md).
+
+The [Stage 41 local policy/effect store](OFFLINE_POLICY_EFFECT_STORE.md) is a
+later isolated delta and leaves the observation subject and report unchanged.
+Native process cuts test a synthetic row in one database, without source
+credentials or worker admission. Coherent copies/restore still replay effects.
+This construction, its runtime assumptions and any future external-effect gate
+need a separate independent assessment. See [validation](STAGE41_VALIDATION.md).

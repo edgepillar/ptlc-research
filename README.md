@@ -411,3 +411,12 @@ comparisons using the documented commands; they do not explore the full action
 graph. [Validation](docs/STAGE40_VALIDATION.md) separates local and hosted checks.
 Offline comparison remains GO; current-authority integration and funded/core
 activity remain NO-GO.
+
+[Stage 41 isolated SQLite qualification](docs/OFFLINE_POLICY_EFFECT_STORE.md)
+selects one local ordering construction: policy, retained allocations and a
+synthetic effect share one database. Strict revision/profile checks precede the
+effect commit; native process deaths and writer contention test that boundary.
+The effect is a database row, with no authentication or physical-entry gate.
+Coherent database restore and copies remain successful unsafe controls. Existing
+runners and cryptographic admission are unchanged. [Validation](docs/STAGE41_VALIDATION.md)
+separates native evidence, synthetic fault controls and open integration gates.
