@@ -422,3 +422,14 @@ provenance, live lookup, recovery or use semantics. Signed fixtures and local
 SQLite controls remain separate synthetic premises. Coherent source restore and
 clones still repeat effects. See [validation](STAGE47_VALIDATION.md); actual source
 integration, private signing, core port, deployment and production use remain NO-GO.
+
+## Stage 48 owned historical original snapshots
+
+The [isolated local sampler](ORIGINAL_READ_SNAPSHOT_QUALIFICATION.md) binds actual
+retained original records, historical policy rows and both selected local heads
+under one owned SQLite transaction. Local retention consistency has no external
+provenance or nonrollback witness. Native writer/death controls, unavailable and
+lost-return behavior, coherent replacement/restore/copy and delayed-use limits
+remain explicit. No source signing, authenticated lookup, recovery or physical
+entry is connected. See [validation](STAGE48_VALIDATION.md); source integration,
+core port and production use remain NO-GO. Both independent reports stay unfilled.
