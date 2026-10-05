@@ -545,3 +545,14 @@ byte-level binding supplies no authenticated source, historical issuance,
 nonrollback retention, private lookup permission or operational signer custody.
 Assess any later source/recovery integration separately. Fixed inventories and
 unfilled reports remain unchanged; see [execution evidence](STAGE49_VALIDATION.md).
+
+## Stage 50 original-read provenance and delivery comparison
+
+The [finite provenance/delivery model](ORIGINAL_READ_PROVENANCE_MODEL.md) is
+another delta outside both fixed subjects. Independently assess the provenance
+of complete expectations and the actual current-use boundary. Preserve the six
+signed counterclaims, callback forgery, delayed revocation, fresh-challenge
+restore and unknown-outcome controls. The model's external truth and nonrollback
+entry audit are ideal premises without implemented providers. Selected schedule
+completion is not full-graph coverage or a security proof. Both inventories and
+unfilled reports remain unchanged; see [validation](STAGE50_VALIDATION.md).

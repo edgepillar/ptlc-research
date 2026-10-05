@@ -503,3 +503,13 @@ signed counterclaims still expose false state, conflicting originals and stale
 heads. No application signer or source service is introduced. See
 [validation](docs/STAGE49_VALIDATION.md); source integration, recovery, core port
 and production use remain NO-GO.
+
+## Stage 50 original-read provenance and delivery model
+
+The [isolated finite model](docs/ORIGINAL_READ_PROVENANCE_MODEL.md) compares peer
+selection, query binding and complete owned-snapshot binding against six signed
+counterclaims. Separate delivery and abstract entry events expose stale reads,
+source restore and repeated entry. Ideal current facts and nonrollback entry
+history are external premises, with no implemented adapter or recovery permission.
+See [validation](docs/STAGE50_VALIDATION.md); source integration, core port and
+production use remain NO-GO.

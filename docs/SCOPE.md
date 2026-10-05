@@ -445,3 +445,13 @@ workers, older fixtures, store and journals are unchanged. No application signer
 authenticated source, lookup permission, recovery or physical-use gate is added.
 See [validation](STAGE49_VALIDATION.md); source integration, core port and funded
 execution remain NO-GO. Both independent reports stay unfilled.
+
+## Stage 50 original-read provenance and delivery model
+
+The [isolated symbolic model](ORIGINAL_READ_PROVENANCE_MODEL.md) compares complete
+expectation binding and separate delivery/entry events against unchanged actual
+store and public-fixture evidence. It supplies no signature mathematics, source
+authentication, signer, lookup service, physical-use adapter or recovery API.
+Ideal current truth and serialized nonrollback entry history remain external
+premises. See [validation](STAGE50_VALIDATION.md); operational source integration,
+core port and funded execution remain NO-GO. Both independent reports stay unfilled.

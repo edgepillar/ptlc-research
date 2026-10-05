@@ -236,3 +236,12 @@ actual independent expectations refuse them before work. Restored/cloned state
 and delayed delivery still preserve valid historical math without current truth.
 No application signer, source service, lookup authority or recovery is added.
 See [validation](STAGE49_VALIDATION.md); both independent reports remain unfilled.
+
+The later [Stage 50 provenance/delivery model](ORIGINAL_READ_PROVENANCE_MODEL.md)
+compares expectation binding against the unchanged ten actual public samples and
+six signed counterclaims. Separate delivery and ideal entry events expose old
+valid reads, coherent source restore and repeated original entry. Its external
+current facts and nonrollback audit are assumptions; no source authentication,
+application permission or unknown-outcome recovery is implemented. Selected
+schedules are not a full action graph. See [validation](STAGE50_VALIDATION.md);
+both fixed independent reports remain unfilled.
