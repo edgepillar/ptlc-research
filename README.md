@@ -399,3 +399,15 @@ remain possible. No source backend, authenticator, clock, storage or admission
 integration is selected. [Validation](docs/STAGE39_VALIDATION.md) reports directed
 counterexamples and required offline checks. Define and independently assess the
 actual source and protected-use instant before implementing a source adapter.
+
+[Stage 40 policy-source/use comparison](docs/POLICY_SOURCE_USE_MODEL.md) separates
+current policy reads, durable operation charging, lost-reply reconciliation and
+abstract entry. Commit and entry cutoffs give different revocation behavior;
+both are conditional candidates. Current policy alone does not prevent repeat
+charge/entry after source-ledger restore, and different operation IDs need not
+mean distinct business intent. The pure model adds no source backend, dispatch,
+worker fence or application gate. Run its directed tests and eight selected CLI
+comparisons using the documented commands; they do not explore the full action
+graph. [Validation](docs/STAGE40_VALIDATION.md) separates local and hosted checks.
+Offline comparison remains GO; current-authority integration and funded/core
+activity remain NO-GO.

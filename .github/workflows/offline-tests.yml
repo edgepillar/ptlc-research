@@ -40,6 +40,13 @@ jobs:
         run: python3 -m unittest discover -s tests -v
       - name: Check artifact hygiene
         run: python3 scripts/check_artifacts.py
+      - name: Compare source policy and protected-use cutoffs
+        run: |
+          set -eu
+          for policy in cached-read commit-cutoff entry-cutoff rollbackable-ledger; do
+            python3 -B scripts/model_policy_source_use.py --policy "$policy"
+            python3 -B scripts/model_policy_source_use.py --policy "$policy" --distinct-operations
+          done
 
   adaptor-qualification:
     runs-on: ubuntu-latest

@@ -256,3 +256,11 @@ history and atomic actual-use ordering remain unresolved. Real exhausted-journal
 checks establish only unchanged allowance and recovery refusal. Both inventories,
 manifests and unfilled reports remain unchanged; independently assess this exact
 later delta and any future source integration. See [validation](STAGE39_VALIDATION.md).
+
+[Stage 40 policy-source/use comparison](POLICY_SOURCE_USE_MODEL.md) is outside
+both fixed subjects. Ideal durable records and current policy do not establish
+real source authentication, nonrewinding history, dispatch or physical entry.
+Commit/entry cutoff differences and directed source-restore failures need their
+own independent assessment. Selected shuffle completion is no full graph or
+security proof. Both inventories, manifests and unfilled reports remain unchanged;
+see [validation](STAGE40_VALIDATION.md).

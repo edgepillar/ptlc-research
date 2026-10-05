@@ -190,3 +190,15 @@ fallback prevention. Define and assess the actual protected-use instant and its
 atomic policy/lineage/dispatch ordering before runtime integration. No existing
 worker, journal, crypto or fixed review subject changes. See
 [validation](docs/STAGE39_VALIDATION.md).
+
+[Stage 40 source/use ordering](docs/POLICY_SOURCE_USE_MODEL.md) assumes a live
+trusted current-policy source and serialized nonrewinding operation records.
+Commit and entry cutoffs intentionally differ after revocation; neither is a
+selected production rule. Lost replies retain the original operation and charge;
+source-ledger restore can repeat charge/entry despite genuinely current policy.
+Scoped idempotency provides no business-intent uniqueness or actual worker fence.
+Detected compromise is an external trusted signal, not evidence of protection
+against undetected compromise. Selected schedules exclude the separate directed
+fault cases and the full graph. No runtime gate or source implementation changes;
+both fixed subjects/reports remain unchanged. See
+[validation](docs/STAGE40_VALIDATION.md).

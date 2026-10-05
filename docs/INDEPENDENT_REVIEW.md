@@ -446,3 +446,11 @@ permission. Assess its complete decoded request, source trust model and retained
 stale/restore/replay/outage controls separately; then assess the actual source and
 protected-use ordering if selected. The 119-file subject, both manifests and
 unfilled reports remain unchanged. See [validation](STAGE39_VALIDATION.md).
+
+[Stage 40 source/use ordering](POLICY_SOURCE_USE_MODEL.md) is another later finite
+model outside this subject. It compares conditional commit and entry cutoffs with
+ideal current policy and durable scoped records. The source-ledger restore
+counterexample remains separate from selected schedule counts. Assess its trust,
+revocation, unknown-outcome, idempotency and physical-entry boundaries separately;
+it supplies no source implementation or worker fence. Both manifests and unfilled
+reports remain unchanged. See [validation](STAGE40_VALIDATION.md).

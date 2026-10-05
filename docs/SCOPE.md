@@ -339,3 +339,17 @@ reports remain unchanged; this later delta needs separate independent assessment
 [Validation](STAGE39_VALIDATION.md) records directed stale/restore/replay/outage and
 real exhausted-journal controls. Offline qualification is GO; current-authority
 integration, core work, activation, deployment and funded activity remain NO-GO.
+
+## Stage 40 policy source and protected-use ordering
+
+The [standalone finite model](POLICY_SOURCE_USE_MODEL.md) compares current-policy
+commit/charge records and a later abstract entry under two candidate cutoffs.
+Original-operation reconciliation, retained charges, source failures, coherent
+client restore and unsafe source-ledger restore have separate directed controls.
+It selects no production source, protected-use definition, revocation rule or
+actual worker fence. One CLI comparison step is added to existing Python CI jobs;
+existing runtime code, crypto, workers, journals, dependencies and pinned actions
+remain unchanged. Both fixed subjects/reports remain unchanged and this later
+delta needs separate assessment. [Validation](STAGE40_VALIDATION.md) distinguishes
+selected schedules from the full action graph and hosted execution. Offline
+comparison is GO; source integration, core work and funded activity remain NO-GO.
