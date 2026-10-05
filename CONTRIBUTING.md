@@ -134,3 +134,13 @@ suite, eight CLI comparisons and full offline/artifact checks. The new CI step
 belongs in the existing Python jobs; keep pinned actions and other suites intact.
 Neither fixed subject/report changes; assess this later delta independently. See
 [validation](docs/STAGE40_VALIDATION.md).
+
+For [Stage 41 isolated SQLite work](docs/OFFLINE_POLICY_EFFECT_STORE.md), retain
+the complete original request, charges and selected synthetic-effect cutoff.
+Run both ordinary and native affected controls, the safe runtime probe and the
+full offline/artifact checks. Keep actual POSIX process death distinct from
+synthetic exceptions and OS/power failure. Preserve coherent restore/copy and
+different-ID/same-proposal counterexamples. Do not connect this local helper to
+existing admission or describe synthetic row commit as physical worker entry.
+Authentication, external lineage and recovery require separate construction and
+independent assessment. See [validation](docs/STAGE41_VALIDATION.md).

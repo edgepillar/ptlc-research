@@ -274,3 +274,13 @@ retains its charge. Neither abstract atomic entry nor green selected schedules
 proves crash-safe physical actuation, real nonrollback storage, undetected
 compromise handling or business-intent uniqueness. Both fixed reports remain
 unfilled; see [validation](STAGE40_VALIDATION.md).
+
+The [Stage 41 selected SQLite construction](OFFLINE_POLICY_EFFECT_STORE.md)
+assumes owned local storage, an honest offline administrator and honest locking
+and flush behavior. All protected effects are synthetic rows in that database.
+A strict current revision/profile check does not authenticate an administrator
+or source. Native process death is not OS/power-failure qualification. Restoring
+or copying the entire coherent database replays effects or splits retained caps;
+internal audit validation cannot establish an external monotonic lineage.
+Existing worker gates do not consume these records. See
+[validation](STAGE41_VALIDATION.md).

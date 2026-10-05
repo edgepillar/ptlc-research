@@ -353,3 +353,12 @@ remain unchanged. Both fixed subjects/reports remain unchanged and this later
 delta needs separate assessment. [Validation](STAGE40_VALIDATION.md) distinguishes
 selected schedules from the full action graph and hosted execution. Offline
 comparison is GO; source integration, core work and funded activity remain NO-GO.
+
+[Stage 41](OFFLINE_POLICY_EFFECT_STORE.md) selects a bounded local SQLite
+construction for policy revisions, scoped original operations and synthetic row
+effects. It adds no source/read/admin authentication, real target-cap enforcement,
+current-authority adapter, physical-entry fence or nonrollbackable source
+recovery. Native POSIX cuts and separate writers are executed controls; coherent
+restore/copy failure boundaries remain required. Offline qualification is GO;
+source integration, core activation, private signing and funds remain NO-GO. See
+[validation](STAGE41_VALIDATION.md).

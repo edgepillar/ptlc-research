@@ -202,3 +202,12 @@ against undetected compromise. Selected schedules exclude the separate directed
 fault cases and the full graph. No runtime gate or source implementation changes;
 both fixed subjects/reports remain unchanged. See
 [validation](docs/STAGE40_VALIDATION.md).
+
+[Stage 41 SQLite ordering](docs/OFFLINE_POLICY_EFFECT_STORE.md) protects only a
+synthetic row in one owned local database. A local administrator and honest
+SQLite/VFS behavior are premises; source labels and complete profile equality
+provide no authentication. Native process-death tests supply no power-loss or
+hardware durability proof. Coherent source restore repeats an effect and copies
+split caps. Original result replay after revocation grants no new permission.
+No physical worker fence, current-source adapter or compromised-source recovery
+is implemented. See [validation](docs/STAGE41_VALIDATION.md).

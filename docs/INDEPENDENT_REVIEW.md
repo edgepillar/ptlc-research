@@ -454,3 +454,11 @@ counterexample remains separate from selected schedule counts. Assess its trust,
 revocation, unknown-outcome, idempotency and physical-entry boundaries separately;
 it supplies no source implementation or worker fence. Both manifests and unfilled
 reports remain unchanged. See [validation](STAGE40_VALIDATION.md).
+
+The [Stage 41 isolated SQLite delta](OFFLINE_POLICY_EFFECT_STORE.md) is outside
+this fixed baseline. Native writer/process controls qualify local ordering for a
+synthetic database row only. Administrator/source authentication, external
+lineage, physical entry and recovery remain unimplemented. Preserve actual
+restore/copy counterexamples and assess this later construction separately; do
+not fill this report from local or hosted regression success. See
+[validation](STAGE41_VALIDATION.md).

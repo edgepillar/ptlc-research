@@ -87,3 +87,15 @@ A future source-vendoring or binary-release process must inspect the exact inclu
 ## Source references without copied implementation
 
 The [evidence inventory](docs/EVIDENCE.md) attributes the pinned Zenon PTLC proposal, the historical scalar-disclosure demo and the Bitcoin specifications. The [transaction graph](docs/TRANSACTION_GRAPH.md) also cites the scriptless-scripts construction and secp256k1-zkp MuSig notes. These are reviewed sources and design references; their implementations are not vendored, relicensed or claimed as original project code. The test harness calls external dependency APIs and keeps the observed contract message rule separate from any claim to implement the Zenon node.
+
+Stage 41's isolated SQLite store, native synthetic actor and tests are original
+project MIT code. They reuse the existing project profile decoder and synthetic
+unsigned fixture. Python's standard-library driver and the host SQLite runtime
+remain external components; no SQLite or Python implementation, dataset or build
+script is copied or vendored. [SQLite's copyright statement](https://www.sqlite.org/copyright.html)
+places its deliverable code/documentation in the public domain, while some build
+scripts have separate terms. This statement and the linked transaction/settings
+references were reviewed on 2026-10-05; they are mutable sources. A reported
+SQLite version is an observation, not independently reproduced immutable build
+provenance. Existing locked cryptographic dependencies are unchanged. See the
+[construction and evidence limits](docs/OFFLINE_POLICY_EFFECT_STORE.md).
