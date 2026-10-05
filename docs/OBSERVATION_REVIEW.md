@@ -247,3 +247,12 @@ no recovery allowance. New cross-language vectors do not fill either assessment;
 both inventories, manifests and unfilled reports remain unchanged. Assess this
 exact delta and any later use-time integration separately. See
 [validation](STAGE38_VALIDATION.md), including the first Go setup failure.
+
+[Stage 39 checkpoint-bound current-authority framing](CURRENT_AUTHORITY_EVIDENCE.md)
+is outside both fixed subjects. It includes decoded scope/resource expectations
+and both public signature statements, but parses only forgeable read labels.
+Trusted provisioning, authenticated current evidence, non-rollbackable source
+history and atomic actual-use ordering remain unresolved. Real exhausted-journal
+checks establish only unchanged allowance and recovery refusal. Both inventories,
+manifests and unfilled reports remain unchanged; independently assess this exact
+later delta and any future source integration. See [validation](STAGE39_VALIDATION.md).

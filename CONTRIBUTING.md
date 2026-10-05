@@ -111,3 +111,15 @@ distinct. Signing stays test-only in qualification, using synthetic public tags;
 no private signer or admission integration belongs in this delta. Run the offline
 suite, locked Rust/Go checks and actual-worker qualifier; retain setup failures
 and stale/forged-positive controls in [validation](docs/STAGE38_VALIDATION.md).
+
+For [Stage 39 current-authority framing](docs/CURRENT_AUTHORITY_EVIDENCE.md),
+preserve independent source/root/incarnation and checkpoint selection and full
+decoded scope/cap matching. A parsed read is a forgeable claim, even with a new
+challenge and valid credential signatures. Preserve stale, coherent-restore,
+replay, outage and exhausted-journal controls. Select and independently assess
+the actual source authentication, current-read semantics, protected-use instant
+and atomic lineage/dispatch mechanism before introducing an adapter or runtime
+gate. Run the affected suite and full offline/artifact checks; unchanged crypto
+and actual-worker checks remain separate evidence. Keep both fixed manifests
+and reports unchanged and assess this later delta separately. See
+[validation](docs/STAGE39_VALIDATION.md).

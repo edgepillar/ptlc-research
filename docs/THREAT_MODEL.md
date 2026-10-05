@@ -251,3 +251,15 @@ independent latest-state oracle. A malicious selected verifier can forge the
 matching result. Root provisioning, authenticated current authority, indivisible
 actual use, restore defense and independent construction review remain open;
 both fixed reports are unchanged. See [validation](STAGE38_VALIDATION.md).
+
+[Stage 39 read framing](CURRENT_AUTHORITY_EVIDENCE.md) separates an independently
+selected source/root/incarnation from the issuer credential and selected policy
+checkpoint. Replaying an old claim fails under new expectations; restoring all
+old expectations coherently matches again. A fresh challenge can be answered by
+an arbitrary forged active label. Opaque pins, matching revisions, claimed status
+and valid old signatures do not prove latest policy or indivisible actual use.
+Outage must prevent new protected uses in a future real gate; parsing unavailable
+has no runtime effect and supplies no refund. Independent source provisioning,
+authenticated live reads, trusted rotation/compromise recovery and atomic durable
+use remain requirements, with no selected backend or adapter. Both fixed reports
+remain unfilled; see [validation](STAGE39_VALIDATION.md).

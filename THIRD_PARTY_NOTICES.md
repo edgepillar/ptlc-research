@@ -43,6 +43,13 @@ license. Their public synthetic scalar tags occur only in qualification tests,
 never as secret-key fields in these fixtures or as production signer material.
 No new third-party dataset or dependency source is included by Stage 38.
 
+`qualification/fixtures/current_authority_contract.json` is an original project
+MIT framing vector. It retains the existing synthetic public governor packet,
+adds synthetic source/checkpoint/challenge pins and includes four explicitly
+unauthenticated response claims. Stage 39 introduces no external dataset,
+dependency implementation or signing material. Its source and use requirements
+are research proposals, not claims about a selected deployed authority service.
+
 ## External qualification dependencies
 
 The [Rust manifest](qualification/Cargo.toml), [Rust lockfile](qualification/Cargo.lock), [core-verifier Go module](qualification-go/go.mod) and [Bitcoin Go module](qualification-bitcoin-go/go.mod) record the dependency selections. The corresponding Go checksum files cover downloaded module contents. Dependency source is obtained separately in an ignored cache.

@@ -438,3 +438,11 @@ construction review or admission permission. Assess the exact domains, complete
 profile binding, expected-input boundary and stale/forged-positive controls
 separately. Both fixed manifests and unfilled reports remain unchanged; see
 [validation](STAGE38_VALIDATION.md), including the first Go cache setup failure.
+
+[Stage 39 current-authority requirements and read claims](CURRENT_AUTHORITY_EVIDENCE.md)
+are a later delta outside this fixed subject. Exact source/query/checkpoint/claim
+matching supplies no authenticated current evidence, source provisioning or use
+permission. Assess its complete decoded request, source trust model and retained
+stale/restore/replay/outage controls separately; then assess the actual source and
+protected-use ordering if selected. The 119-file subject, both manifests and
+unfilled reports remain unchanged. See [validation](STAGE39_VALIDATION.md).

@@ -323,3 +323,19 @@ reports remain unchanged. See [validation](STAGE38_VALIDATION.md), including the
 first Go setup failure. Trusted issuer provisioning, current authority at actual
 use, non-rollbackable lineage, source equivalence and independent review remain
 gates. Current-node core work, private signing and funded activity remain NO-GO.
+
+## Stage 39 current-authority requirements and read claims
+
+[The source/use requirements and pure read contract](CURRENT_AUTHORITY_EVIDENCE.md)
+separate issuer provisioning, source identity/incarnation, exact policy checkpoint
+and actual-use ordering. The query includes both public signature statements and
+the complete independently decoded scope/resource. Exact active, revoked, absent
+and unavailable responses remain forgeable labels; revision/checkpoint equality,
+new challenges and coherent local copies establish no current truth or permission.
+Source authentication, current-read semantics, root recovery, protected-use cutoff
+and atomic policy/lineage/dispatch are unresolved mechanisms. No source adapter,
+signer, journal or admission path is connected. Both fixed subjects and unfilled
+reports remain unchanged; this later delta needs separate independent assessment.
+[Validation](STAGE39_VALIDATION.md) records directed stale/restore/replay/outage and
+real exhausted-journal controls. Offline qualification is GO; current-authority
+integration, core work, activation, deployment and funded activity remain NO-GO.
