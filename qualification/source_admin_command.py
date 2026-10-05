@@ -104,6 +104,8 @@ class AdminCommand:
             raise AdminCommandError("invalid independent root selection") from None
 
     def as_dict(self):
+        if type(self) is not AdminCommand:
+            raise AdminCommandError("an exact independent command selection is required")
         try:
             return _command(_decode(self._wire), self.root_dict())
         except _ERRORS:

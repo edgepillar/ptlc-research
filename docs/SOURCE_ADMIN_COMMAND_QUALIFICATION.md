@@ -76,7 +76,8 @@ The [pure framing](../qualification/source_admin_command.py) requires independen
 selected complete root and command bytes before peer parsing. Valid peer replacement
 commands, revisions, roots, incarnations and keys refuse before callback work. It
 returns the same unsigned historical selection, without permission, committed-state
-or current-authority flags. A malicious selected callback can forge both positives;
+or current-authority flags. Direct command conversion also refuses nonexact
+subtypes before byte-descriptor or root-method hooks can run. A malicious selected callback can forge both positives;
 the zero-signature unsafe control remains explicit. The [bounded transport](../qualification/source_admin_verifier.py)
 repeatedly measures a selected executable. This is not atomic launch, provenance,
 a sandbox or an application source adapter. Runtime trust stays external.

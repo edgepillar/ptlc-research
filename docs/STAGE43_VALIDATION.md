@@ -74,3 +74,29 @@ signing is connected.
 The original source subjects, manifests and unfilled reports remain fixed. Offline
 qualification is **GO**. Source integration, core port, activation, deployment,
 private signing and funded recovery remain **NO-GO**.
+
+## Direct conversion type guard follow-up
+
+The initial public draft had 26 affected Python tests and 1,045 complete offline
+tests passing. A later self-review found that direct command dictionary conversion
+read its byte field before rejecting a foreign subtype; that could invoke a foreign
+descriptor or root-method override. The main request entry already refused nonexact
+selections before conversion. A two-line exact-type guard now makes direct conversion
+consistent as well. One regression checks descriptor/override refusal before access.
+An isolated historical-module control confirmed that the original direct
+converter invoked the synthetic descriptor, while its main request entry refused;
+the fixed converter refuses before that descriptor runs. This is a self-review
+correction, not an independent security assessment.
+
+The public fixture, administrator/root worker sources, transport, dependencies and
+accepted mathematical packets are unchanged. Affected Python checks now pass all
+27 tests. The new complete offline suite passed all 1,046 tests in 906.121 seconds
+with no failures or skips; all 11 repeated actual-worker wrapper checks passed. The earlier 98 Rust and 38 Go results apply to unchanged
+Rust/Go code and fixture bytes; fresh hosted execution still requires the new head.
+Publication will preserve the initial draft commit and add a second generic project
+commit. Both fixed independent assessments remain unfilled.
+
+**All required follow-up checks passed.** Final artifact checks are repeated after
+staging this evidence update. The first hosted run completed all seven jobs at the
+initial head; a fresh seven-job run and complete logs must qualify the follow-up
+head. Initial-hosted status is not substituted for that final evidence.
