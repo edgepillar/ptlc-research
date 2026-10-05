@@ -109,3 +109,11 @@ dependency or third-party source/vector is copied. The [pinned BIP340 source and
 license record](docs/SOURCE_ROOT_ROLE_QUALIFICATION.md#source-and-reuse-record)
 separates specification facts, selected framing and actual execution. Mathematical
 compatibility is not custody, trusted source provisioning or independent review.
+
+## Stage 43 administrator command qualification
+
+The new framing, rule, public fixture and tests are original project MIT material,
+reusing project patterns at `d2766ffb0fbd5ff8be5d11417c208a4a1e8d5bc2`. The retained
+root worker and locked dependencies are unchanged. No upstream implementation or
+vectors are copied and no new dependency is added. See the [pinned specification
+and reuse record](docs/SOURCE_ADMIN_COMMAND_QUALIFICATION.md#source-and-reuse-record).
