@@ -556,3 +556,15 @@ restore and unknown-outcome controls. The model's external truth and nonrollback
 entry audit are ideal premises without implemented providers. Selected schedule
 completion is not full-graph coverage or a security proof. Both inventories and
 unfilled reports remain unchanged; see [validation](STAGE50_VALIDATION.md).
+
+## Stage 51 test-only complete retained opening
+
+The [complete synthetic opening](ORIGINAL_SNAPSHOT_OPENING.md) is a separate delta
+outside both fixed subjects. Independently assess its event/row consistency,
+claim derivation, selected head provenance and disclosure assumptions. Preserve
+signed false-state/collision controls, temporal cap reduction, old historical
+profiles, post-revocation replay and coherent restore/truncation controls.
+Complete synthetic disclosure does not select an application privacy protocol;
+current-head authority and nonrollback retention remain external gates. Both
+fixed inventories and unfilled reports remain unchanged; see
+[validation](STAGE51_VALIDATION.md).

@@ -245,3 +245,12 @@ current facts and nonrollback audit are assumptions; no source authentication,
 application permission or unknown-outcome recovery is implemented. Selected
 schedules are not a full action graph. See [validation](STAGE50_VALIDATION.md);
 both fixed independent reports remain unfilled.
+
+The later [Stage 51 complete-opening experiment](ORIGINAL_SNAPSHOT_OPENING.md)
+derives unsigned claims from public synthetic retained rows which must open both
+independently selected diagnostic heads. Three signed false-state claims disagree
+with derived facts; two original-tuple collisions refuse; old freshly challenged
+absence can still open as history. Complete-row disclosure is test-only, and
+source authentication, current heads, nonrollback retention and authorized private
+lookup remain unresolved. See [validation](STAGE51_VALIDATION.md); both fixed
+reports remain unfilled.
