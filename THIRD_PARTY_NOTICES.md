@@ -144,3 +144,12 @@ material, reusing unchanged project framing/profile/root constructions at
 `88527956a163a184dccca28590f6c7491fbb2576`. No third-party source, passage or
 vector is copied. Existing cryptographic workers/fixtures, locked dependencies
 and workflow are unchanged. See the [reuse record and limits](docs/ORIGINAL_OPERATION_READ_CONTRACT.md#reuse-record-and-remaining-gates).
+
+## Stage 47 historical original-read response signatures
+
+The framing, tagged application prehash, public synthetic fixture and tests are
+original project MIT material, reusing project patterns at
+`780b351ab4a57e035a8deeedecd8b2637387130e`. No upstream implementation, passage
+or vector is copied and no dependency is added. Existing root/profile/grammar
+code and locked Rust Bitcoin/libsecp256k1 and btcec notices stay unchanged. See
+the [pinned BIP340 source, license and reuse record](docs/ORIGINAL_READ_RESPONSE_SIGNATURE_QUALIFICATION.md#source-and-reuse-record).

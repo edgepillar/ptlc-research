@@ -209,3 +209,11 @@ The four record observations are unsigned and forgeable; matching bytes prove
 neither absence, completion, current truth nor nonrollbackable retention. No
 source adapter or unknown-outcome recovery is connected. See
 [validation](STAGE46_VALIDATION.md).
+
+The later [Stage 47 original-response signature qualification](ORIGINAL_READ_RESPONSE_SIGNATURE_QUALIFICATION.md)
+checks selected historical root and response bytes under separate framing. The
+complete old original profile and both policy/record positions are bound, while
+current-read authentication, independent source heads, old-profile provenance,
+lookup privacy and nonrollback retention remain external gates. Freshly challenged
+old active statements still verify; no live source, application recovery or
+physical-entry ordering is implemented. See [validation](STAGE47_VALIDATION.md).

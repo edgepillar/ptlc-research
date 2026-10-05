@@ -95,6 +95,8 @@ jobs:
         run: python3 -B scripts/qualify_source_admin_command.py --admin-verifier qualification/target/debug/examples/verify_source_admin
       - name: Qualify selected checkpoint response signatures without current authority
         run: python3 -B scripts/qualify_source_response.py --response-verifier qualification/target/debug/examples/verify_source_response
+      - name: Qualify selected historical original-read root and response signatures
+        run: python3 -B scripts/qualify_original_read_response.py --original-response-verifier qualification/target/debug/examples/verify_original_read_response
       - name: Check Rust formatting
         run: cargo +1.90.0 fmt --manifest-path qualification/Cargo.toml -- --check
 
