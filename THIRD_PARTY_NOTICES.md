@@ -153,3 +153,12 @@ original project MIT material, reusing project patterns at
 or vector is copied and no dependency is added. Existing root/profile/grammar
 code and locked Rust Bitcoin/libsecp256k1 and btcec notices stay unchanged. See
 the [pinned BIP340 source, license and reuse record](docs/ORIGINAL_READ_RESPONSE_SIGNATURE_QUALIFICATION.md#source-and-reuse-record).
+
+## Stage 49 test-only original snapshot signature binding
+
+Harnesses, documentation and public synthetic fixtures are original project MIT
+material, reusing unchanged project code at
+`38ee5559a1006f0682e3db6370b9912bcc55bade`. Existing signature framing and locked
+Rust Bitcoin/libsecp256k1 and btcec license/attribution records remain unchanged.
+No third-party source, passage or vector is copied and no dependency is added.
+See the [reuse record and remaining gates](docs/ORIGINAL_READ_SNAPSHOT_SIGNATURE_BINDING.md#source-and-reuse-record).

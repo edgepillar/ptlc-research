@@ -227,3 +227,12 @@ Native read/writer/death controls expose delayed delivery, while coherent origin
 replacement and source restore/copy still succeed under replaced local selections.
 No signer, authenticated source, recovery or physical-entry adapter is connected.
 See [validation](STAGE48_VALIDATION.md); both independent assessments remain unfilled.
+
+The later [Stage 49 sample-to-signature qualification](ORIGINAL_READ_SNAPSHOT_SIGNATURE_BINDING.md)
+recreates actual local snapshots as exact public synthetic signed messages under
+the unchanged historical worker. Six validly signed false/conflicting/stale
+counterclaims still pass mathematics when selected from the packet itself;
+actual independent expectations refuse them before work. Restored/cloned state
+and delayed delivery still preserve valid historical math without current truth.
+No application signer, source service, lookup authority or recovery is added.
+See [validation](STAGE49_VALIDATION.md); both independent reports remain unfilled.
