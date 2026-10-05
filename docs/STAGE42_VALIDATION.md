@@ -61,6 +61,25 @@ is not fresh evidence. Hosted full logs must refresh all thirteen groups and
 separately demonstrate their exact candidate merge tree, native controls,
 selected CLI comparisons and SQLite runtime probes.
 
+## Same-process role control strengthened before final publication
+
+A follow-up test assertion derives the two reused owner/issuer public keys from
+known synthetic tags 83 and 84 in the same process that derives root,
+administrator and response keys 96, 97 and 98. The complete fixture must remain
+byte-identical, and the generator still reproduces it. This directly executes
+the claim that distinct role keys can remain under one process's control, without
+claiming separate governance or custody. The complete Rust suite again passed
+all 88 tests, with no ignored tests. The first format check requested multiline
+layout for one new assertion; Cargo formatting corrected it and the final check
+passed. This formatting failure is separate from test execution.
+
+The local 1,019-test Python run above preceded this Rust-test-only strengthening
+and documentation update. All Python/application code, worker code and public
+fixture bytes are unchanged. Final artifact checks are repeated after staging;
+final hosted Python and actual-worker runs require the new exact head. Publication
+uses a second explicit generic project commit rather than replacing the already
+published draft history. No independent assessment is supplied.
+
 ## What these checks establish
 
 Actual signatures bind root/context/profile/role bytes and refuse wrong domains,
