@@ -163,3 +163,12 @@ only strict cap reduction and profile-preserving revocation under an independent
 selected rule. Historical signatures do not read current revisions or apply a
 command to any source/store. Replay and coherent restoration still succeed.
 See [validation](docs/STAGE43_VALIDATION.md); source integration and production use remain NO-GO.
+
+## Stage 44 isolated source response signatures
+
+The [response signature candidate](docs/SOURCE_RESPONSE_SIGNATURE_QUALIFICATION.md)
+binds the complete root, checkpoint query, response role and observation claim.
+It checks four historical signatures without a current-policy lookup. Old or
+coherently restored selections still replay; a new challenge can be signed over
+old active state. See [validation](docs/STAGE44_VALIDATION.md). Source integration,
+core port and production use remain NO-GO; independent assessments stay unfilled.

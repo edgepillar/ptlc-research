@@ -117,3 +117,11 @@ reusing project patterns at `d2766ffb0fbd5ff8be5d11417c208a4a1e8d5bc2`. The reta
 root worker and locked dependencies are unchanged. No upstream implementation or
 vectors are copied and no new dependency is added. See the [pinned specification
 and reuse record](docs/SOURCE_ADMIN_COMMAND_QUALIFICATION.md#source-and-reuse-record).
+
+## Stage 44 source response signature qualification
+
+The new framing, rule, public fixture and tests are original project MIT material,
+reusing project patterns at `586ed7bc0bd74dd82164ff74b7d7ec5e548dac22`. The retained
+root/governor workers and locked dependencies are unchanged. No upstream code or
+vectors are copied and no new dependency is added. See the [pinned specification
+and reuse record](docs/SOURCE_RESPONSE_SIGNATURE_QUALIFICATION.md#source-and-reuse-record).
