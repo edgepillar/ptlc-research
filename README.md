@@ -481,3 +481,14 @@ Fresh challenges, self-selected collisions and coherent source copies/restores
 still expose unsafe limits. No source service, signer, lookup permission or recovery
 adapter is connected. See [validation](docs/STAGE47_VALIDATION.md); source integration,
 core port and production use remain NO-GO.
+
+## Stage 48 owned local original-read snapshot
+
+The [historical local snapshot experiment](docs/ORIGINAL_READ_SNAPSHOT_QUALIFICATION.md)
+returns the existing complete original-read grammar from actual retained SQLite
+rows. Both selected heads and the old profile's retained policy row are checked
+in one owned transaction. Native ordering/death controls preserve original
+charges; coherent replacement, restore/copy and delayed returns remain explicit
+unsafe boundaries. No signer, authenticated source or recovery adapter is connected.
+See [validation](docs/STAGE48_VALIDATION.md); source integration, core port and
+production use remain NO-GO.

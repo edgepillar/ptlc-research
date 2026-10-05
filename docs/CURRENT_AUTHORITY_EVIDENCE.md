@@ -217,3 +217,13 @@ current-read authentication, independent source heads, old-profile provenance,
 lookup privacy and nonrollback retention remain external gates. Freshly challenged
 old active statements still verify; no live source, application recovery or
 physical-entry ordering is implemented. See [validation](STAGE47_VALIDATION.md).
+
+The later [Stage 48 original snapshot experiment](ORIGINAL_READ_SNAPSHOT_QUALIFICATION.md)
+reads actual retained originals and both local checkpoints in one owned SQLite
+transaction. Historical profile equality is checked against retained local policy
+history; complete record material is hashed deterministically. These checks supply
+local consistency, not authenticated historical issuance or nonrollback lineage.
+Native read/writer/death controls expose delayed delivery, while coherent original
+replacement and source restore/copy still succeed under replaced local selections.
+No signer, authenticated source, recovery or physical-entry adapter is connected.
+See [validation](STAGE48_VALIDATION.md); both independent assessments remain unfilled.

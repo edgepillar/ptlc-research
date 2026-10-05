@@ -521,3 +521,15 @@ or physical entry. Preserve signed-old-state, self-selected collision, forged
 callback and actual local restore/clone controls. Assess this exact construction
 and any later source integration separately. Both fixed inventories and unfilled
 reports stay unchanged; see [validation](STAGE47_VALIDATION.md).
+
+## Stage 48 owned original-read snapshot
+
+The [historical local snapshot delta](ORIGINAL_READ_SNAPSHOT_QUALIFICATION.md) is
+outside both fixed subjects. It reads actual retained original and policy rows
+under the existing owned-store transaction discipline and selects a deterministic
+full local record commitment. Retained row equality has no authenticated historical
+issuance or external nonrollback lineage. Preserve native ordering/death controls
+and coherent substitution, restore/copy, outage/lost-return and delayed-use
+counterexamples when independently assessing this delta and any later integration.
+Neither fixed inventory nor report is changed or closed. See
+[execution evidence](STAGE48_VALIDATION.md); operational integration remains NO-GO.
