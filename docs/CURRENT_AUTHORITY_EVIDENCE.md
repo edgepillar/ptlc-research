@@ -192,3 +192,11 @@ checks four historical signatures over this complete read framing in an isolated
 worker. This pure read contract remains unsigned. A newly challenged old active
 response can still verify; no serialized current read or operational source is
 connected. See [validation and explicit unsafe controls](STAGE44_VALIDATION.md).
+
+The later [Stage 45 local read experiment](LOCAL_SOURCE_READ_ORDERING.md) samples
+this complete query and an unsigned response under one owned SQLite transaction.
+It refuses a stale selected local checkpoint after managed policy changes, while
+coherent source restore and clones still replay. Original-operation association
+is unsigned, operational source authentication is absent, and a read can age
+before return. No application admission or physical-use fence is connected. See
+[validation](STAGE45_VALIDATION.md).

@@ -7,7 +7,7 @@ destination paths. A separate original owner can remain open while an older
 closed snapshot is installed elsewhere; no live store files are overwritten.
 """
 
-from contextlib import contextmanager
+from contextlib import closing, contextmanager
 import json
 from pathlib import Path
 import sqlite3
@@ -147,7 +147,7 @@ class ResourceStoreRestoreTests(unittest.TestCase):
             with self.assertRaises(records.RecordConflict):
                 store.known_statement(self.state, self.signature)
         conflicted = self.pair()
-        with sqlite3.connect(self.root / "observations.sqlite3") as connection:
+        with closing(sqlite3.connect(self.root / "observations.sqlite3")) as connection, connection:
             wire = connection.execute("SELECT record_bytes FROM checkpoint").fetchone()[0]
         self.assertEqual([attempt["outcome"] for attempt in json.loads(wire)["attempts"]], ["verified", "rejected"])
         with self.no_work(), self.open(attempt_limit=3) as store:

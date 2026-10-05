@@ -5,7 +5,7 @@ and actual mathematical verdicts are qualified separately, never inferred here.
 """
 
 import copy
-from contextlib import contextmanager
+from contextlib import closing, contextmanager
 import json
 from pathlib import Path
 import sqlite3
@@ -99,7 +99,7 @@ class LimitedStoreContinuityTests(unittest.TestCase):
         anchor = json.loads(self.anchor.read_bytes())
         self.assertEqual(anchor["version"], 4)
         self.assertEqual(anchor["worker_resource_profile_digest_hex"], self.policy.profile_digest_hex)
-        with sqlite3.connect(self.root / "observations.sqlite3") as connection:
+        with closing(sqlite3.connect(self.root / "observations.sqlite3")) as connection, connection:
             self.assertEqual(connection.execute("SELECT version, worker_resource_profile FROM checkpoint").fetchone(),
                              (4, self.policy.profile_digest_hex))
 
@@ -235,7 +235,7 @@ class LimitedStoreContinuityTests(unittest.TestCase):
             anchor = json.loads(self.anchor.read_bytes())
             self.assertEqual((anchor["version"], anchor["revision"], anchor["worker_resource_profile_digest_hex"]),
                              (4, 1, self.policy.profile_digest_hex))
-            with sqlite3.connect(self.root / "observations.sqlite3") as connection:
+            with closing(sqlite3.connect(self.root / "observations.sqlite3")) as connection, connection:
                 wire, profile = connection.execute("SELECT record_bytes, worker_resource_profile FROM checkpoint").fetchone()
             self.assertEqual(profile, self.policy.profile_digest_hex)
             self.assertIsNone(json.loads(wire)["attempts"][0]["outcome"])
@@ -347,7 +347,7 @@ class LimitedStoreContinuityTests(unittest.TestCase):
         for value in ("", "f" * 129, "55" * 32, b"f" * 64):
             with self.subTest(kind=type(value).__name__, length=len(value)):
                 (self.root / "observations.sqlite3").write_bytes(original[0])
-                with sqlite3.connect(self.root / "observations.sqlite3") as connection:
+                with closing(sqlite3.connect(self.root / "observations.sqlite3")) as connection, connection:
                     connection.execute("UPDATE checkpoint SET worker_resource_profile=?", (value,))
                 before = self.pair()
                 with self.no_worker(), self.assertRaises(StoreQuarantined):
@@ -357,11 +357,11 @@ class LimitedStoreContinuityTests(unittest.TestCase):
     def test_policy_binding_does_not_change_pure_record_or_math_statement_bytes(self):
         with self.open() as store:
             self.call(store)
-        with sqlite3.connect(self.root / "observations.sqlite3") as connection:
+        with closing(sqlite3.connect(self.root / "observations.sqlite3")) as connection, connection:
             limited_wire = connection.execute("SELECT record_bytes FROM checkpoint").fetchone()[0]
         self.root, self.anchor = self.base / "ordinary", self.base / "ordinary.json"
         with self.plain() as store, patch.object(SubprocessObservation, "observe_admitted", return_value=self.verified):
             self.assertEqual(store.observe(self.state, self.signature), self.verified)
-        with sqlite3.connect(self.root / "observations.sqlite3") as connection:
+        with closing(sqlite3.connect(self.root / "observations.sqlite3")) as connection, connection:
             ordinary_wire = connection.execute("SELECT record_bytes FROM checkpoint").fetchone()[0]
         self.assertEqual(limited_wire, ordinary_wire)

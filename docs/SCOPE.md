@@ -1,6 +1,6 @@
 # Scope and delivery boundaries
 
-Status: **Stage 42 - isolated historical source root role qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
+Status: **Stage 45 - local source read ordering qualification. CANDIDATE-01 has primitive, transaction, session and schedule evidence, with no executable swap client or production signing backend.**
 
 The intended later deliverable is a reference application for one bilateral Bitcoin regtest <-> Zenon devnet swap. Current work establishes an inspectable specification, source inventory, synthetic primitive tests and bounded schedule evidence before connecting nodes. It is not a production wallet, a deployed contract, or an activation proposal.
 
@@ -390,3 +390,14 @@ It checks four historical signatures without a current-policy lookup. Old or
 coherently restored selections still replay; a new challenge can be signed over
 old active state. See [validation](STAGE44_VALIDATION.md). Source integration,
 core port and production use remain NO-GO; independent assessments stay unfilled.
+
+## Stage 45 local source read ordering
+
+The [owned local snapshot experiment](LOCAL_SOURCE_READ_ORDERING.md) samples the
+complete policy/query under an existing SQLite transaction, without signing or
+authenticating a source response. Original-operation association is unsigned;
+charges and synthetic effect commits remain separate. Native read-return races,
+process death and coherent source restore/copy controls qualify that local
+boundary. No application admission or physical-entry fence is added. Eleven
+inherited test-only SQLite contexts close without suppressing warnings. See
+[validation](STAGE45_VALIDATION.md). Both independent assessments stay unfilled.

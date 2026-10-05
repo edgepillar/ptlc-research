@@ -1,5 +1,6 @@
 """Owned disk sequencing uses synthetic claims; actual workers qualify separately."""
 
+from contextlib import closing
 import copy
 import hashlib
 import json
@@ -69,7 +70,7 @@ class ObservationStoreTests(unittest.TestCase):
     def test_pending_is_in_both_files_before_worker_and_result_before_return(self):
         seen = []
         def worker(state, signature, *, ownership_descriptors, admission_descriptor):
-            with sqlite3.connect(self.root / "observations.sqlite3") as connection:
+            with closing(sqlite3.connect(self.root / "observations.sqlite3")) as connection, connection:
                 wire = connection.execute("SELECT record_bytes FROM checkpoint").fetchone()[0]
             self.assertEqual(json.loads(wire)["attempts"][0]["outcome"], None)
             self.assertEqual(json.loads(self.anchor.read_bytes())["revision"], 1)
@@ -423,7 +424,7 @@ class ObservationStoreTests(unittest.TestCase):
         for field, value in changes:
             with self.subTest(field=field):
                 (self.root / "observations.sqlite3").write_bytes(old[0])
-                with sqlite3.connect(self.root / "observations.sqlite3") as connection:
+                with closing(sqlite3.connect(self.root / "observations.sqlite3")) as connection, connection:
                     connection.execute("UPDATE checkpoint SET " + field + "=?", (value,))
                 before = self.pair()
                 with self.assertRaises(StoreQuarantined):
@@ -442,7 +443,7 @@ class ObservationStoreTests(unittest.TestCase):
         for version in (1, 2):
             with self.subTest(version=version):
                 database.write_bytes(original[0])
-                with sqlite3.connect(database) as connection:
+                with closing(sqlite3.connect(database)) as connection, connection:
                     wire = connection.execute("SELECT record_bytes FROM checkpoint").fetchone()[0]
                     self.assertEqual(records.inspect(wire, expected_verifier_profile_digest_hex=self.profile).pending_attempts, 1)
                     old = dict(json.loads(original[1]), version=version)
