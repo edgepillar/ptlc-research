@@ -455,3 +455,14 @@ authentication, signer, lookup service, physical-use adapter or recovery API.
 Ideal current truth and serialized nonrollback entry history remain external
 premises. See [validation](STAGE50_VALIDATION.md); operational source integration,
 core port and funded execution remain NO-GO. Both independent reports stay unfilled.
+
+## Stage 51 test-only complete retained opening
+
+The [synthetic retained-opening parser](ORIGINAL_SNAPSHOT_OPENING.md) derives an
+unsigned historical claim from complete event-consistent material that opens both
+independently selected diagnostic commitments. It lives under tests and adds no
+application parser, source exporter, service, signer, signature worker, recovery
+or use adapter. Full-row disclosure is synthetic/test-only; source provenance,
+current-head authority, private lookup and nonrollback history stay open gates.
+See [validation](STAGE51_VALIDATION.md); operational source/recovery integration,
+core port and funded use remain NO-GO. Both independent reports stay unfilled.

@@ -513,3 +513,12 @@ source restore and repeated entry. Ideal current facts and nonrollback entry
 history are external premises, with no implemented adapter or recovery permission.
 See [validation](docs/STAGE50_VALIDATION.md); source integration, core port and
 production use remain NO-GO.
+
+## Stage 51 test-only complete retained opening
+
+The [synthetic opening experiment](docs/ORIGINAL_SNAPSHOT_OPENING.md) derives an
+unsigned original-read claim from complete retained rows that must open both
+independently selected diagnostic heads. It separates claim consistency from
+authenticated current heads and nonrollback retention. Full-row disclosure is
+test-only, with no application source, signer, lookup or recovery integration.
+See [validation](docs/STAGE51_VALIDATION.md); operational use remains NO-GO.
