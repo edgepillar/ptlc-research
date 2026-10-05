@@ -238,3 +238,12 @@ registry, quota or worker entry. The unsigned vector and passing encoding tests
 are no construction assessment or independent cryptographic evidence. Both fixed
 inventories and unfilled reports remain unchanged; this later delta needs its
 own review. See [validation](STAGE37_VALIDATION.md) for the corrected first run.
+
+[Stage 38 public issuer/owner qualification](GOVERNOR_SIGNATURE_QUALIFICATION.md)
+is later verification outside both fixed subjects. Two actual signature facts
+under selected keys establish no trusted provisioning, current authority, decoded
+scope/source truth, registry or quota. The actual exhausted-journal control adds
+no recovery allowance. New cross-language vectors do not fill either assessment;
+both inventories, manifests and unfilled reports remain unchanged. Assess this
+exact delta and any later use-time integration separately. See
+[validation](STAGE38_VALIDATION.md), including the first Go setup failure.

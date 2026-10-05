@@ -4,7 +4,7 @@ An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 37 unsigned governor assignment and complete-profile-bound intent. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: Stage 38 public issuer and v2 owner signature qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -224,6 +224,8 @@ The core contract proposal is [go-zenon PR #13](https://github.com/zenon-network
 81. [Stage 36 validation and remaining gates](docs/STAGE36_VALIDATION.md)
 82. [Unsigned governor assignment and v2 intent bindings](docs/GOVERNOR_ASSIGNMENT_CONTRACT.md)
 83. [Stage 37 validation and remaining gates](docs/STAGE37_VALIDATION.md)
+84. [Public issuer and v2 owner signature qualification](docs/GOVERNOR_SIGNATURE_QUALIFICATION.md)
+85. [Stage 38 validation and remaining gates](docs/STAGE38_VALIDATION.md)
 
 ## Run the offline checks
 
@@ -263,6 +265,7 @@ python3 -B scripts/qualify_completion.py --verifier qualification/target/debug/e
 python3 -B scripts/qualify_authentication.py --authentication qualification/target/debug/examples/verify_authentication --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
 python3 -B scripts/qualify_enrollment_signature.py --enrollment qualification/target/debug/examples/verify_enrollment --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
 python3 -B scripts/qualify_governor_profile.py --enrollment qualification/target/debug/examples/verify_enrollment --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
+python3 -B scripts/qualify_governor_signature.py --governor qualification/target/debug/examples/verify_governor --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
 python3 -B scripts/qualify_recovery_model.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange
 python3 -B scripts/qualify_observation.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange --observation qualification/target/debug/examples/verify_observation
 python3 -B scripts/qualify_observation_records.py --verifier qualification/target/debug/examples/verify_exchange --completion qualification/target/debug/examples/complete_exchange --observation qualification/target/debug/examples/verify_observation
@@ -366,11 +369,22 @@ See [contribution guidance](CONTRIBUTING.md) for review priorities and validatio
 requirements, and the [security policy](SECURITY.md) for limitations and reporting.
 
 The [Stage 37 unsigned assignment contract](docs/GOVERNOR_ASSIGNMENT_CONTRACT.md)
-now binds an independently selected issuer and complete governor profile into
+binds an independently selected issuer and complete governor profile into
 separate candidate bytes. A new nine-field unsigned v2 intent commits the full
 assignment digest, so broader local caps change its message under the same old
 scope and owner. This introduces no credential signature, current-state source,
 migration, registry or worker admission. The old v1 messages and public signature
 fixture remain unchanged. [Validation](docs/STAGE37_VALIDATION.md) reports the
-corrected first test run and new executed evidence. The next gate is assessment
-and actual public-signature qualification of these exact candidate messages.
+corrected first test run and executed unsigned-framing evidence.
+
+[Stage 38 public verification](docs/GOVERNOR_SIGNATURE_QUALIFICATION.md) now
+checks the issuer assignment and owner v2 message separately through the locked
+Rust library, with independent Go checks and an actual bounded-worker qualifier.
+Both signatures bind the complete request/result, but establish no trusted issuer
+provisioning, current authority or permission. A raw valid signature pair cannot
+decode an opaque scope hash or enforce its caps; complete independently prepared
+expectations check these before work. Stale selections, replay and a malicious
+selected verifier remain explicit counterexamples. No existing admission path
+requires this helper. [Validation](docs/STAGE38_VALIDATION.md) records the first
+Go cache-selection setup failure and executed evidence. Current-state/use ordering
+and separate independent review remain gates before any runtime integration.
