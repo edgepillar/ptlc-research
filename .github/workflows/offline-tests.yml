@@ -106,6 +106,20 @@ jobs:
               --metadata "$ptlc_resolution_workspace/metadata.json" \
               --cargo-home "$ptlc_cargo_home" --platform "$ptlc_platform"
           done
+      - name: Compare fresh selected worker build claims and exercise its public math
+        run: |
+          set -eu
+          ptlc_worker_workspace="$(mktemp -d "$RUNNER_TEMP/ptlc-worker-source.XXXXXX")"
+          ptlc_worker_build="$(mktemp -d "$RUNNER_TEMP/ptlc-worker-build.XXXXXX")"
+          ptlc_worker_cargo="$(rustup which --toolchain 1.90.0 cargo)"
+          ptlc_worker_rustc="$(rustup which --toolchain 1.90.0 rustc)"
+          ptlc_worker_cc="$(command -v cc)"
+          python3 -B scripts/qualify_worker_build.py --workspace "$ptlc_worker_workspace" \
+            --build-directory "$ptlc_worker_build" --cargo-home "${CARGO_HOME:-$HOME/.cargo}" \
+            --platform x86_64-unknown-linux-gnu --cargo "$ptlc_worker_cargo" \
+            --rustc "$ptlc_worker_rustc" --c-compiler "$ptlc_worker_cc"
+          python3 -B scripts/qualify_original_read_response.py \
+            --original-response-verifier "$ptlc_worker_build/x86_64-unknown-linux-gnu/debug/examples/verify_original_read_response"
       - name: Qualify durable exchange with the actual public verifier
         run: python3 -B scripts/qualify_exchange.py --verifier qualification/target/debug/examples/verify_exchange
       - name: Qualify public completion and recovery with separate journals

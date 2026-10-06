@@ -553,3 +553,13 @@ Cargo/rustc query execution is a separate offline operation. It does not determi
 exact worker compilation units, attest the generator or link source to binary.
 All prior subjects, reports, operational and core boundaries remain unchanged;
 application/core progression and funded execution remain NO-GO.
+
+## Stage 61 selected worker build claims
+
+The [worker build entry](OFFLINE_WORKER_BUILD_RECORDS.md) adds a bounded read-only
+selected-example comparison and a separate explicit offline native build. It
+measures selected files and compares fixed source/contents before and after one
+fresh build, with no dependency acquisition. It does not authenticate Cargo
+records, enumerate a complete compilation closure or independently verify
+source-to-worker provenance. All prior subjects, reports, cryptographic helpers
+and core boundaries remain fixed; application/core and funded use remain NO-GO.
