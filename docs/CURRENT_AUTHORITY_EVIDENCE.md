@@ -356,3 +356,14 @@ provenance, complete privacy, source ownership, current/canonical authority,
 nonrollback custody, signer control, original recovery or protected-use ordering.
 Both artifacts remain private and all three assessments remain unfilled;
 application/core remains NO-GO.
+
+## Stage 63 separate selected remapping evidence
+
+The [target-only remapping profile](OFFLINE_RUST_PATH_REMAPPING.md) separates
+driver-selected extra flags, unchanged Cargo profile claims, complete byte/prefix
+observations and separately exercised historical public mathematics. Neither
+prefix absence nor matching bytes supplies generator authentication, complete
+privacy, current/canonical authority, nonrollback custody, original recovery or
+protected-use ordering. Independent provenance/reproducibility remain unverified;
+both artifacts stay private, all three reports remain unfilled and application/
+core remains NO-GO. See [validation](STAGE63_VALIDATION.md).

@@ -572,3 +572,12 @@ prefix roles per file. It launches no native tool, changes no build profile
 and authorizes no artifact publication. Negative scans and byte agreement
 remain bounded observations without complete privacy or build provenance.
 All subjects, reports and application/core/funded-use NO-GO boundaries remain.
+
+## Stage 63 separate selected Rust remapping profile
+
+The [remapping experiment](OFFLINE_RUST_PATH_REMAPPING.md) adds two explicit
+offline fixed-source native builds and complete artifact observations under a
+separate target-only Rust flag profile. Host Rust, C/linker/support inputs and
+full privacy/reproducibility remain unresolved. The original builder and scanner
+remain preserved. All artifacts remain private; all prior subjects, reports and
+application/core/funded-use NO-GO boundaries remain unchanged.
