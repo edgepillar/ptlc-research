@@ -579,3 +579,14 @@ rewrites, competing futures, stale extensions and source/consumer restore
 counterexamples. Full synthetic disclosure does not select a private lookup
 protocol, and root/incarnation transitions remain out of scope. Both inventories
 and unfilled reports stay unchanged; see [validation](STAGE52_VALIDATION.md).
+
+## Stage 53 test-only signed retained histories
+
+The [response/prefix composition](ORIGINAL_SNAPSHOT_PREFIX_RESPONSE.md) is a
+separate delta outside both fixed subjects. Independently assess derived complete
+expectations, both-packet preflight, selected worker/callback premises, fork and
+stale-history controls, disclosure and nonrollback consumer knowledge. Preserve
+the actual signed competing-future and source/consumer restore counterexamples.
+Framing callback controls are not signature mathematics, and actual mathematics
+does not select a current authoritative future. Both inventories and unfilled
+reports stay unchanged; see [validation](STAGE53_VALIDATION.md).

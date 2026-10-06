@@ -533,3 +533,13 @@ retained witness; competing futures, stale extensions and restored witnesses
 remain explicit limits. No application witness store, source, signer, lookup or
 recovery adapter is added. See [validation](docs/STAGE52_VALIDATION.md);
 operational use remains NO-GO.
+
+## Stage 53 test-only signed retained histories
+
+The [public-response composition](docs/ORIGINAL_SNAPSHOT_PREFIX_RESPONSE.md)
+derives both complete historical expectations before invoking the existing
+public signature checker. Two actual signed fork futures can both extend one
+pending witness; stale and restored histories still expose currentness and
+consumer-retention limits. No application source, witness store, signer, lookup,
+recovery or use adapter is added. See [validation](docs/STAGE53_VALIDATION.md);
+operational use remains NO-GO.

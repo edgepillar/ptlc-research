@@ -478,3 +478,15 @@ and private disclosure remain separate requirements. The helper lives under
 tests and adds no application storage, source provider, signer, lookup, recovery
 or protected-use adapter. See [validation](STAGE52_VALIDATION.md); operational
 integration, core port and funded use remain NO-GO. Both reports stay unfilled.
+
+## Stage 53 test-only signed retained histories
+
+The [historical response composition](ORIGINAL_SNAPSHOT_PREFIX_RESPONSE.md)
+derives both complete expected claims from synthetic openings and preflights
+both packets before either selected check. Its separate actual-worker qualifier
+shows mathematically valid competing futures, old challenged history and coherent
+source/consumer restore. It selects no authoritative latest future, witness
+storage, signer, private lookup, recovery or use construction. One focused CI
+invocation is added without changing existing jobs, pins or earlier steps.
+See [validation](STAGE53_VALIDATION.md); operational integration, core port and
+funded use remain NO-GO. Both fixed reports stay unfilled.
