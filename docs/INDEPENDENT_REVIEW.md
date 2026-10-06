@@ -638,3 +638,11 @@ files. It preserves all three subjects and unfilled reports. Unpacked Git/Go/
 registry content, effective build inputs, toolchain origin, source-to-binary
 provenance, reproducibility and independent assessment remain open. No reviewer
 is assigned or contacted. See [validation](STAGE58_VALIDATION.md).
+
+## Stage 59 content agreement outside the fixed subject
+
+The [content entry](OFFLINE_DEPENDENCY_CONTENTS.md) additionally compares selected
+installed registry/Git trees and declared Go module contents with immutable source
+records. This does not attest acquisition, compiled closure, toolchain origin,
+build environment, source-to-binary provenance or reproducibility. All three
+reports remain unfilled; no reviewer is contacted. See [validation](STAGE59_VALIDATION.md).

@@ -535,3 +535,11 @@ source, registry archive and native file bytes. It records Go/Git references
 without claiming their content verification, installed source integrity,
 reproducibility or source-to-binary provenance. No assessment is performed;
 application/core integration and funded execution remain NO-GO.
+
+## Stage 59 selected content comparison
+
+The [dependency content entry](OFFLINE_DEPENDENCY_CONTENTS.md) compares selected
+installed registry/Git sources and declared Go contents with fixed source records.
+It performs no build, graph resolution, license assessment or independent review.
+All earlier subjects, reports and application/consensus boundaries remain fixed;
+application/core progression and funded execution remain NO-GO.

@@ -588,3 +588,11 @@ source records, selected cached registry archives and caller-selected native
 bytes. Installed dependency trees and source-to-binary provenance remain open;
 all three assessment reports are unfilled. See
 [Stage 58 validation](docs/STAGE58_VALIDATION.md). Application/core NO-GO remains.
+
+## Selected installed dependency contents
+
+The [content comparison](docs/OFFLINE_DEPENDENCY_CONTENTS.md) adds complete selected
+registry/Git tree comparison and declared Go content hashing against fixed source
+records. Cache metadata cannot choose replacement expectations. This measures
+content agreement; build provenance and independent review remain open. See
+[Stage 59 validation](docs/STAGE59_VALIDATION.md). Application/core remains NO-GO.
