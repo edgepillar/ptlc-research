@@ -527,3 +527,11 @@ accepted Stage 56 source and preserves both earlier subjects/reports. Packaging
 and external/runtime artifacts require separate review; the witness report is
 unfilled. This adds no application construction or operational authority.
 Application integration, core port and funded execution remain NO-GO.
+
+## Stage 58 offline input measurements
+
+The [build input entry](OFFLINE_BUILD_INPUTS.md) measures explicitly selected
+source, registry archive and native file bytes. It records Go/Git references
+without claiming their content verification, installed source integrity,
+reproducibility or source-to-binary provenance. No assessment is performed;
+application/core integration and funded execution remain NO-GO.

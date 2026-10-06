@@ -81,6 +81,13 @@ jobs:
         run: cargo +1.90.0 test --locked --offline --manifest-path qualification/Cargo.toml
       - name: Build public artifact, completion, authentication, enrollment and observation executables
         run: cargo +1.90.0 build --locked --offline --manifest-path qualification/Cargo.toml --examples
+      - name: Record selected offline dependency and worker input evidence
+        run: |
+          git fetch --no-tags --depth=1 origin bd4b4b523fb3453e2af191eb01973985d6431d66
+          ptlc_cargo="$(rustup which --toolchain 1.90.0 cargo)"
+          ptlc_rustc="$(rustup which --toolchain 1.90.0 rustc)"
+          ptlc_cc="$(command -v cc)"
+          python3 -B scripts/qualify_build_inputs.py --cargo-home "${CARGO_HOME:-$HOME/.cargo}" --cargo "$ptlc_cargo" --rustc "$ptlc_rustc" --c-compiler "$ptlc_cc" --original-response-worker qualification/target/debug/examples/verify_original_read_response
       - name: Qualify durable exchange with the actual public verifier
         run: python3 -B scripts/qualify_exchange.py --verifier qualification/target/debug/examples/verify_exchange
       - name: Qualify public completion and recovery with separate journals
