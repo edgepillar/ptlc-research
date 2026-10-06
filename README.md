@@ -596,3 +596,14 @@ registry/Git tree comparison and declared Go content hashing against fixed sourc
 records. Cache metadata cannot choose replacement expectations. This measures
 content agreement; build provenance and independent review remain open. See
 [Stage 59 validation](docs/STAGE59_VALIDATION.md). Application/core remains NO-GO.
+
+## Selected Cargo resolution records
+
+The [resolution comparison](docs/OFFLINE_CARGO_RESOLUTION.md) binds a bounded
+workspace metadata claim to fixed lock identities, measured source locations and
+a separately selected project baseline. Package IDs remain opaque; private
+metadata is discarded. The prepared source copy and native metadata query are
+separate operations. A matching claim is not authenticated resolution, exact
+worker compilation or source-to-binary provenance. See
+[Stage 60 validation](docs/STAGE60_VALIDATION.md); all assessments remain unfilled
+and application/core remains NO-GO.

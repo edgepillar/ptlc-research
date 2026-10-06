@@ -324,3 +324,13 @@ expectations separate from installed content and unassessed build provenance.
 Neither matching bytes nor cache metadata supplies source ownership, current or
 canonical authority, nonrollback custody, authoritative original recovery or
 protected-use ordering. All reports remain unfilled; application/core remains NO-GO.
+
+## Stage 60 selected resolution claims
+
+The [workspace resolution comparison](OFFLINE_CARGO_RESOLUTION.md) keeps a project
+baseline independent of the incoming claim and binds logical package/target
+records to fixed source selections. Matching records and a same-run native query
+do not authenticate source ownership, current/canonical authority, nonrollback
+custody, signer control, original recovery or protected-use ordering. Generator
+origin and source-to-worker linkage remain unverified. All three assessments
+remain unfilled; application/core remains NO-GO.
