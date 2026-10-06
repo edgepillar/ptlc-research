@@ -401,3 +401,12 @@ consumers while preserving earlier worker profiles and authority boundaries.
 classes, without authenticating producers, current authority, nonrollback ownership
 or future use. All independent assessments remain unfilled; application/core stays
 NO-GO and all native outputs remain private.
+
+## Stage 68 retained C-pair byte agreement
+
+[Canonical carrier and two-stream checks](OFFLINE_C_WORKER_SYMBOLS.md) can bind
+actual retained bytes and fixed name-type observations to caller selections.
+They authenticate no producer, historical input closure, execution, current
+authority, nonrollback state or future use. Earlier build/math evidence remains
+separate. No independent review or application/core gate is closed by this slice.
+See the [validation scope](STAGE68_VALIDATION.md).
