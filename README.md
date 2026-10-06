@@ -618,3 +618,13 @@ and omitted dependency artifacts do not establish generator authentication,
 complete compilation units or independent source-to-worker provenance. See
 [Stage 61 validation](docs/STAGE61_VALIDATION.md); all assessments remain unfilled
 and application/core remains NO-GO.
+
+## Selected private-prefix and artifact-byte observations
+
+The [artifact comparison](docs/OFFLINE_ARTIFACT_PREFIXES.md) reads two explicitly
+pinned files and reports whole-stream byte agreement plus presence of four
+privately selected exact byte prefixes per file. It emits only fixed logical
+roles and artifact measurements. Neither equal bytes nor absent selected
+prefixes proves provenance, reproducibility or complete privacy; both artifacts
+remain private. See [Stage 62 validation](docs/STAGE62_VALIDATION.md); all
+assessments remain unfilled and application/core remains NO-GO.

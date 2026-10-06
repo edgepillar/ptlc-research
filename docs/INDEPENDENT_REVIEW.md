@@ -666,3 +666,13 @@ the generator or independently assess complete build inputs, reproducibility,
 tool distribution or source-to-worker provenance. All three fixed subjects and
 unfilled reports remain unchanged. No reviewer is contacted. See
 [validation](STAGE61_VALIDATION.md).
+
+## Stage 62 selected artifact comparison outside all fixed subjects
+
+The [artifact-prefix entry](OFFLINE_ARTIFACT_PREFIXES.md) adds bounded read-only
+file observations and synthetic controls. It neither authenticates expectation
+selection nor independently assesses complete privacy, reproducible builds,
+generator origin or source-to-worker provenance. Local existing-artifact reads
+remain separate from hosted synthetic checks. All three fixed subjects and
+unfilled reports remain unchanged; no reviewer is contacted. See
+[validation](STAGE62_VALIDATION.md).
