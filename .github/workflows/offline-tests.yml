@@ -268,3 +268,41 @@ jobs:
       - name: Check Go formatting
         working-directory: ${{ matrix.module }}
         run: test -z "$(gofmt -l .)"
+
+
+  macho-object-prefix:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.90.0 --profile minimal
+      - name: Prepare separate locked native qualification inputs
+        run: |
+          mkdir -p .research-cache/macho-cargo-home
+          ptlc_macho_home="$GITHUB_WORKSPACE/.research-cache/macho-cargo-home"
+          CARGO_HOME="$ptlc_macho_home" cargo +1.90.0 fetch --locked --manifest-path qualification/Cargo.toml
+          git fetch --no-tags --depth=1 origin bd4b4b523fb3453e2af191eb01973985d6431d66
+      - name: Compare separate native Apple object-prefix builds and public math
+        run: |
+          set -eu
+          ptlc_macho_home="$GITHUB_WORKSPACE/.research-cache/macho-cargo-home"
+          ptlc_macho_first_source="$(mktemp -d "$GITHUB_WORKSPACE/.research-cache/ptlc-macho-source-a.XXXXXX")"
+          ptlc_macho_first_build="$(mktemp -d "$GITHUB_WORKSPACE/.research-cache/ptlc-macho-build-a.XXXXXX")"
+          ptlc_macho_second_source="$(mktemp -d "$GITHUB_WORKSPACE/.research-cache/ptlc-macho-source-b.XXXXXX")"
+          ptlc_macho_second_build="$(mktemp -d "$GITHUB_WORKSPACE/.research-cache/ptlc-macho-build-b.XXXXXX")"
+          ptlc_macho_cargo="$(rustup which --toolchain 1.90.0 cargo)"
+          ptlc_macho_rustc="$(rustup which --toolchain 1.90.0 rustc)"
+          ptlc_macho_cc="$(command -v cc)"
+          python3 -B scripts/qualify_worker_macho_prefix.py \
+            --first-workspace "$ptlc_macho_first_source" --first-build-directory "$ptlc_macho_first_build" \
+            --second-workspace "$ptlc_macho_second_source" --second-build-directory "$ptlc_macho_second_build" \
+            --cargo-home "$ptlc_macho_home" --platform aarch64-apple-darwin \
+            --cargo "$ptlc_macho_cargo" --rustc "$ptlc_macho_rustc" --c-compiler "$ptlc_macho_cc" \
+            --object-prefix "$GITHUB_WORKSPACE/"
+          for ptlc_macho_build in "$ptlc_macho_first_build" "$ptlc_macho_second_build"; do
+            python3 -B scripts/qualify_original_read_response.py \
+              --original-response-verifier "$ptlc_macho_build/aarch64-apple-darwin/debug/examples/verify_original_read_response"
+          done

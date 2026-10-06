@@ -677,3 +677,8 @@ is checked before two retained streams. Existing symbol/debug/section grammars
 run in memory; no new native build or worker is selected. Complete carrier and
 declared-type agreement authenticate no producer or historical execution.
 Artifacts remain private; application/core progression remains NO-GO.
+
+
+## Stage 69: separate Mach-O object-prefix qualification
+
+See [selected construction](docs/OFFLINE_MACHO_OBJECT_PREFIX.md) and [validation scope](docs/STAGE69_VALIDATION.md). One explicit linker prefix supplements the unchanged Rust/C rules in two fresh Apple builds. The preceding seven hosted jobs remain intact; an additional native Apple job qualifies the separate profile and public mathematics. All observations and inputs remain private; no absence, equality, producer identity or artifact release is required or proven. All three independent reports remain unfilled. Application and core progression remain NO-GO.
