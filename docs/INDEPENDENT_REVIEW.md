@@ -602,3 +602,12 @@ complete bounded comparison or valid historical signature does not establish
 canonical/current authority, durable witness ownership or protected entry.
 Both inventories and unfilled reports stay unchanged; see
 [validation](STAGE54_VALIDATION.md).
+
+## Stage 55 witness transaction experiment
+
+The [test-only owned witness experiment](ORIGINAL_WITNESS_STORE_EXPERIMENT.md)
+and [validation](STAGE55_VALIDATION.md) are outside both fixed review subjects.
+Both report templates remain unfilled. Transaction serialization, historical
+mathematics and process-death tests are engineering evidence only; independent
+security/privacy assessment and nonrollback/canonical ownership gates remain
+open before application integration.

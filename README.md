@@ -552,3 +552,12 @@ compares delayed fork deliveries, old challenged absence, source restore and
 consumer restore against an explicitly ideal nonrollback witness. No application
 retention backend or authority protocol is selected. See
 [validation](docs/STAGE54_VALIDATION.md); operational use remains NO-GO.
+
+## Test-only owned witness transaction
+
+The [owned witness experiment](docs/ORIGINAL_WITNESS_STORE_EXPERIMENT.md) compares
+and retains complete signed histories under one bounded SQLite writer
+transaction. Native contention/death and copied-state counterexamples are
+qualified separately from historical signature mathematics. It selects no
+application storage or nonrollback/canonical authority. See
+[Stage 55 validation](docs/STAGE55_VALIDATION.md).

@@ -501,3 +501,12 @@ nonrollback witness remain external premises. One focused CI comparison step
 preserves all earlier jobs, pins, timeouts and steps. See
 [validation](STAGE54_VALIDATION.md); operational integration, core port and funded
 use remain NO-GO. Both fixed reports stay unfilled.
+
+## Test-only witness transaction boundary
+
+[Stage 55](ORIGINAL_WITNESS_STORE_EXPERIMENT.md) adds an isolated bounded SQLite
+experiment under test code. It holds writer ownership from persisted witness
+load through signed-prefix comparison and commit. It adds no application store,
+source signer, current-head oracle, recovery service, protected effect or core
+change. Restored and independent copies remain replayable. See
+[qualification limits](STAGE55_VALIDATION.md).
