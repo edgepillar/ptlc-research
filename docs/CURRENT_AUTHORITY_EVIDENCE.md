@@ -384,3 +384,11 @@ classify matches within declared symbol-name suffixes and their raw tables.
 Numeric type/index agreement supplies no file existence, producer/source truth,
 current authority, nonrollback custody or protected-use permission. See
 [Stage 65 acceptance](STAGE65_VALIDATION.md); all independent gates remain open.
+
+## Retained debug-name observation boundary
+
+The [bounded debug-name construction](OFFLINE_WORKER_DEBUG_NAMES.md) relates
+opaque matches to terminated string pools and declared source-STAB types.
+Termination/type agreement authenticates no referenced source, producer, earlier
+execution, current authority, nonrollback custody or protected-use ordering.
+See [Stage 66 acceptance](STAGE66_VALIDATION.md); independent gates remain open.

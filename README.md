@@ -654,3 +654,11 @@ fixed name-reference classes after raw section localization. See
 [Stage 65 validation](docs/STAGE65_VALIDATION.md). Declared name indices/types
 supply no producer or source identity; all outputs remain private and all three
 independent assessments remain unfilled. Application/core remains NO-GO.
+
+## Bounded worker debug-pool and source-STAB names
+
+The [selected debug-name reader](docs/OFFLINE_WORKER_DEBUG_NAMES.md) refines
+private observations with terminated ELF string-pool entries and declared Mach-O
+source-STAB references. See [Stage 66 validation](docs/STAGE66_VALIDATION.md).
+No DWARF reference or source/producer identity is authenticated. Artifacts remain
+private; independent assessments remain unfilled and application/core stays NO-GO.
