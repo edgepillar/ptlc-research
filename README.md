@@ -543,3 +543,12 @@ pending witness; stale and restored histories still expose currentness and
 consumer-retention limits. No application source, witness store, signer, lookup,
 recovery or use adapter is added. See [validation](docs/STAGE53_VALIDATION.md);
 operational use remains NO-GO.
+
+## Stage 54 bounded consumer retention
+
+The [two-consumer model](docs/ORIGINAL_CONSUMER_RETENTION_MODEL.md) separates
+retaining a historical prefix from selecting a common canonical future. It
+compares delayed fork deliveries, old challenged absence, source restore and
+consumer restore against an explicitly ideal nonrollback witness. No application
+retention backend or authority protocol is selected. See
+[validation](docs/STAGE54_VALIDATION.md); operational use remains NO-GO.

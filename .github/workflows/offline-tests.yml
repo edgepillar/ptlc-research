@@ -53,6 +53,12 @@ jobs:
           for use in no-entry receipt-entry ideal-current-entry; do
             python3 -B scripts/model_original_read_provenance.py --use "$use"
           done
+      - name: Compare bounded original-read consumer retention
+        run: |
+          set -eu
+          for policy in replace-witness retained-prefix ideal-nonrollback-prefix; do
+            python3 -B -m scripts.model_original_consumer_retention --policy "$policy"
+          done
       - name: Record isolated policy-store SQLite runtime
         run: python3 -B -m qualification.policy_effect_store
 

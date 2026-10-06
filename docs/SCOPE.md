@@ -490,3 +490,14 @@ storage, signer, private lookup, recovery or use construction. One focused CI
 invocation is added without changing existing jobs, pins or earlier steps.
 See [validation](STAGE53_VALIDATION.md); operational integration, core port and
 funded use remain NO-GO. Both fixed reports stay unfilled.
+
+## Stage 54 bounded consumer retention
+
+The [test-only model](ORIGINAL_CONSUMER_RETENTION_MODEL.md) compares three
+retention policies for two consumers over explicitly selected delivery schedules.
+It adds no application witness store, source interface, signer, private lookup,
+canonicality protocol, recovery or use adapter. Atomic comparison and an ideal
+nonrollback witness remain external premises. One focused CI comparison step
+preserves all earlier jobs, pins, timeouts and steps. See
+[validation](STAGE54_VALIDATION.md); operational integration, core port and funded
+use remain NO-GO. Both fixed reports stay unfilled.
