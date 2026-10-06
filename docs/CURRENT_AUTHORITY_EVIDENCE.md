@@ -300,3 +300,11 @@ retain another signed future. Local cancellation and a source's lost effect
 reply remain separate outcomes. These controls add no authenticated current
 source, canonical selection or nonrollback authority. See
 [Stage 56 execution scope](STAGE56_VALIDATION.md).
+
+## Stage 57 review preparation boundary
+
+The [witness review package](WITNESS_REVIEW.md) provides complete immutable source
+identity and a separate unfilled assessment record. It implements no new
+authentication, current/canonical oracle, nonrollback ownership, signer/lookup
+service, authoritative recovery or protected entry. Prior and new assessments
+remain NOT ASSESSED. Application and core progression remain NO-GO.

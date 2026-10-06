@@ -519,3 +519,11 @@ no application backend, private signing, current/canonical oracle, source
 recovery or protected effect. Known nonregular-path refusal relies on an owned
 directory; recreated and coherent copied state remain replayable. See
 [execution and preservation scope](STAGE56_VALIDATION.md).
+
+## Stage 57 immutable witness review preparation
+
+The [separate witness subject](WITNESS_REVIEW.md) inventories all 360 files of the
+accepted Stage 56 source and preserves both earlier subjects/reports. Packaging
+and external/runtime artifacts require separate review; the witness report is
+unfilled. This adds no application construction or operational authority.
+Application integration, core port and funded execution remain NO-GO.
