@@ -561,3 +561,13 @@ transaction. Native contention/death and copied-state counterexamples are
 qualified separately from historical signature mathematics. It selects no
 application storage or nonrollback/canonical authority. See
 [Stage 55 validation](docs/STAGE55_VALIDATION.md).
+
+## Test-only witness creation and interruption
+
+The [lifecycle experiment](docs/ORIGINAL_WITNESS_LIFECYCLE_EXPERIMENT.md) qualifies
+selected creation, inherited ownership and cancellation cuts in the isolated
+witness helper. Partial creation refuses automatic repair; post-commit
+cancellation can leave history persisted without a command result. Recreated
+paths and coherent copies still lose retained knowledge. See
+[Stage 56 validation](docs/STAGE56_VALIDATION.md); application integration and
+independent source/nonrollback gates remain open.

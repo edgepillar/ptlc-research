@@ -290,3 +290,13 @@ writer lock. Coherent restore erases that knowledge; separate files still
 accept incomparable signed futures. Neither retention nor inspection resolves
 source canonicality, current authority or unknown external outcomes. See
 [validation scope](STAGE55_VALIDATION.md).
+
+## Witness lifecycle evidence
+
+The [creation and interruption experiment](ORIGINAL_WITNESS_LIFECYCLE_EXPERIMENT.md)
+qualifies selected local cleanup and native recovery transitions. A committed
+empty binding supplies no historical knowledge; a recreated pathname can
+retain another signed future. Local cancellation and a source's lost effect
+reply remain separate outcomes. These controls add no authenticated current
+source, canonical selection or nonrollback authority. See
+[Stage 56 execution scope](STAGE56_VALIDATION.md).

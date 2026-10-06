@@ -510,3 +510,12 @@ load through signed-prefix comparison and commit. It adds no application store,
 source signer, current-head oracle, recovery service, protected effect or core
 change. Restored and independent copies remain replayable. See
 [qualification limits](STAGE55_VALIDATION.md).
+
+## Witness lifecycle boundary
+
+[Stage 56](ORIGINAL_WITNESS_LIFECYCLE_EXPERIMENT.md) extends only the test helper's
+constructor qualification and selected native cancellation controls. It adds
+no application backend, private signing, current/canonical oracle, source
+recovery or protected effect. Known nonregular-path refusal relies on an owned
+directory; recreated and coherent copied state remain replayable. See
+[execution and preservation scope](STAGE56_VALIDATION.md).
