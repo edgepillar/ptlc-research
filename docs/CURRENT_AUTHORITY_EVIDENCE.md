@@ -272,3 +272,11 @@ or latest authority. Fresh challenges, stale delivery and restored consumer
 knowledge retain their separate limits. No source authentication, witness store,
 signer, private lookup, recovery or protected-use adapter is added. See
 [validation](STAGE53_VALIDATION.md); both fixed reports remain unfilled.
+
+The later [Stage 54 consumer-retention model](ORIGINAL_CONSUMER_RETENTION_MODEL.md)
+enumerates bounded delivery shuffles for two separate consumers. Prefix retention
+does not produce agreement on competing valid futures; coherent consumer restore
+can lose completion knowledge. An ideal witness outside copied state illustrates
+an external nonrollback premise, without selecting a storage or authority
+construction. Signature symbols remain separate from actual-worker evidence.
+See [validation](STAGE54_VALIDATION.md); both fixed reports remain unfilled.

@@ -590,3 +590,15 @@ the actual signed competing-future and source/consumer restore counterexamples.
 Framing callback controls are not signature mathematics, and actual mathematics
 does not select a current authoritative future. Both inventories and unfilled
 reports stay unchanged; see [validation](STAGE53_VALIDATION.md).
+
+## Stage 54 bounded consumer retention
+
+The [consumer model](ORIGINAL_CONSUMER_RETENTION_MODEL.md) is a separate delta
+outside both fixed subjects. Assess the 81 opening-pair abstraction, independent
+query/claim binding, finite stream coverage, cap-incomplete results, separate
+consumer knowledge, copied-state restore and ideal external witness premises.
+Preserve competing-future and repeated synthetic-effect counterexamples. A
+complete bounded comparison or valid historical signature does not establish
+canonical/current authority, durable witness ownership or protected entry.
+Both inventories and unfilled reports stay unchanged; see
+[validation](STAGE54_VALIDATION.md).
