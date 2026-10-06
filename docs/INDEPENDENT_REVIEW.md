@@ -646,3 +646,13 @@ installed registry/Git trees and declared Go module contents with immutable sour
 records. This does not attest acquisition, compiled closure, toolchain origin,
 build environment, source-to-binary provenance or reproducibility. All three
 reports remain unfilled; no reviewer is contacted. See [validation](STAGE59_VALIDATION.md).
+
+## Stage 60 resolution baseline outside all fixed subjects
+
+The [resolution entry](OFFLINE_CARGO_RESOLUTION.md) adds a project-selected baseline
+for fixed-workspace Cargo metadata and an owned immutable source-copy procedure.
+The incoming report cannot select that baseline. Synthetic structural and
+substitution checks, native query observations and source content agreement
+remain separate evidence layers; no independent resolution, compiler/build or
+source-to-worker assessment is completed. All three reports remain unfilled and
+no reviewer is contacted. See [validation](STAGE60_VALIDATION.md).

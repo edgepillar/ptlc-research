@@ -543,3 +543,13 @@ installed registry/Git sources and declared Go contents with fixed source record
 It performs no build, graph resolution, license assessment or independent review.
 All earlier subjects, reports and application/consensus boundaries remain fixed;
 application/core progression and funded execution remain NO-GO.
+
+## Stage 60 selected workspace resolution comparison
+
+The [Cargo resolution entry](OFFLINE_CARGO_RESOLUTION.md) compares a bounded
+workspace claim against fixed package identities, selected source files and a
+project baseline. It prepares a separate fixed source copy; explicit trusted
+Cargo/rustc query execution is a separate offline operation. It does not determine
+exact worker compilation units, attest the generator or link source to binary.
+All prior subjects, reports, operational and core boundaries remain unchanged;
+application/core progression and funded execution remain NO-GO.
