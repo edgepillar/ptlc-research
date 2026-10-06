@@ -670,3 +670,10 @@ builds alongside the preserved target-only Rust experiment. See
 [Stage 67 validation](docs/STAGE67_VALIDATION.md). Complete measurements and fixed
 classes authenticate no producer or privacy improvement. All three assessments
 remain unfilled; artifacts stay private and application/core remains NO-GO.
+
+Stage 68 adds [retained C-worker symbols](docs/OFFLINE_C_WORKER_SYMBOLS.md) and
+[its validation scope](docs/STAGE68_VALIDATION.md). One private canonical C carrier
+is checked before two retained streams. Existing symbol/debug/section grammars
+run in memory; no new native build or worker is selected. Complete carrier and
+declared-type agreement authenticate no producer or historical execution.
+Artifacts remain private; application/core progression remains NO-GO.

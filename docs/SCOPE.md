@@ -613,3 +613,12 @@ subjects, unfilled assessments and application/core NO-GO boundaries remain.
 rules and four C debug-prefix arguments. Historical observations remain separate;
 no isolated causal control, complete producer coverage or release is claimed.
 Artifacts stay private; application/core and funded use remain NO-GO.
+
+## Stage 68 retained C-worker symbol boundary
+
+The [selected companion](OFFLINE_C_WORKER_SYMBOLS.md) reuses the old object-STAB
+grammar, validates a distinct canonical C carrier, then acquires two pinned
+streams with symbol/debug/section checks in memory. Its historical source/tool/
+build claims are not independently requalified or attested. Both artifacts and
+all private selections remain private; no new build, mathematics launch or
+application/core permission is supplied. See [validation](STAGE68_VALIDATION.md).

@@ -720,3 +720,13 @@ separate mathematics. Observed differences from earlier runs are not isolated
 producer attribution or independent privacy/reproducibility review. The three
 fixed subjects and unfilled reports remain byte preserved; no reviewer is
 contacted and application/core remains NO-GO.
+
+## Stage 68 retained C-worker symbol observations
+
+[This construction](OFFLINE_C_WORKER_SYMBOLS.md) checks a canonical private C
+claim and two retained streams, reusing the existing symbol/debug/section grammars
+in memory. Fixed declared object types do not identify a producer, authenticate
+execution or qualify artifact publication. All three reports remain unfilled.
+No reviewer contact, independent assessment or application/core permission is
+added. The [validation scope](STAGE68_VALIDATION.md) separates local and hosted
+results from those remaining gates.
