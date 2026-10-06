@@ -415,3 +415,8 @@ See the [validation scope](STAGE68_VALIDATION.md).
 ## Stage 69: separate Mach-O object-prefix qualification
 
 See [selected construction](OFFLINE_MACHO_OBJECT_PREFIX.md) and [validation scope](STAGE69_VALIDATION.md). One explicit linker prefix supplements the unchanged Rust/C rules in two fresh Apple builds. The preceding seven hosted jobs remain intact; an additional native Apple job qualifies the separate profile and public mathematics. All observations and inputs remain private; no absence, equality, producer identity or artifact release is required or proven. All three independent reports remain unfilled. Application and core progression remain NO-GO.
+
+
+## Stage 70: immutable worker-profile source identity
+
+The [review packet](WORKER_PROFILE_REVIEW.md) checks complete source identity and preserves three earlier assessment scopes. It closes no producer, input consumption, source-to-worker, privacy, current/canonical, nonrollback or protected-use gate. No findings or reviewer action are recorded. All three reports remain unfilled and application/core progression remains NO-GO. See [validation](STAGE70_VALIDATION.md).

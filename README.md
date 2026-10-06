@@ -682,3 +682,8 @@ Artifacts remain private; application/core progression remains NO-GO.
 ## Stage 69: separate Mach-O object-prefix qualification
 
 See [selected construction](docs/OFFLINE_MACHO_OBJECT_PREFIX.md) and [validation scope](docs/STAGE69_VALIDATION.md). One explicit linker prefix supplements the unchanged Rust/C rules in two fresh Apple builds. The preceding seven hosted jobs remain intact; an additional native Apple job qualifies the separate profile and public mathematics. All observations and inputs remain private; no absence, equality, producer identity or artifact release is required or proven. All three independent reports remain unfilled. Application and core progression remain NO-GO.
+
+
+## Stage 70: immutable worker-profile review packet
+
+The [acceptance packet](docs/WORKER_PROFILE_REVIEW.md) pins all 423 tracked files at the exact Stage 69 source, preserves three earlier inventories and unfilled reports, and separates historical profiles from later packaging. The new checker inventories source only; it authenticates no producer, consumed argument, private artifact or future use. Independent review and privacy remain NOT ASSESSED; application and core remain NO-GO. See [validation](docs/STAGE70_VALIDATION.md).
