@@ -107,3 +107,21 @@ Bitcoin fee changes must be planned against the actual transaction graph, signat
 - Obtain an independent review of the resulting safety argument before treating a happy-path regtest/devnet demonstration as a usable protocol.
 
 Later acceptance scenarios must include normal settlement, unilateral abort/refund, invalid artifacts, substituted funding, one-leg funding, delayed inclusion, claim/refund races, fee pressure, restart at each irreversible step, concurrent processes, reorgs, and secret disclosure without successful on-chain execution. Expected outcomes must account separately for principal, fees, lock duration and residual recovery work.
+
+## Nonce invocation acceptance clarification
+
+[Stage 71](NONCE_INVOCATION_MODEL.md) makes an existing requirement testable in a
+finite symbolic comparison: the same secret nonce must not authorize another
+nonce-dependent computation merely because the prior result was lost, refused
+or fenced by a newer epoch. Consumption must cover every usable copy before
+work. Independent local journals and locks do not cover a restored secret copy;
+a separate availability read and later durable burn can race. Rejecting an old
+output cannot reverse the computation.
+
+A candidate bridge must state its shared authority, atomic consumption cut,
+complete backend input binding, ambiguity behavior and exact retained-output
+replay policy. It must qualify those real cuts separately from the public
+journal and ephemeral test owner. No nonrollback authority, fresh-entropy
+policy, secret-memory mechanism or signer interface is selected here. The
+reference model assumes these consumption premises and is not their
+implementation or an adaptor-protocol security proof.

@@ -687,3 +687,13 @@ See [selected construction](docs/OFFLINE_MACHO_OBJECT_PREFIX.md) and [validation
 ## Stage 70: immutable worker-profile review packet
 
 The [acceptance packet](docs/WORKER_PROFILE_REVIEW.md) pins all 423 tracked files at the exact Stage 69 source, preserves three earlier inventories and unfilled reports, and separates historical profiles from later packaging. The new checker inventories source only; it authenticates no producer, consumed argument, private artifact or future use. Independent review and privacy remain NOT ASSESSED; application and core remain NO-GO. See [validation](docs/STAGE70_VALIDATION.md).
+
+## Nonce invocation acceptance gap
+
+[Stage 71](docs/NONCE_INVOCATION_MODEL.md) adds a source-only finite comparison
+of consumption before nonce-dependent work. Copied local journals, result-only
+fencing, split check/burn and restored authority produce replayable
+counterexamples. The reference policy assumes a shared atomic durable consume
+authority outside copied state; it implements no custody mechanism or signer.
+[Validation](docs/STAGE71_VALIDATION.md) keeps application/core NO-GO and the
+three independent reports unfilled.
