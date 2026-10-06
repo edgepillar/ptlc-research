@@ -88,6 +88,8 @@ jobs:
           ptlc_rustc="$(rustup which --toolchain 1.90.0 rustc)"
           ptlc_cc="$(command -v cc)"
           python3 -B scripts/qualify_build_inputs.py --cargo-home "${CARGO_HOME:-$HOME/.cargo}" --cargo "$ptlc_cargo" --rustc "$ptlc_rustc" --c-compiler "$ptlc_cc" --original-response-worker qualification/target/debug/examples/verify_original_read_response
+      - name: Compare locked Cargo archives and pinned Git checkout contents
+        run: python3 -B scripts/qualify_dependency_contents.py --cargo-home "${CARGO_HOME:-$HOME/.cargo}"
       - name: Qualify durable exchange with the actual public verifier
         run: python3 -B scripts/qualify_exchange.py --verifier qualification/target/debug/examples/verify_exchange
       - name: Qualify public completion and recovery with separate journals
@@ -164,6 +166,11 @@ jobs:
           GOPROXY: "off"
           GOSUMDB: "off"
         run: go test -mod=readonly -count=1 -v ./...
+      - name: Compare declared Go module contents against fixed sums
+        run: |
+          git fetch --no-tags --depth=1 origin bd4b4b523fb3453e2af191eb01973985d6431d66
+          ptlc_go_cache="$(go env GOMODCACHE)"
+          python3 -B scripts/qualify_dependency_contents.py --go-cache "$ptlc_go_cache" --go-module "${{ matrix.module }}"
       - name: Check Go formatting
         working-directory: ${{ matrix.module }}
         run: test -z "$(gofmt -l .)"

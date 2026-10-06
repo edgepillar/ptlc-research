@@ -316,3 +316,11 @@ and preserves explicit external/build provenance gaps. Its report provides no
 authenticated current source, canonical or nonrollback authority, signer
 custody, authoritative original recovery or protected-use ordering. The three
 independent reports remain unfilled; application and core remain NO-GO.
+
+## Stage 59 selected dependency content agreement
+
+The [content comparison](OFFLINE_DEPENDENCY_CONTENTS.md) keeps fixed source
+expectations separate from installed content and unassessed build provenance.
+Neither matching bytes nor cache metadata supplies source ownership, current or
+canonical authority, nonrollback custody, authoritative original recovery or
+protected-use ordering. All reports remain unfilled; application/core remains NO-GO.
