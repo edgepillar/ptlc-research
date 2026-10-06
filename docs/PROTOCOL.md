@@ -125,3 +125,19 @@ journal and ephemeral test owner. No nonrollback authority, fresh-entropy
 policy, secret-memory mechanism or signer interface is selected here. The
 reference model assumes these consumption premises and is not their
 implementation or an adaptor-protocol security proof.
+
+## Post-consumption grant acceptance clarification
+
+[Stage 72](NONCE_GRANT_COPY_MODEL.md) separately examines the permission created
+by a durable consume step. A candidate private bridge must cover copied grants,
+passed checks, exported permits and suspended worker state through the actual
+nonce-dependent effect. A unique grant or spent authority word is insufficient
+when a copy already holds permission. Result deduplication and epoch refusal
+cannot undo repeated computation.
+
+The model's reference couples the final check and effect in one indivisible
+symbolic transition, with no exported permission in between. That is an
+unimplemented premise requiring independent custody and physical-failure
+qualification. It selects no hardware, service, signer interface, private retry
+or production mechanism. The requirement remains separate from this comparison
+and from any future cryptographic construction or implementation assessment.

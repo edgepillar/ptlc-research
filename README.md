@@ -697,3 +697,12 @@ counterexamples. The reference policy assumes a shared atomic durable consume
 authority outside copied state; it implements no custody mechanism or signer.
 [Validation](docs/STAGE71_VALIDATION.md) keeps application/core NO-GO and the
 three independent reports unfilled.
+
+## Post-consumption grant copy gap
+
+[Stage 72](docs/NONCE_GRANT_COPY_MODEL.md) separately copies an already issued
+worker or cached permission. Unique durable issuance and deduplicated result
+receipts still permit repeated nonce work in the selected controls. Conditional
+no-counterexample exploration assumes an unimplemented nonexportable boundary
+through the actual effect. No private signer or custody mechanism is added.
+See [validation](docs/STAGE72_VALIDATION.md); application/core remain NO-GO.
