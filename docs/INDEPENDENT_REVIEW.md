@@ -629,3 +629,12 @@ unfilled reports retain exact bytes. The [new report](WITNESS_REVIEW_REPORT_TEMP
 is also unfilled; checker correctness, external dependency provenance and
 operational gates require separate assessment. No reviewer is assigned or
 contacted. See [validation](STAGE57_VALIDATION.md).
+
+## Stage 58 separate external and native input evidence
+
+The [input measurement entry](OFFLINE_BUILD_INPUTS.md) separates selected source
+and lock records from measured registry archives and explicitly selected native
+files. It preserves all three subjects and unfilled reports. Unpacked Git/Go/
+registry content, effective build inputs, toolchain origin, source-to-binary
+provenance, reproducibility and independent assessment remain open. No reviewer
+is assigned or contacted. See [validation](STAGE58_VALIDATION.md).

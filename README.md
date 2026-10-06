@@ -580,3 +580,11 @@ The [witness review brief](docs/WITNESS_REVIEW.md) fixes the complete accepted
 Source identity and hosted qualification are distinct from independent
 assessment. See [validation](docs/STAGE57_VALIDATION.md); application and core
 progression remain NO-GO.
+
+## Offline dependency and worker input evidence
+
+The [input evidence entry](docs/OFFLINE_BUILD_INPUTS.md) separately checks fixed
+source records, selected cached registry archives and caller-selected native
+bytes. Installed dependency trees and source-to-binary provenance remain open;
+all three assessment reports are unfilled. See
+[Stage 58 validation](docs/STAGE58_VALIDATION.md). Application/core NO-GO remains.

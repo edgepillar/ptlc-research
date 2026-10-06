@@ -308,3 +308,11 @@ identity and a separate unfilled assessment record. It implements no new
 authentication, current/canonical oracle, nonrollback ownership, signer/lookup
 service, authoritative recovery or protected entry. Prior and new assessments
 remain NOT ASSESSED. Application and core progression remain NO-GO.
+
+## Stage 58 selected input evidence
+
+The [offline input entry](OFFLINE_BUILD_INPUTS.md) checks selected file bytes
+and preserves explicit external/build provenance gaps. Its report provides no
+authenticated current source, canonical or nonrollback authority, signer
+custody, authoritative original recovery or protected-use ordering. The three
+independent reports remain unfilled; application and core remain NO-GO.
