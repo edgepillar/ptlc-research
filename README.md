@@ -628,3 +628,13 @@ roles and artifact measurements. Neither equal bytes nor absent selected
 prefixes proves provenance, reproducibility or complete privacy; both artifacts
 remain private. See [Stage 62 validation](docs/STAGE62_VALIDATION.md); all
 assessments remain unfilled and application/core remains NO-GO.
+
+## Separate target-only Rust path remapping experiment
+
+The [selected remapping profile](docs/OFFLINE_RUST_PATH_REMAPPING.md) builds two
+fresh fixed-source workers with four explicit directory rules, then compares
+complete bytes and private-prefix presence. Its extra Rust flags cover target
+compilation; host build-script/proc-macro compilation and C/linker/support inputs
+remain incompletely assessed. Both binaries remain private under every result.
+See [Stage 63 validation](docs/STAGE63_VALIDATION.md); all assessments remain
+unfilled and application/core remains NO-GO.

@@ -676,3 +676,13 @@ generator origin or source-to-worker provenance. Local existing-artifact reads
 remain separate from hosted synthetic checks. All three fixed subjects and
 unfilled reports remain unchanged; no reviewer is contacted. See
 [validation](STAGE62_VALIDATION.md).
+
+## Stage 63 separate remapping experiment outside fixed subjects
+
+The [remapping entry](OFFLINE_RUST_PATH_REMAPPING.md) adds a fixed target-only
+Rust flag selection and paired offline build observations. Host/C/linker/support
+coverage, authenticated source-to-worker provenance, complete privacy and
+independent reproducibility are not assessed. Synthetic driver checks and actual
+public mathematics remain distinct evidence. All three fixed subjects and
+unfilled reports retain exact bytes; no reviewer is contacted. See
+[validation](STAGE63_VALIDATION.md).
