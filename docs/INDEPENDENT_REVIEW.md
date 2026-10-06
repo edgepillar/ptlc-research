@@ -620,3 +620,12 @@ The constructor delta and native inherited-connection premise need review;
 selected process-death and mathematical controls are engineering evidence.
 Both report templates remain unfilled. Source provenance, canonical selection,
 nonrollback ownership and independent security/privacy assessment remain open.
+
+## Stage 57 separate witness subject
+
+The [witness package](WITNESS_REVIEW.md) selects the immutable complete Stage 56
+source as a third, separate 360-file subject. Both earlier subjects and their
+unfilled reports retain exact bytes. The [new report](WITNESS_REVIEW_REPORT_TEMPLATE.md)
+is also unfilled; checker correctness, external dependency provenance and
+operational gates require separate assessment. No reviewer is assigned or
+contacted. See [validation](STAGE57_VALIDATION.md).

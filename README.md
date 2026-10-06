@@ -571,3 +571,12 @@ cancellation can leave history persisted without a command result. Recreated
 paths and coherent copies still lose retained knowledge. See
 [Stage 56 validation](docs/STAGE56_VALIDATION.md); application integration and
 independent source/nonrollback gates remain open.
+
+## Stage 57 separate witness review package
+
+The [witness review brief](docs/WITNESS_REVIEW.md) fixes the complete accepted
+360-file source without extending the earlier 119/189-file subjects. The new
+[report template](docs/WITNESS_REVIEW_REPORT_TEMPLATE.md) remains unfilled.
+Source identity and hosted qualification are distinct from independent
+assessment. See [validation](docs/STAGE57_VALIDATION.md); application and core
+progression remain NO-GO.
