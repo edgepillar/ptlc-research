@@ -605,3 +605,11 @@ uncompressed ELF pool entries and exact Mach-O source-STAB types. It follows no
 DWARF references, decodes no paths and launches no native analysis or worker.
 See [Stage 66 acceptance](STAGE66_VALIDATION.md); all preceding profiles, fixed
 subjects, unfilled assessments and application/core NO-GO boundaries remain.
+
+## Separate C debug-prefix experiment
+
+[Stage 67](STAGE67_VALIDATION.md) selects two additional builds under the
+[combined profile](OFFLINE_C_DEBUG_REMAPPING.md), with preserved target-only Rust
+rules and four C debug-prefix arguments. Historical observations remain separate;
+no isolated causal control, complete producer coverage or release is claimed.
+Artifacts stay private; application/core and funded use remain NO-GO.

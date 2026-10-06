@@ -157,6 +157,19 @@ jobs:
             --second-workspace "$ptlc_remap_second_source" --second-build-directory "$ptlc_remap_second_build" \
             --cargo-home "${CARGO_HOME:-$HOME/.cargo}" --platform x86_64-unknown-linux-gnu \
             --private-pair-report "$ptlc_section_carrier"
+          ptlc_c_first_source="$(mktemp -d "$RUNNER_TEMP/ptlc-c-source-a.XXXXXX")"
+          ptlc_c_first_build="$(mktemp -d "$RUNNER_TEMP/ptlc-c-build-a.XXXXXX")"
+          ptlc_c_second_source="$(mktemp -d "$RUNNER_TEMP/ptlc-c-source-b.XXXXXX")"
+          ptlc_c_second_build="$(mktemp -d "$RUNNER_TEMP/ptlc-c-build-b.XXXXXX")"
+          python3 -B scripts/qualify_worker_c_debug.py \
+            --first-workspace "$ptlc_c_first_source" --first-build-directory "$ptlc_c_first_build" \
+            --second-workspace "$ptlc_c_second_source" --second-build-directory "$ptlc_c_second_build" \
+            --cargo-home "${CARGO_HOME:-$HOME/.cargo}" --platform x86_64-unknown-linux-gnu \
+            --cargo "$ptlc_remap_cargo" --rustc "$ptlc_remap_rustc" --c-compiler "$ptlc_remap_cc"
+          for ptlc_c_build in "$ptlc_c_first_build" "$ptlc_c_second_build"; do
+            python3 -B scripts/qualify_original_read_response.py \
+              --original-response-verifier "$ptlc_c_build/x86_64-unknown-linux-gnu/debug/examples/verify_original_read_response"
+          done
       - name: Qualify durable exchange with the actual public verifier
         run: python3 -B scripts/qualify_exchange.py --verifier qualification/target/debug/examples/verify_exchange
       - name: Qualify public completion and recovery with separate journals

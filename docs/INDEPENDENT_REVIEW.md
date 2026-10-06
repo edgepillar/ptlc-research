@@ -711,3 +711,12 @@ The [debug-name experiment](OFFLINE_WORKER_DEBUG_NAMES.md) and its
 subjects. Matching pool entries or declared source-STAB types supply no
 independent privacy, reproducibility, cryptographic or source-to-worker review.
 All reports remain unfilled; no reviewer is contacted.
+
+## Separate C debug-prefix evidence
+
+[Stage 67 validation](STAGE67_VALIDATION.md) covers a separately selected
+[C debug-prefix profile](OFFLINE_C_DEBUG_REMAPPING.md), two fresh builds and their
+separate mathematics. Observed differences from earlier runs are not isolated
+producer attribution or independent privacy/reproducibility review. The three
+fixed subjects and unfilled reports remain byte preserved; no reviewer is
+contacted and application/core remains NO-GO.
