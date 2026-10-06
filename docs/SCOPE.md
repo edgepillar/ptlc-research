@@ -632,3 +632,14 @@ See [selected construction](OFFLINE_MACHO_OBJECT_PREFIX.md) and [validation scop
 ## Stage 70: separate worker-profile review preparation
 
 The [immutable packet](WORKER_PROFILE_REVIEW.md) covers complete fixed source and an explicit later packaging delta. It adds no native profile, signer, application/core behavior or operational authority. Three prior subjects and unfilled reports retain their bytes. Source completeness is not independent examination, provenance, privacy, nonrollback custody or future-use permission. All application/core gates remain NO-GO.
+
+## Stage 71: symbolic nonce invocation boundary
+
+The separate [finite comparison](NONCE_INVOCATION_MODEL.md) separates durable
+consumption, nonce-dependent work, result acceptance, retention and replay. It
+models one nonce label in two copies and exposes result-fence, copied-journal,
+split-consumption and rollback counterexamples. The no-finding reference case
+assumes an unimplemented shared atomic consume authority outside restored state.
+No journal-to-private-signer bridge, nonce bytes, crypto arithmetic, native
+acquisition or production policy is added. All four source inventories, worker
+profiles and three unfilled reports remain preserved. [Stage 71 validation](STAGE71_VALIDATION.md) records the exact evidence boundary.

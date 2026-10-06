@@ -420,3 +420,15 @@ See [selected construction](OFFLINE_MACHO_OBJECT_PREFIX.md) and [validation scop
 ## Stage 70: immutable worker-profile source identity
 
 The [review packet](WORKER_PROFILE_REVIEW.md) checks complete source identity and preserves three earlier assessment scopes. It closes no producer, input consumption, source-to-worker, privacy, current/canonical, nonrollback or protected-use gate. No findings or reviewer action are recorded. All three reports remain unfilled and application/core progression remains NO-GO. See [validation](STAGE70_VALIDATION.md).
+
+## Stage 71: result rejection does not undo nonce work
+
+The [source-only nonce model](NONCE_INVOCATION_MODEL.md) uses irreversible work
+audit events independently of returned results. Two copied owners can compute
+with the same nonce despite rejection of the old result. A split availability
+read followed by a durable burn also grants both callers in a finite race.
+Conditional no-counterexample exploration requires a shared atomic durable
+consume premise that no usable copy can bypass or restore. That premise is
+unimplemented, as are private worker custody, entropy and consumed-input
+evidence. The model supplies no source authentication, nonrollback mechanism or
+application security assessment; application/core remain NO-GO.

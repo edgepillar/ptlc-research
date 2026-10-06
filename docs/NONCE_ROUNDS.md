@@ -68,3 +68,14 @@ Python independently rebuilds static and nonce-round canonical hashes and requir
 4. Resolve restored-copy/clone protection and authenticated chain observations and timing. Independently assess the exact adaptor construction and application protocol before node integration.
 
 The executed evidence and intermediate failure are recorded in [STAGE3_VALIDATION.md](STAGE3_VALIDATION.md).
+
+## Stage 71: durable invocation remains a separate gate
+
+The [finite nonce invocation comparison](NONCE_INVOCATION_MODEL.md) demonstrates
+why locally consumed copied journals and rejection of stale results do not
+prevent repeated work with the same underlying nonce. It also exposes a split
+check/burn race and restored-authority bypass. Its shared atomic durable consume
+reference premise is unimplemented and introduces no secret nonce, new worker
+or bridge to the test-only Rust owner above. Exact symbolic output replay is
+separate from actual signature bytes. Fresh entropy, secure memory, copied-state
+protection and independent cryptographic review remain unresolved.
