@@ -126,6 +126,14 @@ downloads, repairs, substitutes, builds or executes dependencies, toolchains or
 workers. Reports contain logical identities, digests, counts and explicit unknowns;
 they include no local paths or third-party payloads.
 
+Go acquisition uses a separate temporary copy of each fixed module definition
+and checksum file. `go mod download all` can update sums in its working module,
+so it must not acquire dependencies in the review-source checkout. The shared
+module cache receives downloads, while the source files used by offline tests
+and the independent content checker remain unchanged. This isolation does not
+turn newly acquired checksum history into an expectation or fill a missing fixed
+sum. No source restoration, silent repair or alternate expectation is used.
+
 ## Qualification and remaining gates
 
 [Stage 59 validation](STAGE59_VALIDATION.md) records synthetic tampering and
