@@ -730,3 +730,8 @@ execution or qualify artifact publication. All three reports remain unfilled.
 No reviewer contact, independent assessment or application/core permission is
 added. The [validation scope](STAGE68_VALIDATION.md) separates local and hosted
 results from those remaining gates.
+
+
+## Stage 69: separate Mach-O object-prefix qualification
+
+See [selected construction](OFFLINE_MACHO_OBJECT_PREFIX.md) and [validation scope](STAGE69_VALIDATION.md). One explicit linker prefix supplements the unchanged Rust/C rules in two fresh Apple builds. The preceding seven hosted jobs remain intact; an additional native Apple job qualifies the separate profile and public mathematics. All observations and inputs remain private; no absence, equality, producer identity or artifact release is required or proven. All three independent reports remain unfilled. Application and core progression remain NO-GO.

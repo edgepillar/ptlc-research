@@ -410,3 +410,8 @@ They authenticate no producer, historical input closure, execution, current
 authority, nonrollback state or future use. Earlier build/math evidence remains
 separate. No independent review or application/core gate is closed by this slice.
 See the [validation scope](STAGE68_VALIDATION.md).
+
+
+## Stage 69: separate Mach-O object-prefix qualification
+
+See [selected construction](OFFLINE_MACHO_OBJECT_PREFIX.md) and [validation scope](STAGE69_VALIDATION.md). One explicit linker prefix supplements the unchanged Rust/C rules in two fresh Apple builds. The preceding seven hosted jobs remain intact; an additional native Apple job qualifies the separate profile and public mathematics. All observations and inputs remain private; no absence, equality, producer identity or artifact release is required or proven. All three independent reports remain unfilled. Application and core progression remain NO-GO.
