@@ -158,7 +158,13 @@ jobs:
         working-directory: ${{ matrix.module }}
         env:
           GOTOOLCHAIN: local
-        run: go mod download all
+        run: |
+          ptlc_module_copy="$(mktemp -d "$RUNNER_TEMP/ptlc-go-inputs.XXXXXX")"
+          cp go.mod go.sum "$ptlc_module_copy/"
+          (
+            cd "$ptlc_module_copy"
+            go mod download all
+          )
       - name: Run offline Go qualification
         working-directory: ${{ matrix.module }}
         env:
