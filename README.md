@@ -607,3 +607,14 @@ separate operations. A matching claim is not authenticated resolution, exact
 worker compilation or source-to-binary provenance. See
 [Stage 60 validation](docs/STAGE60_VALIDATION.md); all assessments remain unfilled
 and application/core remains NO-GO.
+
+## Selected worker build artifact claims
+
+The [build-record comparison](docs/OFFLINE_WORKER_BUILD_RECORDS.md) binds the
+selected example's bounded Cargo claims to fixed source declarations and
+explicitly selected executable bytes. Its read-only checker is separate from
+the explicit fresh native build and public-math qualification. Forgeable records
+and omitted dependency artifacts do not establish generator authentication,
+complete compilation units or independent source-to-worker provenance. See
+[Stage 61 validation](docs/STAGE61_VALIDATION.md); all assessments remain unfilled
+and application/core remains NO-GO.

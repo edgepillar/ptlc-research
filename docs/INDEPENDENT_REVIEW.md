@@ -656,3 +656,13 @@ substitution checks, native query observations and source content agreement
 remain separate evidence layers; no independent resolution, compiler/build or
 source-to-worker assessment is completed. All three reports remain unfilled and
 no reviewer is contacted. See [validation](STAGE60_VALIDATION.md).
+
+## Stage 61 selected build claims outside all fixed subjects
+
+The [worker build entry](OFFLINE_WORKER_BUILD_RECORDS.md) adds bounded selected
+artifact/source/byte comparison and separate trusted native execution evidence.
+Synthetic refusals, public mathematics and hosted execution do not authenticate
+the generator or independently assess complete build inputs, reproducibility,
+tool distribution or source-to-worker provenance. All three fixed subjects and
+unfilled reports remain unchanged. No reviewer is contacted. See
+[validation](STAGE61_VALIDATION.md).

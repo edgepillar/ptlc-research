@@ -334,3 +334,14 @@ do not authenticate source ownership, current/canonical authority, nonrollback
 custody, signer control, original recovery or protected-use ordering. Generator
 origin and source-to-worker linkage remain unverified. All three assessments
 remain unfilled; application/core remains NO-GO.
+
+## Stage 61 selected worker build evidence
+
+The [build-record entry](OFFLINE_WORKER_BUILD_RECORDS.md) keeps tool claims,
+selected native bytes and actual bounded native operation observations separate.
+A fabricated matching stream can pass; dependency artifact omission does not
+prove complete unit coverage. Neither fresh-build claims nor historical public
+signature mathematics supplies source ownership, current/canonical authority,
+nonrollback custody, signer control, original recovery or protected-use ordering.
+Independent source-to-worker provenance remains unverified. All three assessments
+remain unfilled; application/core remains NO-GO.
