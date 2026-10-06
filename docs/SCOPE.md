@@ -597,3 +597,11 @@ name indices and selected type bits without emitting names, paths or values.
 Separate carrier/section and symbol acquisitions supply no atomic snapshot or
 producer authentication. See [Stage 65 acceptance](STAGE65_VALIDATION.md); all
 preceding constructions/subjects/reports and application/core NO-GO remain.
+
+## Bounded retained debug-name declarations
+
+The [debug-name construction](OFFLINE_WORKER_DEBUG_NAMES.md) observes selected
+uncompressed ELF pool entries and exact Mach-O source-STAB types. It follows no
+DWARF references, decodes no paths and launches no native analysis or worker.
+See [Stage 66 acceptance](STAGE66_VALIDATION.md); all preceding profiles, fixed
+subjects, unfilled assessments and application/core NO-GO boundaries remain.

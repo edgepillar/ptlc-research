@@ -703,3 +703,11 @@ The [symbol-name experiment](OFFLINE_WORKER_SYMBOL_REFERENCES.md) and its
 subjects. Matching names/type declarations and complete streams do not assess
 independent privacy, reproducibility, cryptographic security or source-to-worker
 provenance. All report templates remain unfilled; no reviewer is contacted.
+
+## Separate retained debug-name construction
+
+The [debug-name experiment](OFFLINE_WORKER_DEBUG_NAMES.md) and its
+[Stage 66 evidence boundary](STAGE66_VALIDATION.md) lie outside all three fixed
+subjects. Matching pool entries or declared source-STAB types supply no
+independent privacy, reproducibility, cryptographic or source-to-worker review.
+All reports remain unfilled; no reviewer is contacted.
