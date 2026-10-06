@@ -563,3 +563,12 @@ fresh build, with no dependency acquisition. It does not authenticate Cargo
 records, enumerate a complete compilation closure or independently verify
 source-to-worker provenance. All prior subjects, reports, cryptographic helpers
 and core boundaries remain fixed; application/core and funded use remain NO-GO.
+
+## Stage 62 selected private byte observations
+
+The [artifact-prefix entry](OFFLINE_ARTIFACT_PREFIXES.md) reads two independently
+pinned selections, compares complete bytes and observes four exact private
+prefix roles per file. It launches no native tool, changes no build profile
+and authorizes no artifact publication. Negative scans and byte agreement
+remain bounded observations without complete privacy or build provenance.
+All subjects, reports and application/core/funded-use NO-GO boundaries remain.

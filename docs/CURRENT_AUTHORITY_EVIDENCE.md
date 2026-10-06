@@ -345,3 +345,14 @@ signature mathematics supplies source ownership, current/canonical authority,
 nonrollback custody, signer control, original recovery or protected-use ordering.
 Independent source-to-worker provenance remains unverified. All three assessments
 remain unfilled; application/core remains NO-GO.
+
+## Stage 62 selected artifact observations
+
+The [private-prefix comparison](OFFLINE_ARTIFACT_PREFIXES.md) measures complete
+selected file streams and reports fixed-role presence without copying private
+prefixes. A zero-match scan can retain unselected identifying material; matching
+bytes can be arbitrary copies. Neither result supplies independent build
+provenance, complete privacy, source ownership, current/canonical authority,
+nonrollback custody, signer control, original recovery or protected-use ordering.
+Both artifacts remain private and all three assessments remain unfilled;
+application/core remains NO-GO.
