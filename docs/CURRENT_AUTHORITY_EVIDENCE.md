@@ -367,3 +367,12 @@ privacy, current/canonical authority, nonrollback custody, original recovery or
 protected-use ordering. Independent provenance/reproducibility remain unverified;
 both artifacts stay private, all three reports remain unfilled and application/
 core remains NO-GO. See [validation](STAGE63_VALIDATION.md).
+
+## Retained raw section localization boundary
+
+The [bounded section construction](OFFLINE_WORKER_SECTION_LOCALIZATION.md) can
+match an earlier selected complete scan and report fixed group booleans. Its
+private canonical carrier is a caller-selected claim, not authenticated prior
+execution, source truth, producer identity or future worker-launch binding.
+See [Stage 64 acceptance](STAGE64_VALIDATION.md). Independent review remains
+unfilled and all current/canonical, nonrollback and protected-use gates remain.
