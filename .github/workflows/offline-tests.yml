@@ -113,6 +113,8 @@ jobs:
         run: python3 -B scripts/qualify_original_read_snapshot_response.py --original-response-verifier qualification/target/debug/examples/verify_original_read_response
       - name: Qualify test-only signed retained prefixes and forked futures
         run: python3 -B scripts/qualify_original_snapshot_prefix_response.py --original-response-verifier qualification/target/debug/examples/verify_original_read_response
+      - name: Qualify test-only owned witness transactions and copied-state limits
+        run: python3 -B scripts/qualify_original_witness_store.py --original-response-verifier qualification/target/debug/examples/verify_original_read_response
       - name: Check Rust formatting
         run: cargo +1.90.0 fmt --manifest-path qualification/Cargo.toml -- --check
 

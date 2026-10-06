@@ -280,3 +280,13 @@ can lose completion knowledge. An ideal witness outside copied state illustrates
 an external nonrollback premise, without selecting a storage or authority
 construction. Signature symbols remain separate from actual-worker evidence.
 See [validation](STAGE54_VALIDATION.md); both fixed reports remain unfilled.
+
+## Owned witness transaction evidence
+
+[Stage 55](ORIGINAL_WITNESS_STORE_EXPERIMENT.md) tests serialized persisted-read,
+signed-prefix comparison and retention within one bounded owned file. A stale
+writer cannot replace intervening knowledge after reloading it under the
+writer lock. Coherent restore erases that knowledge; separate files still
+accept incomparable signed futures. Neither retention nor inspection resolves
+source canonicality, current authority or unknown external outcomes. See
+[validation scope](STAGE55_VALIDATION.md).
