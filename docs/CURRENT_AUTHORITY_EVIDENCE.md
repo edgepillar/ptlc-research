@@ -263,3 +263,12 @@ Source authentication, current heads and nonrollback consumer knowledge remain
 external premises. Complete-row disclosure is test-only; no application witness
 store, source service, signer, private lookup, recovery or use adapter is added.
 See [validation](STAGE52_VALIDATION.md); both fixed reports remain unfilled.
+
+The later [Stage 53 signed-prefix composition](ORIGINAL_SNAPSHOT_PREFIX_RESPONSE.md)
+independently derives both complete claims before checking the existing public
+historical responses. Actual signed completion and revocation futures each
+extend a pending prefix but cannot extend each other; neither selects canonical
+or latest authority. Fresh challenges, stale delivery and restored consumer
+knowledge retain their separate limits. No source authentication, witness store,
+signer, private lookup, recovery or protected-use adapter is added. See
+[validation](STAGE53_VALIDATION.md); both fixed reports remain unfilled.
