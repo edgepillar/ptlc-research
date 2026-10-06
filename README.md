@@ -662,3 +662,11 @@ private observations with terminated ELF string-pool entries and declared Mach-O
 source-STAB references. See [Stage 66 validation](docs/STAGE66_VALIDATION.md).
 No DWARF reference or source/producer identity is authenticated. Artifacts remain
 private; independent assessments remain unfilled and application/core stays NO-GO.
+
+## Separate C debug-prefix research profile
+
+The [selected C profile](docs/OFFLINE_C_DEBUG_REMAPPING.md) adds two fresh private
+builds alongside the preserved target-only Rust experiment. See
+[Stage 67 validation](docs/STAGE67_VALIDATION.md). Complete measurements and fixed
+classes authenticate no producer or privacy improvement. All three assessments
+remain unfilled; artifacts stay private and application/core remains NO-GO.

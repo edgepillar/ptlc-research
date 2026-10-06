@@ -392,3 +392,12 @@ opaque matches to terminated string pools and declared source-STAB types.
 Termination/type agreement authenticates no referenced source, producer, earlier
 execution, current authority, nonrollback custody or protected-use ordering.
 See [Stage 66 acceptance](STAGE66_VALIDATION.md); independent gates remain open.
+
+## Selected C debug-prefix arguments
+
+The [separate construction](OFFLINE_C_DEBUG_REMAPPING.md) controls selected CFLAGS
+consumers while preserving earlier worker profiles and authority boundaries.
+[Stage 67 validation](STAGE67_VALIDATION.md) compares complete bytes and fixed
+classes, without authenticating producers, current authority, nonrollback ownership
+or future use. All independent assessments remain unfilled; application/core stays
+NO-GO and all native outputs remain private.
