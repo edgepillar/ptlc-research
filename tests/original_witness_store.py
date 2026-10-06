@@ -68,38 +68,53 @@ class OfflineOriginalWitnessStore:
         self._db = None
         self._verifier = verifier
         location = Path(path)
+        self._busy = True
         try:
             # The directory and pathname are owned external premises, not a
             # defense against an attacker changing ancestors or file aliases.
-            if location.is_symlink():
+            if location.is_symlink() or (location.exists() and not location.is_file()):
                 raise WitnessRefused("synthetic witness path refused")
             fresh = not location.exists()
             if fresh:
                 descriptor = os.open(path, os.O_CREAT | os.O_EXCL | os.O_RDWR, 0o600)
-                os.close(descriptor)
+                try:
+                    self._cut("create-file-opened")
+                finally:
+                    os.close(descriptor)
+                self._cut("create-file-closed")
             self._db = sqlite3.connect(location.resolve().as_uri()+"?mode=rw", uri=True,
                 timeout=0, isolation_level=None)
+            if fresh:
+                self._cut("create-connected")
             if self._db.execute("PRAGMA journal_mode").fetchone() != ("delete",):
                 raise WitnessRefused("selected witness journal mode refused")
             self._db.execute("PRAGMA synchronous=EXTRA")
             self._db.execute("PRAGMA trusted_schema=OFF")
             if fresh:
                 self._db.execute("BEGIN IMMEDIATE")
-                for statement in _DDL:
+                self._cut("create-locked")
+                for statement, label in zip(_DDL, ("create-binding-table", "create-witness-table")):
                     self._db.execute(statement)
+                    self._cut(label)
                 self._db.execute("INSERT INTO binding VALUES(1,?,?)", self._binding)
+                self._cut("create-bound")
+                self._cut("create-before-commit")
                 self._db.execute("COMMIT")
+                self._cut("create-after-commit")
+            self._busy = False
             with self._transaction("open"):
                 self._load()
         except WitnessRefused:
             self._dispose()
             raise
-        except (OSError, sqlite3.Error):
+        except Exception:
             self._dispose()
             raise WitnessOutcomeUnknown("synthetic witness command has no conclusive result") from None
         except BaseException:
             self._dispose()
             raise
+        finally:
+            self._busy = False
 
     def _owner_only(self):
         if self._closed or os.getpid() != self._pid or threading.get_ident() != self._thread or self._busy:

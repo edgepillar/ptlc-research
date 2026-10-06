@@ -611,3 +611,12 @@ Both report templates remain unfilled. Transaction serialization, historical
 mathematics and process-death tests are engineering evidence only; independent
 security/privacy assessment and nonrollback/canonical ownership gates remain
 open before application integration.
+
+## Witness creation and interruption experiment
+
+The [test-only lifecycle experiment](ORIGINAL_WITNESS_LIFECYCLE_EXPERIMENT.md)
+and [Stage 56 validation](STAGE56_VALIDATION.md) are outside both fixed subjects.
+The constructor delta and native inherited-connection premise need review;
+selected process-death and mathematical controls are engineering evidence.
+Both report templates remain unfilled. Source provenance, canonical selection,
+nonrollback ownership and independent security/privacy assessment remain open.

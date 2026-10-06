@@ -147,3 +147,14 @@ current/canonical selection, source and consumer nonrollback ownership outside
 copied domains, minimal disclosure, signer custody, authoritative unknown
 reconciliation, protected-use ordering and an independent security/privacy
 assessment. SQLite serialization does not close those gates.
+
+## Later lifecycle qualification
+
+[Stage 56](ORIGINAL_WITNESS_LIFECYCLE_EXPERIMENT.md) adds nine selected creation
+cuts, a bounded native child actor, real inherited-owner refusal and selected
+opening/inspection/retention cancellation controls. It narrowly changes the
+test helper's constructor, preserving all subsequent transaction methods.
+The earlier creation limitation above describes Stage 55's execution scope;
+the later [validation](STAGE56_VALIDATION.md) records the expanded bounded
+scope. Power-loss qualification, hostile-path defense, application integration
+and independent nonrollback/source authority remain unresolved.
