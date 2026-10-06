@@ -686,3 +686,12 @@ independent reproducibility are not assessed. Synthetic driver checks and actual
 public mathematics remain distinct evidence. All three fixed subjects and
 unfilled reports retain exact bytes; no reviewer is contacted. See
 [validation](STAGE63_VALIDATION.md).
+
+## Separate retained section-localization construction
+
+The [section experiment](OFFLINE_WORKER_SECTION_LOCALIZATION.md) and its
+[Stage 64 evidence boundary](STAGE64_VALIDATION.md) are separate from the three
+unchanged fixed subjects. Raw container declarations and carrier agreement do
+not complete independent privacy, reproducibility, cryptographic or
+source-to-worker review. All report templates remain unfilled; no reviewer or
+assessment is selected by local/hosted test success.

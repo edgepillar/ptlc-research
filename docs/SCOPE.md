@@ -581,3 +581,11 @@ separate target-only Rust flag profile. Host Rust, C/linker/support inputs and
 full privacy/reproducibility remain unresolved. The original builder and scanner
 remain preserved. All artifacts remain private; all prior subjects, reports and
 application/core/funded-use NO-GO boundaries remain unchanged.
+
+## Bounded retained worker section observations
+
+The [section reader](OFFLINE_WORKER_SECTION_LOCALIZATION.md) selects bounded
+ELF64/Mach-O64 raw ranges and their complement. Fixed group booleans localize
+selected string matches; names/attributes do not identify a compiler or attest
+source truth. The [Stage 64 gate](STAGE64_VALIDATION.md) preserves prior source,
+math and native profiles. Artifacts remain private; application/core stays NO-GO.

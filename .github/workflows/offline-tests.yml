@@ -123,6 +123,9 @@ jobs:
       - name: Compare two target-only Rust remapping builds and their separate public math
         run: |
           set -eu
+          set -o pipefail
+          ptlc_section_carrier="$(mktemp "$RUNNER_TEMP/ptlc-section-carrier.XXXXXX")"
+          trap 'rm -f "$ptlc_section_carrier"' EXIT
           ptlc_remap_first_source="$(mktemp -d "$RUNNER_TEMP/ptlc-remap-source-a.XXXXXX")"
           ptlc_remap_first_build="$(mktemp -d "$RUNNER_TEMP/ptlc-remap-build-a.XXXXXX")"
           ptlc_remap_second_source="$(mktemp -d "$RUNNER_TEMP/ptlc-remap-source-b.XXXXXX")"
@@ -134,11 +137,16 @@ jobs:
             --first-workspace "$ptlc_remap_first_source" --first-build-directory "$ptlc_remap_first_build" \
             --second-workspace "$ptlc_remap_second_source" --second-build-directory "$ptlc_remap_second_build" \
             --cargo-home "${CARGO_HOME:-$HOME/.cargo}" --platform x86_64-unknown-linux-gnu \
-            --cargo "$ptlc_remap_cargo" --rustc "$ptlc_remap_rustc" --c-compiler "$ptlc_remap_cc"
+            --cargo "$ptlc_remap_cargo" --rustc "$ptlc_remap_rustc" --c-compiler "$ptlc_remap_cc" | tee "$ptlc_section_carrier"
           for ptlc_remap_build in "$ptlc_remap_first_build" "$ptlc_remap_second_build"; do
             python3 -B scripts/qualify_original_read_response.py \
               --original-response-verifier "$ptlc_remap_build/x86_64-unknown-linux-gnu/debug/examples/verify_original_read_response"
           done
+          python3 -B scripts/qualify_worker_sections.py \
+            --first-workspace "$ptlc_remap_first_source" --first-build-directory "$ptlc_remap_first_build" \
+            --second-workspace "$ptlc_remap_second_source" --second-build-directory "$ptlc_remap_second_build" \
+            --cargo-home "${CARGO_HOME:-$HOME/.cargo}" --platform x86_64-unknown-linux-gnu \
+            --private-pair-report "$ptlc_section_carrier"
       - name: Qualify durable exchange with the actual public verifier
         run: python3 -B scripts/qualify_exchange.py --verifier qualification/target/debug/examples/verify_exchange
       - name: Qualify public completion and recovery with separate journals

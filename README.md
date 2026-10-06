@@ -638,3 +638,11 @@ compilation; host build-script/proc-macro compilation and C/linker/support input
 remain incompletely assessed. Both binaries remain private under every result.
 See [Stage 63 validation](docs/STAGE63_VALIDATION.md); all assessments remain
 unfilled and application/core remains NO-GO.
+
+## Bounded worker section localization
+
+The [selected read-only construction](docs/OFFLINE_WORKER_SECTION_LOCALIZATION.md)
+adds fixed raw section-group observations for retained private outputs. See
+[Stage 64 validation](docs/STAGE64_VALIDATION.md). No producer attribution,
+privacy qualification, new compiler flags or application/core permission is
+supplied; all earlier constructions and unfilled assessments remain intact.
