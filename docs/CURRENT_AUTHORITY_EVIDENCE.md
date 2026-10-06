@@ -432,3 +432,14 @@ consume premise that no usable copy can bypass or restore. That premise is
 unimplemented, as are private worker custody, entropy and consumed-input
 evidence. The model supplies no source authentication, nonrollback mechanism or
 application security assessment; application/core remain NO-GO.
+
+## Stage 72: granted state can outlive consumption
+
+The [source-only grant-copy model](NONCE_GRANT_COPY_MODEL.md) distinguishes a
+single durable issuance from replay of the permission it has already granted.
+Copied passed checks and exported permits can cause two computations while
+external burn/effect records remain spent and at most one result is accepted.
+A no-finding reference assumes a nonexportable boundary around the effect. This
+is neither implemented custody nor an authenticated consumed-input or physical
+atomicity claim. All independent assessments remain unfilled; application/core
+progression remains NO-GO. See [validation](STAGE72_VALIDATION.md).

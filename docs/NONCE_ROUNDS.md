@@ -79,3 +79,15 @@ reference premise is unimplemented and introduces no secret nonce, new worker
 or bridge to the test-only Rust owner above. Exact symbolic output replay is
 separate from actual signature bytes. Fresh entropy, secure memory, copied-state
 protection and independent cryptographic review remain unresolved.
+
+## Stage 72: copied permission after consumption
+
+The [post-consumption grant comparison](NONCE_GRANT_COPY_MODEL.md) covers the
+already granted worker and cached-permission cut deliberately excluded from
+Stage 71. A copy can retain permission after a shared durable burn or effect
+mark, producing repeated work despite result fencing and receipt deduplication.
+The conditional reference assumes a nonexportable custody boundary through the
+effect. No private state, real signer bridge or physical atomicity is implemented.
+The Rust test owner's source encapsulation and public journal qualification
+retain their existing scopes. Entropy, secure memory, restored-copy protection
+and independent construction review remain unresolved. See [validation](STAGE72_VALIDATION.md).

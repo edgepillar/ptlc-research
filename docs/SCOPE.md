@@ -643,3 +643,14 @@ assumes an unimplemented shared atomic consume authority outside restored state.
 No journal-to-private-signer bridge, nonce bytes, crypto arithmetic, native
 acquisition or production policy is added. All four source inventories, worker
 profiles and three unfilled reports remain preserved. [Stage 71 validation](STAGE71_VALIDATION.md) records the exact evidence boundary.
+
+## Stage 72: copied already granted workers
+
+The separate [post-consumption comparison](NONCE_GRANT_COPY_MODEL.md) captures
+an issued grant, passed preflight or exported effect permit. It leaves shared
+issuance/effect state, result epochs and external audits outside saved workers.
+Repeated work occurs despite unique durable issuance and result deduplication.
+The conditional reference assumes a nonexportable boundary through the effect;
+it selects no real custody, signer, new native profile or recovery authority.
+The prior model and all four source inventories, profiles and three unfilled
+reports remain unchanged. See [validation](STAGE72_VALIDATION.md).
