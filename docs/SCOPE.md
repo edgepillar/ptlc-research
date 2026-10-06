@@ -589,3 +589,11 @@ ELF64/Mach-O64 raw ranges and their complement. Fixed group booleans localize
 selected string matches; names/attributes do not identify a compiler or attest
 source truth. The [Stage 64 gate](STAGE64_VALIDATION.md) preserves prior source,
 math and native profiles. Artifacts remain private; application/core stays NO-GO.
+
+## Bounded retained symbol-name declarations
+
+The [symbol reference entry](OFFLINE_WORKER_SYMBOL_REFERENCES.md) reads bounded
+name indices and selected type bits without emitting names, paths or values.
+Separate carrier/section and symbol acquisitions supply no atomic snapshot or
+producer authentication. See [Stage 65 acceptance](STAGE65_VALIDATION.md); all
+preceding constructions/subjects/reports and application/core NO-GO remain.

@@ -147,6 +147,11 @@ jobs:
             --second-workspace "$ptlc_remap_second_source" --second-build-directory "$ptlc_remap_second_build" \
             --cargo-home "${CARGO_HOME:-$HOME/.cargo}" --platform x86_64-unknown-linux-gnu \
             --private-pair-report "$ptlc_section_carrier"
+          python3 -B scripts/qualify_worker_symbols.py \
+            --first-workspace "$ptlc_remap_first_source" --first-build-directory "$ptlc_remap_first_build" \
+            --second-workspace "$ptlc_remap_second_source" --second-build-directory "$ptlc_remap_second_build" \
+            --cargo-home "${CARGO_HOME:-$HOME/.cargo}" --platform x86_64-unknown-linux-gnu \
+            --private-pair-report "$ptlc_section_carrier"
       - name: Qualify durable exchange with the actual public verifier
         run: python3 -B scripts/qualify_exchange.py --verifier qualification/target/debug/examples/verify_exchange
       - name: Qualify public completion and recovery with separate journals

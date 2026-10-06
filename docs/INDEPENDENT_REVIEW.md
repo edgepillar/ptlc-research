@@ -695,3 +695,11 @@ unchanged fixed subjects. Raw container declarations and carrier agreement do
 not complete independent privacy, reproducibility, cryptographic or
 source-to-worker review. All report templates remain unfilled; no reviewer or
 assessment is selected by local/hosted test success.
+
+## Separate retained symbol-name construction
+
+The [symbol-name experiment](OFFLINE_WORKER_SYMBOL_REFERENCES.md) and its
+[Stage 65 evidence boundary](STAGE65_VALIDATION.md) lie outside all three fixed
+subjects. Matching names/type declarations and complete streams do not assess
+independent privacy, reproducibility, cryptographic security or source-to-worker
+provenance. All report templates remain unfilled; no reviewer is contacted.

@@ -646,3 +646,11 @@ adds fixed raw section-group observations for retained private outputs. See
 [Stage 64 validation](docs/STAGE64_VALIDATION.md). No producer attribution,
 privacy qualification, new compiler flags or application/core permission is
 supplied; all earlier constructions and unfilled assessments remain intact.
+
+## Bounded worker symbol-name references
+
+The [selected reference reader](docs/OFFLINE_WORKER_SYMBOL_REFERENCES.md) adds
+fixed name-reference classes after raw section localization. See
+[Stage 65 validation](docs/STAGE65_VALIDATION.md). Declared name indices/types
+supply no producer or source identity; all outputs remain private and all three
+independent assessments remain unfilled. Application/core remains NO-GO.

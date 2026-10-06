@@ -376,3 +376,11 @@ private canonical carrier is a caller-selected claim, not authenticated prior
 execution, source truth, producer identity or future worker-launch binding.
 See [Stage 64 acceptance](STAGE64_VALIDATION.md). Independent review remains
 unfilled and all current/canonical, nonrollback and protected-use gates remain.
+
+## Retained symbol-name reference boundary
+
+The [bounded reference construction](OFFLINE_WORKER_SYMBOL_REFERENCES.md) can
+classify matches within declared symbol-name suffixes and their raw tables.
+Numeric type/index agreement supplies no file existence, producer/source truth,
+current authority, nonrollback custody or protected-use permission. See
+[Stage 65 acceptance](STAGE65_VALIDATION.md); all independent gates remain open.
