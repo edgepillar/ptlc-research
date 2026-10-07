@@ -476,3 +476,6 @@ nonce reuse, consumption or disclosure. Shape acceptance of an in-field
 noncurve encoding is distinct from actual backend refusal. No participant
 identity, producer authenticity or nonrollback custody is established;
 [Stage 75 validation](STAGE75_VALIDATION.md) retains all open gates.
+
+
+The [public adaptor edge construction](PUBLIC_ADAPTOR_EDGE_CONFORMANCE.md) separately measures individual partial and aggregate equations. Compensating public share mutations can preserve the original aggregate while each share refuses its selected role equation. Neither result authenticates a participant or supplies current custody. See [Stage 76 validation](STAGE76_VALIDATION.md); all independent gates remain open.

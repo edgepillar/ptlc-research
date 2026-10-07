@@ -685,3 +685,6 @@ its generator fallback; these tests preserve that behavior without selecting
 a new application policy. No signer consumption, freshness or custody is
 measured. [Stage 75 validation](STAGE75_VALIDATION.md) retains the fixed review
 inventories, unfilled reports and application/core NO-GO.
+
+
+Stage 76 selects public-only partial parser, compensated/reordered aggregate and cancelling adaptor controls. See [construction and boundaries](PUBLIC_ADAPTOR_EDGE_CONFORMANCE.md) and [validation](STAGE76_VALIDATION.md). No private signer or application policy is selected; application and core progression remain NO-GO.

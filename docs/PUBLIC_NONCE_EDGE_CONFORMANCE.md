@@ -99,3 +99,6 @@ review remain unresolved. Source-to-worker and reproducibility remain
 No reviewer is contacted. No wallet, core integration, deployment, activation,
 transaction broadcast or real funds is selected. See
 [Stage 75 validation](STAGE75_VALIDATION.md).
+
+
+The subsequent [public adaptor edge construction](PUBLIC_ADAPTOR_EDGE_CONFORMANCE.md) preserves these component and fallback semantics while checking original public partial scalar encodings, individual versus aggregate validity, compensation and valid cancelling adaptor points. Its [Stage 76 validation scope](STAGE76_VALIDATION.md) adds no private signing or aggregate infinity rejection policy.

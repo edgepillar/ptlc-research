@@ -124,3 +124,6 @@ infinity while refusing individual infinity and in-field noncurve points.
 Old openings and selected intents cannot follow changed public pairs; these
 public checks still supply no nonce freshness, private consumption or custody.
 See [Stage 75 validation](STAGE75_VALIDATION.md).
+
+
+The [public adaptor edge controls](PUBLIC_ADAPTOR_EDGE_CONFORMANCE.md) reuse original public round fixtures, recompute the final nonce and distinguish cancelling adapted infinity from aggregate component infinity and generator fallback. Complete shape/context binding does not establish curve validity, private consumption or nonce ownership. See [Stage 76 validation](STAGE76_VALIDATION.md); the application cancellation policy remains unresolved.
