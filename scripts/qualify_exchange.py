@@ -1101,6 +1101,33 @@ class RealVerifierExchangeTests(unittest.TestCase):
         self.assertEqual(hashlib.sha256(original.read_bytes()).hexdigest(), pin)
         print("PASS: sealed Linux submitted wire retained across nine caller mutations; twelve original receipt acceptances; three substituted-digest refusals; fifteen real native positives and closed descriptors")
 
+    def test_actual_public_worker_elf_declarations_are_observations_or_format_refuses(self):
+        import hashlib
+        from scripts import check_worker_elf_metadata as metadata
+        worker = Path(self.verifier._executable)
+        raw = worker.read_bytes()
+        pin, size = hashlib.sha256(raw).hexdigest(), len(raw)
+        if sys.platform.startswith("linux"):
+            self.assertEqual(raw[:4], b"\x7fELF")
+        if raw[:4] != b"\x7fELF":
+            with self.assertRaises(metadata.InputError) as caught:
+                metadata.inspect(worker, pin, size)
+            self.assertEqual(str(caught.exception), metadata.REFUSAL)
+            print("PASS: selected public worker ELF metadata refused unsupported format; no loader execution")
+            return
+        report = metadata.inspect(worker, pin, size)
+        self.assertEqual(report['measurement'], dict(sha256=pin, bytes=size))
+        self.assertEqual(report['declarations']['format'], 'ELF64 LITTLE ENDIAN')
+        self.assertIn(report['declarations']['declared_entry_kind'], ('ET_EXEC', 'ET_DYN'))
+        self.assertIs(type(report['declarations']['declared_interpreter']), bool)
+        self.assertIs(type(report['declarations']['declared_dynamic_segment']), bool)
+        self.assertEqual(report['runtime_closure'], 'NOT AUTHENTICATED')
+        self.assertEqual(report['source_to_worker'], 'NOT VERIFIED')
+        self.assertEqual(report['independent_privacy_assessment'], 'NOT ASSESSED')
+        self.assertEqual(hashlib.sha256(worker.read_bytes()).hexdigest(), pin)
+        print(metadata.scanner.encoded(report).decode('ascii'), end='')
+        print("PASS: selected public worker bounded ELF declarations; one complete pinned observation; no loader execution; NOT AUTHENTICATED")
+
 
 def main():
     parser = argparse.ArgumentParser(description="Offline public-verifier integration; no signing or transport")

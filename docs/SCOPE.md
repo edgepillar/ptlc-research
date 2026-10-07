@@ -735,3 +735,13 @@ isolate their requests and remain unchanged. No signing, private consumption,
 chain, wallet, deployment or core scope is added. See
 [construction](SEALED_VERIFIER_SUBMITTED_WIRE.md) and
 [validation](STAGE86_VALIDATION.md). Application and core remain **NO-GO**.
+
+## Stage 87: declared ELF metadata is observation only
+
+A separate [bounded ELF observer](WORKER_ELF_DECLARATIONS.md) reports fixed
+declaration booleans and entry kind from one complete caller-pinned stream. Raw
+interpreter paths and dynamic strings remain suppressed. It does not resolve or
+execute a loader, inspect loaded dependencies or establish static linkage from
+an absent declaration. All accepted consumers, adapters and native sources remain
+unchanged. See [validation](STAGE87_VALIDATION.md); application and core remain
+**NO-GO**.
