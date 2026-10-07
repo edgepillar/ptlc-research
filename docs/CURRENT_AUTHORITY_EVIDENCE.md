@@ -489,3 +489,5 @@ and nonce roles. A valid aggregate supplies no received collection structure,
 participant authentication, private consumed-input measurement or custody.
 [Stage 77 validation](STAGE77_VALIDATION.md) records the separate checks;
 all original assessments remain unfilled and application/core remain NO-GO.
+
+Stage 78 adds [public collection consumer controls](PUBLIC_COLLECTION_CONSUMER_CONFORMANCE.md) and a separate [validation scope](STAGE78_VALIDATION.md). The existing consumers select collection shape and role equations before aggregation. The test corpus remains synthetic; Rust context digests remain opaque caller bindings. Neither accepted equations nor refusals authenticate producers or measured private consumption. Both finite models, four inventories and three unfilled reports remain unchanged. Application and core remain NO-GO.

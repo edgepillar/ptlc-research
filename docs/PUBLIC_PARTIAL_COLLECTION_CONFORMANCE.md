@@ -97,3 +97,5 @@ No private signer, application cryptography, chain observer, wallet access,
 authoritative recovery, protected-use adapter, core integration, deployment,
 activation, transaction broadcast or real funds is included. All values are
 synthetic public fixtures.
+
+The following [consumer conformance slice](PUBLIC_COLLECTION_CONSUMER_CONFORMANCE.md) passes aggregate-valid collections through the existing Python and Rust consumers. It includes wrong-count collections and two-item role-compensated collections, preserving all source behavior. Its [validation record](STAGE78_VALIDATION.md) keeps public equations, complete expectation ownership, producer authentication and actual private custody separate.
