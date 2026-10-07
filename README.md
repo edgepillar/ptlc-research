@@ -743,3 +743,5 @@ supplied scalars. See the [construction and role boundaries](docs/PUBLIC_PARTIAL
 and [Stage 77 validation scope](docs/STAGE77_VALIDATION.md).
 
 Stage 78 adds [existing public collection consumer conformance](docs/PUBLIC_COLLECTION_CONSUMER_CONFORMANCE.md) and its [validation scope](docs/STAGE78_VALIDATION.md). Aggregate-valid wrong-count and wrong-role collections are passed through the preserved consumers; no consumer or application interface changes.
+
+Stage 79 extends the existing actual subprocess qualifier with four [durable public collection controls](docs/EXCHANGE_COLLECTION_CONFORMANCE.md) and a separate [validation scope](docs/STAGE79_VALIDATION.md). Equal-total count and role refusals preserve the selected session and head through ordinary reopen; original public artifacts remain usable. No production interface or private custody is added.

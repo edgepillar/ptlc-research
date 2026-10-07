@@ -699,3 +699,5 @@ or production policy is added. [Stage 77 validation](STAGE77_VALIDATION.md)
 keeps local and hosted evidence separate; application and core remain NO-GO.
 
 Stage 78 selects [public collection consumer regressions](PUBLIC_COLLECTION_CONSUMER_CONFORMANCE.md), under the [validation scope](STAGE78_VALIDATION.md). Existing Python complete-context reconstruction and the Rust verifier remain unchanged. Public refusals do not establish private consumed inputs, authentication or nonce custody. Application and core progression remain NO-GO.
+
+Stage 79 selects four [durable public exchange collection controls](EXCHANGE_COLLECTION_CONFORMANCE.md), under the [validation scope](STAGE79_VALIDATION.md). The existing actual qualifier gains four methods; both prior methods and all production sources remain unchanged. Count, public verifier, retained-Alice and persistence boundaries remain separate. Application and core progression remain NO-GO.

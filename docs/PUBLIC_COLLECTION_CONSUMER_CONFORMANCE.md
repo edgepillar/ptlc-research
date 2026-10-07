@@ -76,3 +76,5 @@ privacy remains **NOT ASSESSED**. Application and core progression remain
 No private signer, wallet access, chain observer, authoritative recovery,
 protected-use adapter, core integration, deployment, activation, transaction
 broadcast or real funds is included.
+
+The [Stage 79 integration extension](EXCHANGE_COLLECTION_CONFORMANCE.md) separately passes equal-total mutations through the actual bounded subprocess and owned durable journal. It measures callback reachability, exact public session/head preservation, absence of commit hooks and ordinary reopen, while retaining both preceding integration methods. See its [validation scope](STAGE79_VALIDATION.md); no private consumed-input or custody claim is added.
