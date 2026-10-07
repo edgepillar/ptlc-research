@@ -701,6 +701,151 @@ class RealVerifierExchangeTests(unittest.TestCase):
             self.assertEqual(hashlib.sha256(original.read_bytes()).hexdigest(), original_pin)
 
 
+    def _sealed_linux_or_refusal(self):
+        from unittest.mock import patch
+        from offline_session import sealed_artifact_verifier as sealed
+        if sys.platform == "linux":
+            return True
+        with patch.object(sealed, "_snapshot") as snapshot, patch.object(sealed, "_run") as runner:
+            with self.assertRaises(VerificationError):
+                sealed.SealedSubprocessVerifier(self.verifier._executable,
+                    expected_executable_sha256_hex="00" * 32)
+            snapshot.assert_not_called()
+            runner.assert_not_called()
+        print("PASS: sealed public execution unsupported-host refusal; no native snapshot launch")
+        return False
+
+    def test_actual_sealed_exchange_refuses_changed_entry_before_snapshot_launch_or_host_refuses(self):
+        import hashlib
+        import shutil
+        from unittest.mock import patch
+        from offline_session import sealed_artifact_verifier as sealed
+        if not self._sealed_linux_or_refusal():
+            return
+        _, bitcoin, zenon, btc_bundle, znn_bundle = artifacts()
+        valid = (verification_request(bitcoin, bundle=btc_bundle),
+                 verification_request(zenon, alice_partial=znn_bundle["partial_signatures_hex"][0]),
+                 verification_request(zenon, bundle=znn_bundle))
+        invalid = tuple(self._receipt_forgery_case(stage)[1]
+                        for stage in ("BITCOIN_BOUND", "ZENON_BOUND", "ALICE_PARTIAL_RETAINED"))
+        original = Path(self.verifier._executable)
+        pin = hashlib.sha256(original.read_bytes()).hexdigest()
+        with tempfile.TemporaryDirectory(prefix="ptlc-sealed-selection-") as directory:
+            base = Path(directory).resolve()
+            selected = base / "selected-verifier"
+            shutil.copyfile(original, selected)
+            selected.chmod(0o700)
+            adapter = sealed.SealedSubprocessVerifier(selected, expected_executable_sha256_hex=pin)
+            for good, bad in zip(valid, invalid):
+                adapter(good)
+                with self.assertRaises(VerificationError):
+                    adapter(bad)
+            saved = base / "retained-entry"
+            selected.replace(saved)
+            shutil.copyfile(self._receipt_forger(base)._executable, selected)
+            selected.chmod(0o700)
+            try:
+                with patch.object(sealed, "_run") as runner:
+                    for good, bad in zip(valid, invalid):
+                        for request in (good, bad):
+                            with self.assertRaises(VerificationError):
+                                adapter(request)
+                    altered = bytearray(original.read_bytes())
+                    altered[-1] ^= 1
+                    selected.write_bytes(altered)
+                    self.assertTrue(selected.read_bytes().startswith(b"\x7fELF"))
+                    self.assertNotEqual(hashlib.sha256(selected.read_bytes()).hexdigest(), pin)
+                    for good, bad in zip(valid, invalid):
+                        for request in (good, bad):
+                            with self.assertRaises(VerificationError):
+                                adapter(request)
+                    runner.assert_not_called()
+            finally:
+                selected.unlink()
+                saved.replace(selected)
+            for good, bad in zip(valid, invalid):
+                adapter(good)
+                with self.assertRaises(VerificationError):
+                    adapter(bad)
+            self.assertEqual(hashlib.sha256(selected.read_bytes()).hexdigest(), pin)
+            self.assertEqual(hashlib.sha256(original.read_bytes()).hexdigest(), pin)
+        print("PASS: sealed Linux native entry selected; six wrapper and six changed-ELF refusals before launch")
+
+    def test_actual_sealed_exchange_executes_snapshot_after_path_cut_and_seals_refuse_mutation_or_host_refuses(self):
+        from contextlib import contextmanager
+        import errno
+        import fcntl
+        import hashlib
+        import mmap
+        import os
+        import shutil
+        from unittest.mock import patch
+        from offline_session import sealed_artifact_verifier as sealed
+        from offline_session.exchange import RESULT_SCHEMA, request_digest
+        if not self._sealed_linux_or_refusal():
+            return
+        _, bitcoin, zenon, btc_bundle, znn_bundle = artifacts()
+        valid = (verification_request(bitcoin, bundle=btc_bundle),
+                 verification_request(zenon, alice_partial=znn_bundle["partial_signatures_hex"][0]),
+                 verification_request(zenon, bundle=znn_bundle))
+        invalid = tuple(self._receipt_forgery_case(stage)[1]
+                        for stage in ("BITCOIN_BOUND", "ZENON_BOUND", "ALICE_PARTIAL_RETAINED"))
+        unchanged_requests = copy.deepcopy((valid, invalid))
+        original = Path(self.verifier._executable)
+        pin = hashlib.sha256(original.read_bytes()).hexdigest()
+        descriptors = []
+        with tempfile.TemporaryDirectory(prefix="ptlc-sealed-execution-cut-") as directory:
+            base = Path(directory).resolve()
+            selected, saved = base / "selected-verifier", base / "retained-entry"
+            shutil.copyfile(original, selected)
+            selected.chmod(0o700)
+            adapter = sealed.SealedSubprocessVerifier(selected, expected_executable_sha256_hex=pin)
+            synthetic = Path(self._receipt_forger(base)._executable)
+            actual_snapshot = sealed._snapshot
+
+            @contextmanager
+            def sealed_then_replace(path, expected_pin, deadline):
+                # The real snapshot installs and checks kernel seals, then
+                # hashes its actual bytes. Only the subsequent cut is hooked.
+                with actual_snapshot(path, expected_pin, deadline) as descriptor:
+                    self.assertFalse(os.get_inheritable(descriptor))
+                    size = os.fstat(descriptor).st_size
+                    mask = fcntl.F_SEAL_WRITE | fcntl.F_SEAL_GROW | fcntl.F_SEAL_SHRINK | fcntl.F_SEAL_SEAL
+                    self.assertEqual(fcntl.fcntl(descriptor, fcntl.F_GET_SEALS) & mask, mask)
+                    for mutation in (lambda: os.pwrite(descriptor, b"x", 0),
+                                     lambda: os.ftruncate(descriptor, size - 1),
+                                     lambda: os.ftruncate(descriptor, size + 1),
+                                     lambda: mmap.mmap(descriptor, 1, flags=mmap.MAP_SHARED, prot=mmap.PROT_WRITE)):
+                        with self.assertRaises(OSError) as refused:
+                            mutation()
+                        self.assertEqual(refused.exception.errno, errno.EPERM)
+                    selected.replace(saved)
+                    shutil.copyfile(synthetic, selected)
+                    selected.chmod(0o700)
+                    descriptors.append(descriptor)
+                    try:
+                        yield descriptor
+                    finally:
+                        selected.unlink()
+                        saved.replace(selected)
+
+            for good, bad in zip(valid, invalid):
+                with patch.object(sealed, "_snapshot", sealed_then_replace):
+                    self.assertEqual(adapter(good), {"schema": RESULT_SCHEMA,
+                        "request_digest_hex": request_digest(good), "valid": True})
+                    with self.assertRaises(VerificationError):
+                        adapter(bad)
+                for descriptor in descriptors:
+                    with self.assertRaises(OSError) as closed:
+                        os.fstat(descriptor)
+                    self.assertEqual(closed.exception.errno, errno.EBADF)
+            self.assertEqual(len(descriptors), 6)
+            self.assertEqual(hashlib.sha256(selected.read_bytes()).hexdigest(), pin)
+            self.assertEqual(hashlib.sha256(original.read_bytes()).hexdigest(), pin)
+            self.assertEqual((valid, invalid), unchanged_requests)
+        print("PASS: sealed Linux snapshot executes original equations after six path cuts; 24 kernel mutation refusals; six closed descriptors")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Offline public-verifier integration; no signing or transport")
     parser.add_argument("--verifier", required=True, help="Path to the locally built verify_exchange executable")
