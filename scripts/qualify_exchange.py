@@ -846,6 +846,187 @@ class RealVerifierExchangeTests(unittest.TestCase):
         print("PASS: sealed Linux snapshot executes original equations after six path cuts; 24 kernel mutation refusals; six closed descriptors")
 
 
+    def test_actual_sealed_exchange_late_native_positives_refuse_original_cutoff_or_host_refuses(self):
+        from contextlib import contextmanager
+        import errno
+        import hashlib
+        import os
+        import time
+        from unittest.mock import patch
+        from offline_session import sealed_artifact_verifier as sealed
+        from offline_session.exchange import RESULT_SCHEMA, canonical, request_digest
+        if not self._sealed_linux_or_refusal():
+            return
+        _, bitcoin, zenon, btc_bundle, znn_bundle = artifacts()
+        requests = (verification_request(bitcoin, bundle=btc_bundle),
+                    verification_request(zenon, alice_partial=znn_bundle["partial_signatures_hex"][0]),
+                    verification_request(zenon, bundle=znn_bundle))
+        unchanged = copy.deepcopy(requests)
+        original = Path(self.verifier._executable)
+        pin = hashlib.sha256(original.read_bytes()).hexdigest()
+        adapter = sealed.SealedSubprocessVerifier(original,
+            expected_executable_sha256_hex=pin, timeout=2)
+        actual_snapshot, actual_run = sealed._snapshot, sealed._run
+        descriptors, late_results = [], []
+
+        @contextmanager
+        def observed_snapshot(path, expected_pin, deadline):
+            with actual_snapshot(path, expected_pin, deadline) as descriptor:
+                descriptors.append(descriptor)
+                yield descriptor
+
+        def assert_closed(descriptor):
+            with self.assertRaises(OSError) as closed:
+                os.fstat(descriptor)
+            self.assertEqual(closed.exception.errno, errno.EBADF)
+
+        with patch.object(sealed, "_snapshot", observed_snapshot):
+            for request in requests:
+                expected = {"schema": RESULT_SCHEMA,
+                    "request_digest_hex": request_digest(request), "valid": True}
+                self.assertEqual(adapter(request), expected)
+                assert_closed(descriptors[-1])
+
+                def delayed_real_runner(command, wire, **options):
+                    self.assertEqual(wire, canonical(request))
+                    descriptor, = options["pass_fds"]
+                    self.assertGreaterEqual(descriptor, 3)
+                    # Delay after the caller calculated the relative budget.
+                    # The unchanged real runner then gets that stale budget.
+                    time.sleep(options["timeout"] + 0.02)
+                    response = actual_run(command, wire, **options)
+                    self.assertIn(response, (canonical(expected), canonical(expected) + b"\n"))
+                    late_results.append(response)
+                    return response
+
+                with patch.object(sealed, "_run", delayed_real_runner):
+                    with self.assertRaises(VerificationError):
+                        adapter(request)
+                assert_closed(descriptors[-1])
+        self.assertEqual(len(descriptors), 6)
+        self.assertEqual(len(late_results), 3)
+        self.assertEqual(requests, unchanged)
+        self.assertEqual(hashlib.sha256(original.read_bytes()).hexdigest(), pin)
+        print("PASS: sealed Linux original cutoff rejects three late real native positives; three timely positives retained; six closed descriptors")
+
+    def test_actual_sealed_exchange_standard_descriptor_alias_refuses_before_launch_or_host_refuses(self):
+        import hashlib
+        import os
+        import subprocess
+        import textwrap
+        from offline_session.exchange import canonical
+        if not self._sealed_linux_or_refusal():
+            return
+        _, bitcoin, zenon, btc_bundle, znn_bundle = artifacts()
+        requests = (verification_request(bitcoin, bundle=btc_bundle),
+                    verification_request(zenon, alice_partial=znn_bundle["partial_signatures_hex"][0]),
+                    verification_request(zenon, bundle=znn_bundle))
+        unchanged = copy.deepcopy(requests)
+        original = Path(self.verifier._executable)
+        pin = hashlib.sha256(original.read_bytes()).hexdigest()
+        # The isolated child closes only its own standard descriptors. Its
+        # separate inherited report pipe is never passed to the native worker.
+        program = textwrap.dedent('''\
+            import errno, json, os, sys
+            from pathlib import Path
+            from unittest.mock import patch
+            from offline_session import sealed_artifact_verifier as sealed
+            from offline_session.exchange import RESULT_SCHEMA, VerificationError, canonical, request_digest
+            report_fd = int(sys.argv[1])
+            try:
+                data = json.loads(sys.stdin.buffer.read().decode("ascii"))
+                path = Path(data["path"])
+                adapter = sealed.SealedSubprocessVerifier(path,
+                    expected_executable_sha256_hex=data["pin"])
+                actual_open, actual_create, actual_run = os.open, os.memfd_create, sealed._run
+                sources, snapshots, launches = [], [], []
+                accepted = refused = closed_checks = 0
+                def observed_open(selected, flags):
+                    descriptor = actual_open(selected, flags)
+                    if selected == path:
+                        sources.append(descriptor)
+                    return descriptor
+                def observed_create(name, flags):
+                    descriptor = actual_create(name, flags)
+                    snapshots.append(descriptor)
+                    return descriptor
+                def observed_run(command, wire, **options):
+                    descriptor, = options["pass_fds"]
+                    assert descriptor >= 3
+                    launches.append(descriptor)
+                    return actual_run(command, wire, **options)
+                assert report_fd >= 3
+                for descriptor in data["closed_standard"]:
+                    os.close(descriptor)
+                with patch.object(os, "open", observed_open), \\
+                        patch.object(os, "memfd_create", observed_create), \\
+                        patch.object(sealed, "_run", observed_run):
+                    for request in data["requests"]:
+                        try:
+                            result = adapter(request)
+                        except VerificationError:
+                            refused += 1
+                        else:
+                            assert result == {"schema": RESULT_SCHEMA,
+                                "request_digest_hex": request_digest(request), "valid": True}
+                            accepted += 1
+                        assert len(snapshots) == accepted + refused
+                        try:
+                            os.fstat(snapshots[-1])
+                        except OSError as error:
+                            assert error.errno == errno.EBADF
+                            closed_checks += 1
+                        else:
+                            raise AssertionError("snapshot still open")
+                report = dict(closed_standard=data["closed_standard"], sources=sources,
+                    snapshots=snapshots, runner_calls=len(launches), acceptances=accepted,
+                    refusals=refused, closed_checks=closed_checks)
+                encoded = canonical(report)
+                assert len(encoded) <= 4096 and os.write(report_fd, encoded) == len(encoded)
+            except BaseException:
+                os._exit(1)
+            os._exit(0)
+            ''')
+        schedules = ((0,), (1,), (2,), (0, 1), (0, 2), (1, 2), (0, 1, 2))
+        totals = dict(acceptances=0, refusals=0, runner_calls=0, closed_checks=0)
+        for closed_standard in schedules:
+            read_fd, write_fd = os.pipe()
+            try:
+                data = dict(path=str(original), pin=pin, requests=list(requests),
+                    closed_standard=list(closed_standard))
+                subprocess.run([sys.executable, "-B", "-c", program, str(write_fd)],
+                    input=canonical(data), stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    close_fds=True, pass_fds=(write_fd,), check=True, timeout=20)
+                os.close(write_fd)
+                write_fd = None
+                wire = os.read(read_fd, 4096)
+                self.assertEqual(os.read(read_fd, 1), b"")
+                report = json.loads(wire.decode("ascii"))
+                self.assertEqual(wire, canonical(report))
+                self.assertEqual(set(report), {"closed_standard", "sources", "snapshots",
+                    "runner_calls", "acceptances", "refusals", "closed_checks"})
+                self.assertEqual(report["closed_standard"], list(closed_standard))
+                self.assertEqual(report["sources"], [min(closed_standard)] * 3)
+                self.assertEqual(len(report["snapshots"]), 3)
+                if len(closed_standard) == 1:
+                    self.assertTrue(all(value >= 3 for value in report["snapshots"]))
+                    self.assertEqual((report["acceptances"], report["refusals"], report["runner_calls"]), (3, 0, 3))
+                else:
+                    self.assertEqual(report["snapshots"], [closed_standard[1]] * 3)
+                    self.assertEqual((report["acceptances"], report["refusals"], report["runner_calls"]), (0, 3, 0))
+                self.assertEqual(report["closed_checks"], 3)
+                for key in totals:
+                    totals[key] += report[key]
+            finally:
+                if write_fd is not None:
+                    os.close(write_fd)
+                os.close(read_fd)
+        self.assertEqual(totals, dict(acceptances=9, refusals=12, runner_calls=9, closed_checks=21))
+        self.assertEqual(requests, unchanged)
+        self.assertEqual(hashlib.sha256(original.read_bytes()).hexdigest(), pin)
+        print("PASS: sealed Linux seven closed-standard-descriptor schedules; twelve pre-launch alias refusals; nine real native positives; 21 closed descriptors")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Offline public-verifier integration; no signing or transport")
     parser.add_argument("--verifier", required=True, help="Path to the locally built verify_exchange executable")

@@ -722,3 +722,6 @@ Stage 83 adds two [measured public verifier execution-boundary controls](EXCHANG
 
 
 Stage 84 adds a separate opt-in [sealed Linux public verifier](SEALED_PUBLIC_VERIFIER.md) and [validation scope](STAGE84_VALIDATION.md). Each call seals and measures a fresh public ELF snapshot, then executes the same inherited descriptor through the existing bounded runner. Existing consumers and guarded profiles retain exact bytes. The selected entry continuity does not authenticate the pin, source, loader, dependencies or environment. Application and core progression remain **NO-GO**.
+
+
+Stage 85 narrows the optional adapter with an [original acceptance cutoff and standard-descriptor policy](SEALED_VERIFIER_ACCEPTANCE.md), plus [validation scope](STAGE85_VALIDATION.md). Correct late receipts refuse at the selected checks; snapshots below three refuse before transport. Existing consumers and native equations remain exact. Blocking syscalls, late worker launch, caller delivery time and complete runtime authentication remain outside the qualified boundary. Application and core progression remain **NO-GO**.
