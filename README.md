@@ -733,3 +733,6 @@ complete transcript shape and the existing pinned backend. These public-only
 controls select no signing interface or new aggregate rejection policy.
 See [Stage 75 validation](docs/STAGE75_VALIDATION.md). Application and core
 progression remain NO-GO.
+
+
+Public partial and adaptor boundaries are documented in [public adaptor edge conformance](docs/PUBLIC_ADAPTOR_EDGE_CONFORMANCE.md) with the [Stage 76 validation scope](docs/STAGE76_VALIDATION.md). Aggregate validity alone does not validate each supplied share; application and core progression remain NO-GO.
