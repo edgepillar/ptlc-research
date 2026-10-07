@@ -97,3 +97,15 @@ Stage 84 adds a separate opt-in [sealed Linux public verifier](SEALED_PUBLIC_VER
 
 
 Stage 85 narrows the optional adapter with an [original acceptance cutoff and standard-descriptor policy](SEALED_VERIFIER_ACCEPTANCE.md), plus [validation scope](STAGE85_VALIDATION.md). Correct late receipts refuse at the selected checks; snapshots below three refuse before transport. Existing consumers and native equations remain exact. Blocking syscalls, late worker launch, caller delivery time and complete runtime authentication remain outside the qualified boundary. Application and core progression remain **NO-GO**.
+
+
+## Stage 86 immutable submitted expectation
+
+The optional sealed verifier derives its expected receipt once from the existing
+bounded canonical outbound bytes before snapshot acquisition. Later caller
+mutation is not a new submitted request; a changed-digest receipt refuses.
+The existing exchange consumer already owns an independent expectation and
+passes a deep copy to callbacks, and remains byte exact. See
+[construction](SEALED_VERIFIER_SUBMITTED_WIRE.md) and
+[validation](STAGE86_VALIDATION.md). No private custody or application/core
+progression is selected.

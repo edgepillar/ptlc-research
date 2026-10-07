@@ -411,18 +411,17 @@ class SealedVerifierTests(unittest.TestCase):
         self.assert_closed()
 
     def test_receipt_binding_and_canonical_check_expiry_refuse_before_acceptance(self):
-        for name in ("request_digest", "canonical"):
-            original = getattr(sealed, name)
-            with self.subTest(cut=name), self.modeled_host(return_value=canonical(self.result)):
-                def delayed(value):
-                    result = original(value)
-                    if name == "request_digest" or value == self.result:
-                        sealed.time.monotonic = lambda: 6
-                    return result
-                with patch.object(sealed, name, side_effect=delayed):
-                    with self.assertRaises(VerificationError):
-                        self.select(timeout=5)(self.request)
-            self.assert_closed()
+        original = sealed.canonical
+        with self.modeled_host(return_value=canonical(self.result)):
+            def delayed(value):
+                result = original(value)
+                if value == self.result:
+                    sealed.time.monotonic = lambda: 6
+                return result
+            with patch.object(sealed, "canonical", side_effect=delayed):
+                with self.assertRaises(VerificationError):
+                    self.select(timeout=5)(self.request)
+        self.assert_closed()
 
     def test_positive_before_original_cutoff_still_accepts_one_lf(self):
         for suffix in (b"", b"\n"):
@@ -473,6 +472,134 @@ class SealedVerifierTests(unittest.TestCase):
                     self.assertEqual(self.select()(self.request), self.result)
                 self.assertEqual(runner.call_count, 1)
             self.assert_closed()
+
+
+    def test_nested_caller_mutation_keeps_original_submitted_receipt(self):
+        request = {"synthetic": {"items": ["original public value"]}}
+        wire = canonical(request)
+        expected = {"schema": RESULT_SCHEMA,
+            "request_digest_hex": request_digest(request), "valid": True}
+        original = sealed.canonical
+        encoded_requests = []
+        def observed(value):
+            if value is request:
+                encoded_requests.append(value)
+            return original(value)
+        def mutate(command, submitted, **options):
+            self.assertEqual(submitted, wire)
+            request["synthetic"]["items"][0] = "changed public value"
+            request["synthetic"]["items"].append("later public value")
+            return canonical(expected) + b"\n"
+        with self.modeled_host(side_effect=mutate) as runner, \
+                patch.object(sealed, "canonical", side_effect=observed):
+            self.assertEqual(self.select()(request), expected)
+            self.assertEqual(len(encoded_requests), 1)
+            self.assertEqual(runner.call_count, 1)
+        self.assert_closed()
+
+    def test_later_unserializable_or_cyclic_caller_is_never_reencoded(self):
+        for mutation in ("object", "nan", "cycle"):
+            request = {"synthetic": "original public value"}
+            wire = canonical(request)
+            expected = {"schema": RESULT_SCHEMA,
+                "request_digest_hex": request_digest(request), "valid": True}
+            def mutate(command, submitted, **options):
+                self.assertEqual(submitted, wire)
+                request["synthetic"] = (object() if mutation == "object"
+                    else float("nan") if mutation == "nan" else request)
+                return canonical(expected)
+            with self.subTest(mutation=mutation), self.modeled_host(side_effect=mutate) as runner:
+                self.assertEqual(self.select()(request), expected)
+                self.assertEqual(runner.call_count, 1)
+            self.assert_closed()
+
+    def test_receipt_for_mutated_request_refuses_original_submitted_digest(self):
+        wire = canonical(self.request)
+        def substitute(command, submitted, **options):
+            self.assertEqual(submitted, wire)
+            self.request["synthetic"] = "changed public request"
+            changed = dict(self.result, request_digest_hex=request_digest(self.request))
+            self.assertNotEqual(changed["request_digest_hex"], self.result["request_digest_hex"])
+            return canonical(changed)
+        with self.modeled_host(side_effect=substitute) as runner:
+            with self.assertRaises(VerificationError):
+                self.select()(self.request)
+            self.assertEqual(runner.call_count, 1)
+        self.assert_closed()
+
+    def test_snapshot_phase_mutation_cannot_replace_submitted_expectation(self):
+        wire = canonical(self.request)
+        snapshot = sealed._snapshot
+        @contextmanager
+        def mutate_after_snapshot(path, pin, deadline):
+            with snapshot(path, pin, deadline) as descriptor:
+                self.request["synthetic"] = object()
+                yield descriptor
+        with self.modeled_host(return_value=canonical(self.result)) as runner, \
+                patch.object(sealed, "_snapshot", mutate_after_snapshot):
+            self.assertEqual(self.select()(self.request), self.result)
+            self.assertEqual(runner.call_args.args[1], wire)
+            self.assertEqual(runner.call_count, 1)
+        self.assert_closed()
+
+    def test_request_bound_applies_to_submitted_bytes_before_later_growth(self):
+        request = {"synthetic": ""}
+        request["synthetic"] = "x" * (32768 - len(canonical(request)))
+        wire = canonical(request)
+        self.assertEqual(len(wire), 32768)
+        expected = {"schema": RESULT_SCHEMA,
+            "request_digest_hex": request_digest(request), "valid": True}
+        def grow(command, submitted, **options):
+            self.assertEqual(submitted, wire)
+            request["synthetic"] += "later public growth"
+            self.assertGreater(len(canonical(request)), 32768)
+            return canonical(expected)
+        with self.modeled_host(side_effect=grow) as runner:
+            self.assertEqual(self.select()(request), expected)
+            self.assertEqual(runner.call_count, 1)
+        self.assert_closed()
+
+    def test_reused_adapter_has_fresh_submitted_expectation_per_call(self):
+        requests = [{"synthetic": "first public request"}, {"synthetic": "second public request"}]
+        wires = [canonical(request) for request in requests]
+        results = [{"schema": RESULT_SCHEMA,
+            "request_digest_hex": request_digest(request), "valid": True} for request in requests]
+        self.assertNotEqual(results[0], results[1])
+        selected = 0
+        def respond(command, submitted, **options):
+            self.assertEqual(submitted, wires[selected])
+            requests[selected]["synthetic"] = object()
+            return canonical(results[selected])
+        with self.modeled_host(side_effect=respond) as runner:
+            adapter = self.select()
+            for selected in range(2):
+                self.assertEqual(adapter(requests[selected]), results[selected])
+                self.assert_closed()
+            requests[1] = {"synthetic": "second public request"}
+            runner.side_effect = None
+            runner.return_value = canonical(results[0])
+            with self.assertRaises(VerificationError):
+                adapter(requests[1])
+            self.assertEqual(runner.call_count, 3)
+            self.assertEqual(len({call.kwargs["pass_fds"] for call in runner.call_args_list}), 3)
+        self.assert_closed()
+
+    def test_submitted_digest_expiry_refuses_before_snapshot_acquisition(self):
+        original = sealed.hashlib.sha256
+        hashed = b"PTLC/artifact-verification/v1\x00" + canonical(self.request)
+        with self.modeled_host() as runner:
+            def expire(value=b""):
+                result = original(value)
+                if value == hashed:
+                    sealed.time.monotonic = lambda: 6
+                return result
+            with patch.object(sealed.hashlib, "sha256", side_effect=expire) as digest:
+                with self.assertRaises(VerificationError):
+                    self.select(timeout=5)(self.request)
+                digest.assert_called_once_with(hashed)
+            runner.assert_not_called()
+            self.assertEqual(self.api.events, [])
+        self.assert_closed()
 
 
 if __name__ == "__main__":
