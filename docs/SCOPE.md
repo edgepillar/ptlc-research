@@ -654,3 +654,13 @@ The conditional reference assumes a nonexportable boundary through the effect;
 it selects no real custody, signer, new native profile or recovery authority.
 The prior model and all four source inventories, profiles and three unfilled
 reports remain unchanged. See [validation](STAGE72_VALIDATION.md).
+
+## Stage 73: public partial-invocation grammar
+
+The separate [public intent](PUBLIC_NONCE_INTENT.md) reuses a complete revealed
+round signing context and projects ordered keys, tweak, participant index,
+message, adaptor and public nonces. It compares exact bytes without parsing
+peer expectations or adding another hash. It implements no private interface,
+worker, consumption, authentication, current-policy check or recovery. Existing
+models, implementations, profiles, inventories and unfilled reports retain
+their bytes. See [validation](STAGE73_VALIDATION.md); application/core remain NO-GO.

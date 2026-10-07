@@ -91,3 +91,15 @@ effect. No private state, real signer bridge or physical atomicity is implemente
 The Rust test owner's source encapsulation and public journal qualification
 retain their existing scopes. Entropy, secure memory, restored-copy protection
 and independent construction review remain unresolved. See [validation](STAGE72_VALIDATION.md).
+
+## Stage 73: existing context and explicit public arguments
+
+The [public partial intent](PUBLIC_NONCE_INTENT.md) retains the existing complete
+context, including its revealed round, and explicitly projects the public
+parameters described by it. Ordered nonces remain Alice/Bob even for Bob's
+partial; Bitcoin's declared Taproot tweak stays separate from Zenon's untweaked
+aggregation. No curve/key arithmetic, new nonce, signer, current authority or
+private consumption boundary is added. Public bytes and declared keys are not
+actual consumed-input evidence. Exact replay can pass repeatedly without
+one-use or freshness. The journal and test-only Rust owner retain their separate
+scopes. See [validation](STAGE73_VALIDATION.md); application/core remain NO-GO.

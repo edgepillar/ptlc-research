@@ -443,3 +443,14 @@ A no-finding reference assumes a nonexportable boundary around the effect. This
 is neither implemented custody nor an authenticated consumed-input or physical
 atomicity claim. All independent assessments remain unfilled; application/core
 progression remains NO-GO. See [validation](STAGE72_VALIDATION.md).
+
+## Stage 73: public agreement is not consumed-input evidence
+
+The [public partial intent](PUBLIC_NONCE_INTENT.md) explicitly projects supplied
+backend parameters from a complete validated dynamic context. A matching wire
+proves only equality with that local public selection. Replays and separately
+selected consistent contexts can all match without a consume registry,
+participant authentication, current authority, actual worker execution or
+nonexportable custody. No private bridge is added and neither finite nonce
+model's ideal premise is implemented. All independent reports remain unfilled;
+application/core remain NO-GO. See [validation](STAGE73_VALIDATION.md).
