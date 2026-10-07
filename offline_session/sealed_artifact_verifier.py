@@ -74,6 +74,10 @@ def _snapshot(path, pin, deadline):
         if not chunk.startswith(b"\x7fELF"):
             raise VerificationError("sealed public execution requires a direct ELF entry")
         snapshot = os.memfd_create("ptlc-public-verifier", os.MFD_CLOEXEC | os.MFD_ALLOW_SEALING)
+        # The runner redirects standard streams before exec. Passing a low
+        # snapshot descriptor would not preserve that descriptor's contents.
+        if snapshot < 3:
+            raise VerificationError("selected public verifier descriptor aliases standard streams")
         # Honor the host's memfd execution policy; do not override it or retry
         # with an execution-enabling flag when permissions or launch refuse.
         os.fchmod(snapshot, 0o500)
@@ -151,11 +155,14 @@ class SealedSubprocessVerifier:
                 response = _run(["/proc/self/fd/" + str(descriptor)], wire,
                     timeout=_remaining(deadline), max_output_bytes=4096,
                     pass_fds=(descriptor,))
+                _remaining(deadline)
+            _remaining(deadline)
             result = json.loads(response.decode("ascii"))
             expected = {"schema": RESULT_SCHEMA, "request_digest_hex": request_digest(request), "valid": True}
             if (type(result) is not dict or result != expected or result.get("valid") is not True
                     or response not in (canonical(expected), canonical(expected) + b"\n")):
                 raise VerificationError("public verifier returned an invalid bound result")
+            _remaining(deadline)
             return expected
         except (OSError, ValueError, RecursionError, WorkerError):
             raise VerificationError("sealed public verifier failed") from None

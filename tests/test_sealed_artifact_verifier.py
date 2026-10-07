@@ -355,5 +355,125 @@ class SealedVerifierTests(unittest.TestCase):
             self.assert_closed()
 
 
+    def test_runner_handoff_pause_cannot_extend_original_acceptance_cutoff(self):
+        with self.modeled_host() as runner:
+            def delayed(command, wire, **options):
+                self.assertEqual(options["timeout"], 5)
+                self.assertEqual(wire, canonical(self.request))
+                # A fresh relative runner budget cannot change the caller's
+                # earlier absolute cutoff, even for a correctly bound result.
+                sealed.time.monotonic = lambda: 6
+                return canonical(self.result)
+            runner.side_effect = delayed
+            with self.assertRaises(VerificationError):
+                self.select(timeout=5)(self.request)
+            self.assertEqual(runner.call_count, 1)
+        self.assert_closed()
+
+    def test_runner_result_at_or_after_original_cutoff_refuses_and_closes(self):
+        for instant in (5, 6):
+            with self.subTest(instant=instant), self.modeled_host() as runner:
+                def late(command, wire, **options):
+                    sealed.time.monotonic = lambda: instant
+                    return canonical(self.result)
+                runner.side_effect = late
+                with self.assertRaises(VerificationError):
+                    self.select(timeout=5)(self.request)
+                self.assertEqual(runner.call_count, 1)
+            self.assert_closed()
+
+    def test_snapshot_cleanup_expiry_refuses_valid_early_result(self):
+        close = self.api.close
+        with self.modeled_host(return_value=canonical(self.result)) as runner:
+            def delayed_close(fd):
+                snapshot = self.api.opened[fd][0] == "snapshot"
+                close(fd)
+                if snapshot:
+                    sealed.time.monotonic = lambda: 6
+            with patch.object(self.api.os, "close", side_effect=delayed_close):
+                with self.assertRaises(VerificationError):
+                    self.select(timeout=5)(self.request)
+                self.assertEqual(runner.call_count, 1)
+        self.assert_closed()
+
+    def test_receipt_parsing_expiry_refuses_valid_native_shaped_result(self):
+        loads = sealed.json.loads
+        with self.modeled_host(return_value=canonical(self.result)):
+            def delayed_parse(wire):
+                result = loads(wire)
+                self.assertEqual(result, self.result)
+                sealed.time.monotonic = lambda: 6
+                return result
+            with patch.object(sealed.json, "loads", side_effect=delayed_parse) as parser:
+                with self.assertRaises(VerificationError):
+                    self.select(timeout=5)(self.request)
+                self.assertEqual(parser.call_count, 1)
+        self.assert_closed()
+
+    def test_receipt_binding_and_canonical_check_expiry_refuse_before_acceptance(self):
+        for name in ("request_digest", "canonical"):
+            original = getattr(sealed, name)
+            with self.subTest(cut=name), self.modeled_host(return_value=canonical(self.result)):
+                def delayed(value):
+                    result = original(value)
+                    if name == "request_digest" or value == self.result:
+                        sealed.time.monotonic = lambda: 6
+                    return result
+                with patch.object(sealed, name, side_effect=delayed):
+                    with self.assertRaises(VerificationError):
+                        self.select(timeout=5)(self.request)
+            self.assert_closed()
+
+    def test_positive_before_original_cutoff_still_accepts_one_lf(self):
+        for suffix in (b"", b"\n"):
+            with self.subTest(suffix=suffix), self.modeled_host() as runner:
+                def timely(command, wire, **options):
+                    sealed.time.monotonic = lambda: 4.999
+                    return canonical(self.result) + suffix
+                runner.side_effect = timely
+                self.assertEqual(self.select(timeout=5)(self.request), self.result)
+            self.assert_closed()
+
+    def test_standard_descriptor_snapshots_refuse_before_permissions_or_copy(self):
+        for descriptor in (0, 1, 2):
+            self.api = PublicFileAPI()
+            create = self.api.memfd_create
+            with self.subTest(descriptor=descriptor), self.modeled_host() as runner:
+                def low_snapshot(name, flags):
+                    self.api.next_fd = descriptor
+                    return create(name, flags)
+                with patch.object(self.api.os, "memfd_create", side_effect=low_snapshot):
+                    with self.assertRaises(VerificationError):
+                        self.select()(self.request)
+                runner.assert_not_called()
+                self.assertFalse(any(event[0] in ("chmod", "write", "seal")
+                                     for event in self.api.events))
+                self.assertFalse(any(event[0] == "read" and event[1] == descriptor
+                                     for event in self.api.events))
+                self.assertEqual(set(self.api.closed), {10, descriptor})
+            self.assert_closed()
+
+    def test_low_source_descriptor_does_not_alias_snapshot_transport(self):
+        for source in (0, 1, 2):
+            self.api = PublicFileAPI()
+            self.api.next_fd = source
+            create = self.api.memfd_create
+            with self.subTest(source=source), self.modeled_host() as runner:
+                def distinct_snapshot(name, flags):
+                    self.api.next_fd = 3
+                    return create(name, flags)
+                def verified(command, wire, **options):
+                    self.assertEqual(options["pass_fds"], (3,))
+                    self.assertEqual(command, ["/proc/self/fd/3"])
+                    self.assertEqual(list(self.api.opened), [3])
+                    self.assertIn(source, self.api.closed)
+                    return canonical(self.result)
+                runner.side_effect = verified
+                with patch.object(self.api.os, "memfd_create", side_effect=distinct_snapshot):
+                    self.assertEqual(self.select()(self.request), self.result)
+                self.assertEqual(runner.call_count, 1)
+            self.assert_closed()
+
+
 if __name__ == "__main__":
     unittest.main()
