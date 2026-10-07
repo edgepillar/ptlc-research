@@ -741,3 +741,5 @@ Public partial collection cardinality is selected for separate conformance.
 The new controls retain two original roles while testing one, three and four
 supplied scalars. See the [construction and role boundaries](docs/PUBLIC_PARTIAL_COLLECTION_CONFORMANCE.md)
 and [Stage 77 validation scope](docs/STAGE77_VALIDATION.md).
+
+Stage 78 adds [existing public collection consumer conformance](docs/PUBLIC_COLLECTION_CONSUMER_CONFORMANCE.md) and its [validation scope](docs/STAGE78_VALIDATION.md). Aggregate-valid wrong-count and wrong-role collections are passed through the preserved consumers; no consumer or application interface changes.
