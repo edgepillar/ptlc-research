@@ -285,6 +285,155 @@ class RealVerifierExchangeTests(unittest.TestCase):
                 self.assertEqual(retained["zenon_bundle"], original)
                 self.assertFalse(retained["release_may_have_escaped"])
                 self.assertFalse(journal.get_session(terms.session_id)["possible_exposure"])
+    def _receipt_forger(self, base, mode="bound"):
+        import shlex
+
+        actor = Path(__file__).resolve().parents[1] / "tests" / "receipt_forgery_actor.py"
+        executable = base / ("synthetic-receipt-" + mode)
+        arguments = (sys.executable, "-B", str(actor), mode)
+        executable.write_text("#!/bin/sh\nexec " + " ".join(shlex.quote(value) for value in arguments) + "\n",
+                              encoding="ascii")
+        executable.chmod(0o700)
+        return SubprocessVerifier(executable.resolve())
+
+    def _receipt_forgery_case(self, stage):
+        _, bitcoin, zenon, btc_bundle, znn_bundle = artifacts()
+        if stage == "BITCOIN_BOUND":
+            expected = verification_request(bitcoin, bundle=btc_bundle)
+            changed = self._equal_total_collections(btc_bundle, wrong_count=False)[0][1]
+            request = verification_request(bitcoin, bundle=changed)
+            expected["partial_signatures_hex"] = changed["partial_signatures_hex"]
+            self.assertEqual(request, expected)
+            return changed, request, "BITCOIN_RETAINED", "bitcoin_bundle", "bitcoin_bundle"
+        if stage == "ZENON_BOUND":
+            expected = verification_request(zenon, alice_partial=znn_bundle["partial_signatures_hex"][0])
+            changed = self._equal_total_collections(znn_bundle, wrong_count=False)[0][1]["partial_signatures_hex"][0]
+            request = verification_request(zenon, alice_partial=changed)
+            expected["partial_signatures_hex"] = [changed]
+            self.assertEqual(request, expected)
+            return changed, request, "ALICE_PARTIAL_RETAINED", "alice_partial_hex", "zenon_alice_partial"
+        self.assertEqual(stage, "ALICE_PARTIAL_RETAINED")
+        expected = verification_request(zenon, bundle=znn_bundle)
+        changed = copy.deepcopy(znn_bundle)
+        bob = int(changed["partial_signatures_hex"][1], 16)
+        changed["partial_signatures_hex"][1] = f"{(bob + 1) % self._ORDER:064x}"
+        self.assertEqual(changed["partial_signatures_hex"][0], znn_bundle["partial_signatures_hex"][0])
+        self.assertEqual(changed["adaptor_presignature_hex"], znn_bundle["adaptor_presignature_hex"])
+        request = verification_request(zenon, bundle=changed)
+        expected["partial_signatures_hex"] = changed["partial_signatures_hex"]
+        self.assertEqual(request, expected)
+        return changed, request, "ZENON_RETAINED", "zenon_bundle", "zenon_bundle"
+
+    def test_actual_canonical_receipt_forgery_is_not_public_equation_verification(self):
+        from offline_session.exchange import RESULT_SCHEMA, request_digest
+
+        with tempfile.TemporaryDirectory(prefix="ptlc-receipt-forgery-") as directory:
+            base = Path(directory)
+            forger = self._receipt_forger(base)
+            negative = [self._receipt_forger(base, mode) for mode in ("wrong-digest", "false")]
+            digests = []
+            for stage in ("BITCOIN_BOUND", "ZENON_BOUND", "ALICE_PARTIAL_RETAINED"):
+                with self.subTest(stage=stage):
+                    _, request, _, _, _ = self._receipt_forgery_case(stage)
+                    before = copy.deepcopy(request)
+                    with self.assertRaises(VerificationError):
+                        self.verifier(request)
+                    expected = {"schema": RESULT_SCHEMA, "request_digest_hex": request_digest(request), "valid": True}
+                    # This is a real pipe/exit/receipt path, not a mocked runner.
+                    self.assertEqual(forger(request), expected)
+                    self.assertEqual(request, before)
+                    digests.append(expected["request_digest_hex"])
+                    for control in negative:
+                        with self.assertRaises(VerificationError):
+                            control(request)
+                        self.assertEqual(request, before)
+            self.assertEqual(len(set(digests)), 3)
+
+    def _retain_forgery_and_reopen(self, base, stage):
+        from offline_session.exchange import contexts, request_digest, validate_state
+
+        terms, bitcoin, zenon, _, _ = self._initialize_collection_exchange(base, stage)
+        changed, request, next_stage, field, receipt_field = self._receipt_forgery_case(stage)
+        context = bitcoin if stage == "BITCOIN_BOUND" else zenon
+        derived = (verification_request(context, alice_partial=changed) if stage == "ZENON_BOUND"
+                   else verification_request(context, bundle=changed))
+        self.assertEqual(request, derived)
+        seen, refused = [], []
+
+        def retain(journal, verifier):
+            if stage == "BITCOIN_BOUND":
+                return journal.retain_exchange_bitcoin(terms.session_id, changed, verifier=verifier)
+            if stage == "ZENON_BOUND":
+                return journal.retain_exchange_alice_partial(terms.session_id, changed, verifier=verifier)
+            return journal.retain_exchange_zenon(terms.session_id, changed, verifier=verifier)
+
+        def actual(value):
+            seen.append(copy.deepcopy(value))
+            try:
+                return self.verifier(value)
+            except VerificationError:
+                refused.append(True)
+                raise
+
+        self._refuse_collection_without_commit(base, terms.session_id, lambda journal: retain(journal, actual))
+        self.assertEqual(seen, [request])
+        self.assertEqual(refused, [True])
+        forger = self._receipt_forger(base)
+        forged_calls, events = [], []
+
+        def forged(value):
+            forged_calls.append(copy.deepcopy(value))
+            return forger(value)
+
+        with Journal.open(base / "state", base / "head.json", hook=events.append) as journal:
+            expected = journal.get_session(terms.session_id)
+            expected["exchange"]["stage"] = next_stage
+            expected["exchange"][field] = copy.deepcopy(changed)
+            expected["exchange"]["verification_receipts"][receipt_field] = request_digest(request)
+            before_head = (base / "head.json").read_bytes()
+            self.assertEqual(events, [])
+            retain(journal, forged)
+            self.assertEqual(journal.get_session(terms.session_id), expected)
+            self.assertEqual(forged_calls, [request])
+            expected_events = ["before_db_commit", "after_db_commit", "after_anchor_replace", "after_anchor_commit"]
+            if stage == "ALICE_PARTIAL_RETAINED":
+                expected_events.append("after_exchange_retained")
+            self.assertEqual(events, expected_events)
+            persisted_head = (base / "head.json").read_bytes()
+            self.assertNotEqual(persisted_head, before_head)
+            validate_state(journal.get_exchange(terms.session_id))
+        events.clear()
+        with Journal.open(base / "state", base / "head.json", hook=events.append) as journal:
+            self.assertEqual(journal.get_session(terms.session_id), expected)
+            self.assertEqual((base / "head.json").read_bytes(), persisted_head)
+            self.assertEqual(events, [])
+            self.assertEqual(forged_calls, [request])
+            retained = journal.get_exchange(terms.session_id)
+            restored_context = contexts(retained)[0 if stage == "BITCOIN_BOUND" else 1]
+            self.assertEqual(restored_context.as_dict(), context.as_dict())
+            restored_request = (verification_request(restored_context, alice_partial=retained[field]) if stage == "ZENON_BOUND"
+                                else verification_request(restored_context, bundle=retained[field]))
+            self.assertEqual(restored_request, request)
+            validate_state(retained)
+            with self.assertRaises(VerificationError):
+                self.verifier(restored_request)
+            self.assertFalse(retained["release_may_have_escaped"])
+            self.assertFalse(journal.get_session(terms.session_id)["possible_exposure"])
+            self.assertEqual(journal.get_session(terms.session_id), expected)
+            self.assertEqual((base / "head.json").read_bytes(), persisted_head)
+            self.assertEqual(events, [])
+
+    def test_actual_forged_bitcoin_bundle_is_retained_through_structural_reopen(self):
+        with tempfile.TemporaryDirectory(prefix="ptlc-forged-bitcoin-") as directory:
+            self._retain_forgery_and_reopen(Path(directory), "BITCOIN_BOUND")
+
+    def test_actual_forged_zenon_alice_partial_is_retained_through_structural_reopen(self):
+        with tempfile.TemporaryDirectory(prefix="ptlc-forged-alice-") as directory:
+            self._retain_forgery_and_reopen(Path(directory), "ZENON_BOUND")
+
+    def test_actual_forged_zenon_bob_bundle_is_retained_through_structural_reopen(self):
+        with tempfile.TemporaryDirectory(prefix="ptlc-forged-bob-") as directory:
+            self._retain_forgery_and_reopen(Path(directory), "ALICE_PARTIAL_RETAINED")
 
 
 def main():
