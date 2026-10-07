@@ -763,3 +763,6 @@ See the [Stage 82 validation](docs/STAGE82_VALIDATION.md).
 
 
 Stage 83 adds two [measured public verifier execution-boundary controls](docs/EXCHANGE_EXECUTION_BOUNDARY.md) to the existing actual exchange qualifier. A deterministic cut after a real entry read and a replaced dependency behind an unchanged entry both permit synthetic positives while independent native equations refuse. No atomic launch or complete runtime authentication construction is selected. See [validation](docs/STAGE83_VALIDATION.md); application and core progression remain **NO-GO**.
+
+
+Stage 84 adds a separate opt-in [sealed Linux public verifier](docs/SEALED_PUBLIC_VERIFIER.md) and [validation scope](docs/STAGE84_VALIDATION.md). Each call seals and measures a fresh public ELF snapshot, then executes the same inherited descriptor through the existing bounded runner. Existing consumers and guarded profiles retain exact bytes. The selected entry continuity does not authenticate the pin, source, loader, dependencies or environment. Application and core progression remain **NO-GO**.
