@@ -736,3 +736,8 @@ progression remain NO-GO.
 
 
 Public partial and adaptor boundaries are documented in [public adaptor edge conformance](docs/PUBLIC_ADAPTOR_EDGE_CONFORMANCE.md) with the [Stage 76 validation scope](docs/STAGE76_VALIDATION.md). Aggregate validity alone does not validate each supplied share; application and core progression remain NO-GO.
+
+Public partial collection cardinality is selected for separate conformance.
+The new controls retain two original roles while testing one, three and four
+supplied scalars. See the [construction and role boundaries](docs/PUBLIC_PARTIAL_COLLECTION_CONFORMANCE.md)
+and [Stage 77 validation scope](docs/STAGE77_VALIDATION.md).

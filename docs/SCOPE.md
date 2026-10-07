@@ -688,3 +688,12 @@ inventories, unfilled reports and application/core NO-GO.
 
 
 Stage 76 selects public-only partial parser, compensated/reordered aggregate and cancelling adaptor controls. See [construction and boundaries](PUBLIC_ADAPTOR_EDGE_CONFORMANCE.md) and [validation](STAGE76_VALIDATION.md). No private signer or application policy is selected; application and core progression remain NO-GO.
+
+## Public partial collection cardinality boundary
+
+The [selected public collection controls](PUBLIC_PARTIAL_COLLECTION_CONFORMANCE.md)
+keep the original two-role context while varying the supplied scalar count.
+Equal aggregate totals do not establish received collection cardinality or
+individual role validity. No application collection adapter, private signer
+or production policy is added. [Stage 77 validation](STAGE77_VALIDATION.md)
+keeps local and hosted evidence separate; application and core remain NO-GO.

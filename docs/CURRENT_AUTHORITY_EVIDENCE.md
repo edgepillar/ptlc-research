@@ -479,3 +479,13 @@ identity, producer authenticity or nonrollback custody is established;
 
 
 The [public adaptor edge construction](PUBLIC_ADAPTOR_EDGE_CONFORMANCE.md) separately measures individual partial and aggregate equations. Compensating public share mutations can preserve the original aggregate while each share refuses its selected role equation. Neither result authenticates a participant or supplies current custody. See [Stage 76 validation](STAGE76_VALIDATION.md); all independent gates remain open.
+
+## Public partial collection cardinality evidence
+
+The [selected collection construction](PUBLIC_PARTIAL_COLLECTION_CONFORMANCE.md)
+separates scalar count, aggregate mathematics and original role equations.
+The existing complete public intents still select exactly two ordered keys
+and nonce roles. A valid aggregate supplies no received collection structure,
+participant authentication, private consumed-input measurement or custody.
+[Stage 77 validation](STAGE77_VALIDATION.md) records the separate checks;
+all original assessments remain unfilled and application/core remain NO-GO.

@@ -98,3 +98,12 @@ No private signer, application cryptography, chain observer, wallet access,
 authoritative recovery, protected-use adapter, core integration, deployment,
 activation, transaction broadcast or real funds is included. All test values
 are synthetic public fixtures. No artifact release is qualified.
+
+## Separate collection cardinality controls
+
+The [public partial collection construction](PUBLIC_PARTIAL_COLLECTION_CONFORMANCE.md)
+extends the preserved two-item reordered and compensated controls to selected
+one-, three- and four-item collections under the original two-role contexts.
+It keeps collection count, each selected role equation and the resulting
+aggregate distinct. No private signer or application policy is added. See
+[Stage 77 validation](STAGE77_VALIDATION.md) for its separate evidence.
