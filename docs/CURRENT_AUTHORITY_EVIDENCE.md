@@ -466,3 +466,13 @@ retains that separate obligation. Freshness, current authority, physical
 failure and nonrollback custody remain open. The two finite models and all
 three unfilled reports remain preserved; application/core remain NO-GO.
 See [validation](STAGE74_VALIDATION.md).
+
+## Public nonce components supply no authority
+
+[Public edge conformance](PUBLIC_NONCE_EDGE_CONFORMANCE.md) can parse shared
+components and aggregate cancellation while refusing changed contexts with
+original partial fixtures. Neither equality nor cancellation measures private
+nonce reuse, consumption or disclosure. Shape acceptance of an in-field
+noncurve encoding is distinct from actual backend refusal. No participant
+identity, producer authenticity or nonrollback custody is established;
+[Stage 75 validation](STAGE75_VALIDATION.md) retains all open gates.

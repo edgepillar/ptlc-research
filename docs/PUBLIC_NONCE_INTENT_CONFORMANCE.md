@@ -104,3 +104,15 @@ Source-to-worker and reproducibility remain **NOT VERIFIED**; independent
 privacy remains **NOT ASSESSED**. No reviewer is contacted. No wallet, core
 integration, deployment, activation, transaction or real funds is selected.
 See [Stage 74 validation](STAGE74_VALIDATION.md).
+
+## Additional public nonce boundaries
+
+[Public edge conformance](PUBLIC_NONCE_EDGE_CONFORMANCE.md) uses the preserved
+factory packets and partial fixtures to distinguish full nonce equality,
+shared/repeated components, individual point validity and aggregate infinity.
+The backend explicitly permits aggregate cancellation and a generator
+fallback; no new protocol rejection policy is selected. In-field noncurve
+coordinates can pass consistently rebuilt Python shape/context checks but
+refuse actual point parsing. Public conformance remains separate from
+freshness, participant identity and private consumed inputs. See
+[Stage 75 validation](STAGE75_VALIDATION.md).

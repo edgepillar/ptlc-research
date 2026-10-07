@@ -675,3 +675,13 @@ selected tweak and point checks supply fixture conformance, not participant
 authentication, measured private signer inputs, freshness or nonce custody.
 All inventories, assessments, historical profiles and the complete workflow
 remain unchanged. See [validation](STAGE74_VALIDATION.md); application/core remain NO-GO.
+
+## Public nonce edge controls
+
+[Public nonce edge conformance](PUBLIC_NONCE_EDGE_CONFORMANCE.md) keeps full
+nonce reflection, component equality, individual point validity and aggregate
+infinity separate. The existing backend permits aggregate cancellation and
+its generator fallback; these tests preserve that behavior without selecting
+a new application policy. No signer consumption, freshness or custody is
+measured. [Stage 75 validation](STAGE75_VALIDATION.md) retains the fixed review
+inventories, unfilled reports and application/core NO-GO.

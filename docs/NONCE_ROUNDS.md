@@ -113,3 +113,14 @@ aggregate sum unchanged but rejects each original partial. No nonce generation,
 private signer, consumption registry, entropy or custody mechanism is added.
 The public grammar and separate test-only owner retain their prior scopes.
 See [validation](STAGE74_VALIDATION.md); application/core remain NO-GO.
+
+## Component and aggregate boundaries
+
+[Public nonce edge controls](PUBLIC_NONCE_EDGE_CONFORMANCE.md) show that the
+existing full-nonce reflection refusal does not supply a component history or
+curve-membership check. Correctly rebuilt openings can bind shared/repeated
+components and cancelling points. The pinned backend accepts aggregate
+infinity while refusing individual infinity and in-field noncurve points.
+Old openings and selected intents cannot follow changed public pairs; these
+public checks still supply no nonce freshness, private consumption or custody.
+See [Stage 75 validation](STAGE75_VALIDATION.md).
