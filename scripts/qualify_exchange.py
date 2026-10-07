@@ -435,6 +435,77 @@ class RealVerifierExchangeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="ptlc-forged-bob-") as directory:
             self._retain_forgery_and_reopen(Path(directory), "ALICE_PARTIAL_RETAINED")
 
+    def test_actual_same_adapter_path_replacement_does_not_preserve_native_program(self):
+        import hashlib
+        import shutil
+        from offline_session.exchange import RESULT_SCHEMA, request_digest
+
+        _, bitcoin, zenon, btc_bundle, znn_bundle = artifacts()
+        stages = ("BITCOIN_BOUND", "ZENON_BOUND", "ALICE_PARTIAL_RETAINED")
+        valid = (verification_request(bitcoin, bundle=btc_bundle),
+                 verification_request(zenon, alice_partial=znn_bundle["partial_signatures_hex"][0]),
+                 verification_request(zenon, bundle=znn_bundle))
+        invalid = tuple(self._receipt_forgery_case(stage)[1] for stage in stages)
+        original_requests = copy.deepcopy((valid, invalid))
+
+        with tempfile.TemporaryDirectory(prefix="ptlc-program-continuity-") as directory:
+            base = Path(directory).resolve()
+            original = Path(self.verifier._executable)
+            original_pin = hashlib.sha256(original.read_bytes()).digest()
+            selected = base / "selected-verifier"
+            shutil.copyfile(original, selected)
+            selected.chmod(0o700)
+            selected_pin = hashlib.sha256(selected.read_bytes()).digest()
+            self.assertEqual(selected_pin, original_pin)
+            identity = (selected.stat().st_dev, selected.stat().st_ino)
+            adapter = SubprocessVerifier(selected)
+            selected_path = adapter._executable
+            self.assertEqual(selected_path, str(selected))
+
+            def native_controls():
+                for stage, good, bad in zip(stages, valid, invalid):
+                    with self.subTest(stage=stage):
+                        expected = {"schema": RESULT_SCHEMA, "request_digest_hex": request_digest(good), "valid": True}
+                        self.assertEqual(adapter(good), expected)
+                        with self.assertRaises(VerificationError):
+                            adapter(bad)
+                self.assertEqual((valid, invalid), original_requests)
+
+            # Establish actual native execution before changing the selection.
+            native_controls()
+            retained = selected.replace(base / "retained-native")
+            self.assertFalse(selected.exists())
+            with self.assertRaises(VerificationError) as refused:
+                adapter(invalid[0])
+            self.assertNotIn(str(base), str(refused.exception))
+            self.assertEqual(adapter._executable, selected_path)
+            retained.replace(selected)
+            self.assertEqual((selected.stat().st_dev, selected.stat().st_ino), identity)
+
+            # The real synthetic actor replaces the file between completed calls.
+            # This selects no measurement/launch race or guarded worker profile.
+            replacement = Path(self._receipt_forger(base)._executable)
+            selected.replace(retained)
+            replacement.replace(selected)
+            self.assertNotEqual((selected.stat().st_dev, selected.stat().st_ino), identity)
+            self.assertNotEqual(hashlib.sha256(selected.read_bytes()).digest(), selected_pin)
+            self.assertEqual(adapter._executable, selected_path)
+            for stage, bad in zip(stages, invalid):
+                with self.subTest(stage=stage, program="substituted"):
+                    expected = {"schema": RESULT_SCHEMA, "request_digest_hex": request_digest(bad), "valid": True}
+                    self.assertEqual(adapter(bad), expected)
+                    # Independent original selection still refuses the same bytes.
+                    with self.assertRaises(VerificationError):
+                        self.verifier(bad)
+            self.assertEqual((valid, invalid), original_requests)
+
+            retained.replace(selected)
+            self.assertEqual((selected.stat().st_dev, selected.stat().st_ino), identity)
+            self.assertEqual(hashlib.sha256(selected.read_bytes()).digest(), selected_pin)
+            self.assertEqual(adapter._executable, selected_path)
+            native_controls()
+            self.assertEqual(hashlib.sha256(original.read_bytes()).digest(), original_pin)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Offline public-verifier integration; no signing or transport")
