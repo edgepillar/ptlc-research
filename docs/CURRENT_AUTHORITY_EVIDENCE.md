@@ -527,3 +527,15 @@ The same-process modeled mutation and actual Linux schedules are separate
 evidence boundaries. All independent reports remain unfilled. See
 [construction](SEALED_VERIFIER_SUBMITTED_WIRE.md) and
 [validation](STAGE86_VALIDATION.md). Application and core remain **NO-GO**.
+
+## Stage 87: bounded declarations do not close runtime authority
+
+The separate [ELF observer](WORKER_ELF_DECLARATIONS.md) binds selected metadata
+to a complete entry under an owned-quiescent input premise. Caller-selected
+digest agreement does not authenticate distribution, source-to-worker
+correspondence, the interpreter or loaded dependencies. Presence and absence of
+selected declarations remain observations. Four fixed inventories and three
+unfilled assessment reports retain exact bytes. See
+[validation](STAGE87_VALIDATION.md). Source-to-worker and reproducibility remain
+**NOT VERIFIED**, runtime closure remains **NOT AUTHENTICATED**, independent
+privacy remains **NOT ASSESSED**, and application/core progression is **NO-GO**.

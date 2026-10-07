@@ -109,3 +109,14 @@ passes a deep copy to callbacks, and remains byte exact. See
 [construction](SEALED_VERIFIER_SUBMITTED_WIRE.md) and
 [validation](STAGE86_VALIDATION.md). No private custody or application/core
 progression is selected.
+
+## Stage 87: separate entry-declaration observation
+
+The optional [ELF metadata observer](WORKER_ELF_DECLARATIONS.md) is a separate
+offline tool. It does not replace receipt verification, select a signing runtime
+or advance exchange state. Existing adapters, consumers and all nineteen
+preceding actual exchange methods retain their complete bytes. One appended
+method must qualify a selected actual Linux ELF observation; unsupported-format
+refusal on macOS is a separate result. See [validation](STAGE87_VALIDATION.md).
+No signing, custody, distribution, loaded-runtime, independent privacy or
+production authority is added. Application and core remain **NO-GO**.

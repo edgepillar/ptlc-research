@@ -779,3 +779,12 @@ same-process caller mutation cannot replace that expectation. See the
 [construction and limits](docs/SEALED_VERIFIER_SUBMITTED_WIRE.md) and
 [Stage 86 validation](docs/STAGE86_VALIDATION.md). This is research qualification;
 application and core progression remain **NO-GO**.
+
+## Stage 87: separate bounded ELF declarations
+
+The optional [ELF metadata observer](docs/WORKER_ELF_DECLARATIONS.md) reads one
+caller-pinned entry without opening its declared interpreter or resolving dynamic
+strings. Fixed declaration observations do not authenticate runtime closure or
+source correspondence. Accepted adapters and consumers retain exact bytes.
+See the separate [validation snapshot](docs/STAGE87_VALIDATION.md). Application
+and core progression remain **NO-GO**.
