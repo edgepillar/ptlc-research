@@ -715,3 +715,12 @@ no new digest, private signer or consumption permission. Exact byte comparison
 checks the selected public object; it authenticates no producer, actual backend
 input, current authority or nonce custody. See [validation](docs/STAGE73_VALIDATION.md);
 application/core remain NO-GO and independent reports remain unfilled.
+
+## Public input backend conformance
+
+[Stage 74](docs/PUBLIC_NONCE_INTENT_CONFORMANCE.md) binds four fixed complete
+factory packets to test-only backend key aggregation, Taproot tweaking, point
+parsing and verification of existing public partial fixtures. Swapping valid
+full nonces preserves their sum but rejects individual partials. No signer,
+private bridge, freshness, consumed-signer-input evidence or authentication is
+added. See [validation](docs/STAGE74_VALIDATION.md); application/core remain NO-GO.
