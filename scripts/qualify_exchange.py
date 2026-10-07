@@ -505,6 +505,71 @@ class RealVerifierExchangeTests(unittest.TestCase):
             self.assertEqual(adapter._executable, selected_path)
             native_controls()
             self.assertEqual(hashlib.sha256(original.read_bytes()).digest(), original_pin)
+    def test_actual_measured_exchange_selection_refuses_replacement_without_authenticating_source(self):
+        import hashlib
+        import shutil
+        from unittest.mock import patch
+        from offline_session.exchange import RESULT_SCHEMA, request_digest
+        from offline_session.measured_artifact_verifier import MeasuredSubprocessVerifier
+
+        _, bitcoin, zenon, btc_bundle, znn_bundle = artifacts()
+        valid = (verification_request(bitcoin, bundle=btc_bundle),
+                 verification_request(zenon, alice_partial=znn_bundle["partial_signatures_hex"][0]),
+                 verification_request(zenon, bundle=znn_bundle))
+        invalid = tuple(self._receipt_forgery_case(stage)[1]
+                        for stage in ("BITCOIN_BOUND", "ZENON_BOUND", "ALICE_PARTIAL_RETAINED"))
+        original_requests = copy.deepcopy((valid, invalid))
+
+        with tempfile.TemporaryDirectory(prefix="ptlc-measured-selection-") as directory:
+            base = Path(directory).resolve()
+            original = Path(self.verifier._executable)
+            original_pin = hashlib.sha256(original.read_bytes()).hexdigest()
+            selected = base / "selected-verifier"
+            shutil.copyfile(original, selected)
+            selected.chmod(0o700)
+            self.assertEqual(hashlib.sha256(selected.read_bytes()).hexdigest(), original_pin)
+            adapter = MeasuredSubprocessVerifier(selected, expected_executable_sha256_hex=original_pin)
+
+            def native_controls():
+                for good, bad in zip(valid, invalid):
+                    self.assertEqual(adapter(good), {
+                        "schema": RESULT_SCHEMA, "request_digest_hex": request_digest(good), "valid": True})
+                    with self.assertRaises(VerificationError):
+                        adapter(bad)
+
+            native_controls()
+            retained = selected.replace(base / "retained-native")
+            with patch("offline_session.artifact_verifier.run_public_worker") as runner:
+                with self.assertRaises(VerificationError):
+                    adapter(invalid[0])
+                runner.assert_not_called()
+            replacement = Path(self._receipt_forger(base)._executable)
+            replacement.replace(selected)
+            with patch("offline_session.artifact_verifier.run_public_worker") as runner:
+                for bad in invalid:
+                    with self.assertRaises(VerificationError):
+                        adapter(bad)
+                runner.assert_not_called()
+            retained.replace(selected)
+            native_controls()
+            with patch("offline_session.artifact_verifier.run_public_worker") as runner:
+                with self.assertRaises(VerificationError):
+                    MeasuredSubprocessVerifier(selected, expected_executable_sha256_hex="00" * 32)
+                runner.assert_not_called()
+
+            # A caller-selected matching synthetic program is still a trusted
+            # local liar. Entry measurement cannot authenticate its equations.
+            synthetic = Path(self._receipt_forger(base)._executable)
+            synthetic_pin = hashlib.sha256(synthetic.read_bytes()).hexdigest()
+            measured_liar = MeasuredSubprocessVerifier(synthetic,
+                expected_executable_sha256_hex=synthetic_pin)
+            for bad in invalid:
+                self.assertEqual(measured_liar(bad), {
+                    "schema": RESULT_SCHEMA, "request_digest_hex": request_digest(bad), "valid": True})
+                with self.assertRaises(VerificationError):
+                    self.verifier(bad)
+            self.assertEqual((valid, invalid), original_requests)
+            self.assertEqual(hashlib.sha256(original.read_bytes()).hexdigest(), original_pin)
 
 
 def main():
