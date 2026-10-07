@@ -1,0 +1,208 @@
+{
+  "legs": [
+    {
+      "cases": [
+        {
+          "aggregate_components_infinity": [
+            false,
+            false
+          ],
+          "name": "baseline",
+          "public_nonces_hex": [
+            "0343f2a0736dc5acc1cb9f247002445c26bb5e89ff632352f270404f190eae3deb030f1c46576e935518ae23f450ebaa171ca557c4ac1f52bbf86168d32e16b330fd",
+            "036d5e82b842c9acb143cfb0ec6decb4903983d6ecd7af19197dae5efbf6a0b1fa0396f69d10ae05abc4b45ad604d38814b7fb7b4f27eef1986665544eae32c3294e"
+          ],
+          "python_round_accepts": true
+        },
+        {
+          "aggregate_components_infinity": [
+            false,
+            false
+          ],
+          "name": "equal_full",
+          "public_nonces_hex": [
+            "0343f2a0736dc5acc1cb9f247002445c26bb5e89ff632352f270404f190eae3deb030f1c46576e935518ae23f450ebaa171ca557c4ac1f52bbf86168d32e16b330fd",
+            "0343f2a0736dc5acc1cb9f247002445c26bb5e89ff632352f270404f190eae3deb030f1c46576e935518ae23f450ebaa171ca557c4ac1f52bbf86168d32e16b330fd"
+          ],
+          "python_round_accepts": false
+        },
+        {
+          "aggregate_components_infinity": [
+            false,
+            false
+          ],
+          "name": "shared_first_component",
+          "public_nonces_hex": [
+            "0343f2a0736dc5acc1cb9f247002445c26bb5e89ff632352f270404f190eae3deb030f1c46576e935518ae23f450ebaa171ca557c4ac1f52bbf86168d32e16b330fd",
+            "0343f2a0736dc5acc1cb9f247002445c26bb5e89ff632352f270404f190eae3deb0396f69d10ae05abc4b45ad604d38814b7fb7b4f27eef1986665544eae32c3294e"
+          ],
+          "python_round_accepts": true
+        },
+        {
+          "aggregate_components_infinity": [
+            false,
+            false
+          ],
+          "name": "shared_second_component",
+          "public_nonces_hex": [
+            "0343f2a0736dc5acc1cb9f247002445c26bb5e89ff632352f270404f190eae3deb030f1c46576e935518ae23f450ebaa171ca557c4ac1f52bbf86168d32e16b330fd",
+            "036d5e82b842c9acb143cfb0ec6decb4903983d6ecd7af19197dae5efbf6a0b1fa030f1c46576e935518ae23f450ebaa171ca557c4ac1f52bbf86168d32e16b330fd"
+          ],
+          "python_round_accepts": true
+        },
+        {
+          "aggregate_components_infinity": [
+            false,
+            false
+          ],
+          "name": "repeated_components_in_alice_nonce",
+          "public_nonces_hex": [
+            "0343f2a0736dc5acc1cb9f247002445c26bb5e89ff632352f270404f190eae3deb0343f2a0736dc5acc1cb9f247002445c26bb5e89ff632352f270404f190eae3deb",
+            "036d5e82b842c9acb143cfb0ec6decb4903983d6ecd7af19197dae5efbf6a0b1fa0396f69d10ae05abc4b45ad604d38814b7fb7b4f27eef1986665544eae32c3294e"
+          ],
+          "python_round_accepts": true
+        },
+        {
+          "aggregate_components_infinity": [
+            true,
+            false
+          ],
+          "name": "first_component_cancellation",
+          "public_nonces_hex": [
+            "0343f2a0736dc5acc1cb9f247002445c26bb5e89ff632352f270404f190eae3deb030f1c46576e935518ae23f450ebaa171ca557c4ac1f52bbf86168d32e16b330fd",
+            "0243f2a0736dc5acc1cb9f247002445c26bb5e89ff632352f270404f190eae3deb0396f69d10ae05abc4b45ad604d38814b7fb7b4f27eef1986665544eae32c3294e"
+          ],
+          "python_round_accepts": true
+        },
+        {
+          "aggregate_components_infinity": [
+            false,
+            true
+          ],
+          "name": "second_component_cancellation",
+          "public_nonces_hex": [
+            "0343f2a0736dc5acc1cb9f247002445c26bb5e89ff632352f270404f190eae3deb030f1c46576e935518ae23f450ebaa171ca557c4ac1f52bbf86168d32e16b330fd",
+            "036d5e82b842c9acb143cfb0ec6decb4903983d6ecd7af19197dae5efbf6a0b1fa020f1c46576e935518ae23f450ebaa171ca557c4ac1f52bbf86168d32e16b330fd"
+          ],
+          "python_round_accepts": true
+        },
+        {
+          "aggregate_components_infinity": [
+            true,
+            true
+          ],
+          "name": "both_components_cancellation",
+          "public_nonces_hex": [
+            "0343f2a0736dc5acc1cb9f247002445c26bb5e89ff632352f270404f190eae3deb030f1c46576e935518ae23f450ebaa171ca557c4ac1f52bbf86168d32e16b330fd",
+            "0243f2a0736dc5acc1cb9f247002445c26bb5e89ff632352f270404f190eae3deb020f1c46576e935518ae23f450ebaa171ca557c4ac1f52bbf86168d32e16b330fd"
+          ],
+          "python_round_accepts": true
+        }
+      ],
+      "leg": "bitcoin"
+    },
+    {
+      "cases": [
+        {
+          "aggregate_components_infinity": [
+            false,
+            false
+          ],
+          "name": "baseline",
+          "public_nonces_hex": [
+            "0361f4afd8d2fcda2c7b2508c56a23c93acb6aa99d6aae15902ff95fcd9df79ede030b1dd98e5ec414991a00624be89052c2190c980c75073b01d790acee87bfc7b4",
+            "02fe76b041d5e23a24f1c29fdc6ba9237d18a76451e3c66c7d3e4441c1da730a070268e499dda096072905734a399f29b961c36c42208481cc8a80f41ff79185c84f"
+          ],
+          "python_round_accepts": true
+        },
+        {
+          "aggregate_components_infinity": [
+            false,
+            false
+          ],
+          "name": "equal_full",
+          "public_nonces_hex": [
+            "0361f4afd8d2fcda2c7b2508c56a23c93acb6aa99d6aae15902ff95fcd9df79ede030b1dd98e5ec414991a00624be89052c2190c980c75073b01d790acee87bfc7b4",
+            "0361f4afd8d2fcda2c7b2508c56a23c93acb6aa99d6aae15902ff95fcd9df79ede030b1dd98e5ec414991a00624be89052c2190c980c75073b01d790acee87bfc7b4"
+          ],
+          "python_round_accepts": false
+        },
+        {
+          "aggregate_components_infinity": [
+            false,
+            false
+          ],
+          "name": "shared_first_component",
+          "public_nonces_hex": [
+            "0361f4afd8d2fcda2c7b2508c56a23c93acb6aa99d6aae15902ff95fcd9df79ede030b1dd98e5ec414991a00624be89052c2190c980c75073b01d790acee87bfc7b4",
+            "0361f4afd8d2fcda2c7b2508c56a23c93acb6aa99d6aae15902ff95fcd9df79ede0268e499dda096072905734a399f29b961c36c42208481cc8a80f41ff79185c84f"
+          ],
+          "python_round_accepts": true
+        },
+        {
+          "aggregate_components_infinity": [
+            false,
+            false
+          ],
+          "name": "shared_second_component",
+          "public_nonces_hex": [
+            "0361f4afd8d2fcda2c7b2508c56a23c93acb6aa99d6aae15902ff95fcd9df79ede030b1dd98e5ec414991a00624be89052c2190c980c75073b01d790acee87bfc7b4",
+            "02fe76b041d5e23a24f1c29fdc6ba9237d18a76451e3c66c7d3e4441c1da730a07030b1dd98e5ec414991a00624be89052c2190c980c75073b01d790acee87bfc7b4"
+          ],
+          "python_round_accepts": true
+        },
+        {
+          "aggregate_components_infinity": [
+            false,
+            false
+          ],
+          "name": "repeated_components_in_alice_nonce",
+          "public_nonces_hex": [
+            "0361f4afd8d2fcda2c7b2508c56a23c93acb6aa99d6aae15902ff95fcd9df79ede0361f4afd8d2fcda2c7b2508c56a23c93acb6aa99d6aae15902ff95fcd9df79ede",
+            "02fe76b041d5e23a24f1c29fdc6ba9237d18a76451e3c66c7d3e4441c1da730a070268e499dda096072905734a399f29b961c36c42208481cc8a80f41ff79185c84f"
+          ],
+          "python_round_accepts": true
+        },
+        {
+          "aggregate_components_infinity": [
+            true,
+            false
+          ],
+          "name": "first_component_cancellation",
+          "public_nonces_hex": [
+            "0361f4afd8d2fcda2c7b2508c56a23c93acb6aa99d6aae15902ff95fcd9df79ede030b1dd98e5ec414991a00624be89052c2190c980c75073b01d790acee87bfc7b4",
+            "0261f4afd8d2fcda2c7b2508c56a23c93acb6aa99d6aae15902ff95fcd9df79ede0268e499dda096072905734a399f29b961c36c42208481cc8a80f41ff79185c84f"
+          ],
+          "python_round_accepts": true
+        },
+        {
+          "aggregate_components_infinity": [
+            false,
+            true
+          ],
+          "name": "second_component_cancellation",
+          "public_nonces_hex": [
+            "0361f4afd8d2fcda2c7b2508c56a23c93acb6aa99d6aae15902ff95fcd9df79ede030b1dd98e5ec414991a00624be89052c2190c980c75073b01d790acee87bfc7b4",
+            "02fe76b041d5e23a24f1c29fdc6ba9237d18a76451e3c66c7d3e4441c1da730a07020b1dd98e5ec414991a00624be89052c2190c980c75073b01d790acee87bfc7b4"
+          ],
+          "python_round_accepts": true
+        },
+        {
+          "aggregate_components_infinity": [
+            true,
+            true
+          ],
+          "name": "both_components_cancellation",
+          "public_nonces_hex": [
+            "0361f4afd8d2fcda2c7b2508c56a23c93acb6aa99d6aae15902ff95fcd9df79ede030b1dd98e5ec414991a00624be89052c2190c980c75073b01d790acee87bfc7b4",
+            "0261f4afd8d2fcda2c7b2508c56a23c93acb6aa99d6aae15902ff95fcd9df79ede020b1dd98e5ec414991a00624be89052c2190c980c75073b01d790acee87bfc7b4"
+          ],
+          "python_round_accepts": true
+        }
+      ],
+      "leg": "zenon"
+    }
+  ],
+  "note": "Public-only mutations of existing synthetic nonce fixtures. Expected transcript and aggregate boundaries are tested separately; neither acceptance grants freshness, participant identity, private nonce ownership or signing authority.",
+  "schema": "ptlc-public-nonce-edge-corpus-v1"
+}

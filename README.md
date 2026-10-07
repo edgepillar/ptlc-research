@@ -724,3 +724,12 @@ parsing and verification of existing public partial fixtures. Swapping valid
 full nonces preserves their sum but rejects individual partials. No signer,
 private bridge, freshness, consumed-signer-input evidence or authentication is
 added. See [validation](docs/STAGE74_VALIDATION.md); application/core remain NO-GO.
+
+### Public nonce component and infinity boundaries
+
+[Public edge conformance](docs/PUBLIC_NONCE_EDGE_CONFORMANCE.md) checks shared
+components, aggregate cancellation and in-field noncurve encodings against
+complete transcript shape and the existing pinned backend. These public-only
+controls select no signing interface or new aggregate rejection policy.
+See [Stage 75 validation](docs/STAGE75_VALIDATION.md). Application and core
+progression remain NO-GO.
