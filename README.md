@@ -769,3 +769,13 @@ Stage 84 adds a separate opt-in [sealed Linux public verifier](docs/SEALED_PUBLI
 
 
 Stage 85 narrows the optional adapter with an [original acceptance cutoff and standard-descriptor policy](docs/SEALED_VERIFIER_ACCEPTANCE.md), plus [validation scope](docs/STAGE85_VALIDATION.md). Correct late receipts refuse at the selected checks; snapshots below three refuse before transport. Existing consumers and native equations remain exact. Blocking syscalls, late worker launch, caller delivery time and complete runtime authentication remain outside the qualified boundary. Application and core progression remain **NO-GO**.
+
+
+## Submitted-wire receipt expectation
+
+The optional sealed public verifier now retains one expectation derived from
+the exact bounded request bytes submitted before snapshot acquisition. Later
+same-process caller mutation cannot replace that expectation. See the
+[construction and limits](docs/SEALED_VERIFIER_SUBMITTED_WIRE.md) and
+[Stage 86 validation](docs/STAGE86_VALIDATION.md). This is research qualification;
+application and core progression remain **NO-GO**.

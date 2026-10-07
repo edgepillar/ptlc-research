@@ -1027,6 +1027,81 @@ class RealVerifierExchangeTests(unittest.TestCase):
         print("PASS: sealed Linux seven closed-standard-descriptor schedules; twelve pre-launch alias refusals; nine real native positives; 21 closed descriptors")
 
 
+    def test_actual_sealed_exchange_receipts_bind_original_wire_after_caller_mutation_or_host_refuses(self):
+        from contextlib import contextmanager
+        import errno
+        import hashlib
+        import os
+        from unittest.mock import patch
+        from offline_session import sealed_artifact_verifier as sealed
+        from offline_session.exchange import RESULT_SCHEMA, canonical, request_digest
+        if not self._sealed_linux_or_refusal():
+            return
+        _, bitcoin, zenon, btc_bundle, znn_bundle = artifacts()
+        requests = (verification_request(bitcoin, bundle=btc_bundle),
+                    verification_request(zenon, alice_partial=znn_bundle["partial_signatures_hex"][0]),
+                    verification_request(zenon, bundle=znn_bundle))
+        unchanged = copy.deepcopy(requests)
+        original = Path(self.verifier._executable)
+        pin = hashlib.sha256(original.read_bytes()).hexdigest()
+        adapter = sealed.SealedSubprocessVerifier(original,
+            expected_executable_sha256_hex=pin)
+        actual_snapshot, actual_run = sealed._snapshot, sealed._run
+        descriptors, native_results = [], []
+        accepted = substituted_refusals = closed_checks = 0
+
+        @contextmanager
+        def observed_snapshot(path, expected_pin, deadline):
+            with actual_snapshot(path, expected_pin, deadline) as descriptor:
+                descriptors.append(descriptor)
+                yield descriptor
+
+        def assert_closed(descriptor):
+            nonlocal closed_checks
+            with self.assertRaises(OSError) as closed:
+                os.fstat(descriptor)
+            self.assertEqual(closed.exception.errno, errno.EBADF)
+            closed_checks += 1
+
+        with patch.object(sealed, "_snapshot", observed_snapshot):
+            for original_request in requests:
+                original_wire = canonical(original_request)
+                expected = {"schema": RESULT_SCHEMA,
+                    "request_digest_hex": request_digest(original_request), "valid": True}
+                for mutation in ("unchanged", "changed", "object", "cycle", "substitute"):
+                    request = copy.deepcopy(original_request)
+                    def mutate_then_run(command, wire, **options):
+                        self.assertEqual(wire, original_wire)
+                        descriptor, = options["pass_fds"]
+                        self.assertGreaterEqual(descriptor, 3)
+                        if mutation != "unchanged":
+                            request.clear()
+                            request["synthetic_later_input"] = (object() if mutation == "object"
+                                else request if mutation == "cycle" else "changed public caller")
+                        response = actual_run(command, wire, **options)
+                        self.assertIn(response, (canonical(expected), canonical(expected) + b"\n"))
+                        native_results.append(response)
+                        if mutation == "substitute":
+                            changed = dict(expected, request_digest_hex=request_digest(request))
+                            self.assertNotEqual(changed, expected)
+                            return canonical(changed)
+                        return response
+                    with patch.object(sealed, "_run", mutate_then_run):
+                        if mutation == "substitute":
+                            with self.assertRaises(VerificationError):
+                                adapter(request)
+                            substituted_refusals += 1
+                        else:
+                            self.assertEqual(adapter(request), expected)
+                            accepted += 1
+                    assert_closed(descriptors[-1])
+        self.assertEqual((len(descriptors), len(native_results), accepted,
+                          substituted_refusals, closed_checks), (15, 15, 12, 3, 15))
+        self.assertEqual(requests, unchanged)
+        self.assertEqual(hashlib.sha256(original.read_bytes()).hexdigest(), pin)
+        print("PASS: sealed Linux submitted wire retained across nine caller mutations; twelve original receipt acceptances; three substituted-digest refusals; fifteen real native positives and closed descriptors")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Offline public-verifier integration; no signing or transport")
     parser.add_argument("--verifier", required=True, help="Path to the locally built verify_exchange executable")

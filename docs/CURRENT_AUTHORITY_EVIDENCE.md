@@ -517,3 +517,13 @@ Stage 84 adds a separate opt-in [sealed Linux public verifier](SEALED_PUBLIC_VER
 
 
 Stage 85 narrows the optional adapter with an [original acceptance cutoff and standard-descriptor policy](SEALED_VERIFIER_ACCEPTANCE.md), plus [validation scope](STAGE85_VALIDATION.md). Correct late receipts refuse at the selected checks; snapshots below three refuse before transport. Existing consumers and native equations remain exact. Blocking syscalls, late worker launch, caller delivery time and complete runtime authentication remain outside the qualified boundary. Application and core progression remain **NO-GO**.
+
+
+## Stage 86 direct-adapter receipt ownership
+
+A stored digest of the submitted public bytes narrows the optional adapter
+without authenticating the selected process, caller, producer or private inputs.
+The same-process modeled mutation and actual Linux schedules are separate
+evidence boundaries. All independent reports remain unfilled. See
+[construction](SEALED_VERIFIER_SUBMITTED_WIRE.md) and
+[validation](STAGE86_VALIDATION.md). Application and core remain **NO-GO**.

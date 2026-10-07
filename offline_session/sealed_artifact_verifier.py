@@ -21,7 +21,7 @@ try:
 except ImportError:
     fcntl = None
 
-from .exchange import RESULT_SCHEMA, VerificationError, canonical, request_digest
+from .exchange import RESULT_SCHEMA, VerificationError, canonical
 from .public_worker import WorkerError, _remaining, _run
 
 
@@ -151,6 +151,10 @@ class SealedSubprocessVerifier:
             raise VerificationError("public verification request exceeds its bound")
         deadline = time.monotonic() + self._timeout
         try:
+            # Bind the receipt to the bytes submitted, without rereading the
+            # caller's mutable object after snapshot acquisition or transport.
+            expected = {"schema": RESULT_SCHEMA, "request_digest_hex": hashlib.sha256(
+                b"PTLC/artifact-verification/v1\x00" + wire).hexdigest(), "valid": True}
             with _snapshot(path, self._expected_executable_sha256_hex, deadline) as descriptor:
                 response = _run(["/proc/self/fd/" + str(descriptor)], wire,
                     timeout=_remaining(deadline), max_output_bytes=4096,
@@ -158,7 +162,6 @@ class SealedSubprocessVerifier:
                 _remaining(deadline)
             _remaining(deadline)
             result = json.loads(response.decode("ascii"))
-            expected = {"schema": RESULT_SCHEMA, "request_digest_hex": request_digest(request), "valid": True}
             if (type(result) is not dict or result != expected or result.get("valid") is not True
                     or response not in (canonical(expected), canonical(expected) + b"\n")):
                 raise VerificationError("public verifier returned an invalid bound result")
