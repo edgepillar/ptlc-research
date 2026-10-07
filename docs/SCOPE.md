@@ -705,3 +705,14 @@ Stage 79 selects four [durable public exchange collection controls](EXCHANGE_COL
 Stage 80 adds [actual public verifier receipt and persistence controls](EXCHANGE_VERIFIER_TRUST_BOUNDARY.md), with [validation scope](STAGE80_VALIDATION.md). The existing exchange adapter trusts its selected local program. A real synthetic positive receipt can pass exact byte binding while mathematical verification refuses, and ordinary journal reopen preserves structural state without rerunning equations. This selects no production change, authenticated producer, private consumed-input proof, nonce custody, guarded-profile migration or application/core progression.
 
 Stage 81 adds one [actual program selection continuity control](EXCHANGE_PROGRAM_SELECTION.md) to the existing exchange qualifier. The same legacy adapter observes native execution, missing-entry refusal, same-path synthetic replacement and restored native execution. Test-only file measurements do not become production authentication. See [validation](STAGE81_VALIDATION.md); application and core progression remain **NO-GO**.
+
+
+## Explicit measured public verifier selection
+
+A separate optional [measured exchange verifier](MEASURED_EXCHANGE_VERIFIER.md)
+requires a caller-provisioned entry-file SHA256 and repeats the bounded comparison
+before every call. The legacy adapter and existing consumers remain exact.
+Same-path replacement refuses before launch, but a matching pin for a deliberately
+selected synthetic actor still permits forged claims. Matching bytes authenticate
+neither source nor execution; atomic launch and application policy remain open.
+See the [Stage 82 validation](STAGE82_VALIDATION.md).

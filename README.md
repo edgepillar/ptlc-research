@@ -749,3 +749,14 @@ Stage 79 extends the existing actual subprocess qualifier with four [durable pub
 Stage 80 adds [actual verifier receipt trust-boundary controls](docs/EXCHANGE_VERIFIER_TRUST_BOUNDARY.md) and a separate [validation scope](docs/STAGE80_VALIDATION.md). A synthetic executable can return canonical positive receipts for public inputs the native verifier refuses; structural journal reopen preserves those receipts without rerunning mathematics. These negative controls keep program trust and persistence separate from cryptographic validity. Application and core progression remain NO-GO.
 
 Stage 81 adds one [actual program selection continuity control](docs/EXCHANGE_PROGRAM_SELECTION.md) to the existing exchange qualifier. The same legacy adapter observes native execution, missing-entry refusal, same-path synthetic replacement and restored native execution. Test-only file measurements do not become production authentication. See [validation](docs/STAGE81_VALIDATION.md); application and core progression remain **NO-GO**.
+
+
+## Explicit measured public verifier selection
+
+A separate optional [measured exchange verifier](docs/MEASURED_EXCHANGE_VERIFIER.md)
+requires a caller-provisioned entry-file SHA256 and repeats the bounded comparison
+before every call. The legacy adapter and existing consumers remain exact.
+Same-path replacement refuses before launch, but a matching pin for a deliberately
+selected synthetic actor still permits forged claims. Matching bytes authenticate
+neither source nor execution; atomic launch and application policy remain open.
+See the [Stage 82 validation](docs/STAGE82_VALIDATION.md).
