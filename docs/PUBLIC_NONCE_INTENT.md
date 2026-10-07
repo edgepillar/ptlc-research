@@ -120,3 +120,15 @@ All four immutable source inventories, historical native profiles, existing
 implementations/fixtures/workflow and three unfilled assessment reports remain
 preserved. No independent review is claimed or requested. See
 [Stage 73 validation](STAGE73_VALIDATION.md).
+
+## Stage 74: a separate fixed-corpus conformance check
+
+The [test-only conformance](PUBLIC_NONCE_INTENT_CONFORMANCE.md) binds four fixed
+complete factory outputs to the existing public backend's ordered aggregation,
+selected Taproot tweak, point parsing and verification of existing partial
+fixtures. It adds no exported application or signer interface. This factory
+continues to perform transcript/shape validation and exact byte comparison.
+The Rust helper checks only projected public inputs and deliberately does not
+replace full-context validation. Neither successful layer establishes actual
+private signer consumption, participant authentication, freshness or custody.
+See [Stage 74 validation](STAGE74_VALIDATION.md); application/core remain NO-GO.

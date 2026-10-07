@@ -103,3 +103,13 @@ private consumption boundary is added. Public bytes and declared keys are not
 actual consumed-input evidence. Exact replay can pass repeatedly without
 one-use or freshness. The journal and test-only Rust owner retain their separate
 scopes. See [validation](STAGE73_VALIDATION.md); application/core remain NO-GO.
+
+## Stage 74: individual nonce inputs in public verification
+
+The [fixed intent conformance](PUBLIC_NONCE_INTENT_CONFORMANCE.md) parses both
+components of each public nonce and verifies existing partials with the indexed
+signer and individual nonce. Swapping Alice/Bob full nonces leaves their
+aggregate sum unchanged but rejects each original partial. No nonce generation,
+private signer, consumption registry, entropy or custody mechanism is added.
+The public grammar and separate test-only owner retain their prior scopes.
+See [validation](STAGE74_VALIDATION.md); application/core remain NO-GO.

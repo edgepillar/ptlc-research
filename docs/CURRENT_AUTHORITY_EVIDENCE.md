@@ -454,3 +454,15 @@ participant authentication, current authority, actual worker execution or
 nonexportable custody. No private bridge is added and neither finite nonce
 model's ideal premise is implemented. All independent reports remain unfilled;
 application/core remain NO-GO. See [validation](STAGE73_VALIDATION.md).
+
+## Stage 74: public verification remains separate from signing authority
+
+The [conformance tests](PUBLIC_NONCE_INTENT_CONFORMANCE.md) reconstruct backend
+contexts from fixed public projections and verify old public partial fixtures.
+They do not call signing or consume a private nonce. Correct equations do not
+authenticate a participant or attest a producer's actual consumed inputs.
+The helper does not revalidate the complete transcript; the existing factory
+retains that separate obligation. Freshness, current authority, physical
+failure and nonrollback custody remain open. The two finite models and all
+three unfilled reports remain preserved; application/core remain NO-GO.
+See [validation](STAGE74_VALIDATION.md).

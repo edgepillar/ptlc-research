@@ -664,3 +664,14 @@ peer expectations or adding another hash. It implements no private interface,
 worker, consumption, authentication, current-policy check or recovery. Existing
 models, implementations, profiles, inventories and unfilled reports retain
 their bytes. See [validation](STAGE73_VALIDATION.md); application/core remain NO-GO.
+
+## Stage 74: verification-only public conformance
+
+[Backend conformance](PUBLIC_NONCE_INTENT_CONFORMANCE.md) checks four fixed
+factory projections through the existing locked library and existing public
+partials. Only test code and a public corpus are added; the factory and worker
+interfaces retain their bytes. Actual ordered aggregation, declared keys,
+selected tweak and point checks supply fixture conformance, not participant
+authentication, measured private signer inputs, freshness or nonce custody.
+All inventories, assessments, historical profiles and the complete workflow
+remain unchanged. See [validation](STAGE74_VALIDATION.md); application/core remain NO-GO.
