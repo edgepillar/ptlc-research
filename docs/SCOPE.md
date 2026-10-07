@@ -716,3 +716,6 @@ Same-path replacement refuses before launch, but a matching pin for a deliberate
 selected synthetic actor still permits forged claims. Matching bytes authenticate
 neither source nor execution; atomic launch and application policy remain open.
 See the [Stage 82 validation](STAGE82_VALIDATION.md).
+
+
+Stage 83 adds two [measured public verifier execution-boundary controls](EXCHANGE_EXECUTION_BOUNDARY.md) to the existing actual exchange qualifier. A deterministic cut after a real entry read and a replaced dependency behind an unchanged entry both permit synthetic positives while independent native equations refuse. No atomic launch or complete runtime authentication construction is selected. See [validation](STAGE83_VALIDATION.md); application and core progression remain **NO-GO**.
