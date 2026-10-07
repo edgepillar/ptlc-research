@@ -570,6 +570,135 @@ class RealVerifierExchangeTests(unittest.TestCase):
                     self.verifier(bad)
             self.assertEqual((valid, invalid), original_requests)
             self.assertEqual(hashlib.sha256(original.read_bytes()).hexdigest(), original_pin)
+    def test_actual_measured_exchange_post_measurement_substitution_executes_replacement(self):
+        import hashlib
+        import shutil
+        from unittest.mock import patch
+        from offline_session.exchange import RESULT_SCHEMA, request_digest
+        from offline_session.measured_artifact_verifier import MeasuredSubprocessVerifier
+        from offline_session.observation_verifier import _file_digest
+
+        _, bitcoin, zenon, btc_bundle, znn_bundle = artifacts()
+        valid = (verification_request(bitcoin, bundle=btc_bundle),
+                 verification_request(zenon, alice_partial=znn_bundle["partial_signatures_hex"][0]),
+                 verification_request(zenon, bundle=znn_bundle))
+        invalid = tuple(self._receipt_forgery_case(stage)[1]
+                        for stage in ("BITCOIN_BOUND", "ZENON_BOUND", "ALICE_PARTIAL_RETAINED"))
+        original_requests = copy.deepcopy((valid, invalid))
+
+        with tempfile.TemporaryDirectory(prefix="ptlc-measurement-cut-") as directory:
+            base = Path(directory).resolve()
+            original = Path(self.verifier._executable)
+            original_pin = hashlib.sha256(original.read_bytes()).hexdigest()
+            selected = base / "selected-verifier"
+            shutil.copyfile(original, selected)
+            selected.chmod(0o700)
+            self.assertEqual(hashlib.sha256(selected.read_bytes()).hexdigest(), original_pin)
+            adapter = MeasuredSubprocessVerifier(selected, expected_executable_sha256_hex=original_pin)
+            synthetic = Path(self._receipt_forger(base)._executable)
+            retained = base / "retained-native"
+
+            def native_controls():
+                for good, bad in zip(valid, invalid):
+                    self.assertEqual(adapter(good), {
+                        "schema": RESULT_SCHEMA, "request_digest_hex": request_digest(good), "valid": True})
+                    with self.assertRaises(VerificationError):
+                        adapter(bad)
+
+            native_controls()
+            observed = []
+
+            def measure_then_replace(path):
+                self.assertEqual(path, selected)
+                # Preserve the actual bounded read and its actual digest. This
+                # hook inserts a deterministic cut after that read, before the
+                # adapter returns to its unchanged real subprocess runner.
+                digest = _file_digest(path)
+                self.assertEqual(digest, original_pin)
+                observed.append(digest)
+                selected.replace(retained)
+                shutil.copyfile(synthetic, selected)
+                selected.chmod(0o700)
+                return digest
+
+            for bad in invalid:
+                try:
+                    with patch("offline_session.measured_artifact_verifier._file_digest",
+                               side_effect=measure_then_replace) as measurement:
+                        self.assertEqual(adapter(bad), {
+                            "schema": RESULT_SCHEMA, "request_digest_hex": request_digest(bad), "valid": True})
+                        measurement.assert_called_once_with(selected)
+                    self.assertNotEqual(hashlib.sha256(selected.read_bytes()).hexdigest(), original_pin)
+                    with self.assertRaises(VerificationError):
+                        self.verifier(bad)
+                finally:
+                    if retained.exists():
+                        retained.replace(selected)
+            self.assertEqual(observed, [original_pin] * 3)
+            native_controls()
+            self.assertEqual((valid, invalid), original_requests)
+            self.assertEqual(hashlib.sha256(original.read_bytes()).hexdigest(), original_pin)
+
+    def test_actual_measured_exchange_entry_pin_does_not_measure_dependency(self):
+        import hashlib
+        import shlex
+        import shutil
+        from offline_session.exchange import RESULT_SCHEMA, request_digest
+        from offline_session.measured_artifact_verifier import MeasuredSubprocessVerifier
+
+        _, bitcoin, zenon, btc_bundle, znn_bundle = artifacts()
+        valid = (verification_request(bitcoin, bundle=btc_bundle),
+                 verification_request(zenon, alice_partial=znn_bundle["partial_signatures_hex"][0]),
+                 verification_request(zenon, bundle=znn_bundle))
+        invalid = tuple(self._receipt_forgery_case(stage)[1]
+                        for stage in ("BITCOIN_BOUND", "ZENON_BOUND", "ALICE_PARTIAL_RETAINED"))
+        original_requests = copy.deepcopy((valid, invalid))
+
+        with tempfile.TemporaryDirectory(prefix="ptlc-entry-dependency-") as directory:
+            base = Path(directory).resolve()
+            original = Path(self.verifier._executable)
+            original_pin = hashlib.sha256(original.read_bytes()).hexdigest()
+            target = base / "selected-target"
+            shutil.copyfile(original, target)
+            target.chmod(0o700)
+            self.assertEqual(hashlib.sha256(target.read_bytes()).hexdigest(), original_pin)
+            entry = base / "selected-entry"
+            entry.write_text("#!/bin/sh\nexec " + shlex.quote(str(target)) + "\n", encoding="ascii")
+            entry.chmod(0o700)
+            entry_bytes = entry.read_bytes()
+            entry_pin = hashlib.sha256(entry_bytes).hexdigest()
+            adapter = MeasuredSubprocessVerifier(entry, expected_executable_sha256_hex=entry_pin)
+
+            def native_controls():
+                for good, bad in zip(valid, invalid):
+                    self.assertEqual(adapter(good), {
+                        "schema": RESULT_SCHEMA, "request_digest_hex": request_digest(good), "valid": True})
+                    with self.assertRaises(VerificationError):
+                        adapter(bad)
+
+            native_controls()
+            retained = target.replace(base / "retained-native")
+            synthetic = Path(self._receipt_forger(base)._executable)
+            synthetic.replace(target)
+            try:
+                self.assertNotEqual(hashlib.sha256(target.read_bytes()).hexdigest(), original_pin)
+                self.assertEqual(entry.read_bytes(), entry_bytes)
+                self.assertEqual(hashlib.sha256(entry.read_bytes()).hexdigest(), entry_pin)
+                for bad in invalid:
+                    # Entry bytes and every real entry measurement stay exact;
+                    # the launched dependency now emits synthetic positives.
+                    self.assertEqual(adapter(bad), {
+                        "schema": RESULT_SCHEMA, "request_digest_hex": request_digest(bad), "valid": True})
+                    with self.assertRaises(VerificationError):
+                        self.verifier(bad)
+            finally:
+                retained.replace(target)
+            self.assertEqual(hashlib.sha256(target.read_bytes()).hexdigest(), original_pin)
+            self.assertEqual(entry.read_bytes(), entry_bytes)
+            self.assertEqual(hashlib.sha256(entry.read_bytes()).hexdigest(), entry_pin)
+            native_controls()
+            self.assertEqual((valid, invalid), original_requests)
+            self.assertEqual(hashlib.sha256(original.read_bytes()).hexdigest(), original_pin)
 
 
 def main():
