@@ -141,3 +141,15 @@ unimplemented premise requiring independent custody and physical-failure
 qualification. It selects no hardware, service, signer interface, private retry
 or production mechanism. The requirement remains separate from this comparison
 and from any future cryptographic construction or implementation assessment.
+
+## Public invocation intent acceptance clarification
+
+[Stage 73](PUBLIC_NONCE_INTENT.md) supplies a public-only partial-input grammar,
+retaining the full existing context instead of treating another descriptive
+digest as authority. Exact input agreement remains distinct from authorization
+to consume a nonce and evidence of what an actual backend consumed. A future
+private bridge must independently qualify its real key aggregation and tweak,
+message, adaptor, public nonce association and irreversible effect boundary.
+The public schema contains no private key, nonce, consume grant or recovery
+credential. A successful comparison implements neither model's custody premise
+and supplies no production or core progression permission.

@@ -706,3 +706,12 @@ receipts still permit repeated nonce work in the selected controls. Conditional
 no-counterexample exploration assumes an unimplemented nonexportable boundary
 through the actual effect. No private signer or custody mechanism is added.
 See [validation](docs/STAGE72_VALIDATION.md); application/core remain NO-GO.
+
+## Public partial-invocation input projection
+
+[Stage 73](docs/PUBLIC_NONCE_INTENT.md) retains the complete existing dynamic
+signing context and makes its declared public backend inputs explicit. It adds
+no new digest, private signer or consumption permission. Exact byte comparison
+checks the selected public object; it authenticates no producer, actual backend
+input, current authority or nonce custody. See [validation](docs/STAGE73_VALIDATION.md);
+application/core remain NO-GO and independent reports remain unfilled.
