@@ -750,3 +750,15 @@ It is preparation only, with no reviewer findings, contact or requests. All four
 fixed earlier inventories and all three unfilled reports retain exact bytes.
 Later packaging and its CI timeout policy are outside the immutable source.
 See [validation](STAGE88_VALIDATION.md); application/core progression is **NO-GO**.
+
+## Stage 89: actual partial-journal cuts remain short of signer integration
+
+The [failure-cut map](PARTIAL_SIGNER_FAILURE_CUTS.md) pins the accepted source and
+separates reservation, admission consumption, ephemeral secret ownership, output
+retention and replay. New fixture-only process tests cover four partial scopes
+and both commit occurrences; copied and restored histories can each invoke a
+synthetic callback again. False witness-exposure flags do not establish nonce
+safety. Actual secret consumption and post-consumption copied permissions remain
+separate open review obligations. No native signer, custody mechanism or
+independent assessment is selected. All fixed subjects and unfilled reports
+remain exact. See [validation](STAGE89_VALIDATION.md); application/core is **NO-GO**.

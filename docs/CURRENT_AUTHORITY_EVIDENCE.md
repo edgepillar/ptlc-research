@@ -549,3 +549,15 @@ Complete source inventory and passing tests supply none of those missing facts.
 No signer or custody construction is selected, all three assessment records
 remain unfilled, and application/core progression remains **NO-GO**. See
 [validation](STAGE88_VALIDATION.md).
+
+## Stage 89: local one-use records do not span copied histories
+
+The [partial-journal cut map](PARTIAL_SIGNER_FAILURE_CUTS.md) retains durable
+admission, actual secret work and retained byte replay as separate boundaries.
+New public-fixture counterexamples open two copied histories together on distinct
+locks, and separately restore a matching pre-reservation pair. Each history
+refuses another local invocation while the synthetic producer runs twice across
+histories. No real nonce reuse or key extraction is demonstrated. Neither a
+false witness-exposure flag nor final-output fencing establishes current secret
+ownership. Independent nonrollback authority and signer integration remain open;
+application/core progression remains **NO-GO**. See [validation](STAGE89_VALIDATION.md).
