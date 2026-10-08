@@ -13,7 +13,9 @@ and byte replay. Losing a result must not permit another use of the nonce. Local
 one-use state must not be mistaken for protection across restored or copied
 histories. These requirements are broader than this selected test construction.
 
-The [existing Rust owner and five new tests](../qualification/tests/nonce_lifecycle.rs)
+The [separate Rust test crate](../qualification-native-partial/Cargo.toml) has no
+application API and is marked `publish = false`. Its
+[five new tests](../qualification-native-partial/tests/native_partial_journal.rs)
 retain the nonce in the original test thread. The
 [separate Python actor](../tests/native_partial_journal_actor.py) owns a journal
 and reconstructs only the existing public context. Both legs and both roles use
@@ -22,10 +24,19 @@ The scalar keys and seeds are intentionally public test values. There is no
 arbitrary key import, nonce serialization, application API or network transport.
 The actor accepts only the exact corresponding public fixture partial.
 
-No primitive or journal implementation changes. All preceding method bodies in
-the Rust file remain exact; its header is updated and test helpers/methods are
-appended. All preceding Python tests, actors, fixtures, dependency locks and CI
-commands remain byte exact. The [Stage 89 SIGKILL matrix](PARTIAL_SIGNER_FAILURE_CUTS.md)
+The private owner helper definitions are copied byte exact from the
+[existing test owner](../qualification/tests/nonce_lifecycle.rs) at the accepted
+parent under the root MIT license. This is a source-pinned test copy, not a shared
+production signer implementation. The copied helpers retain unused fault
+variants under a test-file `dead_code` allowance; the selected five methods do
+not qualify those unused variants.
+
+No primitive or journal implementation changes. The entire existing qualification
+crate, including all tests, fixtures and dependency locks, remains byte exact.
+The separate crate uses the same dev-dependency declarations and locked dependency
+versions; only its root package name/description differ. All preceding Python
+tests and actors are exact. Two native job commands are added for this separate
+crate; all preceding CI commands remain intact. The [Stage 89 SIGKILL matrix](PARTIAL_SIGNER_FAILURE_CUTS.md)
 remains a separate synthetic-callback qualification. It is not substituted for
 native owner process-death or machine power-loss qualification.
 
@@ -101,6 +112,16 @@ the selected test construction. It does not demonstrate an attack with changed
 messages, key extraction, cloning an opaque live secret owner or a production
 rollback exploit. The false partial witness-exposure flag remains unrelated to
 nonce safety. Adaptor completion and witness extraction are later boundaries.
+
+## Fixed source guard and the layout correction
+
+The initial candidate appended this handoff to the existing owner test file.
+Its local Rust/Python suites passed, but the first hosted run correctly refused
+two fixed-source preparation steps: that file belongs to the immutable selected
+qualification source. The original file is now restored byte exact. The new
+construction lives in a separate crate outside that inventory, and two additive
+CI commands qualify it. No fixed inventory, baseline or source guard is relaxed.
+The first failed run and local results are retained and disclosed separately.
 
 ## Gates still open
 

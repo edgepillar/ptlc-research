@@ -1,76 +1,88 @@
 # Stage 90 validation snapshot
 
-Status: local macOS and portable qualification passed. New hosted qualification
-is pending. Application and core progression remain **NO-GO**. The parent is
-`b86af7abcf575ad900fa5bf7fb5b85788d181126`.
+Status: corrected layout passed local qualification. New exact-head hosted
+qualification is pending. Application and core progression remain **NO-GO**.
+The parent is `b86af7abcf575ad900fa5bf7fb5b85788d181126`.
 
-The [selected synthetic native handoff](NATIVE_PARTIAL_JOURNAL_HANDOFF.md) orders
-journal consumption before the existing native partial-signing primitive, with
-fixed public test keys and seeds only. No real signer, entropy, durable custody
-or independent nonrollback construction is selected. Its peer assertion is not
-an authenticated admission grant. Managed completion is a later boundary.
+The [selected construction](NATIVE_PARTIAL_JOURNAL_HANDOFF.md) uses a separate
+[`publish = false` crate](../qualification-native-partial/Cargo.toml), with no
+application signer API. Its private owner helper definitions are copied byte
+exact from the accepted original under the root MIT license. The test-only file
+allows retained unused fault variants; those variants are outside this selected
+profile. Real signer, entropy, durable custody and nonrollback authority remain
+unselected. The trusted pipe event is not an authenticated admission grant.
 
-## Local qualification
+## Corrected local source
 
-- First targeted nonce-lifecycle run: twelve methods passed, seven retained and
-  five new, in 3.041 s including runner/build time. The
-  [Rust tests](../qualification/tests/nonce_lifecycle.rs) and
-  [Python actor](../tests/native_partial_journal_actor.py) select 32 owners and
-  producer admissions in 24 child runs across four role/leg scopes: 24 valid
-  synthetic native partials, four wrong-key backend refusals and four before-
-  backend refusals. This defines 28 signing backend entries. Only the exact
-  existing public partial fixture crosses the pipe.
-- Actual native result loss is selected before delivery: the computed public
-  partial is discarded, the reopened journal becomes `OUTCOME_UNKNOWN`, and the
-  original native owner is spent. This is not SIGKILL, native process death or
-  power-loss evidence. Eight separate copied-history/restore subcases reconstruct
-  deterministic native owners and repeat the same nonce/partial while each
-  original owner refuses local reuse. No changed-message key extraction or live
-  opaque secret cloning is executed.
-- Complete local Rust run: 177 unique methods passed, retaining all 172 prior IDs
-  and adding exactly five, in 15.188 s including runner/build
-  time. Zero failed or ignored tests and no compiler warning lines. Formatting
-  passed. All preceding owner/function/test bodies remain exact after the
-  two-line file header update; new helpers and methods are appended.
-- Completed full offline Python run: all 2035 unchanged unique IDs passed in
-  1277.536 s; runner 1277.997 s,
-  with required OpenSSL. Zero skips, failures or ResourceWarning lines. All 35
-  sealed and twelve measured-adapter method bodies retain exact source bytes.
-  The preceding 44 SIGKILL schedules and eight synthetic-callback copy/restore
-  subcases remain a separate retained scope.
-- Actual public exchange: all twenty preceding methods passed in
-  13.829 s; runner 13.913 s,
-  with the cached selected worker. Five Linux sealed schedules explicitly refuse
-  the unsupported Apple host and the ELF observer separately refuses Mach-O.
-  These are refusals, not skips or actual local Linux/ELF qualification.
-- Artifact hygiene: 992 index/worktree versions across 496 tracked files and
-  1717 resolved relative file links. Of 493 preceding files, 488 are
-  byte exact, four documents are append-only and one native test file retains its
-  prior body after the header update; three new files are added. All 296 other
-  preceding non-document files are exact and all 298 current non-document files
-  are frozen. Journal and primitive implementation, fixtures, dependencies,
-  preceding Python tests/actors and workflow remain unchanged.
-- Go and complete Linux/Apple worker profiles were not rerun locally for this
-  test-only slice. Separate exact-head hosted qualification remains pending in
-  this pre-publication snapshot; those results must be assessed separately.
+- All five [native handoff methods](../qualification-native-partial/tests/native_partial_journal.rs)
+  passed in 3.24 s including runner/build time. They
+  select 32 owners/admissions in 24 children across four role/leg scopes, with
+  24 valid synthetic native partials, four wrong-key backend refusals and four
+  before-backend refusals: 28 signing backend entries. Twenty operations retain
+  output; twelve reopen unknown. Eight copy/restore subcases repeat actual
+  deterministic nonce/partial math with reconstructed test owners. Only the
+  fixed public partial crosses the pipe. Selected result loss is not SIGKILL,
+  native owner death, power-loss durability or changed-message key extraction.
+- The entire original Rust qualification crate is byte exact. All 172 unique
+  original methods passed in 15.115 s including runner/build
+  time. With the separate five, this is 177 unique methods across two crates,
+  not one production signer. Formatting passed. The copied imports emit one
+  expected unused-import warning for `LiftedSignature` and `MaybeScalar`; those
+  types are retained for exact source copying and unused in this selected profile.
+- The completed corrected full Python suite passed all 2035 unchanged unique
+  IDs in 1290.506 s; runner 1290.917 s,
+  with required OpenSSL and no skips, failures or ResourceWarning lines. All 35
+  sealed and twelve measured-adapter method bodies remain exact. The preceding
+  44 SIGKILL schedules and eight fixed-output copy/restore subcases remain a
+  separate retained qualification.
+- Both selected Cargo resolution profiles passed against the unchanged baseline,
+  each preparing exactly 55 fixed source files, with runner 130.749 s.
+  These are metadata/content comparisons, not cross-platform native execution.
+- The separate actual native Apple object-prefix profile completed two fresh
+  builds and two public math groups/28 cases, with runner 284.22 s.
+  The unsupported local Linux sealed schedules remain refusals, not local Linux
+  execution. The initial twenty-method actual exchange run passed unchanged in
+  13.829 s with five Apple unsupported-host sealed refusals and one Mach-O/ELF
+  format refusal. Go and the full Linux worker profiles are not rerun locally.
+- Artifact checks cover 1000 index/worktree versions across 500 tracked files and
+  1719 resolved relative file links. Of 493 preceding files, 488 are exact,
+  four documents are append-only and the workflow adds exactly two commands,
+  preserving every old command and timeout. Seven files are new. All 296 other
+  preceding non-document files are exact and all 302 current non-document files
+  are frozen. Journal/primitive code, old actors/tests, fixtures, locks, fixed
+  inventories, baselines and qualifiers remain unchanged. The separate crate
+  changes only its root package identity in the copied dependency lock; dependency
+  versions and declared dev-dependencies are the same.
 
-## Run and independent review accounting
+## Original failure and correction
 
-Two read-only guessed path lookups missed: a workflow filename before
-implementation and a private preflight-proof filename after local qualification.
-The actual discovered filenames were then read. One private preflight summary
-retained the preceding-stage numeric label despite guards bound to this candidate;
-the label was corrected before final preflight and original evidence is retained.
-No failed qualification invocation or test execution, source/build repair,
-interrupted full run, hidden fallback, targeted/full-suite rerun or failed private
-verifier preparation assertion occurred.
-Original logs and results remain retained. The case inventory is source-defined;
-execution evidence is the five exact successful native methods, not an inventory
-count by itself.
+The initial source `9464833106b6199cdb33e4f423ed48297c121a42` passed its local
+2035 Python methods in 1277.536 s and all 177 Rust methods.
+The [first hosted run](https://github.com/edgepillar/ptlc-research/actions/runs/37719771165)
+passed its native math tests but failed two fixed-source preparation steps. The
+modified existing owner file was the sole differing member of the 55-file selected
+qualification source. The guard correctly refused it; this is not a nonce or
+signature test failure. The actual Apple profile and later Linux worker groups
+were not qualified by that failed run.
 
-Four fixed independent inventories, the earlier author handoff inventory and
-three unfilled reports remain byte exact. No reviewer contact or review request
-is made. Source-to-worker and reproducibility remain **NOT VERIFIED**; private
-consumed inputs, producer origin and loaded runtime remain **NOT AUTHENTICATED**;
-independent privacy remains **NOT ASSESSED**. No artifact release, wallet, funds,
-chain, broadcast, deployment, activation, merge or core action is qualified.
+One layout correction restores that file byte exact and moves the bridge to a
+separate unpublished crate with exact copied owner helpers. Two additive native
+CI commands test and format it. No fixed guard, inventory, baseline, dependency
+version or production cryptography is changed. The targeted native suite and full
+Python suite are each rerun once for this corrected source; original passes and
+failed hosted job logs are retained. No local test failure, hidden fallback or
+interrupted full run occurred. Three read-only guessed-path lookups missed; actual
+filenames were then used. One private preflight summary retained the prior stage
+number despite candidate-bound guards; it was corrected and its original retained.
+A private local metadata finalizer first stopped on a blanket zero-warning
+assertion for the known copied-import diagnostic. Only that helper check was
+corrected to accept exactly the disclosed warning and rerun once. Its original
+assertion error and both helper/orchestration exit 1 results remain retained.
+No test or repository source was changed by this metadata correction.
+
+Four fixed inventories, the earlier author handoff inventory and three unfilled
+reports remain exact. No independent reviewer is contacted or assessment claimed.
+Source-to-worker and reproducibility remain **NOT VERIFIED**; private consumed
+inputs, producer origin and loaded runtime remain **NOT AUTHENTICATED**; privacy
+remains **NOT ASSESSED**. No wallet, funds, chain, artifact release, broadcast,
+deployment, activation, merge or core action is qualified.

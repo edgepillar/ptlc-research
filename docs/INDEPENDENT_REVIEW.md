@@ -767,7 +767,9 @@ remain exact. See [validation](STAGE89_VALIDATION.md); application/core is **NO-
 ## Stage 90: synthetic native integration is author qualification
 
 The [selected partial handoff](NATIVE_PARTIAL_JOURNAL_HANDOFF.md) adds author-side
-Rust/Python tests with fixed public keys and seeds. Actual partial equations and
+Rust/Python tests in a separate unpublished crate with fixed public keys and
+seeds. The existing owner helper definitions are copied byte exact; the immutable
+original qualification crate remains unchanged. Actual partial equations and
 local replay/refusal qualify only those selected inputs and ordering. Copied or
 restored histories with reconstructed deterministic owners still repeat native
 nonce/partial math. No independent reviewer is contacted; the four inventories,

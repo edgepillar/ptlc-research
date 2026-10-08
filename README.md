@@ -812,7 +812,8 @@ application and core remain **NO-GO**.
 ## Stage 90: native partial math with public test inputs
 
 A [test-only Rust/Python handoff](docs/NATIVE_PARTIAL_JOURNAL_HANDOFF.md) uses the
-existing ephemeral owner to produce actual pinned native partial signatures only
+source-pinned copy of the ephemeral test owner in a separate `publish = false`
+crate to produce actual pinned native partial signatures only
 for fixed public synthetic keys and seeds. Five native tests separate admission,
 backend entry, result loss, retention and replay. Copied/restored histories and
 reconstructed deterministic owners still repeat the same nonce and partial.

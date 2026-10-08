@@ -771,7 +771,8 @@ construction, native integration, private input or core change is selected. See
 ## Stage 90: test-only native partial handoff
 
 The [public-synthetic native handoff](NATIVE_PARTIAL_JOURNAL_HANDOFF.md) keeps the
-existing ephemeral nonce in its Rust test thread and sends only the corresponding
+nonce in its Rust test thread using a source-pinned copy of the existing test
+owner in a separate, unpublished crate, and sends only the corresponding
 public partial to a separate Python journal. Five new native methods qualify
 retention, deliberately discarded results and before/backend refusal. Separate
 copied/restored-history controls reconstruct deterministic public test owners and
