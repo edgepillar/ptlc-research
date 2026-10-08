@@ -34,9 +34,10 @@ class PolicyEffectContentionTests(prior.PolicyEffectStoreCase):
         child.stdin.write(b"go\n")
         child.stdin.flush()
 
-    def observed(self, slot="first", pause="plain", buffering="small"):
+    def observed(self, slot="first", pause="plain", buffering="small", case=None):
+        case = self if case is None else case
         actor = Path(__file__).with_name("policy_effect_contention_actor.py")
-        child = subprocess.Popen([sys.executable, "-B", str(actor), str(self.path), slot, pause, buffering],
+        child = subprocess.Popen([sys.executable, "-B", str(actor), str(case.path), slot, pause, buffering],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         def cleanup():
@@ -212,3 +213,56 @@ class PolicyEffectContentionTests(prior.PolicyEffectStoreCase):
         self.resume(winner)
         self.finish(winner, "StoreOutcomeUnknown")
         self.retained(("first",))
+
+    def framing_case(self, pause):
+        case = prior.PolicyEffectStoreCase()
+        case.setUp()
+        self.addCleanup(case.doCleanups)
+        case.store.replace_local_policy(0, case.wire(max_attempt_limit=1), active=True)
+        child = self.observed(pause=pause, case=case)
+        if pause != "plain":
+            self.resume(child)
+            point = "after-commit" if pause == "lose-after-commit" else pause
+            self.wait_line(child, ("paused-" + point).encode("ascii"))
+        return case, child
+
+    def refused_frames(self, pause, retained=()):
+        frames = (
+            ("wrong-token", b"stop\n"),
+            ("crlf", b"go\r\n"),
+            ("missing-newline", b"go"),
+            ("eof", b""),
+            ("non-ascii", b"\xff\n"),
+            ("overlong", b"x" * 4096 + b"\n"),
+        )
+        for label, frame in frames:
+            with self.subTest(frame=label):
+                case, child = self.framing_case(pause)
+                output, error = child.communicate(frame, timeout=10)
+                self.assertEqual((child.returncode, error), (30, b""))
+                self.assertEqual(output, b"synthetic-contention-helper-refused\n")
+                self.retained(retained, case)
+
+    def test_invalid_initial_frames_refuse_without_a_retained_charge(self):
+        self.refused_frames("plain")
+
+    def test_invalid_first_write_frames_refuse_and_roll_back_the_transaction(self):
+        self.refused_frames("before-first-write")
+
+    def test_invalid_precommit_frames_refuse_and_roll_back_the_transaction(self):
+        self.refused_frames("before-commit")
+
+    def test_invalid_postcommit_frames_refuse_but_preserve_the_original_charge(self):
+        self.refused_frames("lose-after-commit", ("first",))
+
+    def test_overlong_frame_refuses_before_line_end_or_input_close_at_each_cut(self):
+        for pause in ("plain", "before-first-write", "before-commit", "lose-after-commit"):
+            with self.subTest(pause=pause):
+                case, child = self.framing_case(pause)
+                child.stdin.write(b"goXX")
+                child.stdin.flush()
+                # The input is still open and has no newline at this assertion.
+                self.wait_line(child, b"synthetic-contention-helper-refused")
+                output, error = child.communicate(timeout=10)
+                self.assertEqual((child.returncode, output, error), (30, b"", b""))
+                self.retained(("first",) if pause == "lose-after-commit" else (), case)

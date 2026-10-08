@@ -59,11 +59,46 @@ The [separate observed actor](../tests/policy_effect_contention_actor.py)
 delegates the original SQL unchanged. It emits only a fixed outcome schema,
 public charge/effect counters, a transaction-state flag and allowlisted SQL
 phase/numeric BUSY diagnostics. SQLite exception text, parameters, paths and
-process identifiers are not output fields. Setup/framing failures exit 30 and
-cannot qualify as unknown store outcomes. Intentional before/after-commit
+process identifiers are not output fields. Fixed control-frame refusal is
+handled as a helper error with exit 30, separately from store outcomes as
+described below. Intentional before/after-commit
 reply-loss hooks are explicit test premises; they are not actual network-loss
 or private worker evidence. The original actor is separately exercised without
 this observer.
+
+## Fixed control-frame refusal
+
+The Stage 100 helper at immutable commit
+`0eb96fe71c897cd9e20ad811494a8d298a73baa7` could have a transactional cut's
+framing exception wrapped as `StoreOutcomeUnknown`, returning exit 20. Its
+eight valid-frame methods did not qualify the broader framing-refusal claim.
+Two separate local diagnostics retained zero charges before commit and one
+after commit for invalid frames; neither explains the earlier Stage 99 failure.
+
+The helper now reads at most four bytes per control frame and requires exactly
+`go` followed by LF. It retains a framing-refusal flag outside the store's
+exception wrapper and checks it before emitting a store result. This changes
+only the test helper: store SQL, rollback handling, timeout, allocation cap,
+original request bindings and the original strict availability assertion stay
+unchanged. Valid frames still reach the eight preceding contention methods and
+their explicit synthetic reply-loss controls.
+
+Five added negative methods use 28 independent disposable databases and child
+executions. Six invalid inputs (wrong token, CRLF, missing newline, EOF,
+non-ASCII and an overlong line) are tested at initial readiness, before first
+write, before commit and after commit. A separate four-cut method requires
+refusal of a four-byte invalid frame before its newline or input close, checking
+the read bound while the pipe remains open. A shorter incomplete input can
+still wait for more bytes or EOF; this is not a transport deadline guarantee.
+
+Every malformed-frame child emits only the fixed helper-refusal line and exits
+30. Raw operation/effect counts, complete validated store view, exact original
+lookup and reopen remain independent assertions. The 21 precommit cases retain
+zero charges. The seven postcommit cases retain the one original charge and no
+effect. **Helper refusal after commit does not mean rollback or permission to
+refund, replace or retry the original.** See the separate
+[Stage 101 validation snapshot](STAGE101_VALIDATION.md) for executed scopes and
+the retained failing regression before the helper fix.
 
 ## Runtime and documentation limits
 
