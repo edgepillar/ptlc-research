@@ -592,3 +592,16 @@ and reproducibility remain NOT VERIFIED; private consumed inputs, producer
 origin and loaded runtime remain NOT AUTHENTICATED; privacy remains NOT ASSESSED.
 Four fixed inventories and three unfilled reports are exact. Application/core
 progression remains NO-GO. See [local validation](STAGE91_VALIDATION.md).
+
+## Stage 92: native pause acknowledgements are not authority
+
+The [acknowledged nonce-boundary construction](NATIVE_NONCE_BOUNDARY_CUTS.md)
+counts selected call positions with public synthetic inputs. Surviving local
+journals refuse replacement producers for consumed unknown outcomes, while
+normal-path recorded bytes replay without signing reentry. These properties
+do not authenticate an admission grant, private consumed inputs, loaded runtime
+or current nonrollback authority, and do not repair copied/restored-history
+counterexamples. Source-to-worker and reproducibility remain NOT VERIFIED;
+private inputs, producer origin and loaded runtime remain NOT AUTHENTICATED;
+privacy remains NOT ASSESSED. See [validation](STAGE92_VALIDATION.md);
+application/core progression remains NO-GO.

@@ -831,3 +831,13 @@ selects no real signer, durable custody or nonrollback authority. See the
 [local validation snapshot](docs/STAGE91_VALIDATION.md); hosted and independent
 qualification must be assessed separately. Application/core progression remains
 NO-GO.
+
+## Acknowledged native nonce boundaries
+
+The [separate Stage 92 construction](docs/NATIVE_NONCE_BOUNDARY_CUTS.md) pauses a
+public-synthetic test call after local nonce removal and before backend entry.
+Eight selected native SIGKILL subcases retain unknown consumed admissions; four
+normal-path children compare exact public partials and recorded replay. Option
+removal is not secure erasure, and no pause is inside the signing primitive.
+See [local validation](docs/STAGE92_VALIDATION.md). Real signer/custody and
+independent nonrollback authority remain unselected; application/core remain NO-GO.

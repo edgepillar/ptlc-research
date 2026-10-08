@@ -796,3 +796,13 @@ entropy, secure erasure and durable secret custody are outside this qualificatio
 The copied-history/restore counterexamples remain unresolved by process death.
 See [local validation](STAGE91_VALIDATION.md). Application/core progression remains
 NO-GO; no live or release permission follows.
+
+## Stage 92: acknowledged test-call boundaries
+
+The [new separate owner copy](NATIVE_NONCE_BOUNDARY_CUTS.md) adds two explicit
+pause sites around local nonce removal and before backend entry. It preserves
+all accepted owner, matrix and Python method bodies. Eight killed children and
+four normal-path children use only fixed public synthetic inputs. No actual
+backend-internal interruption, secret erasure, new signer/custody selection or
+rollback-resistant authority is claimed. See [validation](STAGE92_VALIDATION.md);
+application/core remain NO-GO.
