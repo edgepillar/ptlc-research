@@ -819,3 +819,15 @@ backend entry, result loss, retention and replay. Copied/restored histories and
 reconstructed deterministic owners still repeat the same nonce and partial.
 See [validation](docs/STAGE90_VALIDATION.md). A real signer and durable custody
 remain unselected; application and core remain **NO-GO**.
+
+## Native owner process-death qualification
+
+The [selected Stage 91 construction](docs/NATIVE_OWNER_PROCESS_DEATH.md) separates
+actual SIGKILL of a public-synthetic native test owner from a surviving journal
+coordinator. Five cuts across four role/leg scopes cover twenty native children
+per matrix execution. Computed but undelivered outputs reopen unknown; already
+delivered public partials can remain recorded after the owner's death. This
+selects no real signer, durable custody or nonrollback authority. See the
+[local validation snapshot](docs/STAGE91_VALIDATION.md); hosted and independent
+qualification must be assessed separately. Application/core progression remains
+NO-GO.
