@@ -1,0 +1,463 @@
+{
+  "application_and_core": "NO-GO",
+  "before_private_api": [
+    "Name custody, policy/entry owner and anchor administrators, reset/backup/replica permissions and conditional trust roots.",
+    "Map every usable key/nonce/grant/backend/suspended-state copy to the same assessed actual effect boundary.",
+    "Specify real entropy and provisioning, exact approved input authentication, nonce/context binding and refusal behavior.",
+    "Define nonrollback burn, entry, policy-update serialization and authenticated original-output retention ordering.",
+    "Specify current authority and continuity under restart, full restore, partition, failover, split brain and admin reset.",
+    "Select complete independent construction and implementation subjects; measure the actual selected failure boundaries."
+  ],
+  "candidate": "CUSTODY-01",
+  "candidate_record_path": "design/custody-candidate-01.json",
+  "candidate_record_sha256": "8225498b35e4873c3a433b7126c4cbb144036d4ed4e70764782225c98bb2d2d2",
+  "evidence_limits": {
+    "attestation_verification": false,
+    "cloud_access": false,
+    "dependencies_added": 0,
+    "deployment": false,
+    "entropy_draw": false,
+    "hardware_execution": false,
+    "key_provisioning": false,
+    "new_tests": 0,
+    "privacy": "NOT ASSESSED",
+    "private_consumed_inputs": "NOT AUTHENTICATED",
+    "producer_and_runtime": "NOT AUTHENTICATED",
+    "reviewer_contacts": 0,
+    "runtime_edits": 0,
+    "source_to_worker": "NOT VERIFIED",
+    "workflow_edits": 0
+  },
+  "examined_commit": "8f8e256ec5cd852279e9c3ad85c5a32d8d4c822c",
+  "examined_repository_file_count": 516,
+  "examined_repository_files": [
+    {
+      "bytes": 13708,
+      "git_blob": "bb7f0d05307880b324fba1ddaa1bc4f2bd54795e",
+      "mode": "100644",
+      "path": "docs/CUSTODY_CANDIDATE_01.md",
+      "sha256": "9c8fe68bd0249184a4158fe7ae219087f3f919aa615090c2db0bc2eb35cc7af9"
+    },
+    {
+      "bytes": 15219,
+      "git_blob": "99f5780c390326bad3ef4ff49dc3982cbb7ec308",
+      "mode": "100644",
+      "path": "design/custody-candidate-01.json",
+      "sha256": "8225498b35e4873c3a433b7126c4cbb144036d4ed4e70764782225c98bb2d2d2"
+    },
+    {
+      "bytes": 20417,
+      "git_blob": "7731095129ded21164ee0abad67b6a303ab3b208",
+      "mode": "100644",
+      "path": "docs/SIGNER_CUSTODY_REQUIREMENTS.md",
+      "sha256": "08431b93d3776679c3813b937477b921f3f6c878ce9c90bb579e0e6a419fcdd0"
+    },
+    {
+      "bytes": 7872,
+      "git_blob": "5213efc580426a311faf4423e3b168aca8cde761",
+      "mode": "100644",
+      "path": "docs/NONCE_INVOCATION_MODEL.md",
+      "sha256": "52760e74e316ba9697c08a97ffe44829a4ef94f91def2139b9a1bac77c15a4b2"
+    },
+    {
+      "bytes": 8021,
+      "git_blob": "e17abc96bd2d726d18ba99d67810f35cac810f95",
+      "mode": "100644",
+      "path": "docs/NONCE_GRANT_COPY_MODEL.md",
+      "sha256": "4a2208a2fcf58c6f3b7c5572e84e1b4571f80c5eb4e44fd013314497c4d05551"
+    },
+    {
+      "bytes": 8078,
+      "git_blob": "260c8939aa205b650ec1a846982bdc3493584819",
+      "mode": "100644",
+      "path": "docs/PUBLIC_NONCE_INTENT.md",
+      "sha256": "17a7249390646d0b11909a3cfdc46e68c7fd7e8cbdf24b07217390d8f12e9178"
+    },
+    {
+      "bytes": 778,
+      "git_blob": "7eda8d913e32c519725621ce4bd4ff4c96f3be31",
+      "mode": "100644",
+      "path": "qualification/Cargo.toml",
+      "sha256": "7a7494e660c0928889bab63185876580dd65a5f14706b4fbabac434aef59fc8b"
+    },
+    {
+      "bytes": 17435,
+      "git_blob": "daf1699f4a8afbe271b8a837bd61fca0d8e578d9",
+      "mode": "100644",
+      "path": "qualification/Cargo.lock",
+      "sha256": "0b11653ef036a40eeff432fe021c3f479811f28b4d99e6853e68d3a1d68161af"
+    },
+    {
+      "bytes": 20697,
+      "git_blob": "d2941debd56c9b0efd3e891ad81f149c1c7acdc0",
+      "mode": "100644",
+      "path": "qualification-native-partial/tests/native_partial_journal.rs",
+      "sha256": "ec455de37263a9ab9e8a00a480c97392a1fbbeffe750238db6ce45d93bbfe9f4"
+    },
+    {
+      "bytes": 22133,
+      "git_blob": "5f7ba72ce47e1ebf02d61677273269c34b510900",
+      "mode": "100644",
+      "path": ".github/workflows/offline-tests.yml",
+      "sha256": "371c6f68fe23d6d9192a2a8d5f5297fe6f5776c7f2d6a579a261fa38faf3b32a"
+    },
+    {
+      "bytes": 15508,
+      "git_blob": "e2788776b0f0cad050667e4237ceeb06ee778409",
+      "mode": "100644",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "sha256": "a118c6d5c040435025200f98add35e2a24127ee5fa87e60a43ad6d02c9d529df"
+    },
+    {
+      "bytes": 1083,
+      "git_blob": "150d5fb2faea16c28eaf4fba59400e286c6e07ae",
+      "mode": "100644",
+      "path": "LICENSE",
+      "sha256": "14b50e7843eda690f9c8dc315b1963a9e983d38944c551f1452b0782f2d31272"
+    }
+  ],
+  "examined_tree": "582c96b252e5e356efd6f9dd4665b97a09dd3a53",
+  "implementation": "NOT IMPLEMENTED",
+  "independent_assessment": "NOT ASSESSED",
+  "mechanism_comparison": [
+    {
+      "basis": "retained measured synthetic copy/restore negative controls; no new execution",
+      "decision": "INSUFFICIENT ALONE",
+      "description": "ordinary local secret owner and consumption journal",
+      "id": "M1",
+      "missing": [
+        "all usable copy containment",
+        "independent nonrollback authority",
+        "effect-coupled current policy"
+      ]
+    },
+    {
+      "basis": "limited upstream source and official documentation; author inference, not hardware qualification",
+      "decision": "ATTESTATION ALONE IS INSUFFICIENT",
+      "description": "attested volatile custody domain and NSM interface",
+      "id": "M2",
+      "missing": [
+        "durable burn and original-output retention",
+        "exclusive provisioning under permitted copies",
+        "actual-input approval and entry admission"
+      ]
+    },
+    {
+      "basis": "official documented delivery boundary; author inference, not an AWS vulnerability or impossibility claim",
+      "decision": "KEY DELIVERY ALONE IS INSUFFICIENT",
+      "description": "attested custody domain with KMS-delivered keys and restorable encrypted state",
+      "id": "M3",
+      "missing": [
+        "spent-history continuity",
+        "single authorized effect owner",
+        "current policy at actual backend entry",
+        "restore/admin/replica policy"
+      ]
+    },
+    {
+      "basis": "CUSTODY-01 premises require a concrete assessed construction",
+      "decision": "UNSPECIFIED / UNSELECTED / NOT IMPLEMENTED",
+      "description": "same-domain authoritative policy/effect owner with independent nonrewinding anchor",
+      "id": "M4",
+      "missing": [
+        "actual linearization and protected copy boundary",
+        "anchor trust/failover/reset construction",
+        "atomic burn/output ordering across component loss"
+      ]
+    }
+  ],
+  "mutable_official_documentation": [
+    {
+      "id": "concepts",
+      "immutable_version": false,
+      "observed": "AWS documents isolated enclave memory/CPUs, parent communication and absence of persistent storage.",
+      "observed_date": "2026-10-08",
+      "snapshot_bytes": 18224,
+      "snapshot_scope": "private retrieved bytes; not a reproducible or authenticated platform subject",
+      "snapshot_sha256": "ca1b50d8d809f282c0f6059311be87a9125e386a4cf0d0a5387056b49e632ffc",
+      "url": "https://docs.aws.amazon.com/enclaves/latest/user/nitro-enclave-concepts.html",
+      "validation": "documented claim only; no hardware, attestation or cloud execution"
+    },
+    {
+      "id": "measurements",
+      "immutable_version": false,
+      "observed": "AWS describes image/kernel/application, parent-role/instance and signing-certificate measurements; debug mode has zero PCR values.",
+      "observed_date": "2026-10-08",
+      "snapshot_bytes": 27850,
+      "snapshot_scope": "private retrieved bytes; not a reproducible or authenticated platform subject",
+      "snapshot_sha256": "103f2fd17102b2730f05e5d8a691fab866bd9b0dc96d2943554199e155e650d6",
+      "url": "https://docs.aws.amazon.com/enclaves/latest/user/set-up-attestation.html",
+      "validation": "documented claim only; no hardware, attestation or cloud execution"
+    },
+    {
+      "id": "kms-attestation",
+      "immutable_version": false,
+      "observed": "AWS documents five recipient-attested operations and encrypted responses to the public key carried by the attestation document.",
+      "observed_date": "2026-10-08",
+      "snapshot_bytes": 16984,
+      "snapshot_scope": "private retrieved bytes; not a reproducible or authenticated platform subject",
+      "snapshot_sha256": "2ca2539a1f0d60ae8bd2137fd095a5c5d78712e39911315a35c6451f4a7ea82f",
+      "url": "https://docs.aws.amazon.com/kms/latest/developerguide/cryptographic-attestation.html",
+      "validation": "documented claim only; no hardware, attestation or cloud execution"
+    },
+    {
+      "id": "kms-conditions",
+      "immutable_version": false,
+      "observed": "AWS documents access comparisons against attestation content; this is a key-service authorization boundary.",
+      "observed_date": "2026-10-08",
+      "snapshot_bytes": 14908,
+      "snapshot_scope": "private retrieved bytes; not a reproducible or authenticated platform subject",
+      "snapshot_sha256": "61c61ec64a4d227d897505b21c7607bcd8c96a54b46480d499cbe2c1449f605c",
+      "url": "https://docs.aws.amazon.com/kms/latest/developerguide/conditions-attestation.html",
+      "validation": "documented claim only; no hardware, attestation or cloud execution"
+    },
+    {
+      "id": "multiple-enclaves",
+      "immutable_version": false,
+      "observed": "AWS permits multiple separately identified enclaves using the same or different image.",
+      "observed_date": "2026-10-08",
+      "snapshot_bytes": 14837,
+      "snapshot_scope": "private retrieved bytes; not a reproducible or authenticated platform subject",
+      "snapshot_sha256": "a97c5bfe6f2313faaf8741288154b6f07cc5166b689941148212e8e4a252f0c4",
+      "url": "https://docs.aws.amazon.com/enclaves/latest/user/multiple-enclaves.html",
+      "validation": "documented claim only; no hardware, attestation or cloud execution"
+    },
+    {
+      "id": "root-of-trust",
+      "immutable_version": false,
+      "observed": "AWS identifies Nitro Hypervisor and attestation PKI as trust roots; service and enclave must agree on the protocol.",
+      "observed_date": "2026-10-08",
+      "snapshot_bytes": 25821,
+      "snapshot_scope": "private retrieved bytes; not a reproducible or authenticated platform subject",
+      "snapshot_sha256": "64d366a2ef19084b8f78f203dc6967cab86b569928222a291b2601e9851b8a14",
+      "url": "https://docs.aws.amazon.com/enclaves/latest/user/verify-root.html",
+      "validation": "documented claim only; no hardware, attestation or cloud execution"
+    }
+  ],
+  "pinned_source_observations": [
+    {
+      "id": "N1",
+      "limit": "This enum is not a complete platform capability inventory or an implemented signing/continuity ledger.",
+      "lines": [
+        82,
+        131
+      ],
+      "observed": "The inspected non-exhaustive Request enum declares four PCR operations, DescribeNSM, Attestation and GetRandom.",
+      "source": "src/api/mod.rs"
+    },
+    {
+      "id": "N2",
+      "inference": "A future exact-length seed consumer must check failure and actual length before use.",
+      "limit": "No device entropy was drawn, assessed or tested; this is not a library vulnerability finding.",
+      "lines": [
+        244,
+        267
+      ],
+      "observed": "nsm_get_random copies the minimum of caller capacity and returned vector length and reports the actual output length.",
+      "source": "nsm-lib/src/lib.rs"
+    },
+    {
+      "id": "N3",
+      "inference": "Attestation challenge freshness supplies no signing-nonce freshness or spent-history proof.",
+      "lines": [
+        82,
+        129
+      ],
+      "observed": "The attestation parties define a common protocol; limited-lifetime challenges address reuse, while public-key binding alone does not provide replay protection.",
+      "source": "docs/attestation_process.md"
+    },
+    {
+      "id": "N4",
+      "inference": "The existing Rust 1.90.0 workflow does not qualify this new library; no dependency or toolchain is changed.",
+      "limit": "The new upstream package was not compiled or added to the workspace.",
+      "lines": [
+        1,
+        8
+      ],
+      "observed": "The inspected manifest declares package version 0.5.2, Apache-2.0 and rust-version 1.92.",
+      "source": "Cargo.toml"
+    }
+  ],
+  "platform_selection": "UNSELECTED",
+  "requirements": [
+    {
+      "id": "SC01",
+      "implementation_evidence": "none for this comparison",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC02",
+      "implementation_evidence": "none for this comparison",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC03",
+      "implementation_evidence": "none for this comparison",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC04",
+      "implementation_evidence": "none for this comparison",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC05",
+      "implementation_evidence": "none for this comparison",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC06",
+      "implementation_evidence": "none for this comparison",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC07",
+      "implementation_evidence": "none for this comparison",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC08",
+      "implementation_evidence": "none for this comparison",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC09",
+      "implementation_evidence": "none for this comparison",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC10",
+      "implementation_evidence": "none for this comparison",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC11",
+      "implementation_evidence": "none for this comparison",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC12",
+      "implementation_evidence": "none for this comparison",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    }
+  ],
+  "revision": 1,
+  "schema": "ptlc-author-custody-mechanism-feasibility-v1",
+  "status": "AUTHOR SOURCE COMPARISON",
+  "unchanged_proposal": {
+    "authority_cutoff": "entry-cutoff; serialize current policy with actual backend entry",
+    "excluded_from_partial_scope": [
+      "witness custody",
+      "completion and extraction",
+      "funding/refund/account authentication",
+      "Bitcoin transaction construction",
+      "chain observation",
+      "core consensus changes"
+    ],
+    "operations": "four exact Alice/Bob Bitcoin/Zenon adaptor partial operations only",
+    "parties": "one separate custody domain for each party; no shared participant keys",
+    "uncertainty": "spent; recover only exact already retained authenticated original output"
+  },
+  "unexecuted_failure_obligations": [
+    {
+      "id": "F1",
+      "premise": "A current key-release decision is reused after policy revocation.",
+      "required_observation": "Refuse backend entry under entry-cutoff policy; a previously delivered key or cached response is not current admission.",
+      "status": "AUTHOR INFERENCE / NOT EXECUTED"
+    },
+    {
+      "id": "F2",
+      "limit": "No actual platform clone, secret export, permissive provisioning or AWS exploit was established.",
+      "premise": "Two permitted instances receive equivalent restored nonce/work state and both still satisfy image policy.",
+      "required_observation": "Allow no repeated nonce computation; image equality or key encryption alone cannot establish unique current ownership.",
+      "status": "AUTHOR INFERENCE / NOT EXECUTED"
+    },
+    {
+      "id": "F3",
+      "premise": "Parent or custody dies after a durable burn but before authenticated original output is retained.",
+      "required_observation": "Keep operation spent/unknown; refuse reconstruction, resigning or fresh-nonce recovery.",
+      "status": "AUTHOR INFERENCE / NOT EXECUTED"
+    },
+    {
+      "id": "F4",
+      "premise": "A successful authority read precedes loss of continuity or a conflicting replica/admin reset.",
+      "required_observation": "Refuse work and retained-output delivery until assessed continuity/current authority is established.",
+      "status": "AUTHOR INFERENCE / NOT EXECUTED"
+    }
+  ],
+  "upstream_reference": {
+    "commit": "1993eeb0620d35f5cefc50b17638b432325328f9",
+    "complete_upstream_inventory_verified": false,
+    "implementation_reused": false,
+    "license": "Apache-2.0",
+    "license_and_notice_checked": true,
+    "manifest_rust_version": "1.92",
+    "manifest_version": "0.5.2",
+    "named_source_pins": [
+      {
+        "bytes": 10142,
+        "git_blob": "67db8588217f266eb561f75fae738656325deac9",
+        "mode": "100644",
+        "path": "LICENSE",
+        "sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b"
+      },
+      {
+        "bytes": 67,
+        "git_blob": "616fc5889451895dbf9768e6787c8308c33bef22",
+        "mode": "100644",
+        "path": "NOTICE",
+        "sha256": "d4290ed64c2edd0fce1d84e3f9dfb2881240fe534def76b8cd29ed6af683e287"
+      },
+      {
+        "bytes": 804,
+        "git_blob": "031f33d1c8297ec84978b22bb694544ebc9f3b6e",
+        "mode": "100644",
+        "path": "Cargo.toml",
+        "sha256": "f4bc918cb83e1f097816029f81e51ab5a769f40e706766b63335e7536f99face"
+      },
+      {
+        "bytes": 10593,
+        "git_blob": "ba2fc48f4243620db95012d93a1b27abd38d2576",
+        "mode": "100644",
+        "path": "src/api/mod.rs",
+        "sha256": "9492676eb25e26fbce1c748a405d562496639b25a2e86df572b7170d65e694f6"
+      },
+      {
+        "bytes": 4922,
+        "git_blob": "de38b108a48fda141faf2028bb1c65ad268336f0",
+        "mode": "100644",
+        "path": "src/driver/mod.rs",
+        "sha256": "3c38cc5dd0b99820a74355cd901062b09345003966ec8b1d1af092277d6ce8a5"
+      },
+      {
+        "bytes": 10782,
+        "git_blob": "494f15d7e36b31be3dbacff70862eb7ec1d0a64d",
+        "mode": "100644",
+        "path": "nsm-lib/src/lib.rs",
+        "sha256": "6bd51b12ddf1ee21ed095254482f2d7d04d92ad9f8159b926cf1b9a3d6a6a0f6"
+      },
+      {
+        "bytes": 18813,
+        "git_blob": "3548d7bbe47e0822de9042dd22eb7866e95ca6d6",
+        "mode": "100644",
+        "path": "docs/attestation_process.md",
+        "sha256": "52828d11fb411bd7947558b7c0f5e917b9e820a4be6fa444a884763e5cb4e259"
+      }
+    ],
+    "repository": "https://github.com/aws/aws-nitro-enclaves-nsm-api",
+    "tree": "13e2e5e2e61ca910a29121ce66c542d17eb163d8",
+    "upstream_full_suite_executed": false
+  }
+}
