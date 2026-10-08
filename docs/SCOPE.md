@@ -755,3 +755,14 @@ protection remain distinct. No real signer/custody integration or independent
 assessment is claimed. Bitcoin construction, recovery and observation remain
 outside core. See [validation](STAGE88_VALIDATION.md); application and core
 progression remain **NO-GO**.
+
+## Stage 89: partial generation precedes adaptor completion
+
+The [partial-signing journal map](PARTIAL_SIGNER_FAILURE_CUTS.md) targets
+nonce-bound Bitcoin and Zenon partial operations for both Alice and Bob. Real
+process-death schedules distinguish consumption from output persistence; separate
+fixture-only copied-history and coherent-restore cases permit repeated synthetic
+callbacks. These facts qualify neither real nonce custody nor signing safety.
+Managed adaptor completion remains a later, separate operation. No signer
+construction, native integration, private input or core change is selected. See
+[validation](STAGE89_VALIDATION.md); application/core progression is **NO-GO**.

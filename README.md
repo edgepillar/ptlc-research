@@ -798,3 +798,13 @@ disclosure/refund gates. It selects no signer or custody construction and leaves
 all independent reports unfilled. The Python CI job limit increases to 45 minutes
 after a documented timeout; commands remain intact. See
 [validation](docs/STAGE88_VALIDATION.md). Application and core remain **NO-GO**.
+
+## Stage 89: partial-signing journal cuts and copy limits
+
+The [partial-signing failure map](docs/PARTIAL_SIGNER_FAILURE_CUTS.md) separates
+consumed admission, secret work, retained output and exact replay. Three new
+fixture-only methods cover 44 SIGKILL schedules across both roles and legs, plus
+eight copy/restore counterexamples. Distinct live histories can each produce the
+same synthetic output, and coherent restore can erase a prior reservation. No
+private signer is integrated. See [validation](docs/STAGE89_VALIDATION.md);
+application and core remain **NO-GO**.
