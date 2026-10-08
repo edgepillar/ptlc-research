@@ -856,3 +856,12 @@ It adds no physical construction, independent assessment or new complete review
 subject. Both historical author packets, four fixed inventories and three
 UNFILLED reports remain exact. Every SC01-SC12 gate remains OPEN; no reviewer
 contact occurs. See [validation](STAGE97_VALIDATION.md); application/core remain NO-GO.
+
+## Authority interface proposal remains unassessed
+
+The [custody authority proposal](CUSTODY_AUTHORITY_INTERFACE.md) specifies twelve
+future acceptance cases for policy ordering, active computation/release intervals,
+copy fencing and nonrewinding recovery. None is executed by this documentation
+slice. Existing regression evidence is separate; no requirement closes, reviewer
+contact occurs or independent report is filled. See the
+[local validation](STAGE98_VALIDATION.md).

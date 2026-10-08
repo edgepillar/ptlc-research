@@ -892,3 +892,13 @@ missing premises; the combined reference exhausts a finite graph conditionally.
 Physical custody and reanchoring remain UNSELECTED / NOT IMPLEMENTED and all
 twelve gates OPEN. See [validation](docs/STAGE97_VALIDATION.md); application/core
 remain NO-GO.
+
+### Custody authority interface proposal
+
+The [authority ordering proposal](docs/CUSTODY_AUTHORITY_INTERFACE.md) separates
+remote revocation submission, an accepted admission fence and committed policy.
+It specifies effect/release intervals, spent uncertainty and complete-history
+reanchoring, without an implemented authority, selected platform or transferable
+permit. All custody gates remain OPEN. See the
+[descriptive record](design/custody-authority-interface.json) and
+[local validation](docs/STAGE98_VALIDATION.md).

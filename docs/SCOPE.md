@@ -858,3 +858,11 @@ Indivisible effect coupling and verified reanchoring are explicit unimplemented
 premises. Existing runtime, primitives, journals, dependencies, fixtures and
 workflows stay exact. Physical failure experiments remain NOT EXECUTED. See
 [validation](STAGE97_VALIDATION.md); application/core remain NO-GO.
+
+## Custody authority ordering proposal
+
+The [interface proposal](CUSTODY_AUTHORITY_INTERFACE.md) is author design only.
+A successful revocation requires one effective-policy order covering every usable
+continuation, rather than submission to a separate service or a cached read.
+The new descriptive record implements no authority, private API or physical
+fence; all existing core/application boundaries and custody gates remain exact.
