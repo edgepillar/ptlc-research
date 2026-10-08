@@ -806,3 +806,15 @@ four normal-path children use only fixed public synthetic inputs. No actual
 backend-internal interruption, secret erasure, new signer/custody selection or
 rollback-resistant authority is claimed. See [validation](STAGE92_VALIDATION.md);
 application/core remain NO-GO.
+
+
+## Stage 93: later native source is a separate review subject
+
+The [complete native author packet](NATIVE_SIGNER_REVIEW_HANDOFF.md) selects the
+508-file immutable main tree through Stage 92, with all 22 additions and five
+modifications relative to the earlier author subject recorded separately.
+Stage 93 packaging is outside that source. Four fixed independent inventories,
+the earlier 486-file author packet and three UNFILLED reports remain exact.
+No primitive, journal, runtime, test, fixture, lock or workflow change is made.
+No private signer, entropy, custody or independent nonrollback authority is
+selected. See [validation](STAGE93_VALIDATION.md); application/core remain NO-GO.
