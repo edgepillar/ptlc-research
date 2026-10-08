@@ -875,3 +875,12 @@ All preceding non-document sources and assertions remain exact. Synthetic policy
 labels do not authenticate currentness, prove nonrollback state or fence other
 copies. Physical F1-F4 and construction A01-A12 remain NOT EXECUTED; SC01-SC12
 remain OPEN. No private API or core change is introduced.
+
+## Controlled policy-store contention
+
+[Nine new fixed scenarios](POLICY_EFFECT_CONTENTION.md) separate native BUSY
+phases, explicit before/after-commit reply loss and retained synthetic rows.
+The original store, actors and strict safety assertions remain exact. These
+added premises demonstrate exit-code ambiguity; they do not attribute or repair
+the unresolved initial Stage 99 CI occurrence. No automatic retry, private
+signer, new nonce, application/core change or custody acceptance is introduced.
