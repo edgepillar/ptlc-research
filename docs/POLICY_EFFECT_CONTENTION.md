@@ -126,14 +126,50 @@ claim an early spill occurred. The explicit buffered control independently
 requires COMMIT BUSY. Failed local runs remain disclosed in the
 [execution snapshot](STAGE100_VALIDATION.md).
 
+## Original allocation failure evidence
+
+Stage 102 deliberately revises the original distinct-request test harness from
+parent `347c7a476091e3189f186a9ece3e840f6adf2a3a`. After both children complete
+their existing bounded `communicate` calls, it preserves fixed reply classes,
+exit codes and stderr presence, raw row counts, validated store counts, exact
+original lookups and separately reopened observations in the assertion message.
+Request IDs, profile/proposal bytes, raw output, error text and environment
+details are not emitted. This report is synthetic test evidence only.
+
+The original actor and store remain byte exact, including SQL, timeout, cap and
+original request bindings. The test still requires `[0,20]`, exactly one retained
+original and one charge. Row/effect and reopen checks are additional assertions.
+The required empty stderr check now tests presence, so an unexpected stderr
+cannot be quoted by unittest. Failed readback is explicitly `unavailable`;
+it never becomes zero rows. Cancellation propagates. No retry, replacement,
+effect, nonce work or capacity recovery is added to the original test.
+
+The unchanged actor emits response classes but no native error phase or code.
+The report labels those details `not-emitted-by-original-actor`; it never
+infers BUSY, a commit phase or a retained charge from an exit code. Completed
+child observations do not qualify the timeout or interrupted collection path.
+
+The [diagnostic tests](../tests/test_policy_effect_diagnostics.py) first catch
+the strict assertion under a deliberately held reader, then require the report
+to survive that failure. They release the fixture reader after the two children
+are reaped and before readback. A separate SIGKILL after an acknowledged commit
+retains one original, while a distinct peer is refused by the unchanged cap.
+These four native child executions exercise fixed controls, not the historical
+CI schedule. A first focused run kept the reader open during observation and
+produced unavailable readback; its failed expectation is retained. The corrected
+fixture releases its reader at the specified observation cut. See the
+[Stage 102 validation snapshot](STAGE102_VALIDATION.md).
+
 ## Remaining work
 
-Retain the original failure as UNRESOLVED. Before attributing it, preserve the
-failed original actors' response classes, native error phases/codes, complete
-original request bindings and rows after bounded child termination. A future
-diagnostic change must preserve the strict original safety assertions and
-distinguish an availability expectation from the one-charge safety invariant.
-Do not add retry/replacement behavior merely to make the assertion pass.
+Retain the original failure as UNRESOLVED. Completed original actor replies and
+readback now survive the strict assertion, but native error phases/codes remain
+unobserved in that actor. Further diagnostics must retain those details before
+exception wrapping while preserving command/context bindings and all strict
+safety assertions. Distinguish the availability expectation from the one-charge
+safety invariant. A controlled later reproduction cannot recover missing
+evidence about the old run. Do not add retry/replacement behavior merely to
+make the assertion pass.
 
 All historical review packets, primitive/journal bytes, dependencies, workflows
 and custody proposals remain unchanged. Independent assessment is absent.

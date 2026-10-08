@@ -29,6 +29,59 @@ WIRE = canonical(PROFILE)
 LABELS = source.SourceLabels("ab"*32, "cd"*32, PROFILE["authority_id_hex"], PROFILE["resource_digest_hex"])
 
 
+def allocation_reply(status, output, error):
+    """Classify the original actor's fixed allocation replies without echoing bytes."""
+    response = "unrecognized"
+    if type(output) is bytes and len(output) <= 4096:
+        if output == b"":
+            response = "empty"
+        elif output in (b"StoreRefused\n", b"StoreOutcomeUnknown\n"):
+            response = output[:-1].decode("ascii")
+        else:
+            try:
+                row = json.loads(output.decode("ascii"))
+                if (type(row) is dict and set(row) == {"charge_sequence", "effect_sequence"}
+                        and type(row["charge_sequence"]) is int
+                        and 1 <= row["charge_sequence"] <= source.MAX_EVENTS
+                        and row["effect_sequence"] is None
+                        and output == (json.dumps(row) + "\n").encode("ascii")):
+                    response = "allocation-record"
+            except (UnicodeError, ValueError, TypeError, RecursionError):
+                pass
+    return dict(exit_code=status if type(status) is int and -128 <= status <= 255 else "unavailable",
+                response_class=response, stderr_present=type(error) is not bytes or bool(error))
+
+
+def allocation_state(store, requests):
+    """Read the complete originals and rows; failed readback never means zero."""
+    try:
+        raw_operations = store._db.execute("SELECT count(*) FROM operations").fetchone()[0]
+        raw_effects = store._db.execute("SELECT count(*) FROM effects").fetchone()[0]
+        view = store.local_view()
+        originals = [store.lookup_original(request) for request in requests]
+        return dict(readback="available", raw_operations=raw_operations, raw_effects=raw_effects,
+                    retained_originals=[original is not None for original in originals],
+                    charge_sequences=[None if original is None else original.charge_sequence for original in originals],
+                    effect_sequences=[None if original is None else original.effect_sequence for original in originals],
+                    charged_operations=view.charged_operations, synthetic_effects=view.synthetic_effects,
+                    event_sequence=view.event_sequence)
+    except Exception:
+        return dict(readback="unavailable")
+
+
+def allocation_evidence(replies, store, requests, reopen):
+    """Sanitized test evidence only, never a result, permission or retry decision."""
+    local = allocation_state(store, requests)
+    try:
+        with reopen() as reopened:
+            after = allocation_state(reopened, requests)
+    except Exception:
+        after = dict(readback="unavailable")
+    return dict(schema="synthetic-distinct-allocation-v1",
+                replies=[allocation_reply(status, output, error) for status, output, error in replies],
+                native_error_details="not-emitted-by-original-actor", local=local, reopened=after)
+
+
 class PolicyEffectStoreCase(unittest.TestCase):
     def setUp(self):
         directory = tempfile.TemporaryDirectory(prefix="synthetic-policy-effects-")
@@ -465,14 +518,24 @@ class PolicyEffectStoreNativeTests(PolicyEffectStoreCase):
         requests = (self.request(revision=1, wire=wire), self.request("03", revision=1, wire=wire))
         children = [self.actor("allocation", request=request, ready=True) for request in requests]
         for child in children: child.stdin.write(b"go\n"); child.stdin.flush()
-        statuses = []
+        replies = []
         for child in children:
-            _, error = child.communicate(timeout=10)
-            self.assertEqual(error, b""); statuses.append(child.returncode)
-        self.assertEqual(sorted(statuses), [0, 20])
+            output, error = child.communicate(timeout=10)
+            replies.append((child.returncode, output, error))
+        report = allocation_evidence(replies, self.store, requests, self.open)
+        evidence = "synthetic-distinct-allocation: " + canonical(report).decode("ascii")
+        statuses = [status for status, _, _ in replies]
+        for reply in report["replies"]:
+            self.assertFalse(reply["stderr_present"], evidence)
+        self.assertEqual(sorted(statuses), [0, 20], evidence)
+        self.assertEqual(report["local"]["readback"], "available", evidence)
+        self.assertEqual(report["reopened"]["readback"], "available", evidence)
+        self.assertEqual(report["local"], report["reopened"], evidence)
         retained = [self.store.lookup_original(request) for request in requests]
-        self.assertEqual(sum(record is not None for record in retained), 1)
-        self.assertEqual(self.store.local_view().charged_operations, 1)
+        self.assertEqual(sum(record is not None for record in retained), 1, evidence)
+        self.assertEqual(self.store.local_view().charged_operations, 1, evidence)
+        self.assertEqual(report["local"]["raw_operations"], 1, evidence)
+        self.assertEqual(report["local"]["raw_effects"], 0, evidence)
 
     def test_native_policy_update_and_effect_share_one_writer_and_selected_cutoff(self):
         self.store.allocate_synthetic(self.request())
