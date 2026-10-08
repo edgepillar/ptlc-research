@@ -1,0 +1,350 @@
+{
+  "acceptance_cases": [
+    {
+      "id": "A01",
+      "scenario": "remote submission before work with owner acceptance later",
+      "scope": "future construction acceptance obligation",
+      "status": "NOT EXECUTED"
+    },
+    {
+      "id": "A02",
+      "scenario": "accepted fence after durable burn but before effect admission",
+      "scope": "future construction acceptance obligation",
+      "status": "NOT EXECUTED"
+    },
+    {
+      "id": "A03",
+      "scenario": "fence during an earlier admitted effect interval",
+      "scope": "future construction acceptance obligation",
+      "status": "NOT EXECUTED"
+    },
+    {
+      "id": "A04",
+      "scenario": "suspended worker, expired deadline and resumed obsolete copy",
+      "scope": "future construction acceptance obligation",
+      "status": "NOT EXECUTED"
+    },
+    {
+      "id": "A05",
+      "scenario": "separate source commits revocation while cached local signing remains usable",
+      "scope": "future construction acceptance obligation",
+      "status": "NOT EXECUTED"
+    },
+    {
+      "id": "A06",
+      "scenario": "two equal approved images restore ready local histories",
+      "scope": "future construction acceptance obligation",
+      "status": "NOT EXECUTED"
+    },
+    {
+      "id": "A07",
+      "scenario": "loss after burn before authenticated original retention",
+      "scope": "future construction acceptance obligation",
+      "status": "NOT EXECUTED"
+    },
+    {
+      "id": "A08",
+      "scenario": "exact original retained but delivery reply lost",
+      "scope": "future construction acceptance obligation",
+      "status": "NOT EXECUTED"
+    },
+    {
+      "id": "A09",
+      "scenario": "original retained then pending/committed revocation or continuity loss",
+      "scope": "future construction acceptance obligation",
+      "status": "NOT EXECUTED"
+    },
+    {
+      "id": "A10",
+      "scenario": "conflicting failover or restored historical prefix",
+      "scope": "future construction acceptance obligation",
+      "status": "NOT EXECUTED"
+    },
+    {
+      "id": "A11",
+      "scenario": "earlier completed release with later recipient arrival",
+      "scope": "future construction acceptance obligation",
+      "status": "NOT EXECUTED"
+    },
+    {
+      "id": "A12",
+      "scenario": "independent revocation or recovery of one party domain",
+      "scope": "future construction acceptance obligation",
+      "status": "NOT EXECUTED"
+    }
+  ],
+  "application_and_core": "NO-GO",
+  "authority_order": {
+    "all_usable_copies": "every usable key, nonce and admitted work continuation remains subject to this same owner",
+    "effect_interval": "hold effective-policy exclusion from final check through last nonce-dependent instruction, or certify no usable continuation",
+    "issuer_arrangement": "issuer delegates or joins the same effective-policy order; authentication and delegation unresolved",
+    "release_interval": "every controlled outward release has its own current admission and completion or certified fencing before later revocation commit",
+    "scope": "one separate party-owned domain per party; no global cross-chain order",
+    "split_authority": "an independently committed revocation followed by cached local signing rejects the construction",
+    "trust_root": "independent authenticated nonrewinding authority and complete-history continuity remain unselected"
+  },
+  "evidence_limits": {
+    "hardware_or_cloud_access": false,
+    "implemented_authority": false,
+    "loaded_runtime": "NOT AUTHENTICATED",
+    "new_tests": 0,
+    "physical_acceptance_executions": 0,
+    "privacy": "NOT ASSESSED",
+    "private_consumed_inputs": "NOT AUTHENTICATED",
+    "producer": "NOT AUTHENTICATED",
+    "reproducibility": "NOT VERIFIED",
+    "reviewer_contacts": 0,
+    "runtime_edits": 0,
+    "source_to_worker": "NOT VERIFIED"
+  },
+  "examined_commit": "eb8d63f42f6ed52bac751296a922a5a1aaa51214",
+  "examined_repository": "https://github.com/edgepillar/ptlc-research",
+  "examined_repository_file_count": 523,
+  "examined_repository_files": [
+    {
+      "bytes": 7926,
+      "path": "docs/CUSTODY_ENTRY_MODEL.md",
+      "sha256": "a00a2037aea34fd8116eb91cfccaf1e87756397d0f1821024a03ef0bba0bf6b4"
+    },
+    {
+      "bytes": 15394,
+      "path": "scripts/model_custody_entry.py",
+      "sha256": "fa1f2e68e95fb9a56f1e633086d8b8271e1cacabd57822bbb2ce1947c1a4427c"
+    },
+    {
+      "bytes": 12420,
+      "path": "offline_session/current_authority_contract.py",
+      "sha256": "975c80221e0641ad3e256b5b839fbc70a49b34ffce5367088cc338def24726ac"
+    },
+    {
+      "bytes": 11909,
+      "path": "docs/POLICY_SOURCE_USE_MODEL.md",
+      "sha256": "f219da80b336a2016afa8b266f46ebf5ebe4d45c9e35817005c86d8ea04bda6c"
+    },
+    {
+      "bytes": 20417,
+      "path": "docs/SIGNER_CUSTODY_REQUIREMENTS.md",
+      "sha256": "08431b93d3776679c3813b937477b921f3f6c878ce9c90bb579e0e6a419fcdd0"
+    },
+    {
+      "bytes": 15219,
+      "path": "design/custody-candidate-01.json",
+      "sha256": "8225498b35e4873c3a433b7126c4cbb144036d4ed4e70764782225c98bb2d2d2"
+    },
+    {
+      "bytes": 18952,
+      "path": "design/custody-mechanism-feasibility.json",
+      "sha256": "a598a108a47c36e73a09df6cf1c0afb79f74d957adcc3c5e1b00142728dab715"
+    }
+  ],
+  "examined_tree": "2b0ea4a4145df8a3b7995c0235a0949ac2684bf5",
+  "excluded_operations": [
+    "ordinary Zenon account authentication",
+    "funding and refund key custody",
+    "Alice private adaptor witness custody",
+    "signature completion and extraction",
+    "Bitcoin transaction construction and broadcast",
+    "chain observation and real funds"
+  ],
+  "fingerprint_scope": "seven named existing files, not an independent assessment or complete subject inventory",
+  "implementation": "NOT IMPLEMENTED",
+  "independent_assessment": "NOT ASSESSED",
+  "nonrewinding_facts": [
+    "complete effective policy and accepted pending fences with authority and anchor lineage",
+    "complete approved operation and protected internal nonce identity, durable burn and shared one-effect admission",
+    "active effect and release intervals with completion or certified fencing of all usable continuations",
+    "consumption and spent uncertainty, resolved only from authenticated original history",
+    "exact original bytes bound to actual invocation and complete operation, plus separately admitted releases"
+  ],
+  "operations": [
+    {
+      "boundary": "authenticate and fence, then serialized effective-policy commit",
+      "name": "submit-revocation",
+      "result": "pending differs from committed; historical receipt is not latest truth or permission"
+    },
+    {
+      "boundary": "actual complete input validation, durable internal burn and current owned effect admission",
+      "name": "attempt-partial",
+      "result": "no exported work permit; success does not automatically deliver bytes"
+    },
+    {
+      "boundary": "exact original and actual invocation lineage, without new backend work",
+      "name": "retain-original-internally",
+      "result": "retention may follow revocation; outward release still requires current authority"
+    },
+    {
+      "boundary": "authenticated historical read under applicable read policy",
+      "name": "query-original-status",
+      "result": "missing, timeout or historical success cannot establish unspent state or recomputation permission"
+    },
+    {
+      "boundary": "current policy, verified continuity and no pending fence at actual controlled outward admission",
+      "name": "release-original",
+      "result": "each delivery/replay separately admitted; exact original only; no new nonce-dependent work"
+    },
+    {
+      "boundary": "independent complete current history and fencing of every obsolete usable incarnation",
+      "name": "restore-continuity",
+      "result": "no refund, uncertainty clearing by absence, original replacement, reset or new signing attempt"
+    }
+  ],
+  "partial_operations": [
+    {
+      "adaptor": "agreed common adaptor point",
+      "aggregation": "ordered Alice/Bob distinct per-leg keys",
+      "leg": "bitcoin",
+      "message": "exact validated claim transaction sighash",
+      "nonce": "separately generated, context-bound internal nonce; never caller-imported",
+      "role": "alice",
+      "signer_index": 0,
+      "tweak": "exact refund-leaf Taproot tweak"
+    },
+    {
+      "adaptor": "agreed common adaptor point",
+      "aggregation": "ordered Alice/Bob distinct per-leg keys",
+      "leg": "bitcoin",
+      "message": "exact validated claim transaction sighash",
+      "nonce": "separately generated, context-bound internal nonce; never caller-imported",
+      "role": "bob",
+      "signer_index": 1,
+      "tweak": "exact refund-leaf Taproot tweak"
+    },
+    {
+      "adaptor": "agreed common adaptor point",
+      "aggregation": "ordered Alice/Bob distinct per-leg keys",
+      "leg": "zenon",
+      "message": "exact validated entry/destination claim message",
+      "nonce": "separately generated, context-bound internal nonce; never caller-imported",
+      "role": "alice",
+      "signer_index": 0,
+      "tweak": "none"
+    },
+    {
+      "adaptor": "agreed common adaptor point",
+      "aggregation": "ordered Alice/Bob distinct per-leg keys",
+      "leg": "zenon",
+      "message": "exact validated entry/destination claim message",
+      "nonce": "separately generated, context-bound internal nonce; never caller-imported",
+      "role": "bob",
+      "signer_index": 1,
+      "tweak": "none"
+    }
+  ],
+  "record_kind": "descriptive author interface obligations; not a wire format, credential, permit or private API",
+  "recovery_rules": [
+    "revocation after burn preserves the burn and refuses later affected admission",
+    "interruption after burn before authenticated original retention is spent/unknown",
+    "no reconstruction, resigning, fresh nonce, replacement operation/session or administrative reset as repair",
+    "surviving exact authenticated original may reconcile without computation; each release still needs current authority",
+    "historical prefix, larger counter, equal image or restored coherent backup does not establish complete latest continuity",
+    "conflict or unverifiable continuity refuses both new work and original release",
+    "timeout, lease expiry, local kill request or durable admission record does not certify obsolete continuations cannot resume",
+    "completed earlier releases cannot be recalled; recipient transport arrival is not the owner release event"
+  ],
+  "requirements": [
+    {
+      "id": "SC01",
+      "implementation_evidence": "none for this interface",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC02",
+      "implementation_evidence": "none for this interface",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC03",
+      "implementation_evidence": "none for this interface",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC04",
+      "implementation_evidence": "none for this interface",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC05",
+      "implementation_evidence": "none for this interface",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC06",
+      "implementation_evidence": "none for this interface",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC07",
+      "implementation_evidence": "none for this interface",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC08",
+      "implementation_evidence": "none for this interface",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC09",
+      "implementation_evidence": "none for this interface",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC10",
+      "implementation_evidence": "none for this interface",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC11",
+      "implementation_evidence": "none for this interface",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC12",
+      "implementation_evidence": "none for this interface",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    }
+  ],
+  "revision": 1,
+  "revocation_positions": [
+    {
+      "meaning": "remote proposal or transport acknowledgment only; no acceptance or current-policy guarantee",
+      "position": "submitted"
+    },
+    {
+      "meaning": "authenticated complete scope/predecessor recorded; new affected effect and release admissions stop; earlier intervals may finish or be certified fenced",
+      "position": "accepted-fenced"
+    },
+    {
+      "meaning": "effective revision advances only after earlier affected intervals ended or all usable continuations are certified fenced; success receipt names this position",
+      "position": "committed"
+    }
+  ],
+  "schema": "ptlc-author-custody-authority-interface-v1",
+  "selection": "UNSELECTED",
+  "status": "PROPOSED",
+  "trust_limit": "no guarantee after unrestricted compromise of the entire trusted custody/authority platform or controlling trust roots; actual boundaries and compromise policy unselected",
+  "unresolved": [
+    "physical custody and copy containment",
+    "authority delegation and administrative authentication",
+    "authenticated current history and complete nonrewinding continuity",
+    "effect/release interval exclusion and certified fencing",
+    "actual private input approval and stable nonce identity",
+    "entropy and key provisioning",
+    "receipt encoding and transport",
+    "exact original retention authentication",
+    "privacy, erasure and compromise policy",
+    "availability and independently assessed recovery",
+    "independent construction and custody review"
+  ]
+}

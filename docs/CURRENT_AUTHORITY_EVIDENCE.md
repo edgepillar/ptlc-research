@@ -664,3 +664,13 @@ reanchoring remain unimplemented premises. Source-to-worker/reproducibility
 remain NOT VERIFIED; private inputs, producer and runtime remain NOT AUTHENTICATED;
 privacy remains NOT ASSESSED. See [validation](STAGE97_VALIDATION.md);
 application/core remain NO-GO.
+
+## Proposed custody owner ordering
+
+The [custody authority interface](CUSTODY_AUTHORITY_INTERFACE.md) distinguishes
+proposal submission, owner acceptance/fencing and effective revocation commit.
+A separate current read followed by signing remains a gap. The proposed owner
+must exclude policy commits throughout earlier actual effect/release intervals
+or certify every usable continuation fenced. No existing read contract or worker
+implements this ordering. Original retention and each delivery remain separate;
+complete nonrewinding reanchoring and authenticated inputs remain unresolved.
