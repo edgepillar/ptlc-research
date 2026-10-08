@@ -617,3 +617,16 @@ delta fingerprints and hosted CI supply no missing authority or independent
 assessment. Source-to-worker/reproducibility remain NOT VERIFIED; private inputs,
 producer origin and loaded runtime remain NOT AUTHENTICATED; privacy remains
 NOT ASSESSED. See [validation](STAGE93_VALIDATION.md); application/core remain NO-GO.
+
+## Stage 94: specify the effect and continuity boundary
+
+The [signer custody requirements](SIGNER_CUSTODY_REQUIREMENTS.md) require a later
+candidate to explain how independent nonrollback authority controls actual
+nonce work across every usable secret and granted-work copy. A journal burn,
+preflight check, unique issuance or result filter alone closes no requirement.
+Unknown consumed work remains spent; retained exact-output replay is separate
+from computation and needs its own assessed release policy. No authority or
+private construction is selected. Source-to-worker/reproducibility remain
+NOT VERIFIED; private inputs, producer and runtime remain NOT AUTHENTICATED;
+privacy remains NOT ASSESSED. See [validation](STAGE94_VALIDATION.md);
+application/core remain NO-GO.
