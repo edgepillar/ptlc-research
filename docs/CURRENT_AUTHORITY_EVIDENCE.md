@@ -674,3 +674,14 @@ must exclude policy commits throughout earlier actual effect/release intervals
 or certify every usable continuation fenced. No existing read contract or worker
 implements this ordering. Original retention and each delivery remain separate;
 complete nonrewinding reanchoring and authenticated inputs remain unresolved.
+
+## Public stopped native continuation
+
+The [new bounded experiment](NATIVE_CUSTODY_INTERVALS.md) obtains an OS stopped-child
+acknowledgement before a synthetic deadline and commit decision. Resumption after
+an early synthetic commit produces an actual public partial, even with outward
+release suppressed. Pending completion and observed kill/reap precede two other
+synthetic commits. This narrows process evidence for one observed child only;
+it supplies no authenticated policy order, private custody, nonrewinding anchor,
+all-copy fencing or completed construction acceptance case. Existing descriptive
+records and future-case statuses remain unchanged.

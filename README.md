@@ -902,3 +902,12 @@ reanchoring, without an implemented authority, selected platform or transferable
 permit. All custody gates remain OPEN. See the
 [descriptive record](design/custody-authority-interface.json) and
 [local validation](docs/STAGE98_VALIDATION.md).
+
+### Public native custody intervals
+
+The [bounded suspension experiment](docs/NATIVE_CUSTODY_INTERVALS.md) applies real
+SIGSTOP/SIGCONT and observed SIGKILL/reaping to four public party/leg scopes. An
+early synthetic commit still permits actual later computation; pending completion
+or observed termination gives two narrower orderings. Policy labels are local
+assumptions, with no private custody or all-copy fencing claim. See the separate
+[local snapshot](docs/STAGE99_VALIDATION.md); application/core remain NO-GO.

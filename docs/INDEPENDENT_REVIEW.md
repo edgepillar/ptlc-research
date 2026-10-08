@@ -865,3 +865,12 @@ copy fencing and nonrewinding recovery. None is executed by this documentation
 slice. Existing regression evidence is separate; no requirement closes, reviewer
 contact occurs or independent report is filled. See the
 [local validation](STAGE98_VALIDATION.md).
+
+## Public suspension evidence
+
+The [native interval tests](NATIVE_CUSTODY_INTERVALS.md) observe resumed public
+computation after an early synthetic commit and two bounded wait/reap orderings.
+These are author-controlled regressions, not independent assessment, private
+authority, source-to-worker authentication or all-copy fencing. The three
+independent reports remain UNFILLED / NOT ASSESSED. See the separate
+[local execution snapshot](STAGE99_VALIDATION.md); all custody gates stay OPEN.
