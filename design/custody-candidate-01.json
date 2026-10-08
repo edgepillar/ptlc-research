@@ -1,0 +1,397 @@
+{
+  "actual_backend_argument_mapping": [
+    "constructed and checked KeyAggContext and declared aggregate/output keys",
+    "actual party-owned secret key handle mapped to the approved role/leg",
+    "actual internal SecNonce bound to stable consumed identity",
+    "AggNonce from complete approved ordered public nonces",
+    "approved adaptor point",
+    "exact independently validated message"
+  ],
+  "application_and_core": "NO-GO",
+  "backend_reference": {
+    "commit": "5a09b1197b1b5c621a5a9abc60fa95fa84a1da30",
+    "examined_file_count": 9,
+    "examined_files": [
+      {
+        "bytes": 1689,
+        "git_blob": "afaa30cc54ca2497c8318a2ddf2e264feb26102e",
+        "mode": "100644",
+        "path": "Cargo.toml",
+        "sha256": "9c82cd6388804cf0b3f02d54f7b60c4be0e60772375dbef3ba75fe2cb34fac95"
+      },
+      {
+        "bytes": 1211,
+        "git_blob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+        "mode": "100644",
+        "path": "LICENSE",
+        "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e"
+      },
+      {
+        "bytes": 1608,
+        "git_blob": "c3bc99cdabbe06ac9cb069d3d33fffdce64e37a9",
+        "mode": "100644",
+        "path": "src/lib.rs",
+        "sha256": "94807b8a494aeb2c7eaa01b1a025de5286b084996a00c4a027dbe0f98def59e6"
+      },
+      {
+        "bytes": 43294,
+        "git_blob": "4e75052541f2c4956968875ffce7289b19a2849e",
+        "mode": "100644",
+        "path": "src/nonces.rs",
+        "sha256": "a1ed28772a606f7ac72fb72a93832d8c4fc02e1a59398ac6a001d794e8aebe33"
+      },
+      {
+        "bytes": 28727,
+        "git_blob": "10944d74b88ffd59896a9106d5c2d3f9d8aecf26",
+        "mode": "100644",
+        "path": "src/signing.rs",
+        "sha256": "dfd5d7cdfb94a500ff35caf89198ccd9853e304252d6aad4c200545dd0e873cd"
+      },
+      {
+        "bytes": 45836,
+        "git_blob": "29a3e886d6b30b9d8f70fef58f7a2323b126169c",
+        "mode": "100644",
+        "path": "src/key_agg.rs",
+        "sha256": "5ac03d612903d12c2fee835599c916255ba9b30146d221baf18af17044229185"
+      },
+      {
+        "bytes": 11059,
+        "git_blob": "4050a916778f334e76f25d70cfc05dabe174a3c0",
+        "mode": "100644",
+        "path": "src/sig_agg.rs",
+        "sha256": "67ff159d2f73e1d7567eef6c9b8505b9ae1e6b3045f619b3cbc5468f2305a5f7"
+      },
+      {
+        "bytes": 16321,
+        "git_blob": "1d01d5daf41502512111f6907c0c11848208b364",
+        "mode": "100644",
+        "path": "src/signature.rs",
+        "sha256": "4a7c25fc6991aa04c6be344e47377338ab2a4f2ad8e78f7dd20bd6a3b73dcee0"
+      },
+      {
+        "bytes": 9012,
+        "git_blob": "bf18f24ebb985807d4d6a79d79155588e546732b",
+        "mode": "100644",
+        "path": "doc/adaptor_signatures.md",
+        "sha256": "6c5b390d8d1186a96a47ba52176101417728b0dfae84e0df4efdf7b65f77358f"
+      }
+    ],
+    "inspection_scope": "named primary-source files only; not a complete upstream inventory or independent review",
+    "license": "Unlicense",
+    "license_checked": true,
+    "manifest_version": "0.4.1",
+    "production_selection": "UNSELECTED",
+    "qualification_features": {
+      "default_features": false,
+      "features": [
+        "secp256k1"
+      ]
+    },
+    "repository": "https://github.com/conduition/musig2",
+    "tree": "b4a6461bb6d42d4526868dceb39195ca9c07dd66",
+    "upstream_full_suite_executed": false
+  },
+  "candidate": "CUSTODY-01",
+  "evidence_limits": {
+    "loaded_runtime": "NOT AUTHENTICATED",
+    "new_tests": 0,
+    "privacy": "NOT ASSESSED",
+    "private_consumed_inputs": "NOT AUTHENTICATED",
+    "producer": "NOT AUTHENTICATED",
+    "real_private_execution": "NOT IMPLEMENTED",
+    "reproducibility": "NOT VERIFIED",
+    "reviewer_contacts": 0,
+    "runtime_edits": 0,
+    "source_to_worker": "NOT VERIFIED"
+  },
+  "examined_commit": "7cba45449515f5fb8deae939323a2378c7e87f07",
+  "examined_repository": "https://github.com/edgepillar/ptlc-research",
+  "examined_repository_file_count": 513,
+  "examined_repository_files": [
+    {
+      "bytes": 20417,
+      "git_blob": "7731095129ded21164ee0abad67b6a303ab3b208",
+      "mode": "100644",
+      "path": "docs/SIGNER_CUSTODY_REQUIREMENTS.md",
+      "sha256": "08431b93d3776679c3813b937477b921f3f6c878ce9c90bb579e0e6a419fcdd0"
+    },
+    {
+      "bytes": 22461,
+      "git_blob": "aefdddb4c21c38133fee97e5a4ff084d704eaf94",
+      "mode": "100644",
+      "path": "docs/TRANSACTION_GRAPH.md",
+      "sha256": "1ffae55fe781a0a1dea16cf834484a682da3d94d4c7575cdbfced42f4882ed26"
+    },
+    {
+      "bytes": 8078,
+      "git_blob": "260c8939aa205b650ec1a846982bdc3493584819",
+      "mode": "100644",
+      "path": "docs/PUBLIC_NONCE_INTENT.md",
+      "sha256": "17a7249390646d0b11909a3cfdc46e68c7fd7e8cbdf24b07217390d8f12e9178"
+    },
+    {
+      "bytes": 7872,
+      "git_blob": "5213efc580426a311faf4423e3b168aca8cde761",
+      "mode": "100644",
+      "path": "docs/NONCE_INVOCATION_MODEL.md",
+      "sha256": "52760e74e316ba9697c08a97ffe44829a4ef94f91def2139b9a1bac77c15a4b2"
+    },
+    {
+      "bytes": 8021,
+      "git_blob": "e17abc96bd2d726d18ba99d67810f35cac810f95",
+      "mode": "100644",
+      "path": "docs/NONCE_GRANT_COPY_MODEL.md",
+      "sha256": "4a2208a2fcf58c6f3b7c5572e84e1b4571f80c5eb4e44fd013314497c4d05551"
+    },
+    {
+      "bytes": 778,
+      "git_blob": "7eda8d913e32c519725621ce4bd4ff4c96f3be31",
+      "mode": "100644",
+      "path": "qualification/Cargo.toml",
+      "sha256": "7a7494e660c0928889bab63185876580dd65a5f14706b4fbabac434aef59fc8b"
+    },
+    {
+      "bytes": 17435,
+      "git_blob": "daf1699f4a8afbe271b8a837bd61fca0d8e578d9",
+      "mode": "100644",
+      "path": "qualification/Cargo.lock",
+      "sha256": "0b11653ef036a40eeff432fe021c3f479811f28b4d99e6853e68d3a1d68161af"
+    },
+    {
+      "bytes": 781,
+      "git_blob": "0a9da6ffccb4eed04d2427c0dba109ba7476623f",
+      "mode": "100644",
+      "path": "qualification-native-partial/Cargo.toml",
+      "sha256": "5c496db22dd2c63814d4ce1f931a4ca74b9c8c16640912fa08629810480184a1"
+    },
+    {
+      "bytes": 17440,
+      "git_blob": "5c39a847e38d99cca7d4ebf18f95cb835e54a26e",
+      "mode": "100644",
+      "path": "qualification-native-partial/Cargo.lock",
+      "sha256": "aa52fc921e189de08385e9241714802298a0cd157a7b628c504bc3a904e04d77"
+    },
+    {
+      "bytes": 20697,
+      "git_blob": "d2941debd56c9b0efd3e891ad81f149c1c7acdc0",
+      "mode": "100644",
+      "path": "qualification-native-partial/tests/native_partial_journal.rs",
+      "sha256": "ec455de37263a9ab9e8a00a480c97392a1fbbeffe750238db6ce45d93bbfe9f4"
+    },
+    {
+      "bytes": 18791,
+      "git_blob": "b558771758f9590a6f3340424fa5b6888d2990c5",
+      "mode": "100644",
+      "path": "qualification-native-partial/tests/native_owner_sigkill.rs",
+      "sha256": "e6bdc97a7645fc67b4d10ea9a39945b94073c98423bee71016fe9863772df939"
+    },
+    {
+      "bytes": 21617,
+      "git_blob": "3e43240d917e9f937813ffd1c2452c276ffe7aed",
+      "mode": "100644",
+      "path": "qualification-native-partial/tests/native_nonce_boundary.rs",
+      "sha256": "b6db9b59f31c0039a89946e5a21cc66dce1e64eefcf42ebb18d88530e8d99d92"
+    },
+    {
+      "bytes": 140483,
+      "git_blob": "be9f7f07e4f4cf529c53efcbedadf0a9ec4169f1",
+      "mode": "100644",
+      "path": "review/native-signer-subject.json",
+      "sha256": "0c217d04cc936c2e9b6c55efdeb83964c8337e4052b3748979870f9a7c27e545"
+    },
+    {
+      "bytes": 124988,
+      "git_blob": "9fbae5cd1863e87e264d086541525b8a05d3133e",
+      "mode": "100644",
+      "path": "review/signer-nonce-handoff.json",
+      "sha256": "0d7b0482f4f7717caef58201822f6d97321f2839e03e3a74f0a98cd5fdf38f84"
+    },
+    {
+      "bytes": 15508,
+      "git_blob": "e2788776b0f0cad050667e4237ceeb06ee778409",
+      "mode": "100644",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "sha256": "a118c6d5c040435025200f98add35e2a24127ee5fa87e60a43ad6d02c9d529df"
+    },
+    {
+      "bytes": 1083,
+      "git_blob": "150d5fb2faea16c28eaf4fba59400e286c6e07ae",
+      "mode": "100644",
+      "path": "LICENSE",
+      "sha256": "14b50e7843eda690f9c8dc315b1963a9e983d38944c551f1452b0782f2d31272"
+    }
+  ],
+  "examined_tree": "3a56df715b36140f6d913cf13ba782652a48f960",
+  "excluded_operations": [
+    "ordinary Zenon account authentication",
+    "funding and refund key custody",
+    "Alice private adaptor witness custody",
+    "signature completion and extraction",
+    "Bitcoin transaction construction and broadcast",
+    "chain observation and real funds"
+  ],
+  "implementation": "NOT IMPLEMENTED",
+  "independent_assessment": "NOT ASSESSED",
+  "partial_operations": [
+    {
+      "adaptor": "agreed common adaptor point",
+      "aggregation": "ordered Alice/Bob distinct per-leg keys",
+      "leg": "bitcoin",
+      "message": "exact validated claim transaction sighash",
+      "nonce": "separately generated, context-bound internal nonce; never caller-imported",
+      "role": "alice",
+      "signer_index": 0,
+      "tweak": "exact refund-leaf Taproot tweak"
+    },
+    {
+      "adaptor": "agreed common adaptor point",
+      "aggregation": "ordered Alice/Bob distinct per-leg keys",
+      "leg": "bitcoin",
+      "message": "exact validated claim transaction sighash",
+      "nonce": "separately generated, context-bound internal nonce; never caller-imported",
+      "role": "bob",
+      "signer_index": 1,
+      "tweak": "exact refund-leaf Taproot tweak"
+    },
+    {
+      "adaptor": "agreed common adaptor point",
+      "aggregation": "ordered Alice/Bob distinct per-leg keys",
+      "leg": "zenon",
+      "message": "exact validated entry/destination claim message",
+      "nonce": "separately generated, context-bound internal nonce; never caller-imported",
+      "role": "alice",
+      "signer_index": 0,
+      "tweak": "none"
+    },
+    {
+      "adaptor": "agreed common adaptor point",
+      "aggregation": "ordered Alice/Bob distinct per-leg keys",
+      "leg": "zenon",
+      "message": "exact validated entry/destination claim message",
+      "nonce": "separately generated, context-bound internal nonce; never caller-imported",
+      "role": "bob",
+      "signer_index": 1,
+      "tweak": "none"
+    }
+  ],
+  "proposal": {
+    "authority_cutoff": "entry-cutoff; revocation after burn before backend entry refuses and retains burn",
+    "continuity": "independently authenticated nonrewinding anchor outside ordinary owner/coordinator backups",
+    "copy_assumption": "usable backend/nonce/post-burn work-state copying remains in scope; reject selection if the actual boundary cannot prevent repeated work",
+    "domain_components": [
+      "party-owned per-leg keys",
+      "fresh nonce generation",
+      "stable internal nonce identity and consumption ledger",
+      "authoritative policy and actual backend-entry serialization",
+      "exact original partial-output retention"
+    ],
+    "effect_control": "nonexportable admission through actual backend entry and every usable secret or granted-work copy; physical mechanism unselected",
+    "new_work_policy": "refuse if current authority or continuity is unverifiable",
+    "output_delivery_policy": "refuse if current authority or continuity is unverifiable; only exact authenticated retained original bytes may replay",
+    "private_material_exports": "none permitted by the proposed domain interface; no such interface implemented",
+    "topology": "one separate party-owned custody domain for Alice and one for Bob; never both parties shares in one domain",
+    "unknown_outcome": "spent and quarantined; no nonce reconstruction, resign, fresh-nonce retry, permission restoration or session reset as recovery"
+  },
+  "record_kind": "descriptive author decision metadata; not a wire protocol, grant or executable checker",
+  "rejection_conditions": [
+    "copyable backend or post-burn permission can repeat actual work",
+    "exported grants, cached current checks or result filtering substitute for effect control",
+    "coherent backup can restore authority, spent nonce or permission",
+    "consumed nonce reconstructed or unknown operation retried as recovery",
+    "actual context/private input origin cannot be authenticated",
+    "one domain owns both parties aggregate key shares",
+    "selected platform cannot support the exact assessed adaptor path",
+    "independent construction/custody scope remains absent"
+  ],
+  "repository_fingerprint_scope": "16 named exact files, not a complete inventory or an assessment subject",
+  "requirements": [
+    {
+      "id": "SC01",
+      "implementation_evidence": "none for this candidate",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC02",
+      "implementation_evidence": "none for this candidate",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC03",
+      "implementation_evidence": "none for this candidate",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC04",
+      "implementation_evidence": "none for this candidate",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC05",
+      "implementation_evidence": "none for this candidate",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC06",
+      "implementation_evidence": "none for this candidate",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC07",
+      "implementation_evidence": "none for this candidate",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC08",
+      "implementation_evidence": "none for this candidate",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC09",
+      "implementation_evidence": "none for this candidate",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC10",
+      "implementation_evidence": "none for this candidate",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC11",
+      "implementation_evidence": "none for this candidate",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    },
+    {
+      "id": "SC12",
+      "implementation_evidence": "none for this candidate",
+      "independent_assessment": "NOT ASSESSED",
+      "status": "OPEN"
+    }
+  ],
+  "revision": 1,
+  "schema": "ptlc-author-custody-candidate-v1",
+  "selection": "UNSELECTED",
+  "status": "PROPOSED",
+  "trust_limit": "no guarantee after unrestricted compromise of the entire trusted custody/authority platform or controlling trust roots; actual boundaries and compromise policy unselected",
+  "unselected_mechanisms": [
+    "exact independently assessed two-party adaptor construction",
+    "actual custody platform and physical copy containment",
+    "nonrewinding anchor and authenticated continuity",
+    "fresh entropy source and extra-input encoding",
+    "key provisioning and participant approval",
+    "private input/API implementation",
+    "source-to-runtime/provenance assurance",
+    "privacy/memory/erasure and compromise policy",
+    "funding/time/fee/observation and cross-chain recovery integration"
+  ]
+}

@@ -630,3 +630,15 @@ private construction is selected. Source-to-worker/reproducibility remain
 NOT VERIFIED; private inputs, producer and runtime remain NOT AUTHENTICATED;
 privacy remains NOT ASSESSED. See [validation](STAGE94_VALIDATION.md);
 application/core remain NO-GO.
+
+## Stage 95: proposed policy is not an authority implementation
+
+The [CUSTODY-01 proposal](CUSTODY_CANDIDATE_01.md) chooses hypothetical entry-cutoff
+semantics and refuses new work or retained-output delivery during unverifiable
+authority/continuity. Burn alone grants no reusable work permission; actual
+entry must remain inside an assessed boundary containing every usable copy.
+The nonrewinding anchor, platform, policy authority and private implementation
+are unselected. The proposal supplies no remedy for the existing copy/restore
+counterexamples. Source-to-worker/reproducibility remain NOT VERIFIED; private
+inputs, producer and runtime remain NOT AUTHENTICATED; privacy remains NOT ASSESSED.
+See [validation](STAGE95_VALIDATION.md); application/core remain NO-GO.

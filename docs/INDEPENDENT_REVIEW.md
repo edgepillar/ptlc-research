@@ -825,3 +825,15 @@ findings are separate from existing author executions and ideal model premises.
 No independent assessment or reviewer contact occurs. Both historical author
 packets, four fixed independent inventories and three UNFILLED reports remain
 exact. See [validation](STAGE94_VALIDATION.md); application/core remain NO-GO.
+
+## Stage 95: one proposal does not close any review gate
+
+The [CUSTODY-01 proposal](CUSTODY_CANDIDATE_01.md) and
+[static record](../design/custody-candidate-01.json) define exact proposed party
+boundaries, backend inputs, burn/entry/release policy and rejection conditions.
+Nine source-file fingerprints identify limited upstream inspection, not a complete
+subject, independent review, runtime identity or actual private consumption.
+All twelve requirements remain OPEN; the proposal is UNSELECTED and NOT IMPLEMENTED.
+Both historical packets, all four fixed inventories and three UNFILLED reports
+remain exact. No review request or reviewer contact occurs. See
+[validation](STAGE95_VALIDATION.md); application/core remain NO-GO.

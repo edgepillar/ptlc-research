@@ -862,3 +862,13 @@ construction. Local, external-authority, remote and device custody remain
 hypothetical and unselected. No private signing API or independent assessment
 is introduced. See [validation](docs/STAGE94_VALIDATION.md); application/core
 remain NO-GO.
+
+## A concrete custody proposal, with unresolved premises
+
+The [Stage 95 CUSTODY-01 proposal](docs/CUSTODY_CANDIDATE_01.md) fixes separate
+party-owned custody domains, exact partial-input mapping, entry-cutoff policy,
+spent uncertainty and rejection conditions. Its [static decision record](design/custody-candidate-01.json)
+keeps all twelve requirements OPEN and every real mechanism UNSELECTED.
+The pinned library's copyable nonce API is source evidence, not a protected
+custody boundary or new vulnerability claim. No private implementation is added.
+See [validation](docs/STAGE95_VALIDATION.md); application/core remain NO-GO.
