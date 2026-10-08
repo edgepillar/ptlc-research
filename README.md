@@ -808,3 +808,13 @@ eight copy/restore counterexamples. Distinct live histories can each produce the
 same synthetic output, and coherent restore can erase a prior reservation. No
 private signer is integrated. See [validation](docs/STAGE89_VALIDATION.md);
 application and core remain **NO-GO**.
+
+## Stage 90: native partial math with public test inputs
+
+A [test-only Rust/Python handoff](docs/NATIVE_PARTIAL_JOURNAL_HANDOFF.md) uses the
+existing ephemeral owner to produce actual pinned native partial signatures only
+for fixed public synthetic keys and seeds. Five native tests separate admission,
+backend entry, result loss, retention and replay. Copied/restored histories and
+reconstructed deterministic owners still repeat the same nonce and partial.
+See [validation](docs/STAGE90_VALIDATION.md). A real signer and durable custody
+remain unselected; application and core remain **NO-GO**.

@@ -766,3 +766,17 @@ callbacks. These facts qualify neither real nonce custody nor signing safety.
 Managed adaptor completion remains a later, separate operation. No signer
 construction, native integration, private input or core change is selected. See
 [validation](STAGE89_VALIDATION.md); application/core progression is **NO-GO**.
+
+
+## Stage 90: test-only native partial handoff
+
+The [public-synthetic native handoff](NATIVE_PARTIAL_JOURNAL_HANDOFF.md) keeps the
+existing ephemeral nonce in its Rust test thread and sends only the corresponding
+public partial to a separate Python journal. Five new native methods qualify
+retention, deliberately discarded results and before/backend refusal. Separate
+copied/restored-history controls reconstruct deterministic public test owners and
+repeat the same nonce and partial while each original owner refuses local reuse.
+This is actual pinned primitive math with synthetic inputs, without arbitrary
+secret import, a production signer API, durable custody or nonrollback authority.
+The preceding SIGKILL matrix remains a separate scope. See
+[validation](STAGE90_VALIDATION.md); application/core remain **NO-GO**.
