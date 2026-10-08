@@ -83,6 +83,8 @@ jobs:
         run: cargo +1.90.0 fetch --locked --manifest-path qualification/Cargo.toml
       - name: Run offline adaptor qualification
         run: cargo +1.90.0 test --locked --offline --manifest-path qualification/Cargo.toml
+      - name: Qualify separate public-synthetic native partial journal handoff
+        run: cargo +1.90.0 test --locked --offline --manifest-path qualification-native-partial/Cargo.toml
       - name: Build public artifact, completion, authentication, enrollment and observation executables
         run: cargo +1.90.0 build --locked --offline --manifest-path qualification/Cargo.toml --examples
       - name: Record selected offline dependency and worker input evidence
@@ -224,6 +226,8 @@ jobs:
         run: python3 -B scripts/qualify_original_witness_lifecycle.py --original-response-verifier qualification/target/debug/examples/verify_original_read_response
       - name: Check Rust formatting
         run: cargo +1.90.0 fmt --manifest-path qualification/Cargo.toml -- --check
+      - name: Check separate public-synthetic handoff formatting
+        run: cargo +1.90.0 fmt --manifest-path qualification-native-partial/Cargo.toml -- --check
 
   go-compatibility:
     runs-on: ubuntu-latest

@@ -566,7 +566,9 @@ application/core progression remains **NO-GO**. See [validation](STAGE89_VALIDAT
 ## Stage 90: native partial math does not supply durable nonce authority
 
 The [synthetic native handoff](NATIVE_PARTIAL_JOURNAL_HANDOFF.md) orders existing
-journal consumption before the pinned Rust partial-signing primitive. Recorded
+journal consumption before the pinned Rust partial-signing primitive in a
+separate test crate with source-pinned copies of the original owner definitions.
+Recorded
 public bytes replay without another native call; deliberately lost results and
 refused native attempts seal local admission. A trusted peer event is not an
 authenticated admission grant. Distinct copied histories and coherent restore,
