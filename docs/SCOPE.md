@@ -745,3 +745,13 @@ execute a loader, inspect loaded dependencies or establish static linkage from
 an absent declaration. All accepted consumers, adapters and native sources remain
 unchanged. See [validation](STAGE87_VALIDATION.md); application and core remain
 **NO-GO**.
+
+## Stage 88: author signer and nonce review preparation
+
+The [immutable review handoff](SIGNER_NONCE_REVIEW_HANDOFF.md) inventories the
+complete accepted source separately from later packaging. Requirements,
+test-only ownership, synthetic journal callbacks and unproved restored-copy
+protection remain distinct. No real signer/custody integration or independent
+assessment is claimed. Bitcoin construction, recovery and observation remain
+outside core. See [validation](STAGE88_VALIDATION.md); application and core
+progression remain **NO-GO**.
