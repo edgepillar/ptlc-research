@@ -911,3 +911,14 @@ early synthetic commit still permits actual later computation; pending completio
 or observed termination gives two narrower orderings. Policy labels are local
 assumptions, with no private custody or all-copy fencing claim. See the separate
 [local snapshot](docs/STAGE99_VALIDATION.md); application/core remain NO-GO.
+
+### Controlled SQLite contention and reply ambiguity
+
+[Eight new Python methods](tests/test_policy_effect_contention.py) distinguish
+native BEGIN/write/COMMIT refusals, explicit reply loss and retained original
+rows in nine fixed synthetic scenarios. `[20,20]` can accompany either zero or
+one charge; it does not identify the historical CI failure's outcome. The
+original store, actors, tests and strict safety assertions remain unchanged.
+The additional numeric-error profile requires Python 3.11 or later. See the
+[scope and open cause](docs/POLICY_EFFECT_CONTENTION.md) and
+[local snapshot](docs/STAGE100_VALIDATION.md). Application/core remain NO-GO.

@@ -874,3 +874,13 @@ These are author-controlled regressions, not independent assessment, private
 authority, source-to-worker authentication or all-copy fencing. The three
 independent reports remain UNFILLED / NOT ASSESSED. See the separate
 [local execution snapshot](STAGE99_VALIDATION.md); all custody gates stay OPEN.
+
+## Contention controls remain author experiments
+
+The [new SQLite controls](POLICY_EFFECT_CONTENTION.md) preserve the original
+store and assertions while distinguishing `[20,20]` with zero or one retained
+charge under different explicit reader/reply-loss premises. These author tests
+do not identify the initial hosted occurrence's cause or supply independent
+assessment. Python 3.11+ numeric error evidence, failed initial focus runs and
+full/hosted scopes are separated in [validation](STAGE100_VALIDATION.md).
+All independent reports stay UNFILLED / NOT ASSESSED; custody gates stay OPEN.

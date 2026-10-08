@@ -179,3 +179,13 @@ authentication, SQLite or physical-use connection is added. See the [Stage 42
 validation](STAGE42_VALIDATION.md) for execution evidence and failures.
 Both fixed independent assessments remain unfilled; source integration, core port,
 private signing and funded execution remain NO-GO.
+
+## Controlled contention and reply ambiguity
+
+The [Stage 100 controls](POLICY_EFFECT_CONTENTION.md) preserve this source and
+its original native regressions, including the strict distinct-request assertion.
+Explicit readers and before/after-commit reply-loss hooks distinguish native
+refusal phases from actual retained rows. Two exit codes of 20 can accompany
+zero or one charge; they do not determine a refund or permission to retry.
+The initial Stage 99 CI occurrence remains UNRESOLVED. No production retry,
+replacement operation, private signer or new source-authority claim is added.
