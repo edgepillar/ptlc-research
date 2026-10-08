@@ -829,3 +829,13 @@ No private signer API, entropy/custody service, real key import, runtime, journa
 primitive, test, fixture, dependency or workflow changes. The preceding native
 review packet and all fixed reports remain exact. See
 [validation](STAGE94_VALIDATION.md); application/core remain NO-GO.
+
+## Stage 95: a bounded author proposal, without implementation
+
+The [CUSTODY-01 record](CUSTODY_CANDIDATE_01.md) proposes one custody topology and
+partial-signing sequence while leaving the actual platform, entropy, anchor,
+private API and independent construction assessment unselected. It inspects
+nine exact upstream source/license files without copying implementation or
+selecting a production backend. Existing copied/restored-history counterexamples,
+requirements, runtime, tests, fixtures, locks, workflows and reports remain exact.
+See [validation](STAGE95_VALIDATION.md); application/core remain NO-GO.
