@@ -539,3 +539,13 @@ unfilled assessment reports retain exact bytes. See
 [validation](STAGE87_VALIDATION.md). Source-to-worker and reproducibility remain
 **NOT VERIFIED**, runtime closure remains **NOT AUTHENTICATED**, independent
 privacy remains **NOT ASSESSED**, and application/core progression is **NO-GO**.
+
+## Stage 88: source pins do not supply signer authority
+
+The [author signer/nonce handoff](SIGNER_NONCE_REVIEW_HANDOFF.md) separates fresh
+entropy, actual secret ownership, journal ordering, independent nonrollback
+authority and authenticated runtime requirements from current regression evidence.
+Complete source inventory and passing tests supply none of those missing facts.
+No signer or custody construction is selected, all three assessment records
+remain unfilled, and application/core progression remains **NO-GO**. See
+[validation](STAGE88_VALIDATION.md).

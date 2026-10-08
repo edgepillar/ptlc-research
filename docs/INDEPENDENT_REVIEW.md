@@ -740,3 +740,13 @@ See [selected construction](OFFLINE_MACHO_OBJECT_PREFIX.md) and [validation scop
 ## Stage 70: separate worker-profile acceptance packet
 
 The [complete immutable packet](WORKER_PROFILE_REVIEW.md) pins 423 source files through Stage 69 and distinguishes all historical profiles, source checks, native claims, complete measurements and public mathematics. It preserves the construction, observation and witness inventories and unfilled reports. Later packaging requires its own assessment; no independent review, producer/source authentication, privacy guarantee or operational permission follows. Application and core progression remain NO-GO. See [validation](STAGE70_VALIDATION.md).
+
+## Stage 88: separate signer and nonce handoff
+
+The [author packet](SIGNER_NONCE_REVIEW_HANDOFF.md) pins the complete 486-file
+source through Stage 87 and lists exact-construction, private-owner/journal,
+restored-copy, runtime/provenance/privacy and cross-chain disclosure questions.
+It is preparation only, with no reviewer findings, contact or requests. All four
+fixed earlier inventories and all three unfilled reports retain exact bytes.
+Later packaging and its CI timeout policy are outside the immutable source.
+See [validation](STAGE88_VALIDATION.md); application/core progression is **NO-GO**.

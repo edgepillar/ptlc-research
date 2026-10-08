@@ -788,3 +788,13 @@ strings. Fixed declaration observations do not authenticate runtime closure or
 source correspondence. Accepted adapters and consumers retain exact bytes.
 See the separate [validation snapshot](docs/STAGE87_VALIDATION.md). Application
 and core progression remain **NO-GO**.
+
+## Stage 88: signer and nonce review handoff
+
+An [author-prepared review packet](docs/SIGNER_NONCE_REVIEW_HANDOFF.md) pins all
+486 files of the accepted immutable source and separates nonce freshness,
+signer/journal integration, paired restore, runtime provenance and cross-chain
+disclosure/refund gates. It selects no signer or custody construction and leaves
+all independent reports unfilled. The Python CI job limit increases to 45 minutes
+after a documented timeout; commands remain intact. See
+[validation](docs/STAGE88_VALIDATION.md). Application and core remain **NO-GO**.
