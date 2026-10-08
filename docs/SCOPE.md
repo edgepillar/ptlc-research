@@ -849,3 +849,12 @@ recommendation or hardware/cloud qualification. No external implementation,
 private API, real entropy, key, dependency, test or workflow is introduced. The
 existing proposal, author subjects and independent reports stay exact. See
 [validation](STAGE96_VALIDATION.md); application/core remain NO-GO.
+
+## Stage 97: finite composition without a private construction
+
+The [custody entry model](CUSTODY_ENTRY_MODEL.md) adds public symbolic transitions
+and 35 regressions for authority, copies, continuity and original-output recovery.
+Indivisible effect coupling and verified reanchoring are explicit unimplemented
+premises. Existing runtime, primitives, journals, dependencies, fixtures and
+workflows stay exact. Physical failure experiments remain NOT EXECUTED. See
+[validation](STAGE97_VALIDATION.md); application/core remain NO-GO.
