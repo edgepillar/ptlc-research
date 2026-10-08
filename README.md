@@ -852,3 +852,13 @@ actual owner-death and acknowledged nonce-boundary tests without replacing any
 fixed subject or filling an assessment. Real signer, entropy, custody and
 independent nonrollback authority remain unselected. See
 [validation](docs/STAGE93_VALIDATION.md); application/core remain NO-GO.
+
+## Signer custody requirements before implementation
+
+The [Stage 94 requirements matrix](docs/SIGNER_CUSTODY_REQUIREMENTS.md) defines
+twelve open acceptance predicates, a complete secret/permission copy inventory,
+spent unknown-outcome rules and candidate evidence needed before selecting a real
+construction. Local, external-authority, remote and device custody remain
+hypothetical and unselected. No private signing API or independent assessment
+is introduced. See [validation](docs/STAGE94_VALIDATION.md); application/core
+remain NO-GO.

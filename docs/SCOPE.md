@@ -818,3 +818,14 @@ the earlier 486-file author packet and three UNFILLED reports remain exact.
 No primitive, journal, runtime, test, fixture, lock or workflow change is made.
 No private signer, entropy, custody or independent nonrollback authority is
 selected. See [validation](STAGE93_VALIDATION.md); application/core remain NO-GO.
+
+## Stage 94: requirements without custody selection
+
+The [signer custody matrix](SIGNER_CUSTODY_REQUIREMENTS.md) separates twelve open
+requirements from hypothetical candidate classes and existing public-synthetic
+evidence. It specifies copy/permission inventory, actual effect admission,
+nonrollback continuity, uncertain spent operations and later failure scopes.
+No private signer API, entropy/custody service, real key import, runtime, journal,
+primitive, test, fixture, dependency or workflow changes. The preceding native
+review packet and all fixed reports remain exact. See
+[validation](STAGE94_VALIDATION.md); application/core remain NO-GO.

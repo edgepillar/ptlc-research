@@ -815,3 +815,13 @@ select the commit and manifest digest, then verify complete Git tree/blob rows
 and the comparison with a separately trusted tool. The three reports stay
 UNFILLED; no reviewer contact, request or independent assessment is performed.
 See [validation](STAGE93_VALIDATION.md); application/core remain NO-GO.
+
+## Stage 94: candidate evidence and unresolved decisions
+
+The [requirements matrix](SIGNER_CUSTODY_REQUIREMENTS.md) supplies refusal
+predicates for a later signer/custody proposal. All twelve rows remain OPEN;
+candidate designs remain UNSELECTED. Required future checks and independent
+findings are separate from existing author executions and ideal model premises.
+No independent assessment or reviewer contact occurs. Both historical author
+packets, four fixed independent inventories and three UNFILLED reports remain
+exact. See [validation](STAGE94_VALIDATION.md); application/core remain NO-GO.
