@@ -918,7 +918,19 @@ assumptions, with no private custody or all-copy fencing claim. See the separate
 native BEGIN/write/COMMIT refusals, explicit reply loss and retained original
 rows in nine fixed synthetic scenarios. `[20,20]` can accompany either zero or
 one charge; it does not identify the historical CI failure's outcome. The
-original store, actors, tests and strict safety assertions remain unchanged.
+Stage 100 snapshot kept the store, actors, tests and strict safety assertions unchanged.
 The additional numeric-error profile requires Python 3.11 or later. See the
 [scope and open cause](docs/POLICY_EFFECT_CONTENTION.md) and
 [local snapshot](docs/STAGE100_VALIDATION.md). Application/core remain NO-GO.
+
+### Original allocation failure evidence
+
+The [original distinct-request test](tests/test_policy_effect_store.py) now
+collects sanitized reply classes and read-only original/row observations after
+both children finish, before its required `[0,20]` and exactly-one assertions.
+An unavailable readback is explicit; raw output and exception text are omitted.
+[Eight diagnostic methods](tests/test_policy_effect_diagnostics.py) cover the
+strict failure path, retained postcommit charge, privacy and cancellation.
+Native error details are not emitted by the unchanged actor, and the old CI
+cause remains UNRESOLVED. See the [scope](docs/POLICY_EFFECT_CONTENTION.md#original-allocation-failure-evidence)
+and [local snapshot](docs/STAGE102_VALIDATION.md). Application/core remain NO-GO.
