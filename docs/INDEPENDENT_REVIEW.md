@@ -792,3 +792,13 @@ consumed private inputs, persistent nonce custody or independent nonrollback
 authority. Review of a real signer/custody construction is still open. See the
 [local snapshot](STAGE91_VALIDATION.md); application/core progression remains
 NO-GO.
+
+## Stage 92 acknowledged nonce-boundary author work
+
+The [two public-synthetic test pauses](NATIVE_NONCE_BOUNDARY_CUTS.md) are later
+author qualification outside the four fixed independent inventories. Their
+source subjects, the earlier author handoff packet and three unfilled reports
+remain exact. No reviewer contact or independent assessment is performed.
+An empty Option, trusted event, process exit or fixture equality does not prove
+erasure, private-input origin, released runtime identity or persistent custody.
+See [validation](STAGE92_VALIDATION.md); application/core remain NO-GO.
