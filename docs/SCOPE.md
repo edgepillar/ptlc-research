@@ -781,3 +781,18 @@ This is actual pinned primitive math with synthetic inputs, without arbitrary
 secret import, a production signer API, durable custody or nonrollback authority.
 The preceding SIGKILL matrix remains a separate scope. See
 [validation](STAGE90_VALIDATION.md); application/core remain **NO-GO**.
+
+## Stage 91: native owner death, with a surviving journal
+
+The [public-synthetic process-death construction](NATIVE_OWNER_PROCESS_DEATH.md)
+adds a separate native libtest child and journal coordinator. Twenty selected
+SIGKILL subcases distinguish reservation, consumed admission, completed
+computation, payload delivery and output retention. Two matrix methods and one
+nonempty public fixture child/helper method are new; the existing native crate
+test command discovers them without a workflow change. All preceding native
+owner and Python method bodies remain exact. Backend-internal interruption,
+power loss, orphan containment after parent death, real signer identity, fresh
+entropy, secure erasure and durable secret custody are outside this qualification.
+The copied-history/restore counterexamples remain unresolved by process death.
+See [local validation](STAGE91_VALIDATION.md). Application/core progression remains
+NO-GO; no live or release permission follows.

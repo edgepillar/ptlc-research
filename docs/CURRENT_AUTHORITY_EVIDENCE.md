@@ -577,3 +577,18 @@ nonce and partial. No changed-message key-extraction attack is executed. No
 private signing inputs or real signer/custody construction are introduced, and
 independent nonrollback authority remains unselected. Application/core progression
 remains **NO-GO**. See [validation](STAGE90_VALIDATION.md).
+
+## Stage 91: native SIGKILL does not select current authority
+
+The [public-synthetic native owner cuts](NATIVE_OWNER_PROCESS_DEATH.md) add
+process-death evidence for a fixed test child, while its journal coordinator
+survives. Reopened consumed admissions refuse another producer; retained public
+partials replay without native reentry. These are selected local history
+properties. The retained copied-history and coherent-restore controls can still
+repeat deterministic nonce/partial mathematics; killing one owner does not
+repair them. A native event is not an authenticated admission grant, backend
+identity, erasure proof or independent current-authority read. Source-to-worker
+and reproducibility remain NOT VERIFIED; private consumed inputs, producer
+origin and loaded runtime remain NOT AUTHENTICATED; privacy remains NOT ASSESSED.
+Four fixed inventories and three unfilled reports are exact. Application/core
+progression remains NO-GO. See [local validation](STAGE91_VALIDATION.md).

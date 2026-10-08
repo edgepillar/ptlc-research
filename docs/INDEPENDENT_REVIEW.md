@@ -779,3 +779,16 @@ Source-to-worker and reproducibility remain **NOT VERIFIED**; private consumed
 inputs, producer origin and loaded runtime remain **NOT AUTHENTICATED**; privacy
 remains **NOT ASSESSED**. Application/core remain **NO-GO**. See
 [validation](STAGE90_VALIDATION.md).
+
+## Stage 91 native owner process-death author work
+
+The [separate native SIGKILL matrix](NATIVE_OWNER_PROCESS_DEATH.md) is later
+author qualification outside the four fixed independent inventories. It retains
+the earlier author handoff packet and all three unfilled reports without
+substituting new source for their subjects. No reviewer contact or independent
+assessment is performed. A selected killed test process, trusted public event,
+fixture match or green regression does not authenticate a released worker,
+consumed private inputs, persistent nonce custody or independent nonrollback
+authority. Review of a real signer/custody construction is still open. See the
+[local snapshot](STAGE91_VALIDATION.md); application/core progression remains
+NO-GO.
