@@ -561,3 +561,17 @@ histories. No real nonce reuse or key extraction is demonstrated. Neither a
 false witness-exposure flag nor final-output fencing establishes current secret
 ownership. Independent nonrollback authority and signer integration remain open;
 application/core progression remains **NO-GO**. See [validation](STAGE89_VALIDATION.md).
+
+
+## Stage 90: native partial math does not supply durable nonce authority
+
+The [synthetic native handoff](NATIVE_PARTIAL_JOURNAL_HANDOFF.md) orders existing
+journal consumption before the pinned Rust partial-signing primitive. Recorded
+public bytes replay without another native call; deliberately lost results and
+refused native attempts seal local admission. A trusted peer event is not an
+authenticated admission grant. Distinct copied histories and coherent restore,
+combined with reconstructed fixed-input native owners, repeat the same public
+nonce and partial. No changed-message key-extraction attack is executed. No
+private signing inputs or real signer/custody construction are introduced, and
+independent nonrollback authority remains unselected. Application/core progression
+remains **NO-GO**. See [validation](STAGE90_VALIDATION.md).

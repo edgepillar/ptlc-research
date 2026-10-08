@@ -762,3 +762,18 @@ safety. Actual secret consumption and post-consumption copied permissions remain
 separate open review obligations. No native signer, custody mechanism or
 independent assessment is selected. All fixed subjects and unfilled reports
 remain exact. See [validation](STAGE89_VALIDATION.md); application/core is **NO-GO**.
+
+
+## Stage 90: synthetic native integration is author qualification
+
+The [selected partial handoff](NATIVE_PARTIAL_JOURNAL_HANDOFF.md) adds author-side
+Rust/Python tests with fixed public keys and seeds. Actual partial equations and
+local replay/refusal qualify only those selected inputs and ordering. Copied or
+restored histories with reconstructed deterministic owners still repeat native
+nonce/partial math. No independent reviewer is contacted; the four inventories,
+earlier author handoff packet and three unfilled reports remain exact. A real
+signer/custody construction and current nonrollback authority are unselected.
+Source-to-worker and reproducibility remain **NOT VERIFIED**; private consumed
+inputs, producer origin and loaded runtime remain **NOT AUTHENTICATED**; privacy
+remains **NOT ASSESSED**. Application/core remain **NO-GO**. See
+[validation](STAGE90_VALIDATION.md).
