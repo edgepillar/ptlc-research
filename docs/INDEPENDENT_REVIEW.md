@@ -847,3 +847,12 @@ are author work, without device/cloud execution, platform selection, a complete
 new review subject or independent assessment. Both historical author packets,
 four fixed inventories and three UNFILLED reports stay exact. No reviewer
 contact occurs. See [validation](STAGE96_VALIDATION.md); application/core remain NO-GO.
+
+## Stage 97: composition findings remain author finite experiments
+
+The [custody entry comparison](CUSTODY_ENTRY_MODEL.md) conditionally exhausts
+five bounded graphs and replays shortest counterexamples under weakened premises.
+It adds no physical construction, independent assessment or new complete review
+subject. Both historical author packets, four fixed inventories and three
+UNFILLED reports remain exact. Every SC01-SC12 gate remains OPEN; no reviewer
+contact occurs. See [validation](STAGE97_VALIDATION.md); application/core remain NO-GO.

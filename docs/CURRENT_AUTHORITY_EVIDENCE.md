@@ -653,3 +653,14 @@ unselected and unimplemented. No usable-copy containment or actual private
 consumption is measured. Source-to-worker/reproducibility remain NOT VERIFIED;
 private inputs, producer and runtime remain NOT AUTHENTICATED; privacy remains
 NOT ASSESSED. See [validation](STAGE96_VALIDATION.md); application/core remain NO-GO.
+
+## Stage 97: actual effect and original delivery have separate authority cuts
+
+The [finite composition](CUSTODY_ENTRY_MODEL.md) distinguishes admission and cached
+burn permission from current policy/continuity at actual work. Its combined
+reference also checks current authority on every exact-original delivery/replay.
+Effect ownership over all usable copies, retention and correct nonrewinding
+reanchoring remain unimplemented premises. Source-to-worker/reproducibility
+remain NOT VERIFIED; private inputs, producer and runtime remain NOT AUTHENTICATED;
+privacy remains NOT ASSESSED. See [validation](STAGE97_VALIDATION.md);
+application/core remain NO-GO.

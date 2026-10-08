@@ -882,3 +882,13 @@ proposed nonce admission/continuity protocol. The [comparison record](design/cus
 keeps every mechanism UNSELECTED / NOT IMPLEMENTED and all twelve gates OPEN.
 No platform or private implementation is selected. See
 [validation](docs/STAGE96_VALIDATION.md); application/core remain NO-GO.
+
+## Finite custody entry and original-output composition
+
+The [Stage 97 model](docs/CUSTODY_ENTRY_MODEL.md) separates recipient admission,
+current policy at actual work, copied local consumption, spent uncertainty and
+separately authorized exact-original replay. Four intentional controls expose
+missing premises; the combined reference exhausts a finite graph conditionally.
+Physical custody and reanchoring remain UNSELECTED / NOT IMPLEMENTED and all
+twelve gates OPEN. See [validation](docs/STAGE97_VALIDATION.md); application/core
+remain NO-GO.
