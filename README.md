@@ -872,3 +872,13 @@ keeps all twelve requirements OPEN and every real mechanism UNSELECTED.
 The pinned library's copyable nonce API is source evidence, not a protected
 custody boundary or new vulnerability claim. No private implementation is added.
 See [validation](docs/STAGE95_VALIDATION.md); application/core remain NO-GO.
+
+## Custody mechanism prerequisites
+
+The [Stage 96 comparison](docs/CUSTODY_MECHANISM_FEASIBILITY.md) examines pinned
+NSM source and mutable official Nitro Enclaves/KMS documentation as one case.
+Attestation, key delivery and encrypted restoration alone do not supply the
+proposed nonce admission/continuity protocol. The [comparison record](design/custody-mechanism-feasibility.json)
+keeps every mechanism UNSELECTED / NOT IMPLEMENTED and all twelve gates OPEN.
+No platform or private implementation is selected. See
+[validation](docs/STAGE96_VALIDATION.md); application/core remain NO-GO.

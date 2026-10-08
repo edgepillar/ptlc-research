@@ -837,3 +837,13 @@ All twelve requirements remain OPEN; the proposal is UNSELECTED and NOT IMPLEMEN
 Both historical packets, all four fixed inventories and three UNFILLED reports
 remain exact. No review request or reviewer contact occurs. See
 [validation](STAGE95_VALIDATION.md); application/core remain NO-GO.
+
+## Stage 96: mechanism gaps are not independent findings
+
+The [feasibility comparison](CUSTODY_MECHANISM_FEASIBILITY.md) and
+[static record](../design/custody-mechanism-feasibility.json) retain twelve OPEN
+requirements. Source/documentation observations and proposed failure scenarios
+are author work, without device/cloud execution, platform selection, a complete
+new review subject or independent assessment. Both historical author packets,
+four fixed inventories and three UNFILLED reports stay exact. No reviewer
+contact occurs. See [validation](STAGE96_VALIDATION.md); application/core remain NO-GO.

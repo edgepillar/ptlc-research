@@ -839,3 +839,13 @@ nine exact upstream source/license files without copying implementation or
 selecting a production backend. Existing copied/restored-history counterexamples,
 requirements, runtime, tests, fixtures, locks, workflows and reports remain exact.
 See [validation](STAGE95_VALIDATION.md); application/core remain NO-GO.
+
+## Stage 96: source comparison without a custody implementation
+
+The [mechanism comparison](CUSTODY_MECHANISM_FEASIBILITY.md) distinguishes seven
+named immutable NSM source files from mutable official guide snapshots and
+unexecuted author failure obligations. AWS is an examined case, without a vendor
+recommendation or hardware/cloud qualification. No external implementation,
+private API, real entropy, key, dependency, test or workflow is introduced. The
+existing proposal, author subjects and independent reports stay exact. See
+[validation](STAGE96_VALIDATION.md); application/core remain NO-GO.

@@ -642,3 +642,14 @@ are unselected. The proposal supplies no remedy for the existing copy/restore
 counterexamples. Source-to-worker/reproducibility remain NOT VERIFIED; private
 inputs, producer and runtime remain NOT AUTHENTICATED; privacy remains NOT ASSESSED.
 See [validation](STAGE95_VALIDATION.md); application/core remain NO-GO.
+
+## Stage 96: attested key access is a separate authority boundary
+
+The [mechanism comparison](CUSTODY_MECHANISM_FEASIBILITY.md) treats attestation
+challenge freshness, measured images and recipient key delivery as separate from
+signing-nonce freshness, spent-history continuity and current policy at actual
+backend entry. The same-domain effect owner and nonrewinding anchor are still
+unselected and unimplemented. No usable-copy containment or actual private
+consumption is measured. Source-to-worker/reproducibility remain NOT VERIFIED;
+private inputs, producer and runtime remain NOT AUTHENTICATED; privacy remains
+NOT ASSESSED. See [validation](STAGE96_VALIDATION.md); application/core remain NO-GO.
