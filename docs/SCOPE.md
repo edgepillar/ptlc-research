@@ -866,3 +866,12 @@ A successful revocation requires one effective-policy order covering every usabl
 continuation, rather than submission to a separate service or a cached read.
 The new descriptive record implements no authority, private API or physical
 fence; all existing core/application boundaries and custody gates remain exact.
+
+## Public native interval experiment
+
+The [suspension qualification](NATIVE_CUSTODY_INTERVALS.md) adds twelve fixed
+public process cases in three new Rust methods and a separate test coordinator.
+All preceding non-document sources and assertions remain exact. Synthetic policy
+labels do not authenticate currentness, prove nonrollback state or fence other
+copies. Physical F1-F4 and construction A01-A12 remain NOT EXECUTED; SC01-SC12
+remain OPEN. No private API or core change is introduced.
