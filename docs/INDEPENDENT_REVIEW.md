@@ -802,3 +802,16 @@ remain exact. No reviewer contact or independent assessment is performed.
 An empty Option, trusted event, process exit or fixture equality does not prove
 erasure, private-input origin, released runtime identity or persistent custody.
 See [validation](STAGE92_VALIDATION.md); application/core remain NO-GO.
+
+
+## Stage 93: exact native source without inherited assessment
+
+The [new author packet](NATIVE_SIGNER_REVIEW_HANDOFF.md) includes the complete
+accepted source through the later native journal, actual SIGKILL and nonce-pause
+tests. It retains the earlier handoff and all four fixed independent inventories
+as distinct immutable subjects. Complete source/delta fingerprints do not imply
+examination, transfer approval or select their own expected truth. Independently
+select the commit and manifest digest, then verify complete Git tree/blob rows
+and the comparison with a separately trusted tool. The three reports stay
+UNFILLED; no reviewer contact, request or independent assessment is performed.
+See [validation](STAGE93_VALIDATION.md); application/core remain NO-GO.

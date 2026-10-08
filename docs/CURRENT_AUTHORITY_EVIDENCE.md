@@ -605,3 +605,15 @@ counterexamples. Source-to-worker and reproducibility remain NOT VERIFIED;
 private inputs, producer origin and loaded runtime remain NOT AUTHENTICATED;
 privacy remains NOT ASSESSED. See [validation](STAGE92_VALIDATION.md);
 application/core progression remains NO-GO.
+
+
+## Stage 93: complete review metadata is not current authority
+
+The [native signer review subject](NATIVE_SIGNER_REVIEW_HANDOFF.md) records actual
+public-synthetic native/journal tests separately from the missing private signer,
+fresh entropy, durable custody and independent nonrollback authority. The copied
+history/restore counterexamples remain unresolved. Complete source inventories,
+delta fingerprints and hosted CI supply no missing authority or independent
+assessment. Source-to-worker/reproducibility remain NOT VERIFIED; private inputs,
+producer origin and loaded runtime remain NOT AUTHENTICATED; privacy remains
+NOT ASSESSED. See [validation](STAGE93_VALIDATION.md); application/core remain NO-GO.

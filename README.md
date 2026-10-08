@@ -841,3 +841,14 @@ normal-path children compare exact public partials and recorded replay. Option
 removal is not secure erasure, and no pause is inside the signing primitive.
 See [local validation](docs/STAGE92_VALIDATION.md). Real signer/custody and
 independent nonrollback authority remain unselected; application/core remain NO-GO.
+
+
+## Complete native signer review subject
+
+A [separate Stage 93 author packet](docs/NATIVE_SIGNER_REVIEW_HANDOFF.md) pins all
+508 files of the accepted immutable main source and its complete delta from the
+earlier 486-file handoff. It includes the public-synthetic native partial/journal,
+actual owner-death and acknowledged nonce-boundary tests without replacing any
+fixed subject or filling an assessment. Real signer, entropy, custody and
+independent nonrollback authority remain unselected. See
+[validation](docs/STAGE93_VALIDATION.md); application/core remain NO-GO.
