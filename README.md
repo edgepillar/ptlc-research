@@ -1078,3 +1078,14 @@ inner-transport controls distinguish a successfully reaped nonreading child from
 a draining child awaiting input. Runtime, guard, admission, timeout and CI policy
 stay exact. Complete local and hosted acceptance remain separate gates;
 application/core remain **NO-GO**.
+
+## Stage 115: retained reservation BEGIN interruptions
+
+Twelve [selected BEGIN controls](tests/test_policy_effect_reservation_begin.py)
+carry a retained empty reservation into direct or original actor constructor
+entry. Interruptions before and after successful native BEGIN distinguish two
+rollback-helper calls from zero or one actual SQL rollback. Exact outward
+exceptions, successful native close and the previously charged original are
+checked separately. See the [validation snapshot](docs/STAGE115_VALIDATION.md).
+These controls add no automatic recovery or application behavior;
+application/core remain **NO-GO**.
