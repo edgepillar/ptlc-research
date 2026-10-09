@@ -979,3 +979,17 @@ despite exit 1 and no readable reply. A stale-policy control has the same missin
 reply class with zero retained charges. No observation grants permission to
 retry. See the [selected limits](docs/POLICY_EFFECT_CONTENTION.md#original-actor-output-loss)
 and [Stage 106 snapshot](docs/STAGE106_VALIDATION.md). Application/core remain NO-GO.
+
+### Original actor buffered shutdown
+
+[Ten additional controls](tests/test_policy_effect_buffered_shutdown.py) execute
+the unchanged original actor with selected CPython pipe output. Default buffering
+with the inherited unbuffered override removed gives exit 120 after a primary
+BrokenPipeError and a separate shutdown diagnostic. Both a committed allocation
+and a stale-policy refusal can lose all outcome/report output and exit 120,
+while separate readback retains one or zero original charges respectively.
+Paired unbuffered refusal controls exit 1 with zero charges. Normal buffered
+controls deliver exact legacy/observed output with exit 0 or 20. Neither missing
+output nor final status authorizes retry. See the
+[selected limits](docs/POLICY_EFFECT_CONTENTION.md#original-actor-buffered-shutdown)
+and [Stage 107 snapshot](docs/STAGE107_VALIDATION.md). Application/core remain NO-GO.
