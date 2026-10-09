@@ -440,3 +440,70 @@ process signals and chain behavior remain unqualified. See the
 [Stage 108 snapshot](STAGE108_VALIDATION.md). No observation authorizes
 replacement, retry, refund, signing or a physical effect. Stage 99's original
 cause remains UNRESOLVED; application/core remain NO-GO.
+
+## Original actor constructor interruptions
+
+Stage 109 selects parent `f60f37a5408d6646a8eb69d0bdb5d8f927198252`, tree
+`d7e19e1f1f09c8943985673ae23909a8d83ee4b3`. The actor, store, observer,
+classifiers, strict controls and all 325 preceding sources remain byte exact.
+[Fourteen in-process controls](../tests/test_policy_effect_actor_constructor.py)
+execute the original constructor through forwarding test hooks. Each starts
+with one separately seeded original charge, sequence 1, and zero effects. The
+actor constructs its store before entering its exception and terminal-cleanup
+guard. A constructor failure therefore precedes observer installation,
+allocation, reply delivery and the actor's public close call.
+
+Native controls use an actual missing-path SQLite open, a setup PRAGMA denial,
+an open-transaction BEGIN denial, a source-label refusal and one or two rollback
+authorizer denials. Selected cancellation controls raise a fresh test exception
+before connection or at the existing open-before/open-after-commit cut. An open
+transaction commit is not an allocation charge. The rollback-denial selections
+measure two disposal calls, first during the busy transaction and then in the
+constructor, and two native close calls. They preserve the exact cancellation
+object; a repeated close after actual closure does not create another original.
+
+Three paired controls raise an explicit non-SQLite terminal fault only after
+native close succeeds. That terminal object is outward. Setup denial then keeps
+the native error directly as context because constructor normalization never
+executes; open cancellation keeps the exact selected primary object. BEGIN
+denial keeps a three-object chain through an already normalized unknown outcome
+whose native context remains suppressed. A fourth selection raises a synthetic
+SQLite exception class after successful close; disposal swallows that class,
+marks the handle closed and preserves the primary cancellation. None qualifies
+a naturally failing SQLite close. In the three non-SQLite pairs the native
+handle is confirmed closed even though the interrupted private closed flag
+remains false. The partial object is retained only by the harness; construction
+did not return a usable actor store.
+
+Direct native open/setup failures become a new unknown-outcome object with the
+native object as suppressed context. The BEGIN-denial unknown is constructed
+inside the transaction and reraised exactly by the constructor. Source refusal
+and selected cancellation remain their exact unsuppressed objects. Object
+identity, cause and suppression are asserted separately; a retained context
+object does not prove that a diagnostic was rendered or delivered.
+
+All thirteen interrupted controls have empty actor output, zero allocation
+calls and zero public actor close calls. Separate local/reopened readback keeps
+the seeded original, its charge sequence 1, event sequence 1 and zero effects.
+The healthy baseline returns function value 0, delivers the original record and
+an empty native report, and closes the actual handle. It executes four forwarded
+transaction calls but observes two native authorizer callbacks; those counters
+are measured separately and do not establish completed-statement count. The
+inherited classifier records process status as unavailable for every in-process
+control. No selected constructor failure has an installed actor observer or
+an emitted native report.
+
+The first focused run failed one new healthy-baseline assertion that equated
+SQL-call and authorizer-callback counts. The original failed source, log and
+result remain preserved. Separate forwarding-call instrumentation corrected
+that assertion; the corrected focused run passes all fourteen methods. Full
+final-source regression, artifact checks and fresh hosted execution are separate
+gates recorded in the [Stage 109 snapshot](STAGE109_VALIDATION.md) and candidate
+qualification. This correction adds no actor/store behavior change or retry.
+
+Child/process status, operating-system signals, natural close failures, arbitrary
+fault combinations, authenticated remote receipt, physical durability and chain
+behavior remain unqualified. No output, exception chain, private flag or readback
+observation authorizes replacement, retry, refund, nonce allocation, signing or
+a physical effect. Stage 99's original cause remains UNRESOLVED;
+application/core remain NO-GO.
