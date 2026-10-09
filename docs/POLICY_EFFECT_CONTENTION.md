@@ -618,3 +618,54 @@ signals, child status, authenticated delivery and physical durability remain
 unqualified. No observation authorizes replacement, retry, refund, signing,
 nonce allocation or a physical effect. Stage 99's original cause remains
 UNRESOLVED; application/core remain NO-GO.
+
+
+## Retained empty reservation refusal boundaries
+
+Stage 112 carries the actual empty reservation from three selected direct
+constructor interruptions into one explicit followup call. It reuses the
+preceding control helper without altering its source or the actor/store/
+observer behavior. The first synthetic selection follows successful native
+provisioning and descriptor close; it is not a natural close fault. No file
+is removed, replaced or reconstructed between the two phases. Each fixture
+already contains one separately retained charged original with no effect.
+
+Nine disjoint in-process methods cover three direct opens, three original
+actor opens and three direct exclusive provisioning attempts. Opens execute
+native SQLite connect, BEGIN IMMEDIATE, empty-schema validation, ROLLBACK and
+one successful native close. The exact schema StoreRefused survives disposal
+with no context/cause/suppression. The disposed database object remains present;
+a direct native probe refuses on its closed connection. Provisioning instead
+has one real EEXIST before SQLite connect: the outward StoreOutcomeUnknown
+suppresses the exact FileExistsError context. Its database remains None.
+Each followup disposes once, with no return, allocation or public close.
+
+The actor is invoked in process with the same public-synthetic request form.
+Its constructor refuses before observer installation and the actor's response
+exception guard. Empty stdout and no observer call are checked; subprocess
+status and delivered diagnostics are unavailable. Direct provisioning has no
+actor initial-profile support. No exception or empty output becomes permission
+for retry, replacement or treating the original as absent.
+
+Every method checks unchanged original bytes and expected directory entries
+before complete original readback. The reservation remains byte-exact empty,
+mode 0600, with matching stat identity at the measured checkpoints. This does
+not authenticate a path or qualify races between those checkpoints. Local and
+reopened reads agree on one retained original, charge/event sequence 1 and
+zero effects; the reservation is never an initialized replacement source.
+Fixture cleanup owns unexpected native descriptors and connections without
+replaying successful closes; normal fixture removal occurs after verification.
+
+Earlier private unexecuted drafts and ownership review are preserved. Nine
+separate local exploratory executions measure bytes and native paths on the
+selected Python/SQLite runtime before final assertions; they are not independent
+assessment or matrix evidence. The [validation snapshot](STAGE112_VALIDATION.md)
+separates focused, complete local and fresh hosted gates.
+
+Interrupted followup open/rollback/close, natural close failure, arbitrary
+paths, descriptor/symlink races, signals, child delivery, authenticated
+diagnostics, restores and physical durability remain unqualified. The original
+Stage 99 failure cause remains UNRESOLVED. SC01-SC12 stay OPEN; physical
+F1-F4/future A01-A12 stay NOT EXECUTED. Signer/custody, current-policy ownership
+and a nonrollback anchor remain UNSELECTED / NOT IMPLEMENTED. Application/core
+remain NO-GO; no runtime cleanup or automatic recovery policy is added.

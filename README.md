@@ -1045,3 +1045,15 @@ close, with no connection or usable store. Actor replies, exact exceptions,
 descriptor closure and the existing original are checked separately. See the
 [scope note](docs/POLICY_EFFECT_CONTENTION.md#constructor-path-and-provisioning-boundaries)
 and [Stage 111 snapshot](docs/STAGE111_VALIDATION.md). Application/core remain NO-GO.
+
+
+## Stage 112: retained empty reservation refusals
+
+Nine [followup reservation controls](docs/POLICY_EFFECT_CONTENTION.md#retained-empty-reservation-refusal-boundaries)
+carry the same empty file from a selected constructor interruption into direct
+open, original actor open or exclusive provisioning. Native schema refusal,
+rollback/close and native EEXIST remain distinct. Original bytes and complete
+charge/event sequence 1 survive; the reservation stays empty and mode 0600.
+No automatic retry, replacement or application behavior is added. See the
+[validation snapshot](docs/STAGE112_VALIDATION.md); independent assessment is
+absent and application/core remain **NO-GO**.
