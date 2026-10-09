@@ -993,3 +993,17 @@ controls deliver exact legacy/observed output with exit 0 or 20. Neither missing
 output nor final status authorizes retry. See the
 [selected limits](docs/POLICY_EFFECT_CONTENTION.md#original-actor-buffered-shutdown)
 and [Stage 107 snapshot](docs/STAGE107_VALIDATION.md). Application/core remain NO-GO.
+
+### Original actor compound faults
+
+[Ten additional controls](tests/test_policy_effect_compound_faults.py) combine
+selected primary failures with a synthetic fault raised after actual store close.
+The outward exception is the selected terminal object; its context retains the
+original cancellation, native SQLite setup error, native pipe error or selected
+flush error. Refusal output failure preserves a three-object chain. Separately
+retained records distinguish precommit rollback from a committed original even
+when no outcome is delivered. An already-disposed control skips terminal close
+and preserves the primary cancellation. These are selected in-process controls;
+they establish no child status, natural native-close fault or signal behavior.
+See the [selected limits](docs/POLICY_EFFECT_CONTENTION.md#original-actor-compound-faults)
+and [Stage 108 snapshot](docs/STAGE108_VALIDATION.md). Application/core remain NO-GO.
