@@ -1070,3 +1070,11 @@ remain exact. Fixture release occurs only after verification and only for a
 still-owned handle. See the [validation snapshot](docs/STAGE113_VALIDATION.md).
 These selected faults do not qualify natural close errors, child delivery,
 automatic recovery or application cryptography. Application/core remain **NO-GO**.
+
+Stage 114 corrects the [synthetic lease fixture input lifetime](docs/STAGE114_VALIDATION.md)
+after a preserved main CI failure with an unresolved original child cause. The
+positive fixture drains input until EOF before its unchanged reply; two native
+inner-transport controls distinguish a successfully reaped nonreading child from
+a draining child awaiting input. Runtime, guard, admission, timeout and CI policy
+stay exact. Complete local and hosted acceptance remain separate gates;
+application/core remain **NO-GO**.

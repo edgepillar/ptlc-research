@@ -19,11 +19,19 @@ import unittest
 from unittest.mock import patch
 
 from offline_session import observation_evidence as evidence
+from offline_session import public_worker as transport
 from offline_session.observation_store import ObservationStore, StoreBusy
 from offline_session.observation_verifier import SubprocessObservation, _file_digest
 from offline_session.public_worker import WorkerError, run_admitted_public_worker, run_guarded_public_worker
 from completion_test_support import final_signatures, released_bob
 from observation_store_test_support import STORE_ID, synthetic_pool
+
+
+SYNTHETIC_ENTRY = (
+    "#!/bin/sh\n"
+    "while IFS= read -r request; do :; done\n"
+    "printf synthetic-public-output\n"
+)
 
 
 @unittest.skipUnless(os.name == "posix", "lease qualification requires local POSIX locks and signals")
@@ -40,7 +48,7 @@ class WorkerLeaseTransportTests(unittest.TestCase):
             self.addCleanup(os.close, descriptor)
         self.leases = tuple(self.leases)
         self.entry = self.base / "entry"
-        self.entry.write_text("#!/bin/sh\nprintf synthetic-public-output\n", encoding="ascii")
+        self.entry.write_text(SYNTHETIC_ENTRY, encoding="ascii")
         self.entry.chmod(0o700)
         self.pin = _file_digest(self.entry)
 
@@ -115,7 +123,7 @@ class WorkerLeaseTransportTests(unittest.TestCase):
             signal_group.assert_not_called()
 
     def test_guarded_output_limit_rejects_overflow_and_preserves_parent_locks(self):
-        self.entry.write_text("#!/bin/sh\nprintf synthetic-public-output\n", encoding="ascii")
+        self.entry.write_text(SYNTHETIC_ENTRY, encoding="ascii")
         with self.assertRaises(WorkerError):
             self.run_guard(max_output_bytes=4)
         self.assertEqual(self.run_guard(), b"synthetic-public-output")
@@ -135,6 +143,70 @@ class WorkerLeaseTransportTests(unittest.TestCase):
                 ownership_descriptors=self.leases, admission_descriptor=lease.fileno())
             self.assertEqual(output, b"synthetic-public-output")
             self.assertFalse(os.get_inheritable(lease.fileno()))
+
+    def selected_input_boundary(self, *, reading):
+        entry = self.entry
+        if not reading:
+            entry = self.base / "nonreading-entry"
+            entry.write_text("#!/bin/sh\nprintf synthetic-public-output\n", encoding="ascii")
+            entry.chmod(0o700)
+        real_spawn, real_selector = subprocess.Popen, selectors.DefaultSelector
+        processes, boundaries = [], []
+
+        def spawn(*args, **kwargs):
+            process = real_spawn(*args, **kwargs)
+            processes.append(process)
+            return process
+
+        case = self
+
+        class SelectedSelector:
+            def __init__(self):
+                self.native = real_selector()
+                self.controlled = False
+
+            def __getattr__(self, name):
+                return getattr(self.native, name)
+
+            def select(self, timeout=None):
+                if not self.controlled:
+                    case.assertEqual(len(processes), 1)
+                    if reading:
+                        with case.assertRaises(subprocess.TimeoutExpired):
+                            processes[0].wait(timeout=0.05)
+                        case.assertIsNone(processes[0].returncode)
+                        boundaries.append("live-before-input-eof")
+                    else:
+                        case.assertEqual(processes[0].wait(timeout=5), 0)
+                        boundaries.append("reaped-before-input-delivery")
+                    self.controlled = True
+                return self.native.select(timeout)
+
+        with patch.object(transport.subprocess, "Popen", side_effect=spawn), \
+                patch.object(transport.selectors, "DefaultSelector", SelectedSelector), \
+                patch.object(transport.os, "killpg", wraps=os.killpg) as group_signal:
+            if reading:
+                output = transport._run([str(entry)], b"synthetic", timeout=5,
+                                        max_output_bytes=transport.MAX_OUTPUT_BYTES)
+                self.assertEqual(output, b"synthetic-public-output")
+            else:
+                with self.assertRaises(WorkerError) as caught:
+                    transport._run([str(entry)], b"synthetic", timeout=5,
+                                   max_output_bytes=transport.MAX_OUTPUT_BYTES)
+                self.assertIs(type(caught.exception.__context__), BrokenPipeError)
+                self.assertEqual(caught.exception.__context__.errno, 32)
+                self.assertIsNone(caught.exception.__cause__)
+                self.assertTrue(caught.exception.__suppress_context__)
+            group_signal.assert_not_called()
+        self.assertEqual(len(processes), 1)
+        self.assertEqual(processes[0].returncode, 0)
+        self.assertEqual(boundaries, ["live-before-input-eof" if reading else "reaped-before-input-delivery"])
+
+    def test_nonreading_worker_reaped_before_delivery_refuses_the_selected_request(self):
+        self.selected_input_boundary(reading=False)
+
+    def test_draining_worker_stays_live_until_delayed_input_is_delivered(self):
+        self.selected_input_boundary(reading=True)
 
     def test_invalid_or_overlapping_admission_descriptor_never_launches(self):
         duplicate = os.dup(self.leases[0])
