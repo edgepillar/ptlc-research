@@ -669,3 +669,72 @@ Stage 99 failure cause remains UNRESOLVED. SC01-SC12 stay OPEN; physical
 F1-F4/future A01-A12 stay NOT EXECUTED. Signer/custody, current-policy ownership
 and a nonrollback anchor remain UNSELECTED / NOT IMPLEMENTED. Application/core
 remain NO-GO; no runtime cleanup or automatic recovery policy is added.
+
+## Retained reservation disposal boundaries
+
+Stage 113 adds twelve disjoint in-process controls: six original actor entries
+and six direct constructor entries. Each carries the same actual empty file
+from successful native provisioning and descriptor close followed by selected
+URI EIO into one explicit followup open. The preceding helper remains exact.
+No file is removed, replaced or reconstructed between phases. Native connect,
+BEGIN IMMEDIATE, empty-schema StoreRefused and successful ROLLBACK occur before
+the disposal close wrapper selects a secondary error.
+
+Three secondary kinds are selected before native close or after successful
+native close. These are synthetic forwarding-wrapper selections, not naturally
+failing native close calls. The measured distinctions are:
+
+| Selected secondary | Timing | Outward exception | Private closed flag | Native handle before fixture release |
+| --- | --- | --- | --- | --- |
+| SQLite OperationalError | Before native close | Exact primary StoreRefused | True | SELECT 1 succeeds |
+| SQLite OperationalError | After native close | Exact primary StoreRefused | True | ProgrammingError |
+| OSError | Before native close | Exact secondary OSError | False | SELECT 1 succeeds |
+| OSError | After native close | Exact secondary OSError | False | ProgrammingError |
+| KeyboardInterrupt | Before native close | Exact secondary KeyboardInterrupt | False | SELECT 1 succeeds |
+| KeyboardInterrupt | After native close | Exact secondary KeyboardInterrupt | False | ProgrammingError |
+
+Each row is measured for both entries. SQLite secondaries are caught inside
+disposal; the same primary survives outward without context, cause or
+suppression. The fixture retains the caught secondary and verifies its exact
+primary context, no explicit cause and no suppression. OSError and cancellation
+escape with that same primary context instead. They interrupt the closed-flag
+assignment even when the native connection was successfully closed. The stored
+database object remains present in every case. A closed flag alone therefore
+does not establish native closure; native closure alone does not establish
+completion of the private disposal fields.
+
+Each followup attempts construction once, disposes once and invokes the close
+wrapper once. It never returns, allocates or invokes public close. Busy remains
+false and current labels/process/thread owner remain exact. Actor cases execute
+the original main with public-synthetic inputs, before observer installation and
+the response guard. Empty stdout is checked; child status and diagnostic delivery
+remain unavailable. The selected cancellation is an in-process object, not a
+signal or interrupted child.
+
+All methods compare original bytes, empty reservation bytes, mode 0600, stat
+identity at checkpoints and exact directory entries before complete readback.
+Local/reopened views agree on one original, charge/event sequence 1 and zero
+effects. These are checkpoint observations, not atomic path continuity, physical
+durability or race qualification. The reservation is never an initialized
+replacement source.
+
+Fixture ownership is separate from constructor state. Six before-close cases
+retain a native handle until all observations and original readback finish; the
+fixture then closes that handle once directly. Six after-close cases perform no
+fixture native close. Registered cleanup never repeats a successful close. A
+native closed-handle probe verifies the release without repairing store flags.
+This test-only release adds no runtime cleanup, retry or recovery policy.
+
+The earlier unexecuted draft and twelve local exploratory helper executions
+remain separately recorded. One inline helper-preparation SyntaxError is retained
+as a diagnostic excerpt and incident record; it did not alter final test sources
+or cause a qualification retry. Focused, complete local and fresh hosted gates
+are separated in the [Stage 113 snapshot](STAGE113_VALIDATION.md).
+
+Interruption during open/rollback, natural close faults, arbitrary paths,
+descriptor/symlink races, signals, child delivery, authenticated diagnostics,
+restores and physical durability remain unqualified. Stage 99's original cause
+remains UNRESOLVED. SC01-SC12 remain OPEN; physical F1-F4/future A01-A12 remain
+NOT EXECUTED. Signer/custody, current-policy ownership and a nonrollback anchor
+remain UNSELECTED / NOT IMPLEMENTED. Independent assessment is absent and
+application/core remain NO-GO.
