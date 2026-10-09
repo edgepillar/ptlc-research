@@ -560,3 +560,61 @@ signals, child exit status, arbitrary inputs, authenticated delivery and physica
 durability remain unqualified. No observation authorizes replacement, retry,
 refund, nonce allocation, signing or a physical effect. Stage 99's original
 failure cause remains UNRESOLVED; application/core remain NO-GO.
+
+## Constructor path and provisioning boundaries
+
+Stage 111 selects parent `41f83c46b693003f4c84ec1dd4da5e0f79245a44`, tree
+`d93505337b4c7d079f7612ca703b3148cd624f94`. All 327 preceding sources,
+including the original actor, store and observer, remain byte exact.
+[Fourteen new controls](../tests/test_policy_effect_constructor_paths.py)
+qualify eight original actor entries and six direct provisioning entries.
+
+Selected EIO and cancellation at path absolute conversion or symlink inspection
+precede the constructor's disposal guard. The exact primary survives, no
+disposal or connection occurs, and the partial object's closed flag stays false
+with a None database. The same selected classes at URI conversion follow the
+guard: EIO becomes an unknown with suppressed exact primary context;
+cancellation survives exactly. Both invoke disposal and set closed true without
+a native SQLite handle. These method selections are explicit synthetic faults,
+with actual pathlib calls forwarded at other boundaries. They do not qualify
+natural filesystem EIO or operating-system signals.
+
+Two actual actor paths target an owned directory or a child of a regular file.
+Native SQLite open fails with primary CANTOPEN, normalized to an unknown with
+the exact native error retained as suppressed context. No constructor returns,
+observer installs, actor allocation/public close runs or actor reply is emitted.
+In-process status is unavailable; empty output is not a refund or proof of zero
+previous charges. Error-context retention is not diagnostic delivery.
+
+Three direct valid-profile paths exercise actual exclusive file provisioning:
+an existing source or directory produces EEXIST; a regular-file parent produces
+ENOTDIR. One native file-open attempt, zero native file-close/SQLite-connect
+calls and one disposal occur. Existing bytes and directory entries are unchanged.
+These cases do not assert that the actor supports an initial profile.
+
+Three further direct selections create a new synthetic file with mode 0600 and
+successfully close its native descriptor before selecting post-close EIO or
+URI EIO/cancellation. The closed descriptor is independently checked with
+fstat/EBADF before readback. The new file remains present and empty; construction
+does not return, no SQLite connection or original operation is allocated, and
+disposal sets the store closed with no database. An empty reservation is not an
+initialized store, a charge, a completion or permission to retry. The post-close
+EIO is synthetic after successful native close, not a natural close failure.
+Fixture cleanup closes only descriptors still owned by the test; it does not
+replay a selected close or close an already released numeric descriptor.
+
+Each control separately checks original database bytes, expected directory
+entries, then complete local/reopened readback: one original, charge/event
+sequence 1, zero effects and no effect sequence. A six-case local exploratory
+run preceded these tests. Its overlong-component case is excluded from the
+selected matrix inventory; no cross-runtime native path-error conclusion is
+drawn from that local observation. Both focused versions passed fourteen
+methods. The first successful source/log/result remain preserved after the
+descriptor-ownership review; final-source regression is a separate gate in the
+[Stage 111 snapshot](STAGE111_VALIDATION.md).
+
+Arbitrary paths, descriptor-reuse races, symlink races, natural close failures,
+signals, child status, authenticated delivery and physical durability remain
+unqualified. No observation authorizes replacement, retry, refund, signing,
+nonce allocation or a physical effect. Stage 99's original cause remains
+UNRESOLVED; application/core remain NO-GO.
