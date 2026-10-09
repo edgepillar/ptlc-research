@@ -1123,3 +1123,14 @@ close. Thirty-two [controls](tests/test_selected_cleanup.py) retain the earlier
 store behavior and distinguish explicit fixture cleanup. See the
 [validation snapshot](docs/STAGE118_VALIDATION.md). No store, actor or application
 uses the guard; application/core remain **NO-GO**.
+
+## Stage 119: returned callbacks and native release
+
+Four [selected callback controls](tests/test_selected_cleanup_noop.py) compare
+successful callback return with separately measured native rollback and close.
+Three returned close callbacks leave an owned handle available until explicit
+fixture cleanup; two also retain an active transaction and journal. The native
+forwarding comparison closes the handle. Complete original readback remains
+available before and after fixture cleanup, with one original and zero effects.
+See the [validation snapshot](docs/STAGE119_VALIDATION.md). The selected guard
+and existing store remain unchanged; application/core remain **NO-GO**.
