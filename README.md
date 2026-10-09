@@ -1033,3 +1033,15 @@ opening. Actor cases emit no reply; direct profile cases do not claim actor
 support for provisioning. Each preserves one existing original charge and zero
 effects. See the [scope note](docs/POLICY_EFFECT_CONTENTION.md#constructor-preconnection-refusals)
 and [Stage 110 snapshot](docs/STAGE110_VALIDATION.md). Application/core remain NO-GO.
+
+### Constructor path and provisioning failures
+
+[Fourteen additional controls](tests/test_policy_effect_constructor_paths.py)
+separate selected path-method interruptions from native directory/open and
+exclusive-provisioning failures. Four interruptions precede the disposal guard;
+ten later failures invoke disposal without a SQLite handle. Three direct API
+selections retain a newly reserved empty file after successful native descriptor
+close, with no connection or usable store. Actor replies, exact exceptions,
+descriptor closure and the existing original are checked separately. See the
+[scope note](docs/POLICY_EFFECT_CONTENTION.md#constructor-path-and-provisioning-boundaries)
+and [Stage 111 snapshot](docs/STAGE111_VALIDATION.md). Application/core remain NO-GO.
