@@ -944,3 +944,14 @@ SQL, timeout, cap and request bindings remain unchanged. Missing or incomplete
 observations never mean zero retained charges or permission to retry. See the
 [selected scope](docs/POLICY_EFFECT_CONTENTION.md#bounded-original-native-execute-observation)
 and [Stage 103 snapshot](docs/STAGE103_VALIDATION.md). Application/core remain NO-GO.
+
+### Native rollback and secondary cleanup observations
+
+[Eight additional methods](tests/test_policy_effect_rollback_observation.py)
+qualify native rollback refusal with explicit SQLite authorizer fixtures. The
+unchanged original actor can emit an unknown-outcome report before a secondary
+context-exit failure; reply class, process exit and reopened rows are separate
+observations. These fixtures preserve store SQL, the observer and the strict
+original tests. They add no allocation retry or recovery permission. See the
+[selected limits](docs/POLICY_EFFECT_CONTENTION.md#native-rollback-and-secondary-cleanup)
+and [Stage 104 snapshot](docs/STAGE104_VALIDATION.md). Application/core remain NO-GO.

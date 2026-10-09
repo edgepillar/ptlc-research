@@ -219,3 +219,52 @@ controls retain one charge without inventing a native cause. These selected
 later schedules do not resolve the historical Stage 99 occurrence. See the
 [ten new methods](../tests/test_policy_effect_native_observation.py) and
 [Stage 103 validation](STAGE103_VALIDATION.md).
+
+## Native rollback and secondary cleanup
+
+Stage 104 selects immutable parent `3cbd6845962e90469e10dd7b1bce05cb56f18f9b`,
+tree `60bffb361eea423617be2ab9bdf2873bfdf197ed`. The store, original actor,
+observer, classifiers and all preceding tests remain byte exact. A separate
+[delegating fixture](../tests/policy_effect_rollback_actor.py) selects a native
+SQLite authorizer which denies event insertion and rollback. It runs the actual
+original actor with unchanged arguments/context and no replacement SQL. Its
+exception hook emits a fixed synthetic stderr label instead of traceback data;
+it does not catch the terminal exception or select the process exit code.
+The authorizer is an explicit test premise, not a naturally reproduced fault or
+evidence about the historical worker.
+
+The [eight new methods](../tests/test_policy_effect_rollback_observation.py)
+separate the following observed boundaries:
+
+| Explicit control | Execute observations at the command cut | Separate terminal/readback observations |
+| --- | --- | --- |
+| Buffered native COMMIT BUSY, both rollback attempts denied | COMMIT code 5, then two rollback entries with null codes | Closed handle; unavailable local readback; zero rows after reopen |
+| Native event insertion denied, both rollback attempts denied | Event insertion, then two rollback entries, all null | Unknown command outcome; closed handle; zero rows after reopen |
+| Stale policy request and both rollback attempts denied | Two rollback entries with null codes | Policy refusal becomes unknown; closed handle; zero rows after reopen |
+| Non-native precommit failure, first rollback denied and disposal rollback allowed | One rollback entry with null code | Both cleanup attempts occur; handle closes; zero rows after reopen; no allocation retry |
+| Cancellation and both rollback attempts denied | Two rollback entries with null codes | The same cancellation object propagates from the command; closed handle; zero rows after reopen |
+| Delegated original actor under event/rollback denial, legacy and observed modes | Observed mode reports event insertion and both rollback failures | Unknown first line precedes secondary context-exit refusal and process exit 1; fixed stderr label; zero rows after reopen |
+| Postcommit refusal with rollback denial selected | Empty execute-error list; no rollback statement occurs | Unknown command outcome, open handle, one original charge and zero effects before/after reopen |
+| Native closed-cursor fetch and transaction-state access | Empty execute-error list | Both fail outside execute observation; neither error is reported as an execute error |
+
+The selected observer still emits only exact BUSY code 5 or null. Native
+authorization refusal is outside that numeric allowlist; null is not a BUSY
+classification. Consecutive rollback entries are the unchanged store's command
+cleanup and disposal cleanup, not allocation retries. Connection close is outside
+the execute observer. The zero-row observation after close/reopen applies to
+these explicit controls and is not a general durability or rollback guarantee.
+Reading the closed connection later can append an `execute-other` error to the
+observer; the test preserves the earlier command report as a defensive snapshot.
+Unavailable readback never becomes an absent original.
+
+The actor fixture's complete report survives classification alongside its
+nonstandard exit and stderr presence. A recognized first line or valid report
+does not qualify normal process completion. The earlier first-line/exit
+preservation statement applies to the selected completed Stage 103 controls;
+it is not a universal claim about secondary cleanup failures. The direct
+cancellation test qualifies the command boundary only, not an outer context
+manager or process interruption protocol. No terminal behavior is repaired here.
+Reports remain unauthenticated synthetic evidence. None permits a replacement,
+retry, refund, new nonce, signing or physical effect. See the separate
+[Stage 104 validation snapshot](STAGE104_VALIDATION.md). The initial Stage 99
+cause remains UNRESOLVED; all independent assessment and custody gates remain open.
