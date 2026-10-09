@@ -949,9 +949,21 @@ and [Stage 103 snapshot](docs/STAGE103_VALIDATION.md). Application/core remain N
 
 [Eight additional methods](tests/test_policy_effect_rollback_observation.py)
 qualify native rollback refusal with explicit SQLite authorizer fixtures. The
-unchanged original actor can emit an unknown-outcome report before a secondary
+Stage 104 original actor emitted an unknown-outcome report before a secondary
 context-exit failure; reply class, process exit and reopened rows are separate
 observations. These fixtures preserve store SQL, the observer and the strict
 original tests. They add no allocation retry or recovery permission. See the
 [selected limits](docs/POLICY_EFFECT_CONTENTION.md#native-rollback-and-secondary-cleanup)
 and [Stage 104 snapshot](docs/STAGE104_VALIDATION.md). Application/core remain NO-GO.
+
+### Original actor terminal cleanup
+
+The test actor now closes only an open handle, preserving its unknown outcome
+and bounded native report when the store has already disposed the connection.
+Eight added methods cover open-handle cleanup and separate command, readiness,
+postcommit and terminal cancellation boundaries. The native-authorizer child
+control now requires exit 20 and empty stderr in both legacy and observed modes.
+Store SQL, the observer, request bindings and the original strict contention
+expectations remain unchanged. See the
+[selected limits](docs/POLICY_EFFECT_CONTENTION.md#original-actor-terminal-cleanup)
+and [Stage 105 snapshot](docs/STAGE105_VALIDATION.md). Application/core remain NO-GO.

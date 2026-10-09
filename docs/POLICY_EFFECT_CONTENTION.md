@@ -222,9 +222,10 @@ later schedules do not resolve the historical Stage 99 occurrence. See the
 
 ## Native rollback and secondary cleanup
 
-Stage 104 selects immutable parent `3cbd6845962e90469e10dd7b1bce05cb56f18f9b`,
-tree `60bffb361eea423617be2ab9bdf2873bfdf197ed`. The store, original actor,
-observer, classifiers and all preceding tests remain byte exact. A separate
+At the Stage 104 snapshot, the selected immutable parent was
+`3cbd6845962e90469e10dd7b1bce05cb56f18f9b`, tree
+`60bffb361eea423617be2ab9bdf2873bfdf197ed`. The store, original actor,
+observer, classifiers and all preceding tests were byte exact. A separate
 [delegating fixture](../tests/policy_effect_rollback_actor.py) selects a native
 SQLite authorizer which denies event insertion and rollback. It runs the actual
 original actor with unchanged arguments/context and no replacement SQL. Its
@@ -263,8 +264,58 @@ does not qualify normal process completion. The earlier first-line/exit
 preservation statement applies to the selected completed Stage 103 controls;
 it is not a universal claim about secondary cleanup failures. The direct
 cancellation test qualifies the command boundary only, not an outer context
-manager or process interruption protocol. No terminal behavior is repaired here.
+manager or process interruption protocol. No terminal behavior was repaired
+at that snapshot.
 Reports remain unauthenticated synthetic evidence. None permits a replacement,
 retry, refund, new nonce, signing or physical effect. See the separate
 [Stage 104 validation snapshot](STAGE104_VALIDATION.md). The initial Stage 99
 cause remains UNRESOLVED; all independent assessment and custody gates remain open.
+
+## Original actor terminal cleanup
+
+Stage 105 selects immutable parent `e1f472d0ca5c7ba585ceab5ac81b767cf24cd7a7`,
+tree `4b5ad3e0c90371c4f4f13793ec78d27f2e0f605e`. The
+[original test actor](../tests/policy_effect_store_actor.py) replaces unconditional
+context exit with a `finally` block which closes the store only while its private
+`_closed` flag is false. This is an isolated test actor using this exact store;
+it is not a generic connection-owner API. Store SQL, disposal, rollback handling,
+timeouts, caps, request bindings, the observer, classifiers, delegating authorizer
+fixture and strict original contention controls remain byte exact.
+
+The two native-authorizer child executions now require exit 20 and empty stderr,
+with the same unknown first line, bounded native report and zero reopened rows.
+The corresponding Stage 104 method is deliberately renamed and revised. Its
+seven companion methods and all other preceding test sources remain exact.
+The historical Stage 104 exit-1 snapshot above is preserved as prior evidence,
+not the current terminal behavior.
+
+[Eight added methods](../tests/test_policy_effect_actor_cleanup.py) invoke the
+actual actor with a real native store and synthetic controls. They separately
+assert constructor count, terminal close count, native transaction order,
+disposed-state refusal, emitted bytes and reopened original/effect counts:
+
+| Selected control | Terminal boundary | Separate retained rows |
+| --- | --- | --- |
+| Successful allocation | One close on an open handle; return 0; empty native report | One original charge, zero effects |
+| Stale policy request | One close; return 20 with unchanged refusal and empty report | Zero originals/effects |
+| Cancellation before commit with successful rollback | Same cancellation object; one close; no outcome/report emission | Zero originals/effects |
+| Cancellation before commit with both native rollbacks denied | Same cancellation object; disposed handle skips terminal close; two bounded null rollback observations | Zero originals/effects |
+| Native setup pragma refusal | Native exception propagates; one close before observer installation; no reply | Zero originals/effects |
+| Selected terminal-close cancellation after native close | Same cancellation object propagates after a reply/report was already emitted | One original charge, zero effects |
+| Readiness cancellation before a command | Same cancellation object; one close; no transaction or outcome/report | Zero originals/effects |
+| Cancellation after commit | Same cancellation object; one close; no rollback statement or outcome/report | One original charge, zero effects |
+
+The terminal cancellation uses a test wrapper which closes the real connection
+then raises a selected `KeyboardInterrupt`. It is not a natural native-close
+fault or process-signal experiment. Cancellation methods qualify the in-process
+actor boundary and object identity, not a process exit code. There is no broad
+exception catch, cancellation conversion or outcome retry. A reply emitted
+before a terminal cancellation is not proof of normal completion. Simultaneous
+primary and terminal failures, arbitrary close faults and interruption of the
+constructor remain unqualified. The guard depends on the selected store's
+disposal flag; it adds no general resource-lifecycle or durability guarantee.
+Native error reports remain command-cut evidence, unauthenticated and separate
+from readback and terminal success. No observation authorizes replacement,
+retry, refund, nonce allocation, signing or physical effect. See the separate
+[Stage 105 validation snapshot](STAGE105_VALIDATION.md). Stage 99's original cause
+remains UNRESOLVED and application/core remain NO-GO.

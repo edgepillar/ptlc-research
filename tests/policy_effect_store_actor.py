@@ -21,7 +21,8 @@ def main():
     labels = SourceLabels(**context["labels"])
     request = OriginalRequest(context["operation"], context["revision"],
         bytes.fromhex(context["profile_hex"]), context["proposal"])
-    with OfflinePolicyEffectStore(path, labels) as store:
+    store = OfflinePolicyEffectStore(path, labels)
+    try:
         store._db.execute("PRAGMA cache_size=1")
         store._db.execute("PRAGMA cache_spill=ON")
         observer = ObservedConnection(store._db) if observed else None
@@ -56,6 +57,9 @@ def main():
             print(type(error).__name__, flush=True)
             emit(observer)
             return 20
+    finally:
+        if not store._closed:
+            store.close()
 
 
 if __name__ == "__main__":
