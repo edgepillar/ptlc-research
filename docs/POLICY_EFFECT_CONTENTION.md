@@ -319,3 +319,37 @@ from readback and terminal success. No observation authorizes replacement,
 retry, refund, nonce allocation, signing or physical effect. See the separate
 [Stage 105 validation snapshot](STAGE105_VALIDATION.md). Stage 99's original cause
 remains UNRESOLVED and application/core remain NO-GO.
+
+## Original actor output loss
+
+Stage 106 selects parent `ed9a6cf1edffef2c295d9e7541ab91c69a9ce913`, tree
+`a970c31b0444c48f2d4592b41739de4ef36adf2c`. The original actor and all preceding
+sources remain exact. [Eight new controls](../tests/test_policy_effect_output_loss.py)
+qualify existing output boundaries without changing transaction handling or
+adding a retry.
+
+Six in-process controls use real SQLite and operating-system pipes: successful
+delivery, a closed reader at the first reply or report write, two explicitly
+synthetic flush faults after local delivery, and closed-pipe refusal output.
+They preserve the same output exception object and separately assert one actor
+allocation, one close, transaction authorizer trace, local observer contents,
+locally received bytes and exact local/reopened rows. Committed controls retain
+one original charge and no effect. The stale-policy refusal control rolls back
+and retains zero originals/effects despite the same absent output class.
+
+Two controls execute the unchanged actor directly with Python `-u`, in legacy
+and observed modes. After readiness, the parent closes the stdout reader before
+releasing the command. Both actors commit, then naturally exit 1 on native
+BrokenPipeError, without a readable outcome or native report. Separate readback
+retains one original charge and no effect. No exception hook or status override
+changes the child. This selected unbuffered invocation does not qualify default
+buffered shutdown, signal behavior or arbitrary concurrent faults.
+
+An empty execute report held locally is separate from an emitted report; output
+errors are outside native execute observation. A record or report received
+before an explicit flush fault is separate from normal completion. In-process
+exception identity is separate from subprocess status, and readback is separate
+from physical durability. No observation authorizes retry, replacement, refund,
+signing or a physical effect. See the
+[Stage 106 validation snapshot](STAGE106_VALIDATION.md). Application/core remain
+NO-GO and Stage 99's original cause remains UNRESOLVED.
