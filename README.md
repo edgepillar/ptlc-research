@@ -1021,3 +1021,15 @@ duplicate charge. Explicit SQL calls and native authorizer callbacks are counted
 separately. See the
 [selected limits](docs/POLICY_EFFECT_CONTENTION.md#original-actor-constructor-interruptions)
 and [Stage 109 snapshot](docs/STAGE109_VALIDATION.md). Application/core remain NO-GO.
+
+### Constructor refusals before native connection
+
+[Twelve additional controls](tests/test_policy_effect_constructor_preflight.py)
+separate six original actor inputs from six direct constructor inputs. Invalid
+labels, paths and provisioning profiles refuse before object fields exist;
+existing and dangling symlinks refuse after fields exist but before connection.
+Neither group invokes constructor disposal or reaches native database/file
+opening. Actor cases emit no reply; direct profile cases do not claim actor
+support for provisioning. Each preserves one existing original charge and zero
+effects. See the [scope note](docs/POLICY_EFFECT_CONTENTION.md#constructor-preconnection-refusals)
+and [Stage 110 snapshot](docs/STAGE110_VALIDATION.md). Application/core remain NO-GO.

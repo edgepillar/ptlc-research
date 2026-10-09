@@ -507,3 +507,56 @@ behavior remain unqualified. No output, exception chain, private flag or readbac
 observation authorizes replacement, retry, refund, nonce allocation, signing or
 a physical effect. Stage 99's original cause remains UNRESOLVED;
 application/core remain NO-GO.
+
+## Constructor preconnection refusals
+
+Stage 110 selects parent `cbf1b9e799071cddf65057e14a380f90ac900e87`, tree
+`9f653a2481843a28873bd074dbc08957b58531db`. The original actor, store,
+observer, classifiers and all 326 preceding sources remain unchanged.
+[Twelve new in-process controls](../tests/test_policy_effect_constructor_preflight.py)
+retain one previously charged original while selecting existing input guards.
+
+Six controls enter the actual original actor with uppercase or numeric labels,
+an empty or overbound string path, or an existing or dangling symlink. The
+actor's constructor precedes its exception and cleanup guard: these refusals
+produce no actor allocation, observer installation, reply or public close.
+Process status is unavailable for this in-process harness. Empty output does
+not mean that the independently seeded original was absent or refunded.
+
+Six controls enter the actual store constructor directly with inexact labels,
+a foreign path object, a string subclass, a bytearray provisioning profile,
+noncanonical profile bytes, or a valid profile with a different authority
+namespace. Foreign attribute, filesystem conversion and length hooks must
+not run. These direct API cases do not assert that the actor accepts arbitrary
+path objects or provisioning profiles; the actor passes a string and no initial
+profile. Profile refusal is distinct from a failed attempt to recreate an
+existing database. Native file provisioning and SQLite connect are never called.
+
+Ten cases refuse before owner, labels, busy, closed and database fields exist.
+Both symlink cases refuse after those fields exist: busy and closed are false,
+database is None, and constructor disposal is never called. That partial
+object is retained only by test instrumentation; no usable store is returned.
+An absent disposal call at these guards is not evidence of a leaked connection.
+The existing symlink and dangling symlink remain intact, and the latter's
+target is not created. Paths and labels are temporary synthetic inputs.
+
+The exact outward refusal survives the forwarding constructor wrapper. All
+cases have no explicit cause; noncanonical profile bytes retain a suppressed
+decode ValueError context while the other refusals have no context. Context
+retention does not establish a rendered or delivered diagnostic. Each control
+checks unchanged existing database bytes and directory entries, then separately
+reads the complete local and reopened original: charge/event sequence 1,
+one operation, zero synthetic effects and no effect sequence.
+
+The first focused run failed only a new symlink assertion comparing a resolved
+alias with an unresolved temporary-directory path. Its source, log and result
+remain preserved. Resolving both sides corrects that test expectation; one
+corrected focused run passes all twelve methods. No store or actor behavior
+changes. Complete regression and artifact/source checks are separate gates
+in the [Stage 110 snapshot](STAGE110_VALIDATION.md).
+
+Symlink replacement races, native path-processing faults, operating-system
+signals, child exit status, arbitrary inputs, authenticated delivery and physical
+durability remain unqualified. No observation authorizes replacement, retry,
+refund, nonce allocation, signing or a physical effect. Stage 99's original
+failure cause remains UNRESOLVED; application/core remain NO-GO.
