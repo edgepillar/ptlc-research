@@ -395,3 +395,48 @@ nonce allocation, signing or effect. Arbitrary concurrent terminal faults,
 signals, fragmentation, authenticated remote receipt and physical durability
 remain unqualified. See the [Stage 107 snapshot](STAGE107_VALIDATION.md).
 Stage 99's original cause remains UNRESOLVED; application/core remain NO-GO.
+
+## Original actor compound faults
+
+Stage 108 selects parent `f5d814d797f2833ac581c3cfd342d68c1d3bea0c`, tree
+`0108f468ce971c5c82cb117f8c18a54cefb8c659`. The actor, store, observer,
+classifiers, strict controls and all 324 preceding sources remain byte exact.
+[Ten in-process controls](../tests/test_policy_effect_compound_faults.py)
+select primary faults and a separate terminal fault without changing the
+original actor's error handling or adding an allocation retry. The harness calls
+the actual store close first, then raises a fresh selected terminal exception.
+This is an explicit synthetic post-successful-close fault, not qualification of
+a naturally failing SQLite close or an operating-system signal.
+
+Nine paired controls reach terminal close with an active primary exception.
+Readiness cancellation has no transaction; precommit cancellation rolls back;
+postcommit cancellation retains one original charge. A real SQLite authorizer
+denial during setup occurs before observer installation. Native EPIPE controls
+lose either the first reply, refusal reply or observed report. Two separate
+synthetic EIO flush controls follow local delivery of the allocation record or
+both the record and report. Each pair asserts the exact outward terminal object,
+the exact primary object recorded at close, identity through `__context__`, no
+explicit `__cause__`, and no context suppression. Refusal output loss retains
+the separate StoreRefused object beneath the native BrokenPipeError and terminal
+fault. No exception is converted into a successful reply or retry instruction.
+
+The tenth control selects precommit cancellation with two native rollback
+authorizer denials. The store disposes its connection and the actor's guard skips
+terminal close. The outward exception remains the exact primary cancellation;
+the selected terminal object is never raised. The observed native execute report
+retains two rollback entries with null codes, not a fabricated busy code. The
+authorizer trace counts selected transaction callbacks, not completed statements
+or exact disposal calls.
+
+All controls check the disposed actor handle, exact locally received bytes and
+separate local/reopened state. They retain zero synthetic effects. Readiness,
+pause markers, allocation output and report delivery remain distinct. A locally
+held native report cannot fill in an absent emitted report; the setup fault has
+no observer installed. Process status is unavailable for these in-process
+controls. Received bytes before a selected flush fault do not establish normal
+completion, authenticated remote receipt or physical durability. Arbitrary
+fault combinations, interrupted construction, natural native-close failures,
+process signals and chain behavior remain unqualified. See the
+[Stage 108 snapshot](STAGE108_VALIDATION.md). No observation authorizes
+replacement, retry, refund, signing or a physical effect. Stage 99's original
+cause remains UNRESOLVED; application/core remain NO-GO.
