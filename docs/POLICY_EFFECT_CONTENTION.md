@@ -18,7 +18,10 @@ archive and successful retry remain distinct evidence.
 
 The selected local MIT source is immutable commit
 `5ed0f032a94e9dd28ad4218c9fbde624b9e4ed20`, tree
-`6920e0c090264e16abd9ad3b17e5c65d94c09ada`. Three original files remain byte exact:
+`6920e0c090264e16abd9ad3b17e5c65d94c09ada`. These hashes identify the three
+original files at that immutable source. The store remains byte exact. Stage 102
+deliberately revises the test harness, and Stage 103 revises the actor for optional
+execute observation; the historical actor/test hashes are not current-source claims.
 
 | Selected file | SHA256 |
 | --- | --- |
@@ -136,7 +139,7 @@ original lookups and separately reopened observations in the assertion message.
 Request IDs, profile/proposal bytes, raw output, error text and environment
 details are not emitted. This report is synthetic test evidence only.
 
-The original actor and store remain byte exact, including SQL, timeout, cap and
+At the Stage 102 snapshot the actor and store remained byte exact, including SQL, timeout, cap and
 original request bindings. The test still requires `[0,20]`, exactly one retained
 original and one charge. Row/effect and reopen checks are additional assertions.
 The required empty stderr check now tests presence, so an unexpected stderr
@@ -144,7 +147,7 @@ cannot be quoted by unittest. Failed readback is explicitly `unavailable`;
 it never becomes zero rows. Cancellation propagates. No retry, replacement,
 effect, nonce work or capacity recovery is added to the original test.
 
-The unchanged actor emits response classes but no native error phase or code.
+That snapshot's unchanged actor emits response classes but no native error phase or code.
 The report labels those details `not-emitted-by-original-actor`; it never
 infers BUSY, a commit phase or a retained charge from an exit code. Completed
 child observations do not qualify the timeout or interrupted collection path.
@@ -163,10 +166,10 @@ fixture releases its reader at the specified observation cut. See the
 ## Remaining work
 
 Retain the original failure as UNRESOLVED. Completed original actor replies and
-readback now survive the strict assertion, but native error phases/codes remain
-unobserved in that actor. Further diagnostics must retain those details before
-exception wrapping while preserving command/context bindings and all strict
-safety assertions. Distinguish the availability expectation from the one-charge
+readback now survive the strict assertion. The bounded Stage 103 option below
+retains selected native execute details before exception wrapping while preserving
+command/context bindings and all strict safety assertions. Distinguish the
+availability expectation from the one-charge
 safety invariant. A controlled later reproduction cannot recover missing
 evidence about the old run. Do not add retry/replacement behavior merely to
 make the assertion pass.
@@ -175,3 +178,44 @@ All historical review packets, primitive/journal bytes, dependencies, workflows
 and custody proposals remain unchanged. Independent assessment is absent.
 Physical F1-F4 and construction A01-A12 remain NOT EXECUTED; all SC01-SC12 stay
 OPEN. Application/core, private signing and funded execution remain NO-GO.
+
+## Bounded original native execute observation
+
+Stage 103 selects parent `05ed20ad1093b54912279d24e060096e9cee0e67`, tree
+`9414031dd69f6b3c3db0ffa4a08e17aad5108f0f`. The original actor accepts exactly
+the additional test-only argument `native-execute-errors-v1`. Its original
+arguments, request context, readiness/cut behavior, PRAGMAs, SQL, timeout,
+store calls, output first line and exit classes remain unchanged. Without the
+option it retains the legacy wire. The strict distinct-request test selects the
+option; its `[0,20]`, exactly-one original, one-charge and readback checks remain.
+
+A [test-only connection observer](../tests/policy_effect_native_observation.py)
+forwards the command's execute calls and records errors before the unchanged
+store wraps them. It emits only six fixed phase labels, at most four entries,
+an explicit overflow flag and exact native BUSY code 5 or null. Null means the
+code was unavailable or outside this selected allowlist; extended BUSY codes
+are not collapsed into 5. Foreign exception subclasses cannot supply diagnostic
+attribute hooks. Exception messages, SQL, parameters, request bytes and locations
+are omitted. No retry or compensating SQL is added. Cancellation propagates.
+
+The second stdout line is a bounded canonical synthetic report. The classifier
+accepts it only with a recognized original first line and preserves legacy
+classification otherwise. An invalid suffix is unrecognized, never partially
+accepted. A missing report after SIGKILL is explicitly incomplete when another
+reply has a report. An empty error list means no error was observed at execute;
+it does not mean an absent charge, a known cause or a safe retry.
+The retained legacy no-report label records classifier absence, not proof that
+no native error or bytes were emitted. Only a complete validated report qualifies
+the new observation.
+Cursor fetching, initial open/setup, close, interrupted collection and a lost report are outside
+the new observation scope. Reports are unauthenticated test evidence, not signer
+permissions or trusted application results.
+
+Actual controls observe original-actor BEGIN BUSY, buffered COMMIT BUSY with
+rollback, and the strict original two-child held-reader failure. In that last
+schedule one child may receive BEGIN BUSY while another is blocked later; no
+single phase is inferred for both actors. Postcommit non-native loss and SIGKILL
+controls retain one charge without inventing a native cause. These selected
+later schedules do not resolve the historical Stage 99 occurrence. See the
+[ten new methods](../tests/test_policy_effect_native_observation.py) and
+[Stage 103 validation](STAGE103_VALIDATION.md).

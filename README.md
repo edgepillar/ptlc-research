@@ -931,6 +931,16 @@ both children finish, before its required `[0,20]` and exactly-one assertions.
 An unavailable readback is explicit; raw output and exception text are omitted.
 [Eight diagnostic methods](tests/test_policy_effect_diagnostics.py) cover the
 strict failure path, retained postcommit charge, privacy and cancellation.
-Native error details are not emitted by the unchanged actor, and the old CI
+The Stage 102 snapshot did not emit native error details, and the old CI
 cause remains UNRESOLVED. See the [scope](docs/POLICY_EFFECT_CONTENTION.md#original-allocation-failure-evidence)
 and [local snapshot](docs/STAGE102_VALIDATION.md). Application/core remain NO-GO.
+
+### Bounded original native execute observations
+
+The original actor now offers a fixed test-only observation option. The strict
+distinct-request test selects it to retain native execute phases and exact BUSY
+code 5 before store exception wrapping. Legacy output remains the default;
+SQL, timeout, cap and request bindings remain unchanged. Missing or incomplete
+observations never mean zero retained charges or permission to retry. See the
+[selected scope](docs/POLICY_EFFECT_CONTENTION.md#bounded-original-native-execute-observation)
+and [Stage 103 snapshot](docs/STAGE103_VALIDATION.md). Application/core remain NO-GO.

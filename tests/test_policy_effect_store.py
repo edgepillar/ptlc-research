@@ -18,6 +18,7 @@ import unittest
 from unittest.mock import patch
 
 from qualification import policy_effect_store as source
+import policy_effect_native_observation as native_observation
 
 
 def canonical(value):
@@ -33,6 +34,12 @@ def allocation_reply(status, output, error):
     """Classify the original actor's fixed allocation replies without echoing bytes."""
     response = "unrecognized"
     if type(output) is bytes and len(output) <= 4096:
+        lines = output.split(b"\n")
+        if len(lines) == 3 and lines[-1] == b"":
+            native = native_observation.decode(lines[1])
+            reply = allocation_reply(status, lines[0] + b"\n", error)
+            if native is not None and reply["response_class"] in ("allocation-record", "StoreRefused", "StoreOutcomeUnknown"):
+                return dict(reply, native_execute_errors=native["errors"], native_error_overflow=native["overflow"])
         if output == b"":
             response = "empty"
         elif output in (b"StoreRefused\n", b"StoreOutcomeUnknown\n"):
@@ -77,9 +84,12 @@ def allocation_evidence(replies, store, requests, reopen):
             after = allocation_state(reopened, requests)
     except Exception:
         after = dict(readback="unavailable")
-    return dict(schema="synthetic-distinct-allocation-v1",
-                replies=[allocation_reply(status, output, error) for status, output, error in replies],
-                native_error_details="not-emitted-by-original-actor", local=local, reopened=after)
+    classified = [allocation_reply(status, output, error) for status, output, error in replies]
+    emitted = sum("native_execute_errors" in row for row in classified)
+    detail = ("bounded-original-execute-report" if emitted == len(classified) and emitted
+              else "incomplete-original-execute-report" if emitted else "not-emitted-by-original-actor")
+    return dict(schema="synthetic-distinct-allocation-v1", replies=classified,
+                native_error_details=detail, local=local, reopened=after)
 
 
 class PolicyEffectStoreCase(unittest.TestCase):
@@ -443,10 +453,12 @@ class PolicyEffectStoreNativeTests(PolicyEffectStoreCase):
             revision=request.expected_revision, profile_hex=request.profile_wire.hex(),
             proposal=request.proposal_digest_hex, **extra)
 
-    def actor(self, command, point="none", *, request=None, ready=False, **extra):
+    def actor(self, command, point="none", *, request=None, ready=False, observed=False, **extra):
         actor = Path(__file__).with_name("policy_effect_store_actor.py")
-        child = subprocess.Popen([sys.executable, "-B", str(actor), str(self.path), command,
-            point, "ready" if ready else "cut"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        arguments = [sys.executable, "-B", str(actor), str(self.path), command, point, "ready" if ready else "cut"]
+        if observed:
+            arguments.append("native-execute-errors-v1")
+        child = subprocess.Popen(arguments, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         def cleanup():
             if child.poll() is None: child.kill()
             child.communicate(timeout=10)
@@ -516,7 +528,7 @@ class PolicyEffectStoreNativeTests(PolicyEffectStoreCase):
         wire = self.wire(max_attempt_limit=1)
         self.store.replace_local_policy(0, wire, active=True)
         requests = (self.request(revision=1, wire=wire), self.request("03", revision=1, wire=wire))
-        children = [self.actor("allocation", request=request, ready=True) for request in requests]
+        children = [self.actor("allocation", request=request, ready=True, observed=True) for request in requests]
         for child in children: child.stdin.write(b"go\n"); child.stdin.flush()
         replies = []
         for child in children:
