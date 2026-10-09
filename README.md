@@ -1089,3 +1089,15 @@ exceptions, successful native close and the previously charged original are
 checked separately. See the [validation snapshot](docs/STAGE115_VALIDATION.md).
 These controls add no automatic recovery or application behavior;
 application/core remain **NO-GO**.
+
+## Stage 116: retained reservation rollback interruptions
+
+Twelve [selected compound rollback controls](tests/test_policy_effect_reservation_rollback.py)
+carry a retained reservation through an original BEGIN interruption and a
+secondary SQLite rollback interruption. Helper results, disposal busy states,
+native closed-property refusals and exact exception contexts are checked
+separately from SQL rollback and native close calls. The original synthetic
+charge remains available with zero effects. See the
+[validation snapshot](docs/STAGE116_VALIDATION.md). These selected observations
+add no automatic recovery or application behavior; application/core remain
+**NO-GO**.
