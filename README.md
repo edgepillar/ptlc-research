@@ -1007,3 +1007,17 @@ and preserves the primary cancellation. These are selected in-process controls;
 they establish no child status, natural native-close fault or signal behavior.
 See the [selected limits](docs/POLICY_EFFECT_CONTENTION.md#original-actor-compound-faults)
 and [Stage 108 snapshot](docs/STAGE108_VALIDATION.md). Application/core remain NO-GO.
+
+### Original actor constructor interruptions
+
+[Fourteen additional controls](tests/test_policy_effect_actor_constructor.py)
+qualify construction before the original actor enters its terminal guard.
+Thirteen selected interruptions produce no actor reply, allocation or public
+actor close; constructor disposal is measured separately. Native SQLite errors,
+selected cancellation and faults raised after a successful native close retain
+different exact exception chains. Every control preserves a previously charged
+original with no effect. A healthy baseline returns that original without a
+duplicate charge. Explicit SQL calls and native authorizer callbacks are counted
+separately. See the
+[selected limits](docs/POLICY_EFFECT_CONTENTION.md#original-actor-constructor-interruptions)
+and [Stage 109 snapshot](docs/STAGE109_VALIDATION.md). Application/core remain NO-GO.
