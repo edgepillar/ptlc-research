@@ -967,3 +967,15 @@ Store SQL, the observer, request bindings and the original strict contention
 expectations remain unchanged. See the
 [selected limits](docs/POLICY_EFFECT_CONTENTION.md#original-actor-terminal-cleanup)
 and [Stage 105 snapshot](docs/STAGE105_VALIDATION.md). Application/core remain NO-GO.
+
+### Original actor output loss
+
+[Eight additional controls](tests/test_policy_effect_output_loss.py) qualify
+existing output boundaries while the actor, store and prior sources stay exact.
+Native closed pipes and explicit synthetic flush faults separate received
+records/reports from normal completion and retained rows. Two direct unbuffered
+child controls commit before an output failure and retain one original charge
+despite exit 1 and no readable reply. A stale-policy control has the same missing
+reply class with zero retained charges. No observation grants permission to
+retry. See the [selected limits](docs/POLICY_EFFECT_CONTENTION.md#original-actor-output-loss)
+and [Stage 106 snapshot](docs/STAGE106_VALIDATION.md). Application/core remain NO-GO.
