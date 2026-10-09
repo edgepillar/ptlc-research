@@ -1101,3 +1101,14 @@ charge remains available with zero effects. See the
 [validation snapshot](docs/STAGE116_VALIDATION.md). These selected observations
 add no automatic recovery or application behavior; application/core remain
 **NO-GO**.
+
+## Stage 117: non-SQLite reservation rollback boundaries
+
+Twenty-four [selected secondary rollback controls](tests/test_policy_effect_reservation_secondary_rollback.py)
+separate an original BEGIN error or cancellation from a secondary OSError or
+cancellation during rollback. Before native rollback, constructor failure leaves
+an active connection and journal until explicit test-fixture close; the secondary
+outcome also replaces the original outward primary. These passing controls
+document an unsafe cleanup boundary. See the
+[validation snapshot](docs/STAGE117_VALIDATION.md). They add no recovery or
+application behavior; application/core remain **NO-GO**.
