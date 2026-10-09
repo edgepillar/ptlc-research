@@ -181,8 +181,14 @@ class PolicyEffectDiagnosticsTests(prior.PolicyEffectStoreCase):
         report = self.from_failure(refused.exception)
         self.assertTrue(all(child.poll() is not None for child in children))
         self.assertFalse(readers[0].in_transaction)
-        self.assertEqual(report["replies"], [dict(exit_code=20, response_class="StoreOutcomeUnknown", stderr_present=False)] * 2)
-        self.assertEqual(report["native_error_details"], "not-emitted-by-original-actor")
+        for reply in report["replies"]:
+            self.assertEqual((reply["exit_code"], reply["response_class"], reply["stderr_present"]), (20, "StoreOutcomeUnknown", False))
+            self.assertFalse(reply["native_error_overflow"])
+            self.assertTrue(reply["native_execute_errors"])
+            for error in reply["native_execute_errors"]:
+                self.assertIn(error["phase"], ("begin", "event-insert", "operation-insert", "commit"))
+                self.assertEqual(error["code"], 5)
+        self.assertEqual(report["native_error_details"], "bounded-original-execute-report")
         self.assertEqual(report["local"], report["reopened"])
         self.assertEqual((report["local"]["raw_operations"], report["local"]["charged_operations"],
                           report["local"]["retained_originals"], report["local"]["event_sequence"]), (0, 0, [False, False], 1))
