@@ -123,7 +123,7 @@ class PolicyEffectRollbackObservationTests(prior.PolicyEffectStoreCase):
         self.assertNotIn("synthetic-private-cancellation", json.dumps(report))
 
     @unittest.skipUnless(os.name == "posix", "original actor cleanup fixture requires POSIX")
-    def test_original_actor_emits_unknown_before_secondary_context_exit_failure(self):
+    def test_original_actor_keeps_unknown_and_report_after_store_disposal(self):
         def reap(child):
             if child.poll() is None:
                 child.kill()
@@ -145,11 +145,11 @@ class PolicyEffectRollbackObservationTests(prior.PolicyEffectStoreCase):
                 self.assertTrue(selected.select(timeout=10), "synthetic rollback actor did not reach readiness")
             self.assertEqual(child.stdout.readline(), b"ready\n")
             output, error = child.communicate(b"go\n", timeout=10)
-            self.assertEqual(child.returncode, 1)
-            self.assertEqual(error, b"synthetic-secondary-store-refusal\n")
+            self.assertEqual(child.returncode, 20)
+            self.assertEqual(error, b"")
             reply = prior.allocation_reply(child.returncode, output, error)
             self.assertEqual(reply["response_class"], "StoreOutcomeUnknown")
-            self.assertTrue(reply["stderr_present"])
+            self.assertFalse(reply["stderr_present"])
             self.assertEqual(output.split(b"\n", 1)[0], b"StoreOutcomeUnknown")
             if observed:
                 self.assertEqual(reply["native_execute_errors"], [dict(phase="event-insert", code=None),
