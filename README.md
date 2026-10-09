@@ -1112,3 +1112,14 @@ outcome also replaces the original outward primary. These passing controls
 document an unsafe cleanup boundary. See the
 [validation snapshot](docs/STAGE117_VALIDATION.md). They add no recovery or
 application behavior; application/core remain **NO-GO**.
+
+## Stage 118: isolated selected failure-cleanup guard
+
+A [separate offline guard](qualification/selected_cleanup.py) attempts close after
+selected rollback return or escape and preserves the first outward exception.
+Callback diagnostics remain separate from native resource observations; an
+escaped close callback can leave an open handle or follow successful native
+close. Thirty-two [controls](tests/test_selected_cleanup.py) retain the earlier
+store behavior and distinguish explicit fixture cleanup. See the
+[validation snapshot](docs/STAGE118_VALIDATION.md). No store, actor or application
+uses the guard; application/core remain **NO-GO**.
