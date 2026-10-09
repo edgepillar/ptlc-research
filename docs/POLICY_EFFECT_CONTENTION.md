@@ -353,3 +353,45 @@ from physical durability. No observation authorizes retry, replacement, refund,
 signing or a physical effect. See the
 [Stage 106 validation snapshot](STAGE106_VALIDATION.md). Application/core remain
 NO-GO and Stage 99's original cause remains UNRESOLVED.
+
+## Original actor buffered shutdown
+
+Stage 107 selects parent `e0fb3e9492e8bfb50040f341ccbb4ab4f5763e89`, tree
+`120bbe9f7b4fe2075aac8ed204d39240bed4017e`. The actor, store, observer,
+classifiers, strict controls and all preceding sources remain byte exact.
+[Ten direct-child controls](../tests/test_policy_effect_buffered_shutdown.py)
+qualify selected POSIX CPython behavior without wrapping the actor, changing its
+exception hook, catching its output fault, replacing stdout or assigning a
+process exit status. Default buffered invocation omits `-u` and removes the
+inherited `PYTHONUNBUFFERED` override; the paired invocation explicitly uses
+`-u` with the same removal. These are selected launch profiles, not a general
+guarantee for every interpreter, environment, stream or transport.
+
+Each child reaches an exact readiness fence before command release. Four
+buffered baselines keep the reader open: successful allocation exits 0 with an
+exact record; stale-policy refusal exits 20 with its exact label. Observed mode
+adds the exact empty native execute report. Four buffered fault controls close
+the only stdout reader before releasing the command. Native primary output
+failure is followed by a separate interpreter-shutdown diagnostic; two
+BrokenPipeError labels, a primary traceback, an ignored-exception marker and
+actual exit 120 are asserted without echoing raw stderr. Neither a reply nor a
+report is readable. Separate local/reopened readback retains one original
+charge after committed allocation, and zero after refusal; all controls retain
+zero effects. Two unbuffered refusal controls instead expose one primary
+BrokenPipeError label, no ignored-exception marker, exit 1 and zero charges.
+
+The static mechanism is consistent with pinned CPython 3.13.0
+[finalization status handling](https://github.com/python/cpython/blob/60403a5409ff2c3f3b07dd2ca91a7a3e096839c7/Modules/main.c)
+and [standard-stream flushing](https://github.com/python/cpython/blob/60403a5409ff2c3f3b07dd2ca91a7a3e096839c7/Python/pylifecycle.c).
+Those references explain a mechanism; they are not evidence of the exact source
+or build provenance of each executed runtime. No CPython code is copied.
+Diagnostic labels and process status do not measure flush-call count, buffer
+contents, actor cleanup order, exception-object identity across processes or
+native execute observations which never reached the consumer.
+
+Readback is separate from output delivery, terminal status and physical
+durability. No observation authorizes a replacement request, retry, refund,
+nonce allocation, signing or effect. Arbitrary concurrent terminal faults,
+signals, fragmentation, authenticated remote receipt and physical durability
+remain unqualified. See the [Stage 107 snapshot](STAGE107_VALIDATION.md).
+Stage 99's original cause remains UNRESOLVED; application/core remain NO-GO.
