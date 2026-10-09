@@ -1057,3 +1057,16 @@ charge/event sequence 1 survive; the reservation stays empty and mode 0600.
 No automatic retry, replacement or application behavior is added. See the
 [validation snapshot](docs/STAGE112_VALIDATION.md); independent assessment is
 absent and application/core remain **NO-GO**.
+
+## Stage 113: retained reservation disposal interruptions
+
+Twelve [selected disposal controls](docs/POLICY_EFFECT_CONTENTION.md#retained-reservation-disposal-boundaries)
+separate the outward exception, private closed flag and actual native handle
+after an empty-schema refusal. A caught SQLite close error can leave a live
+connection behind a closed flag; an escaping OSError or cancellation can leave
+the flag false after native close succeeded. The existing behavior is measured
+without changing the store or actor. Original bytes and charge/event sequence 1
+remain exact. Fixture release occurs only after verification and only for a
+still-owned handle. See the [validation snapshot](docs/STAGE113_VALIDATION.md).
+These selected faults do not qualify natural close errors, child delivery,
+automatic recovery or application cryptography. Application/core remain **NO-GO**.
