@@ -111,3 +111,7 @@ The [source-pinned observation requirements](NOM_OBSERVATION_REQUIREMENTS.md)
 map funding, original send, contract execution, descendant payout and recipient
 receipt separately. Their authority, proof and finality mechanisms are unselected
 and unimplemented; the synthetic observation callback remains unchanged.
+The additive [observation claim corpus](NOM_OBSERVATION_CONFORMANCE.md) now
+compares selected bindings and stubbed source execution. It authorizes no journal
+transition, transaction replacement or automatic recovery. Real signed originals
+and authenticated observations remain unimplemented.

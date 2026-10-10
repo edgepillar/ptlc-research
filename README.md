@@ -37,6 +37,14 @@ typed contract ABI, account hash inputs and original-byte counterexamples with
 the exact unchanged core source. It leaves the synthetic journals intact and
 produces no signed transaction or authenticated chain observation.
 
+The [NoM observation claim corpus](docs/NOM_OBSERVATION_CONFORMANCE.md) adds
+bounded funding, contract receive, payout and recipient receive comparisons.
+Separate unchanged-core overlays exercise actual PTLC methods, selected verifier
+checks and VM finalization using explicit storage/time/ledger stubs. Matching
+unsigned claims authorize no recovery. Successful witness cases use seeded old
+synthetic entries; the same old witness is rejected for the newly computed Create
+id. No authenticated observer or journal connection is implemented.
+
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
 The `offline_session` package adds staged public transcript commitments, role-bound public nonce rounds, and a SQLite/checkpoint journal for one-use synthetic operations, exact output replay and explicit unknown outcomes. It stores no secret nonces and has no real signing backend. Process-death, concurrent-owner and rollback-boundary tests exercise its public metadata lifecycle. A separate Rust test-only nonce owner exercises the pinned library using public synthetic seeds; it is not connected to the Python journal.

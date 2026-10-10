@@ -1,0 +1,142 @@
+// Independently written MIT tests of finalization only, with explicit stubs.
+package vm
+
+import (
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"math/big"
+	"os"
+	"strconv"
+	"testing"
+
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/chain/store"
+	"github.com/zenon-network/go-zenon/common/db"
+	"github.com/zenon-network/go-zenon/common/types"
+	"github.com/zenon-network/go-zenon/vm/vm_context"
+)
+
+type researchObservationMomentum struct {
+	store.Momentum
+	momentum *nom.Momentum
+}
+
+func (s *researchObservationMomentum) GetFrontierMomentum() (*nom.Momentum, error) {
+	return s.momentum, nil
+}
+func (s *researchObservationMomentum) ChainIdentifier() uint64 { return s.momentum.ChainIdentifier }
+
+type researchObservationFinalizer struct {
+	vm_context.AccountVmContext
+	ledger   store.Momentum
+	previous *nom.AccountBlock
+	database db.DB
+}
+
+func (s *researchObservationFinalizer) MomentumStore() store.Momentum        { return s.ledger }
+func (s *researchObservationFinalizer) Frontier() (*nom.AccountBlock, error) { return s.previous, nil }
+func (s *researchObservationFinalizer) Address() *types.Address              { return &types.PtlcContract }
+func (s *researchObservationFinalizer) Changes() (db.Patch, error)           { return s.database.Changes() }
+
+func TestResearchNoMObservationVM(t *testing.T) {
+	var fixture struct {
+		Schema   string `json:"schema"`
+		Core     string `json:"core_commit"`
+		Baseline struct {
+			Records map[string]struct {
+				Hash  string                 `json:"hash_hex"`
+				Block map[string]interface{} `json:"block"`
+			} `json:"records"`
+		} `json:"baseline"`
+		Vectors []string `json:"vm_vectors"`
+	}
+	data, err := os.ReadFile(os.Getenv("PTLC_NOM_OBSERVATION_FIXTURE"))
+	if err != nil || json.Unmarshal(data, &fixture) != nil || fixture.Schema != "zenon-nom-observation-corpus-v1" || fixture.Core != "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced" || len(fixture.Vectors) != 4 {
+		t.Fatal("selected fixture unavailable")
+	}
+	raw := func(text string) []byte {
+		b, err := hex.DecodeString(text)
+		if err != nil {
+			t.Fatal("invalid encoding")
+		}
+		return b
+	}
+	hash := func(text string) types.Hash {
+		var h types.Hash
+		b := raw(text)
+		if len(b) != 32 {
+			t.Fatal("invalid hash")
+		}
+		copy(h[:], b)
+		return h
+	}
+	address := func(text string) types.Address {
+		var a types.Address
+		b := raw(text)
+		if len(b) != 20 {
+			t.Fatal("invalid address")
+		}
+		copy(a[:], b)
+		return a
+	}
+	u64 := func(text string) uint64 {
+		n, err := strconv.ParseUint(text, 10, 64)
+		if err != nil {
+			t.Fatal("invalid number")
+		}
+		return n
+	}
+	block := func(role string) *nom.AccountBlock {
+		r := fixture.Baseline.Records[role]
+		b := r.Block
+		amount, ok := new(big.Int).SetString(b["amount"].(string), 10)
+		if !ok {
+			t.Fatal("invalid amount")
+		}
+		value := &nom.AccountBlock{Version: u64(b["version"].(string)), ChainIdentifier: u64(b["chain_id"].(string)), BlockType: u64(b["block_type"].(string)), Hash: hash(r.Hash),
+			PreviousHash: hash(b["previous_hash_hex"].(string)), Height: u64(b["height"].(string)), Address: address(b["address_hex"].(string)), ToAddress: address(b["to_address_hex"].(string)),
+			Amount: amount, Data: raw(b["data_hex"].(string)), FromBlockHash: hash(b["from_block_hash_hex"].(string)),
+			MomentumAcknowledged: types.HashHeight{Hash: hash(b["momentum_hash_hex"].(string)), Height: u64(b["momentum_height"].(string))}}
+		copy(value.TokenStandard[:], raw(b["token_standard_hex"].(string)))
+		return value
+	}
+	for _, id := range fixture.Vectors {
+		t.Run(id, func(t *testing.T) {
+			funding, fundingReceive, original, payout, expected := block("funding"), block("funding_receive"), block("original"), block("payout"), block("contract_receive")
+			ctx := &researchObservationFinalizer{database: db.NewMemDB(), previous: fundingReceive,
+				ledger: &researchObservationMomentum{momentum: &nom.Momentum{ChainIdentifier: original.ChainIdentifier, Hash: expected.MomentumAcknowledged.Hash, Height: expected.MomentumAcknowledged.Height}}}
+			selected := NewVM(ctx, nil)
+			switch id {
+			case "funding-finalize":
+				ctx.previous = &nom.AccountBlock{Hash: fundingReceive.PreviousHash, Height: fundingReceive.Height - 1}
+				ctx.ledger = &researchObservationMomentum{momentum: &nom.Momentum{ChainIdentifier: funding.ChainIdentifier, Hash: fundingReceive.MomentumAcknowledged.Hash, Height: fundingReceive.MomentumAcknowledged.Height}}
+				result, methodErr, err := selected.finalizeEmbedded(funding.Hash, nil, nil)
+				if err != nil || methodErr != nil || result.Hash != fundingReceive.Hash || len(result.DescendantBlocks) != 0 {
+					t.Fatal("actual funding finalization differs")
+				}
+			case "unlock-child-before-parent":
+				// The method payout is an unhashed skeleton; source finalization
+				// fills the child chain before hashing its receive parent.
+				child := &nom.AccountBlock{ToAddress: payout.ToAddress, Amount: new(big.Int).Set(payout.Amount), TokenStandard: payout.TokenStandard}
+				result, methodErr, err := selected.finalizeEmbedded(original.Hash, []*nom.AccountBlock{child}, nil)
+				if err != nil || methodErr != nil || child.Hash != payout.Hash || result.Hash != expected.Hash || child.PreviousHash != fundingReceive.Hash || result.PreviousHash != child.Hash || result.Height != child.Height+1 || child.MomentumAcknowledged != result.MomentumAcknowledged {
+					t.Fatal("actual child/parent finalization differs")
+				}
+			case "failure-status-is-distinct":
+				failure := errors.New("synthetic method refusal")
+				result, methodErr, err := selected.finalizeEmbedded(original.Hash, nil, failure)
+				if err != nil || methodErr != failure || hex.EncodeToString(result.Data) != "0000000000000002" || errToStatus(nil) != 1 || errToStatus(failure) != 2 {
+					t.Fatal("execution status conflated")
+				}
+			case "account-header-is-only-a-claim":
+				header := payout.Header()
+				if header.Address != payout.Address || header.Hash != payout.Hash || header.Height != payout.Height {
+					t.Fatal("header binding differs")
+				}
+			default:
+				t.Fatal("unselected finalization control")
+			}
+		})
+	}
+}

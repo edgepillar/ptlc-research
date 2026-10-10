@@ -36,6 +36,13 @@ These are static source interpretations. The new [wire corpus](NOM_WIRE_CONFORMA
 executes ABI/hash helper and send-syntax controls only. It does not execute this
 full observation chain, authenticate momentum producers or demonstrate payout.
 
+The later [observation claim corpus](NOM_OBSERVATION_CONFORMANCE.md) exercises
+selected structures and source methods/finalization with explicit synthetic
+contexts. Its fields and execution-status bytes are unauthenticated claims.
+It does not execute full account admission, prove canonical inclusion, run a
+funded swap or connect observations to recovery. Required independent mechanisms
+in the table below remain unimplemented.
+
 ## Required evidence chain
 
 | Claim | Bindings required before admitting it | Current gate |
@@ -79,13 +86,16 @@ funding/account proof.
 
 ## Next offline implementation order
 
-1. Create source-derived observation fixtures with exact funding/send/receive/
-   payout bindings and negative controls for forks, wrong recipients, malformed
-   children, false entry absence and incorrect confirming context. Keep fixture
-   claim parsing separate from authentication and from the existing journal.
-2. Compare the structural rules with the unchanged pinned node using independently
-   written offline overlays. Record skipped stateful checks honestly; a helper
-   match cannot fill a VM or consensus requirement.
+1. The additive observation corpus now selects exact funding/send/receive/payout
+   bindings and negative controls for forks, wrong recipients, malformed children,
+   false entry absence and incorrect confirming context. Its bounded comparison
+   stays separate from authentication and the existing journal.
+2. Record unchanged-core method, verifier-helper and VM-finalization comparisons
+   separately. Existing public signatures belong to old synthetic ids: actual
+   Create stores the computed send hash, which changes the witness context.
+   Seeded-entry success does not qualify that created funding record. Full VM
+   dispatcher, balances, account admission, activation and canonical inclusion
+   remain independent requirements.
 3. Select and independently assess observation authority, pin provisioning,
    canonicality/finality and durable evidence policy before connecting a verifier
    to recovery. A declared provider, binary hash or callback is not that assessment.
