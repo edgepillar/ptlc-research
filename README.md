@@ -6,8 +6,9 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 Independent research, not an official Zenon implementation or activation proposal.
 
 **Status: additive PR #138 compatibility corpus and CANDIDATE-02 fixed-recipient
-NoM reference recovery with a separate selected worker build/environment profile,
-following the preserved Stage 127 research baseline.
+NoM reference recovery with a separate selected worker build/environment profile
+and pinned public ABI/account hash conformance, following the preserved Stage 127
+research baseline.
 Application and core remain NO-GO. There is no usable swap client or production
 signing implementation in this repository.** CANDIDATE-01 remains a historical
 Bitcoin/MuSig2 subject with separate unfilled review requirements.
@@ -30,6 +31,11 @@ with an explicitly empty child environment. Matching claims, file digests and
 same-run mathematics do not authenticate compiler support, SDK contents, loaded
 libraries or future execution. This later packaging does not fill any historical
 review or the [new independent assessment](docs/NOM_WORKER_REVIEW_REPORT_TEMPLATE.md).
+
+The [public NoM wire corpus](docs/NOM_WIRE_CONFORMANCE.md) separately compares
+typed contract ABI, account hash inputs and original-byte counterexamples with
+the exact unchanged core source. It leaves the synthetic journals intact and
+produces no signed transaction or authenticated chain observation.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
@@ -307,6 +313,12 @@ enforcement probes. Local refusal and configured CI supply no Linux execution
 evidence; completed exact-head hosted results must be reported separately.
 
 ## Next milestone
+
+The [NoM wire conformance corpus](docs/NOM_WIRE_CONFORMANCE.md) compares four
+typed ABI methods, hash inputs and normalization counterexamples with the exact
+PR #138 source. See its [validation scope](docs/NOM_WIRE_VALIDATION.md). This
+advances source compatibility while the original journals remain synthetic;
+signed wire retention and authenticated chain observation are still unimplemented.
 
 Obtain scoped independent assessments of the original construction subject in the [review brief](docs/INDEPENDENT_REVIEW.md) and the separate exact subject in the [observation brief](docs/OBSERVATION_REVIEW.md). Record assumptions, findings, examined dependencies and excluded surfaces in their distinct unfilled reports. Both assessments are pending; later changes need an explicit delta assessment. This package prepares that work without introducing private signing, node access or reviewer outreach.
 

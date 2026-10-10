@@ -1,0 +1,233 @@
+// Independently written MIT research tests. The GPL node is referenced, not copied.
+package implementation
+
+import (
+	"bytes"
+	"encoding/hex"
+	"encoding/json"
+	"math/big"
+	"os"
+	"strconv"
+	"testing"
+
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/common/types"
+	"github.com/zenon-network/go-zenon/vm/embedded/definition"
+)
+
+type researchNoMHashInput struct {
+	Version     string   `json:"version"`
+	Chain       string   `json:"chain_id"`
+	Type        string   `json:"block_type"`
+	Previous    string   `json:"previous_hash_hex"`
+	Height      string   `json:"height"`
+	Momentum    string   `json:"momentum_hash_hex"`
+	MHeight     string   `json:"momentum_height"`
+	Address     string   `json:"address_hex"`
+	To          string   `json:"to_address_hex"`
+	Amount      string   `json:"amount"`
+	Token       string   `json:"token_standard_hex"`
+	From        string   `json:"from_block_hash_hex"`
+	Descendants []string `json:"descendant_hashes_hex"`
+	Data        string   `json:"data_hex"`
+	Fused       string   `json:"fused_plasma"`
+	Difficulty  string   `json:"difficulty"`
+	Nonce       string   `json:"nonce_hex"`
+}
+
+func TestResearchNoMWireCorpus(t *testing.T) {
+	raw := func(text string) []byte {
+		value, err := hex.DecodeString(text)
+		if err != nil {
+			t.Fatal("invalid synthetic encoding")
+		}
+		return value
+	}
+	u64 := func(text string) uint64 {
+		value, err := strconv.ParseUint(text, 10, 64)
+		if err != nil {
+			t.Fatal("invalid synthetic uint64")
+		}
+		return value
+	}
+	hash := func(text string) types.Hash { var value types.Hash; copy(value[:], raw(text)); return value }
+	address := func(text string) types.Address { var value types.Address; copy(value[:], raw(text)); return value }
+	block := func(input researchNoMHashInput) *nom.AccountBlock {
+		amount, ok := new(big.Int).SetString(input.Amount, 10)
+		if !ok {
+			t.Fatal("invalid synthetic amount")
+		}
+		value := &nom.AccountBlock{Version: u64(input.Version), ChainIdentifier: u64(input.Chain),
+			BlockType: u64(input.Type), PreviousHash: hash(input.Previous), Height: u64(input.Height),
+			MomentumAcknowledged: types.HashHeight{Hash: hash(input.Momentum), Height: u64(input.MHeight)},
+			Address:              address(input.Address), ToAddress: address(input.To), Amount: amount,
+			FromBlockHash: hash(input.From), Data: raw(input.Data), FusedPlasma: u64(input.Fused), Difficulty: u64(input.Difficulty)}
+		copy(value.TokenStandard[:], raw(input.Token))
+		copy(value.Nonce.Data[:], raw(input.Nonce))
+		for _, claimed := range input.Descendants {
+			value.DescendantBlocks = append(value.DescendantBlocks, &nom.AccountBlock{Hash: hash(claimed)})
+		}
+		return value
+	}
+	var fixture struct {
+		Schema    string `json:"schema"`
+		Core      string `json:"core_commit"`
+		Profile   string `json:"profile"`
+		Selectors map[string]struct {
+			Signature string `json:"signature"`
+			Hex       string `json:"hex"`
+		} `json:"selectors"`
+		ABI []struct {
+			ID   string `json:"id"`
+			Call struct {
+				Method      string `json:"method"`
+				Expiration  string `json:"expiration_time"`
+				Point       uint8  `json:"point_type"`
+				Lock        string `json:"point_lock_hex"`
+				Destination string `json:"destination_hex"`
+				Entry       string `json:"entry_id_hex"`
+				Witness     string `json:"witness_hex"`
+			} `json:"call"`
+			Data string `json:"data_hex"`
+		} `json:"abi_vectors"`
+		Normalization []struct {
+			ID         string `json:"id"`
+			Data       string `json:"data_hex"`
+			Normalized string `json:"normalized_hex"`
+			Accepts    bool   `json:"core_send_accepts"`
+		} `json:"normalization_vectors"`
+		Hashes []struct {
+			ID       string               `json:"id"`
+			Block    researchNoMHashInput `json:"block"`
+			Preimage string               `json:"preimage_hex"`
+			Hash     string               `json:"hash_hex"`
+		} `json:"hash_vectors"`
+		Excluded []string `json:"excluded_hash_fields"`
+		Controls []string `json:"controls"`
+	}
+	data, err := os.ReadFile(os.Getenv("PTLC_NOM_WIRE_FIXTURE"))
+	if err != nil || json.Unmarshal(data, &fixture) != nil {
+		t.Fatal("public fixture unavailable")
+	}
+	if fixture.Schema != "zenon-nom-wire-corpus-v1" || fixture.Profile != "zenon-pr138-public-wire-v1" || fixture.Core != "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced" || len(fixture.ABI) != 12 || len(fixture.Normalization) != 7 || len(fixture.Hashes) != 22 || len(fixture.Excluded) != 6 || len(fixture.Controls) != 3 {
+		t.Fatal("fixture subject changed")
+	}
+	for name, selector := range fixture.Selectors {
+		method := definition.ABIPtlc.Methods[name]
+		if method.Sig() != selector.Signature || !bytes.Equal(method.Id(), raw(selector.Hex)) {
+			t.Fatal("actual core selector mismatch")
+		}
+	}
+	for _, vector := range fixture.ABI {
+		t.Run("abi/"+vector.ID, func(t *testing.T) {
+			call := vector.Call
+			var encoded []byte
+			var err error
+			switch call.Method {
+			case "Create":
+				expiry, parseErr := strconv.ParseInt(call.Expiration, 10, 64)
+				if parseErr != nil {
+					t.Fatal("invalid expiry")
+				}
+				encoded, err = definition.ABIPtlc.PackMethod(call.Method, expiry, call.Point, raw(call.Lock), address(call.Destination))
+			case "Unlock":
+				encoded, err = definition.ABIPtlc.PackMethod(call.Method, hash(call.Entry), raw(call.Witness))
+			case "ProxyUnlock":
+				encoded, err = definition.ABIPtlc.PackMethod(call.Method, hash(call.Entry), address(call.Destination), raw(call.Witness))
+			case "Reclaim":
+				encoded, err = definition.ABIPtlc.PackMethod(call.Method, hash(call.Entry))
+			default:
+				t.Fatal("unknown synthetic method")
+			}
+			if err != nil || !bytes.Equal(encoded, raw(vector.Data)) {
+				t.Fatal("actual core ABI mismatch")
+			}
+		})
+	}
+	for _, vector := range fixture.Normalization {
+		t.Run("normalize/"+vector.ID, func(t *testing.T) {
+			value := &nom.AccountBlock{Amount: big.NewInt(0), Data: raw(vector.Data)}
+			originalHash := value.ComputeHash()
+			var err error
+			if len(value.Data) >= 4 && bytes.Equal(value.Data[:4], definition.ABIPtlc.Methods["ProxyUnlock"].Id()) {
+				err = (&ProxyUnlockPtlcMethod{MethodName: "ProxyUnlock"}).ValidateSendBlock(value)
+			} else {
+				err = (&UnlockPtlcMethod{MethodName: "Unlock"}).ValidateSendBlock(value)
+			}
+			if (err == nil) != vector.Accepts {
+				t.Fatal("actual core send admission mismatch")
+			}
+			if vector.Accepts && !bytes.Equal(value.Data, raw(vector.Normalized)) {
+				t.Fatal("actual core normalization mismatch")
+			}
+			if vector.Accepts && value.ComputeHash() == originalHash {
+				t.Fatal("normalization failed to change the hash input")
+			}
+		})
+	}
+	for _, vector := range fixture.Hashes {
+		t.Run("hash/"+vector.ID, func(t *testing.T) {
+			value := block(vector.Block)
+			if len(raw(vector.Preimage)) != 306 || types.NewHash(raw(vector.Preimage)) != hash(vector.Hash) || value.ComputeHash() != hash(vector.Hash) {
+				t.Fatal("actual core account hash mismatch")
+			}
+		})
+	}
+	t.Run("control/unsigned-metadata-hash-equivalence", func(t *testing.T) {
+		baseline := block(fixture.Hashes[0].Block)
+		expected := baseline.ComputeHash()
+		original, err := baseline.Serialize()
+		if err != nil {
+			t.Fatal("serialization unavailable")
+		}
+		for _, field := range fixture.Excluded {
+			changed := baseline.Copy()
+			switch field {
+			case "hash":
+				changed.Hash = hash("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+			case "basePlasma":
+				changed.BasePlasma = 1
+			case "usedPlasma":
+				changed.TotalPlasma = 1
+			case "changesHash":
+				changed.ChangesHash = hash("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+			case "publicKey":
+				changed.PublicKey = bytes.Repeat([]byte{1}, 32)
+			case "signature":
+				changed.Signature = bytes.Repeat([]byte{2}, 64)
+			default:
+				t.Fatal("unknown excluded field")
+			}
+			serialized, err := changed.Serialize()
+			if err != nil || changed.ComputeHash() != expected || bytes.Equal(original, serialized) {
+				t.Fatal("hash and retained bytes were conflated")
+			}
+		}
+	})
+	t.Run("control/advertised-child-hash-not-recomputed", func(t *testing.T) {
+		child := block(fixture.Hashes[0].Block)
+		child.Hash = child.ComputeHash()
+		parent := block(fixture.Hashes[0].Block)
+		parent.DescendantBlocks = []*nom.AccountBlock{child}
+		expected := parent.ComputeHash()
+		oldChild := child.Hash
+		child.Amount = big.NewInt(100)
+		if child.ComputeHash() == oldChild || parent.ComputeHash() != expected {
+			t.Fatal("descendant hash claim boundary changed")
+		}
+		child.Hash = child.ComputeHash()
+		if parent.ComputeHash() == expected {
+			t.Fatal("parent omitted advertised child hash")
+		}
+	})
+	t.Run("control/negative-amount-magnitude-is-not-admission", func(t *testing.T) {
+		value := block(fixture.Hashes[0].Block)
+		value.Amount = big.NewInt(100)
+		expected := value.ComputeHash()
+		value.Amount = big.NewInt(-100)
+		if value.ComputeHash() != expected {
+			t.Fatal("source magnitude encoding changed")
+		}
+		// This exercises ComputeHash only. A negative amount is not node admission.
+	})
+}
