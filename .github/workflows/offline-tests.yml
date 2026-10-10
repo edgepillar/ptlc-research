@@ -382,3 +382,60 @@ jobs:
           GOPROXY: "off"
           GOSUMDB: "off"
         run: go test -mod=readonly -count=1 -v ./...
+
+  nom-wire-core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.13"
+      - name: Acquire immutable proposed core source separately
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: sol-znn/go-zenon
+          ref: 45e1bbb48ce6fc19d44c5fbf59ccf5784981fced
+          path: .research-cache/nom-wire-core-source
+          persist-credentials: false
+      - name: Install the pinned Go qualification toolchain
+        run: |
+          archive="$RUNNER_TEMP/ptlc-nom-wire-go.tar.gz"
+          curl --fail --silent --show-error --location https://go.dev/dl/go1.23.12.linux-amd64.tar.gz --output "$archive"
+          printf '%s  %s\n' d3847fef834e9db11bf64e3fb34db9c04db14e068eeb064f49af747010454f90 "$archive" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/ptlc-nom-wire-go"
+          tar -xzf "$archive" -C "$RUNNER_TEMP/ptlc-nom-wire-go"
+          printf '%s\n' "$RUNNER_TEMP/ptlc-nom-wire-go/go/bin" >> "$GITHUB_PATH"
+      - name: Acquire and verify core dependencies using separate module inputs
+        env:
+          GOTOOLCHAIN: local
+        run: |
+          umask 077
+          ptlc_core_inputs="$(mktemp -d "$RUNNER_TEMP/ptlc-nom-core-inputs.XXXXXX")"
+          cp .research-cache/nom-wire-core-source/go.mod .research-cache/nom-wire-core-source/go.sum "$ptlc_core_inputs/"
+          (
+            cd "$ptlc_core_inputs"
+            go mod download all
+            go mod verify
+          )
+          PTLC_NOM_CORE_INPUTS="$ptlc_core_inputs" python3 -B - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          manifest = json.loads(Path("compatibility/nom_wire_manifest.json").read_text("ascii"))
+          inputs = Path(os.environ["PTLC_NOM_CORE_INPUTS"])
+          assert hashlib.sha256((inputs / "go.mod").read_bytes()).hexdigest() == manifest["core_file_sha256"]["go.mod"]
+          assert hashlib.sha256((inputs / "go.sum").read_bytes()).hexdigest() == manifest["acquisition_go_sum_sha256"]
+          print("PASS: separate full-graph acquisition inputs match the selected checksums")
+          PY
+          git -C .research-cache/nom-wire-core-source diff --exit-code -- go.mod go.sum
+      - name: Compare public ABI and account hashes with the unchanged core offline
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: "off"
+          GOSUMDB: "off"
+        run: |
+          ptlc_go="$(command -v go)"
+          python3 -B scripts/qualify_nom_wire_core.py \
+            --checkout .research-cache/nom-wire-core-source --go "$ptlc_go"

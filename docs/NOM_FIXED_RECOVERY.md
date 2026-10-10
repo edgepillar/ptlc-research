@@ -64,7 +64,9 @@ matching momentum fields is not proof that a node produced or finalized them.
 
 The original envelope and SHA3 transaction identifier are explicitly **synthetic**.
 They are not a Zenon ABI/account-block serialization, node hash, account signature
-or broadcastable transaction. Public adaptor signatures in the fixtures are
+or broadcastable transaction. The separate [public wire conformance corpus](NOM_WIRE_CONFORMANCE.md)
+compares real typed ABI and account hash inputs against the pinned node without
+migrating these envelopes or selecting a signed transaction format. Public adaptor signatures in the fixtures are
 generated only from deliberately public test constants. `scripts/qualify_nom_recovery.py`
 exercises the actual Rust public worker across both journals, lost acknowledgements,
 reopen, recovery and invalid-completion controls. Unit tests use identified fixture
@@ -92,15 +94,20 @@ Old failed CI evidence remains unchanged when incorporated historical PRs close.
 
 | Gate | Required evidence | Current state |
 |---|---|---|
-| Current core compatibility | Immutable target, message/witness/policy corpus, actual-core differential run | Executable additive subject; record each run separately |
+| Current core compatibility | Immutable target, message/witness/policy corpus, actual-core differential run | Executable additive subject plus separately pinned ABI/account hash conformance; record each run separately |
 | Independent construction review | Two-party graph, adaptor construction, disclosure order and economic assumptions | UNFILLED |
 | New public worker qualification | Complete source/dependency/runtime subject and independent assessment | Separate source inventory, dependency comparison and native execution observations; independent assessment and runtime authentication UNFILLED |
 | Signing and durable custody | Selected reviewed backend, unique nonce ownership, rollback/restore policy, narrow signer interface | UNSELECTED / UNFILLED |
 | Chain observation | Exact node/genesis/spork, funding and descendant payout semantics, canonical momentum and reorg proofs | UNIMPLEMENTED |
-| Real original transaction | Typed ABI/account block and hash, retained exact signed bytes, account-chain/Plasma and unknown-outcome reconciliation | UNIMPLEMENTED |
+| Real original transaction | Typed ABI/account block and hash, retained exact signed bytes, account-chain/Plasma and unknown-outcome reconciliation | Public ABI/hash conformance added; signed wire and journal integration UNIMPLEMENTED |
 | Controlled network composition | Independent party stores, process/network interruption, expiry/refund races and reorg scenarios without real funds | NOT AUTHORIZED BY STAGE 0 |
 | Bitcoin extension | Existing transaction/sighash/regtest subject integrated only after NoM gates | Separate later subject |
 
 Offline and hosted regression can qualify the declared reference behavior. Neither
 changes these application/core gates, authorizes activation or establishes live
 atomicity. Keep peer claims separate from independently selected terms and facts.
+
+The [source-pinned observation requirements](NOM_OBSERVATION_REQUIREMENTS.md)
+map funding, original send, contract execution, descendant payout and recipient
+receipt separately. Their authority, proof and finality mechanisms are unselected
+and unimplemented; the synthetic observation callback remains unchanged.

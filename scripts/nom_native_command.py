@@ -28,7 +28,7 @@ def run(command, *, environment, directory, evidence, label, timeout=240):
             or any(type(item) is not str or not item or len(item) > 8192 or "\0" in item for item in command)
             or not command[0].startswith("/")
             or type(environment) is not dict or type(label) is not str
-            or label not in ("metadata-apple", "metadata-linux", "build")
+            or label not in ("metadata-apple", "metadata-linux", "build", "core-wire")
             or type(timeout) not in (int, float) or not 0 < timeout <= 240):
         raise WorkerError("invalid selected native command")
     output, error = evidence / (label + ".stdout"), evidence / (label + ".stderr")
