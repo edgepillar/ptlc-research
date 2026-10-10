@@ -202,6 +202,53 @@ See the [Stage 125 validation snapshot](STAGE125_VALIDATION.md). Source-to-loade
 build identity remains **NOT VERIFIED**, independent assessment is absent and
 application/core remain **NO-GO**.
 
+## Creation-record retention escape requirements
+
+Handle creation, creation-record retention, pending assignment, admission and
+exposure are distinct boundaries. A failure after factory return but before
+record retention violates this owner's cooperative retention premise. An empty
+pending/admission field or missing creation record cannot certify that no native
+handle exists and supplies no permission to close, retry or recover it. Existing
+records and the parent must still have their own selected attempt observations;
+the original creation/retention error must remain separate from those outcomes.
+
+Two [selected controls](../tests/test_selected_cursor_retention_escape_native.py)
+compare an idle native Cursor with a Cursor whose
+test-only factory consumes one row before returning. Both deliberately fail
+the second creation-record append before insertion, pending assignment,
+registration or exposure. The requirements compare primary traceback references,
+API availability, existing-record/parent calls and peer locks independently.
+Completed-frame release and explicit retained-record release are diagnostic
+operations, never disposal or recovery authority. These controls do not select
+natural allocation faults, interrupted writes, append-after-insertion failures,
+opaque aliases, exhaustive ownership or application adoption. Both owner helpers
+and all previous controls remain unchanged. Application/core remain **NO-GO**.
+
+The test-only list raises the same synthetic `MemoryError` before inserting
+creation record 1. The selected native factory has already returned that Cursor;
+only control 2 deliberately reads one row before factory return. Both scopes
+retain one setup record, have no pending/admission record or exposed candidate,
+call setup close once with `attempted` visible, and call the parent once. Both
+returning calls remain separate from the unchanged scope primary. Its completed
+`run_scope`, `cursor` and `append` frames retain the unrecorded candidate and its
+not-attempted record. This is a deliberate premise violation, not a repair or
+evidence of a natural allocator failure.
+
+| Selected control | Observation after parent return | Explicit diagnostic release |
+| --- | --- | --- |
+| Idle factory return | Parent and candidate APIs refuse access; both selected Cursor weak references remain live; peer acquires and rolls back an exclusive transaction | Clearing completed primary traceback frames empties the unrecorded candidate/record weak references while the closed setup Cursor remains through its creation record |
+| Factory consumes one row before returning | The same API invalidation and recorded outcomes coexist with a busy peer; no unrecorded close invocation occurs | Clearing the same completed frames empties candidate/record weak references and frees the peer while the closed setup Cursor remains live |
+
+Admission-alias release alone changes neither path. Separate setup-record release
+empties its weak reference; the same primary, traceback chain and disposal report
+remain retained. Eight checkpoints per control compare exact original/probe
+bytes, mode, device/inode, directory entries and complete local/reopened
+accounting: one original, one charge/event and no effect. Probe rows remain
+unchanged and peer transactions perform no writes. No extra owner or candidate
+close is invoked. These are observations of selected CPython objects, not native
+pointer retirement, build attestation or an exhaustive reference inventory.
+See the [Stage 127 validation snapshot](STAGE127_VALIDATION.md).
+
 ## Injected pre-native escape requirements and reference paths
 
 A close callback can escape before native delegation. Requirements must retain
