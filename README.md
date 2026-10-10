@@ -1165,3 +1165,14 @@ reader; two injected controls keep admission/cleanup escapes and primary errors
 separate. See [ownership requirements](docs/NATIVE_CURSOR_OWNERSHIP.md) and the
 [validation snapshot](docs/STAGE122_VALIDATION.md). Existing store, guard, actor,
 worker, cryptography and CI remain unchanged; application/core remain **NO-GO**.
+
+## Stage 123: partial cursor admission counterexample
+
+One [injected control](tests/test_selected_cursor_admission_mutation.py) inserts a
+pending cursor before registration raises. The first close escapes; later
+registry disposal calls close on that same object again and returns. The original
+error, first cleanup error and later return remain separate. See
+[partial admission requirements](docs/NATIVE_CURSOR_OWNERSHIP.md#partial-admission-requirements-and-counterexample)
+and the [validation snapshot](docs/STAGE123_VALIDATION.md). The owner source is
+unchanged; no attempt ledger or application repair is selected. Application/core
+remain **NO-GO**.
