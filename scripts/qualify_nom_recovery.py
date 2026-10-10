@@ -17,15 +17,17 @@ sys.path.insert(0, str(ROOT))
 from offline_session.nom_recovery import (  # noqa: E402
     NomRecovery, RecoveryError, canonical, observation, synthetic_claim, synthetic_transaction_hash,
 )
-from offline_session.nom_verifier import NomPublicVerifier  # noqa: E402
+from offline_session.nom_verifier import (  # noqa: E402
+    NomPublicVerifier, LEGACY_EXECUTION_PROFILE, CLEAN_EXECUTION_PROFILE,
+)
 
 
-def qualify(executable):
-    terms = json.loads((ROOT / "compatibility/fixtures/nom_terms_v1.json").read_text("ascii"))
-    fixture = json.loads((ROOT / "compatibility/fixtures/nom_completions_v1.json").read_text("ascii"))
+def qualify(executable, *, execution_profile=LEGACY_EXECUTION_PROFILE, root=ROOT):
+    terms = json.loads((root / "compatibility/fixtures/nom_terms_v1.json").read_text("ascii"))
+    fixture = json.loads((root / "compatibility/fixtures/nom_completions_v1.json").read_text("ascii"))
     executable = executable.resolve()
     pin = hashlib.sha256(executable.read_bytes()).hexdigest()
-    verifier = NomPublicVerifier(executable, pin, terms, fixture["pair"])
+    verifier = NomPublicVerifier(executable, pin, terms, fixture["pair"], execution_profile=execution_profile)
     short = synthetic_claim(terms, "short", fixture["short_signature_hex"])
     long = synthetic_claim(terms, "long", fixture["long_signature_hex"])
     funded = [observation(terms, leg, "funded") for leg in ("long", "short")]
@@ -69,8 +71,10 @@ def qualify(executable):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--executable", type=Path, default=ROOT / "qualification/target/debug/examples/verify_nom_swap")
+    parser.add_argument("--execution-profile", choices=(LEGACY_EXECUTION_PROFILE, CLEAN_EXECUTION_PROFILE),
+                        default=LEGACY_EXECUTION_PROFILE)
     args = parser.parse_args()
-    try: result = qualify(args.executable)
+    try: result = qualify(args.executable, execution_profile=args.execution_profile)
     except (OSError, RecoveryError, AssertionError, ValueError):
         print("FAIL: offline NoM original recovery qualification", file=sys.stderr); return 1
     print(json.dumps(result, sort_keys=True)); return 0

@@ -6,7 +6,8 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 Independent research, not an official Zenon implementation or activation proposal.
 
 **Status: additive PR #138 compatibility corpus and CANDIDATE-02 fixed-recipient
-NoM reference recovery, following the preserved Stage 127 research baseline.
+NoM reference recovery with a separate selected worker build/environment profile,
+following the preserved Stage 127 research baseline.
 Application and core remain NO-GO. There is no usable swap client or production
 signing implementation in this repository.** CANDIDATE-01 remains a historical
 Bitcoin/MuSig2 subject with separate unfilled review requirements.
@@ -20,6 +21,15 @@ journals, durable original-byte retention, unknown outcomes before disclosure,
 public-only adaptor recovery and explicit reference observation gates. Its
 envelopes/hashes and observation scenario are synthetic; no actual account block,
 chain observer, wallet, signer, broadcast or funds are connected.
+
+The [separate NoM worker profile](docs/NOM_WORKER_QUALIFICATION.md) inventories
+all 620 tracked files at the recovery source, selects locked Cargo resolution
+records for two targets, compares cached dependency contents and builds
+`verify_nom_swap` in fresh private directories. It then exercises public recovery
+with an explicitly empty child environment. Matching claims, file digests and
+same-run mathematics do not authenticate compiler support, SDK contents, loaded
+libraries or future execution. This later packaging does not fill any historical
+review or the [new independent assessment](docs/NOM_WORKER_REVIEW_REPORT_TEMPLATE.md).
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 

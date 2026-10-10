@@ -27,7 +27,10 @@ Recovery checks the extracted point, completes the long leg, verifies it and
 returns only the public signature. It never returns the extracted scalar and
 accepts no private key or nonce input. The Python adapter binds the exact request
 and response and measures the explicitly selected executable before and after
-work. Loader/runtime qualification for this new executable is still unfilled.
+work. The [separate worker profile](NOM_WORKER_QUALIFICATION.md) adds selected
+source, dependency and fresh native build observations with an opt-in empty
+child environment. Loader/runtime authentication and independent qualification
+remain unfilled.
 
 ## Durable disclosure and recovery order
 
@@ -91,7 +94,7 @@ Old failed CI evidence remains unchanged when incorporated historical PRs close.
 |---|---|---|
 | Current core compatibility | Immutable target, message/witness/policy corpus, actual-core differential run | Executable additive subject; record each run separately |
 | Independent construction review | Two-party graph, adaptor construction, disclosure order and economic assumptions | UNFILLED |
-| New public worker qualification | Complete source/dependency/runtime subject and independent assessment | UNFILLED; legacy worker reviews do not cover this executable |
+| New public worker qualification | Complete source/dependency/runtime subject and independent assessment | Separate source inventory, dependency comparison and native execution observations; independent assessment and runtime authentication UNFILLED |
 | Signing and durable custody | Selected reviewed backend, unique nonce ownership, rollback/restore policy, narrow signer interface | UNSELECTED / UNFILLED |
 | Chain observation | Exact node/genesis/spork, funding and descendant payout semantics, canonical momentum and reorg proofs | UNIMPLEMENTED |
 | Real original transaction | Typed ABI/account block and hash, retained exact signed bytes, account-chain/Plasma and unknown-outcome reconciliation | UNIMPLEMENTED |

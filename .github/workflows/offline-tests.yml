@@ -231,6 +231,41 @@ jobs:
       - name: Check separate public-synthetic handoff formatting
         run: cargo +1.90.0 fmt --manifest-path qualification-native-partial/Cargo.toml -- --check
 
+  nom-worker-profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.13"
+      - name: Acquire and check the separate immutable NoM worker source
+        run: |
+          git fetch --no-tags --depth=1 origin c560f5dc504818252703fdeaecc2ff96a3f86059
+          python3 -B scripts/check_nom_worker_subject.py \
+            --expect-commit c560f5dc504818252703fdeaecc2ff96a3f86059 \
+            --expect-manifest-sha256 59d9b134d4be55f3dc98797529aff86d121fdce3d0e2ddce8dfd7b9c171cf179
+      - name: Acquire selected native toolchain and locked dependencies
+        run: |
+          rustup toolchain install 1.90.0 --profile minimal
+          cargo +1.90.0 fetch --locked --manifest-path qualification/Cargo.toml
+      - name: Build fresh native NoM worker and exercise empty-environment public recovery
+        run: |
+          set -eu
+          umask 077
+          ptlc_nom_source="$(mktemp -d "$RUNNER_TEMP/ptlc-nom-source.XXXXXX")"
+          ptlc_nom_build="$(mktemp -d "$RUNNER_TEMP/ptlc-nom-build.XXXXXX")"
+          ptlc_nom_evidence="$(mktemp -d "$RUNNER_TEMP/ptlc-nom-evidence.XXXXXX")"
+          ptlc_nom_cargo="$(rustup which --toolchain 1.90.0 cargo)"
+          ptlc_nom_rustc="$(rustup which --toolchain 1.90.0 rustc)"
+          ptlc_nom_cc="$(command -v cc)"
+          python3 -B scripts/qualify_nom_worker.py --workspace "$ptlc_nom_source" \
+            --build-directory "$ptlc_nom_build" --evidence "$ptlc_nom_evidence" \
+            --cargo-home "${CARGO_HOME:-$HOME/.cargo}" --platform x86_64-unknown-linux-gnu \
+            --cargo "$ptlc_nom_cargo" --rustc "$ptlc_nom_rustc" --c-compiler "$ptlc_nom_cc"
+
   go-compatibility:
     runs-on: ubuntu-latest
     timeout-minutes: 15

@@ -94,19 +94,20 @@ def bind_target(row, package):
         raise InputError("artifact target differs from selected metadata")
 
 
-def compare(raw, metadata, selected, workspace, build_directory, platform, exit_status):
+def compare(raw, metadata, selected, workspace, build_directory, platform, exit_status, *, worker=WORKER):
     """Metadata and selected resolution must already pass the fixed comparison.
 
     This internal predicate does not independently select or verify a baseline.
     The public inspect entry performs those checks before calling it.
     """
-    if type(exit_status) is not int or exit_status != 0 or platform not in resolution.PLATFORMS:
+    if (type(exit_status) is not int or exit_status != 0 or platform not in resolution.PLATFORMS
+            or type(worker) is not str or worker not in resolution.WORKERS):
         raise InputError("selected successful build status required")
     if resolution.absolute(metadata["target_directory"]) != workspace/"metadata-target":
         raise InputError("selected metadata query directory differs")
     by_id = {p["id"]: p for p in metadata["packages"]}
     root_id = metadata["resolve"]["root"]
-    expected_executable = build_directory/platform/"debug/examples"/WORKER
+    expected_executable = build_directory/platform/"debug/examples"/worker
     counts = {name: 0 for name in ("compiler-artifact", "compiler-message", "build-script-executed", "build-finished")}
     selected_root, duplicates, finished = None, set(), False
     rows = records(raw)
@@ -173,12 +174,12 @@ def compare(raw, metadata, selected, workspace, build_directory, platform, exit_
         if signature in duplicates:
             raise InputError("duplicate operative artifact record")
         duplicates.add(signature)
-        if package_id == root_id and row["target"]["name"] == WORKER:
+        if package_id == root_id and row["target"]["name"] == worker:
             if (selected_root is not None or row["profile"] != ROOT_PROFILE or features
                     or resolution.absolute(executable) != expected_executable):
                 raise InputError("selected root artifact differs or is ambiguous")
             targets = selected["packages"][selected["root"]]["targets"]
-            matches = [t for t in targets if t["name"] == WORKER]
+            matches = [t for t in targets if t["name"] == worker]
             if len(matches) != 1:
                 raise InputError("selected root source target ambiguous")
             selected_root = dict(package=selected["root"], target=matches[0], profile=ROOT_PROFILE.copy(),

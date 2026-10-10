@@ -53,6 +53,7 @@ ROOT_DEPENDENCIES = {
     "schnorr_fun": ("*", ["std"]), "serde_json": ("^1.0", ["std"]),
     "sha2": ("=0.10.9", []),
 }
+WORKERS = ("verify_original_read_response", "verify_nom_swap")
 
 
 def json_claim(raw):
@@ -247,7 +248,9 @@ def root_dependencies(value, packages):
             raise InputError("local dependency declaration differs")
 
 
-def _normalize(raw, packages, workspace, registry, checkouts):
+def _normalize(raw, packages, workspace, registry, checkouts, *, worker=WORKERS[0]):
+    if type(worker) is not str or worker not in WORKERS:
+        raise InputError("unsupported selected worker target")
     value = json_claim(raw)
     exact(value, TOP_FIELDS)
     if type(value["version"]) is not int or value["version"] != 1:
@@ -318,10 +321,11 @@ def _normalize(raw, packages, workspace, registry, checkouts):
                 raise InputError("selected local package differs")
             local_id = package_id
             root_dependencies(package["dependencies"], packages)
-            worker = [t for t in result if t["name"] == "verify_original_read_response"]
-            if (len(worker) != 1 or worker[0]["kind"] != ["example"] or worker[0]["crate_types"] != ["bin"]
-                    or worker[0]["source_path"] != "examples/verify_original_read_response.rs"
-                    or worker[0]["edition"] != "2024" or worker[0]["required_features"]):
+            worker_targets = [t for t in result if t["name"] == worker]
+            if (len(worker_targets) != 1 or worker_targets[0]["kind"] != ["example"]
+                    or worker_targets[0]["crate_types"] != ["bin"]
+                    or worker_targets[0]["source_path"] != "examples/" + worker + ".rs"
+                    or worker_targets[0]["edition"] != "2024" or worker_targets[0]["required_features"]):
                 raise InputError("selected worker target differs")
         normalized[identity(row)] = dict(name=row["name"], version=row["version"], source=row.get("source"),
                                         source_kind=row["kind"], manifest_sha256=file_digest(manifest, measured_files),
@@ -406,9 +410,9 @@ def _normalize(raw, packages, workspace, registry, checkouts):
                 not_reported_lock_packages=sorted(identity(p) for p in packages if key(p) not in observed))
 
 
-def normalize(raw, packages, workspace, registry, checkouts):
+def normalize(raw, packages, workspace, registry, checkouts, *, worker=WORKERS[0]):
     try:
-        return _normalize(raw, packages, workspace, registry, checkouts)
+        return _normalize(raw, packages, workspace, registry, checkouts, worker=worker)
     except InputError:
         raise
     except (OSError, ValueError, TypeError, KeyError, UnicodeError):
