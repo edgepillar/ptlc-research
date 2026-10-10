@@ -1,10 +1,25 @@
 # Zenon PTLC Swap Research
 
-An offline foundation for investigating a bilateral Bitcoin-to-Zenon atomic swap.
+An offline foundation for investigating fixed-recipient NoM-to-NoM recovery and
+the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-**Status: Stage 46 original-operation read contract qualification. There is no usable swap client or production signing implementation in this repository.** CANDIDATE-01 fixes a graph for modeling and finite qualification; its complete construction and implementation remain subject to review.
+**Status: additive PR #138 compatibility corpus and CANDIDATE-02 fixed-recipient
+NoM reference recovery, following the preserved Stage 127 research baseline.
+Application and core remain NO-GO. There is no usable swap client or production
+signing implementation in this repository.** CANDIDATE-01 remains a historical
+Bitcoin/MuSig2 subject with separate unfilled review requirements.
+
+The [current-profile corpus](compatibility/README.md) pins PR #138 at
+`45e1bbb48ce6fc19d44c5fbf59ccf5784981fced`, preserves the old corpus/locked graphs,
+and compares independently generated messages and public witnesses in Python,
+the target Go verifier graph and locked Rust libraries. The
+[fixed-recipient recovery subject](docs/NOM_FIXED_RECOVERY.md) adds separate party
+journals, durable original-byte retention, unknown outcomes before disclosure,
+public-only adaptor recovery and explicit reference observation gates. Its
+envelopes/hashes and observation scenario are synthetic; no actual account block,
+chain observer, wallet, signer, broadcast or funds are connected.
 
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 

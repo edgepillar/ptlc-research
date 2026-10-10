@@ -1,0 +1,30 @@
+{
+  "adaptor_point_sec1_hex": "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+  "alice_address_hex": "0011111111111111111111111111111111111111",
+  "bob_address_hex": "0022222222222222222222222222222222222222",
+  "chain_id": "69",
+  "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+  "genesis_hash_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+  "long": {
+    "amount": "100",
+    "entry_id_hex": "4444444444444444444444444444444444444444444444444444444444444444",
+    "expires_at": "2000",
+    "funder": "alice",
+    "funder_key_xonly_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+    "recipient": "bob",
+    "token_standard_hex": "01010101010101010101"
+  },
+  "minimum_expiry_gap_seconds": "500",
+  "profile": "zenon-ptlc-unlock:v1",
+  "schema": "ptlc-nom-fixed-terms-v1",
+  "session_id_hex": "7777777777777777777777777777777777777777777777777777777777777777",
+  "short": {
+    "amount": "200",
+    "entry_id_hex": "5555555555555555555555555555555555555555555555555555555555555555",
+    "expires_at": "1000",
+    "funder": "bob",
+    "funder_key_xonly_hex": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+    "recipient": "alice",
+    "token_standard_hex": "02020202020202020202"
+  }
+}

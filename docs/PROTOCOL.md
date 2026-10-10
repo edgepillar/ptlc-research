@@ -1,5 +1,11 @@
 # Reference swap protocol requirements
 
+This historical PR #13/CANDIDATE-01 subject retains its original message rule.
+For the separately pinned PR #138 profile and CANDIDATE-02 reference behavior,
+see [compatibility](../compatibility/README.md) and
+[fixed-recipient NoM recovery](NOM_FIXED_RECOVERY.md). Do not mix their message
+domains or treat a preserved historical requirement as current core behavior.
+
 Status: **DRAFT - requirements, not an executable client.** [CANDIDATE-01](TRANSACTION_GRAPH.md) now fixes roles, funding order, Bitcoin spend/refund graph and reveal direction for offline modeling. The backend, complete transaction/signing implementation and independent protocol review remain unresolved. These requirements alone do not establish safety.
 
 Scope and component ownership are defined in [SCOPE.md](SCOPE.md). Cryptographic candidates and selection decisions belong in [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md); evidence limits belong in [EVIDENCE.md](EVIDENCE.md).
