@@ -1145,3 +1145,13 @@ fixture reference release remains separate. The source-pinned
 subordinate handles, selected lock observations and exact original retention.
 See the [validation snapshot](docs/STAGE120_VALIDATION.md). Existing store and
 guard remain unchanged; application/core remain **NO-GO**.
+
+## Stage 121: native ownership and statement-cache limits
+
+The source-pinned [resource inventory](docs/NATIVE_RESOURCE_INVENTORY.md) separates
+store/actor ownership paths, Python statement caching and SQLite page caching.
+One [native control](tests/test_selected_statement_cache.py) retains two same-SQL
+readers with a one-entry statement cache; closing one leaves the other reader's
+lock held until separate fixture disposal. Cache capacity is not an ownership
+inventory. See the [validation snapshot](docs/STAGE121_VALIDATION.md). Existing
+store and guard remain unchanged; application/core remain **NO-GO**.

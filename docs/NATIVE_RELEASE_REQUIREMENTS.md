@@ -107,3 +107,14 @@ checked separately before and after fixture reference release and peer close.
 See the [Stage 120 validation snapshot](STAGE120_VALIDATION.md) for qualification
 counts and remaining acceptance gates. No store, guard, actor, worker,
 cryptography or CI workflow changes implement these candidate requirements.
+
+## Scoped resource inventory
+
+The [native resource inventory](NATIVE_RESOURCE_INVENTORY.md) inspects the unchanged
+store and actor creator/consumer/disposal paths before selecting a construction.
+It distinguishes Python's prepared-statement cache from SQLite's page cache.
+One selected control with a one-entry statement cache retains two independent
+same-SQL readers. A cache entry count does not establish a live-handle bound or
+complete ownership. Wrapper aliases and inline cursor consumption require an
+explicit cooperative ownership/disposal design; no registry or application
+cleanup policy is selected by that inventory.
