@@ -118,3 +118,13 @@ same-SQL readers. A cache entry count does not establish a live-handle bound or
 complete ownership. Wrapper aliases and inline cursor consumption require an
 explicit cooperative ownership/disposal design; no registry or application
 cleanup policy is selected by that inventory.
+
+## Separate cooperative cursor experiment
+
+The [selected ownership experiment](NATIVE_CURSOR_OWNERSHIP.md) specifies
+creation, registration before exposure, retained references, subordinate close
+order and exception priority before adding a separate test fixture. Admitted
+cursor disposal and a deliberately missing admission produce distinct native
+lock observations. Injected registration and close escapes remain diagnostics.
+This selects no store/application cleanup policy or exhaustive native registry;
+the original requirements and application/core NO-GO remain in place.
