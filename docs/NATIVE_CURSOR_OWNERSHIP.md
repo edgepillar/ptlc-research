@@ -163,6 +163,45 @@ serialized, and no report grants retry, recovery or application authority.
 See the [Stage 124 validation snapshot](STAGE124_VALIDATION.md). Application/core
 remain **NO-GO**; adoption and independent assessment remain separate requirements.
 
+## Native checkpoints for attempt records
+
+Native qualification of the separate attempt owner requires independent
+observations of recorded invocation/outcome, API availability, selected Python
+reference lifetime and a peer's lock acquisition. Neither a creation count nor
+a returned close is an exhaustive ownership or native-retirement certificate.
+The existing owner, attempt owner, synthetic controls and previous counterexample
+remain unchanged. No application cleanup policy is adopted.
+
+Two [new native controls](../tests/test_selected_cursor_attempt_native.py) use
+the unchanged attempt owner with a test-only native `sqlite3.Cursor` subclass.
+Its close method checks `attempted` through a weak owner reference, records a
+creation ordinal and delegates once to `sqlite3.Cursor.close` on the same object.
+This instrumentation observes the selected call boundary; it does not inventory
+native pointers or attest the loaded build. Only non-test checkpoint helpers
+are reused from the earlier native controls; no test methods are inherited.
+
+The selected CPython profile uses a separate rollback-journal probe, autocommit,
+zero busy timeout, one prepared-statement cache entry for the owner and zero for
+the peer. Same-SQL readers consume one row before disposal. Cooperative record
+writes, no reentrant lifecycle calls and no creation-record corruption remain
+premises. The second control deliberately violates creation ownership.
+
+| Control | Independent selected checkpoints |
+| --- | --- |
+| Duplicate admission aliases; every reader has a creation record; scope primary retained | Three reverse-order calls observe `attempted`, then report `returned`; parent close returns. Owner and cursor APIs refuse access while the peer transaction succeeds and weak references remain live. Releasing borrowed/admission aliases alone retains those objects through creation records. Explicit creation-record release empties the selected weak references |
+| One reader bypasses creation records; admission aliases removed before disposal | Two tracked calls observe `attempted` and return despite the empty admission registry; parent close returns. Owner and bypass close APIs refuse access, yet the peer remains exact `SQLITE_BUSY`. Explicit bypass-reference release permits the peer while tracked objects remain live; subsequent tracked-reference release is measured separately |
+
+Each sequence checks five checkpoints against exact original/probe bytes, modes,
+device/inode and directory entries. Complete local/reopened original allocation
+accounting remains one original, one charge/event and no effect. A peer
+transaction that returns is rolled back without writes. Explicit test-reference
+release is an observation step, never automatic cleanup or recovery authority.
+These controls do not exercise natural I/O faults, arbitrary interruption,
+partial record writes, reentrancy, opaque aliases or exhaustive ownership.
+See the [Stage 125 validation snapshot](STAGE125_VALIDATION.md). Source-to-loaded-
+build identity remains **NOT VERIFIED**, independent assessment is absent and
+application/core remain **NO-GO**.
+
 ## Source and application boundaries
 
 The preceding [resource inventory](NATIVE_RESOURCE_INVENTORY.md) and

@@ -142,3 +142,12 @@ outcome. Creation records, rather than registry aliases, control disposal in
 two synthetic fixtures. Uninterrupted record retention and writes are premises;
 this is no atomic/durable ledger, exhaustive inventory or store cleanup repair.
 No new native release observation or application/core readiness follows.
+
+The later [native attempt checkpoints](NATIVE_CURSOR_OWNERSHIP.md#native-checkpoints-for-attempt-records)
+compare the unchanged cooperative attempt owner with native API invalidation,
+selected weak-reference lifetime and peer locks. Creation records remain
+authoritative even with duplicate or empty admission aliases. A deliberately
+unrecorded reader retains a busy peer result after every recorded close and
+parent close return. Explicit reference release supplies a separate observation,
+not application disposal, native retirement or recovery authority. Source/build
+identity and independent assessment remain open; application/core remain NO-GO.
