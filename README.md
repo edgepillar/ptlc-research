@@ -1155,3 +1155,13 @@ readers with a one-entry statement cache; closing one leaves the other reader's
 lock held until separate fixture disposal. Cache capacity is not an ownership
 inventory. See the [validation snapshot](docs/STAGE121_VALIDATION.md). Existing
 store and guard remain unchanged; application/core remain **NO-GO**.
+
+## Stage 122: selected cooperative cursor ownership
+
+A separate [test-only owner](tests/selected_cursor_owner.py) registers cursors
+before exposure and attempts their closes before its connection close. Two
+native controls distinguish admitted readers from a deliberately unregistered
+reader; two injected controls keep admission/cleanup escapes and primary errors
+separate. See [ownership requirements](docs/NATIVE_CURSOR_OWNERSHIP.md) and the
+[validation snapshot](docs/STAGE122_VALIDATION.md). Existing store, guard, actor,
+worker, cryptography and CI remain unchanged; application/core remain **NO-GO**.
