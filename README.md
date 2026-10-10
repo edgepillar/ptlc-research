@@ -1202,3 +1202,15 @@ not recovery authority. See [requirements and profile](docs/NATIVE_CURSOR_OWNERS
 and the [validation snapshot](docs/STAGE125_VALIDATION.md). The preceding owners
 and negative controls remain exact. Source/build identity and independent
 assessment remain open; application/core remain **NO-GO**.
+
+## Stage 126: injected close escapes and retained reference paths
+
+Two [separate native controls](tests/test_selected_cursor_preclose_escape_native.py)
+use the unchanged attempt owner with a deliberate synthetic escape before one
+reader's native close. The first escaped outcome, sibling/parent attempts, API
+invalidation, traceback-held references, borrowed references and peer locks
+remain separate observations. Explicit test frame/reference release grants no
+retry or recovery authority. See [requirements and selected paths](docs/NATIVE_CURSOR_OWNERSHIP.md#injected-pre-native-escape-requirements-and-reference-paths)
+and the [validation snapshot](docs/STAGE126_VALIDATION.md). The preceding owners
+and controls remain exact. Natural faults, source/build identity and independent
+assessment remain open; application/core remain **NO-GO**.

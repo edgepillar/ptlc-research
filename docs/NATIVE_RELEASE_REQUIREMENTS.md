@@ -151,3 +151,11 @@ unrecorded reader retains a busy peer result after every recorded close and
 parent close return. Explicit reference release supplies a separate observation,
 not application disposal, native retirement or recovery authority. Source/build
 identity and independent assessment remain open; application/core remain NO-GO.
+
+The later [injected pre-native escape requirements](NATIVE_CURSOR_OWNERSHIP.md#injected-pre-native-escape-requirements-and-reference-paths)
+separate a synthetic escape before native close, the retained first outcome and
+independent sibling/parent attempts. Creation/admission aliases, raw traceback
+frames and borrowed references are distinct paths. Selected API invalidation,
+weak-reference and peer-lock checks cannot turn explicit test frame/reference
+release into automatic cleanup, native retirement, retry or recovery authority.
+This adds no natural SQLite fault or application/core readiness claim.
