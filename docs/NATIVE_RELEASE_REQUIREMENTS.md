@@ -128,3 +128,10 @@ cursor disposal and a deliberately missing admission produce distinct native
 lock observations. Injected registration and close escapes remain diagnostics.
 This selects no store/application cleanup policy or exhaustive native registry;
 the original requirements and application/core NO-GO remain in place.
+
+The [partial-registration counterexample](NATIVE_CURSOR_OWNERSHIP.md#partial-admission-requirements-and-counterexample)
+separates insertion from successful admission. A selected callback inserts then
+raises; the first close escapes, while later registry disposal invokes that same
+object again and returns. Requirements must retain each attempt and forbid
+pending/registered aliasing from supplying automatic retry authority. The
+existing owner is unchanged; no attempt ledger or application repair is selected.

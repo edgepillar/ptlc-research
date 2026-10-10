@@ -80,6 +80,42 @@ tracked closed reader is retained. Complete local/reopened original readback
 stays exact: one original, one charge/event, no effect. Injected controls check
 the original file bytes and the same complete accounting separately from mocks.
 
+## Partial admission requirements and counterexample
+
+The pre-mutation control above assumes registration has not inserted the handle
+when it raises. Registration before exposure does not itself establish atomic
+insertion. Before selecting another construction, require separate observations
+for handle creation, pending retention, registry insertion, exposure, each close
+invocation and the outcome of each invocation. A handle retained in both pending
+and registered storage must not authorize another close. An escaped attempt
+remains unresolved even if a later callback returns; preserve the original
+admission error and first cleanup error separately from that later return.
+
+One [injected counterexample](../tests/test_selected_cursor_admission_mutation.py)
+leaves the owner source unchanged. The selected registration callback appends the
+pending handle and then raises. The first pending close raises another synthetic
+error. Scope disposal finds that same handle in the registry and invokes close
+again; this later callback returns. The control observes the following sequence:
+
+| Selected event | Retained observation |
+| --- | --- |
+| Creation and insertion | One handle occupies both pending and registered storage |
+| Admission escape | No handle is exposed; the original error remains the scope primary |
+| First close invocation | The cleanup error is retained as an escaped admission-close attempt |
+| Registered disposal | A second invocation on the same Python object returns |
+| Parent disposal and report | Parent close returns once; the first error and later return remain separate |
+
+This is a counterexample to extending the pre-mutation no-retry claim to partial
+registration. It is not a naturally occurring SQLite fault or a native release
+measurement. The fixture compares exact original file bytes, mode, device/inode,
+directory entries and complete local/reopened accounting before and after the
+selected sequence: one original, one charge/event and no effect. It adds no
+native pointer, weak-reference or peer-lock observations. A returned second
+callback does not prove retirement, native release or safe reconciliation.
+No at-most-once attempt ledger or application cleanup policy is selected here.
+Interruption during insertion, attempt recording or report construction remains
+unqualified. See the [Stage 123 snapshot](STAGE123_VALIDATION.md).
+
 Cursor ordinals identify selected registration order only. A returned close is
 not native pointer instrumentation. Weak-reference timing is limited to the
 selected CPython profile; explicit fixture release is not a portable cleanup
