@@ -1,0 +1,128 @@
+{
+  "acquisition_go_sum_sha256": "a4c67abcab8d5b54b6a0ed6fce91e7b431f0dd17de3a13a76e4326f659c5dce6",
+  "application": "NO-GO",
+  "assessment": "UNFILLED",
+  "core": "NO-GO",
+  "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+  "core_file_sha256": {
+    "LICENSE": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "chain/account/store.go": "b195bb0e64ad3fb9cc2c60ca50796dfee4f459448195adcb42dc8fd767f75d42",
+    "chain/nom/account_block.go": "ac3fa4c6c159a8e5f79a184a4fbde9585e36055ee5ef88ad691af4cdd81a8817",
+    "common/bytes.go": "e14d47080dc19fd383aa2425cb49244c03a765efbb5fdc4b770d7b2e1eb55aee",
+    "common/crypto/hash.go": "7b94f17b28e88591846753ddc54a206fd3f2e267d628108c04a0b815fba967ed",
+    "common/db/dissable_notfound.go": "128b78e19a9c4886162e9e74bfc724485cfb9acb1e12006958134a782a090e0a",
+    "common/types/account_header.go": "301e60567f004a7d6cb3d3295bdad7a5c4002b15e5c12ee8a807a831bc8144e3",
+    "common/types/hash_height.go": "5d058f06669f0e71c4667e2b86785e14aa24749b804cb534f8919878659df28d",
+    "go.mod": "ac08476abe3df0bc67f1c5c6868f04889b864310f16a37b0d51a6598b9017a45",
+    "go.sum": "e536610c08abc9f4b979ce39cd5ae7323c3df14a189d186d911ee1d1184b8537",
+    "verifier/account_block.go": "1e25042eb00afbd71f43981c4a94ce9341bf45bd80bd14f994952c0d513c70f3",
+    "vm/abi/method.go": "7badd9bebc844cbe4c00f0255075410f425cf849e2f02336e50ff7aea953258b",
+    "vm/abi/pack.go": "f1245ebe72b7b2a68818c14e7c5d4532fd40ebc6a4537823d33c909de7b58447",
+    "vm/embedded/definition/ptlc.go": "e7bd0112a48039c1e0a992847f100f1a126d69874b1dc421481b0a6bdd9ef009",
+    "vm/embedded/implementation/ptlc.go": "e17afeb9dc3532c2866cb9ae67aafa1a2af21961a1e78ccdf526ca5cba40edb1",
+    "vm/supervisor.go": "6272bae87f3ac65b7630c135d2c027c3698c4df3087c28bf1a38d25fc4804ff2",
+    "vm/vm.go": "eafcc81fab44257edb644c29966ff2153e8cf1a12ddb0f9d12550f04479c9174",
+    "vm/vm_context/interfaces.go": "7173601a56910fcc23abbe6aa16032d53f1feefa00dace3375463882786cbe6b"
+  },
+  "core_license": "GPL-3.0; separately obtained and referenced, no implementation copied",
+  "core_tree": "b8bb3720dd36e6f9ba0537864c18bbb4a001b910",
+  "expected_counts": {
+    "stateful_methods": 16,
+    "structural_claims": 48,
+    "verifier_checks": 14,
+    "vm_finalization": 4
+  },
+  "input_sha256": {
+    "compatibility/fixtures/nom_observation_v1.json": "d1635a363331fb5d27c6b3523c29d95ece180f80e6cb9d885877d28460d16f9c",
+    "compatibility/nom_observation_state_test.go.txt": "88e7232ef0e54124be7e82ce0cb8cead864ef90ae7c5172b177bbf6cbdff0f5a",
+    "compatibility/nom_observation_verifier_test.go.txt": "4cb01dd7ba9996e7ea3a368d025e28f793c509788296294754bc2a78bc7f2e8b",
+    "compatibility/nom_observation_vm_test.go.txt": "746c8a135fa977f972595ea343534706448b9847c7e85d6d948cee9e2b3d70b6"
+  },
+  "license": "MIT; independently written tests only",
+  "preserved_file_sha256": {
+    "compatibility/fixtures/nom_completions_v1.json": "0e2dc5473bebfe7f3f3d05f57fe3db22459bbe3c64bf9d36ba24937e1c7fe768",
+    "compatibility/fixtures/nom_terms_v1.json": "d3cea79c869964a175ee464019db0639b28f5df9e915e88a2504d4a8e33e397b",
+    "compatibility/fixtures/nom_wire_v1.json": "07f0db9421334c0af4dcf5134c33c5697062f0d5bb4291308767090d7edb5471",
+    "compatibility/nom_wire_core_test.go.txt": "36e0bfd6d2b79e071c870ccbe104d2b4373e9642297e59fb0fe4144d29407094",
+    "compatibility/nom_wire_manifest.json": "236ceeae2d6fbd0acd604ba3d88fe75a2ef085523575267bfb4430a155dcd3fc",
+    "offline_session/nom_recovery.py": "a187362adee99b5d32002807a2232e14413c46a233efba922e9d2fa32b4f8a2a",
+    "offline_session/nom_wire.py": "d79dd83b98b6a31c3b5b15deb26ea4b671d2ed96dab03bf02381b9648492b839"
+  },
+  "profile": "zenon-pr138-observation-claims-v1",
+  "research_baseline_commit": "b64bc44719c602e5f23f5a3eb32317b1b0d3ccce",
+  "schema": "zenon-nom-observation-manifest-v1",
+  "sources": [
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/LICENSE"
+    },
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/chain/nom/account_block.go"
+    },
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/common/bytes.go"
+    },
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/common/crypto/hash.go"
+    },
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/common/types/hash_height.go"
+    },
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/go.mod"
+    },
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/go.sum"
+    },
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/verifier/account_block.go"
+    },
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/vm/abi/method.go"
+    },
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/vm/abi/pack.go"
+    },
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/vm/embedded/definition/ptlc.go"
+    },
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/vm/embedded/implementation/ptlc.go"
+    },
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/vm/vm.go"
+    },
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/vm/supervisor.go"
+    },
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/vm/vm_context/interfaces.go"
+    },
+    {
+      "role": "Pinned source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/common/types/account_header.go"
+    },
+    {
+      "role": "Pinned source account-storage wrapper; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/chain/account/store.go"
+    },
+    {
+      "role": "Pinned source account-storage wrapper; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/common/db/dissable_notfound.go"
+    }
+  ]
+}

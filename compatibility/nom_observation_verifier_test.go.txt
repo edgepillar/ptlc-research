@@ -1,0 +1,207 @@
+// Independently written MIT tests of selected source checks with explicit stubs.
+package verifier
+
+import (
+	"encoding/hex"
+	"encoding/json"
+	"math/big"
+	"os"
+	"strconv"
+	"testing"
+
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/chain/store"
+	"github.com/zenon-network/go-zenon/common/types"
+)
+
+type researchObservationLedger struct {
+	store.Momentum
+	momentum     *nom.Momentum
+	send         *nom.AccountBlock
+	confirmation uint64
+	frontier     uint64
+}
+
+func (s *researchObservationLedger) GetFrontierMomentum() (*nom.Momentum, error) {
+	return s.momentum, nil
+}
+func (s *researchObservationLedger) GetMomentumByHeight(height uint64) (*nom.Momentum, error) {
+	if s.momentum != nil && s.momentum.Height == height {
+		return s.momentum, nil
+	}
+	return nil, nil
+}
+func (s *researchObservationLedger) GetBlockConfirmationHeight(types.Hash) (uint64, error) {
+	return s.confirmation, nil
+}
+func (s *researchObservationLedger) GetAccountBlockByHash(h types.Hash) (*nom.AccountBlock, error) {
+	if s.send != nil && s.send.Hash == h {
+		return s.send, nil
+	}
+	return nil, nil
+}
+func (s *researchObservationLedger) Identifier() types.HashHeight {
+	return types.HashHeight{Height: s.frontier}
+}
+
+type researchObservationAccount struct {
+	store.Account
+	received bool
+	previous *nom.AccountBlock
+}
+
+func (s *researchObservationAccount) IsReceived(types.Hash) bool { return s.received }
+func (s *researchObservationAccount) ByHeight(height uint64) (*nom.AccountBlock, error) {
+	if s.previous != nil && s.previous.Height == height {
+		return s.previous, nil
+	}
+	return nil, nil
+}
+
+func TestResearchNoMObservationVerifier(t *testing.T) {
+	var fixture struct {
+		Schema   string `json:"schema"`
+		Core     string `json:"core_commit"`
+		Baseline struct {
+			Contexts map[string]map[string]string `json:"contexts"`
+			Records  map[string]struct {
+				Hash  string                 `json:"hash_hex"`
+				Block map[string]interface{} `json:"block"`
+			} `json:"records"`
+		} `json:"baseline"`
+		Vectors []string `json:"verifier_vectors"`
+	}
+	data, err := os.ReadFile(os.Getenv("PTLC_NOM_OBSERVATION_FIXTURE"))
+	if err != nil || json.Unmarshal(data, &fixture) != nil || fixture.Schema != "zenon-nom-observation-corpus-v1" || fixture.Core != "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced" || len(fixture.Vectors) != 14 {
+		t.Fatal("selected fixture unavailable")
+	}
+	raw := func(text string) []byte {
+		b, err := hex.DecodeString(text)
+		if err != nil {
+			t.Fatal("invalid encoding")
+		}
+		return b
+	}
+	hash := func(text string) types.Hash {
+		var h types.Hash
+		b := raw(text)
+		if len(b) != 32 {
+			t.Fatal("invalid hash")
+		}
+		copy(h[:], b)
+		return h
+	}
+	address := func(text string) types.Address {
+		var a types.Address
+		b := raw(text)
+		if len(b) != 20 {
+			t.Fatal("invalid address")
+		}
+		copy(a[:], b)
+		return a
+	}
+	u64 := func(text string) uint64 {
+		n, err := strconv.ParseUint(text, 10, 64)
+		if err != nil {
+			t.Fatal("invalid number")
+		}
+		return n
+	}
+	block := func(role string) *nom.AccountBlock {
+		r := fixture.Baseline.Records[role]
+		b := r.Block
+		amount, ok := new(big.Int).SetString(b["amount"].(string), 10)
+		if !ok {
+			t.Fatal("invalid amount")
+		}
+		value := &nom.AccountBlock{Version: u64(b["version"].(string)), ChainIdentifier: u64(b["chain_id"].(string)), BlockType: u64(b["block_type"].(string)), Hash: hash(r.Hash),
+			PreviousHash: hash(b["previous_hash_hex"].(string)), Height: u64(b["height"].(string)), Address: address(b["address_hex"].(string)), ToAddress: address(b["to_address_hex"].(string)),
+			Amount: amount, Data: raw(b["data_hex"].(string)), FromBlockHash: hash(b["from_block_hash_hex"].(string)),
+			MomentumAcknowledged: types.HashHeight{Hash: hash(b["momentum_hash_hex"].(string)), Height: u64(b["momentum_height"].(string))}}
+		copy(value.TokenStandard[:], raw(b["token_standard_hex"].(string)))
+		for _, child := range b["descendant_hashes_hex"].([]interface{}) {
+			value.DescendantBlocks = append(value.DescendantBlocks, &nom.AccountBlock{Hash: hash(child.(string))})
+		}
+		return value
+	}
+	for _, id := range fixture.Vectors {
+		t.Run(id, func(t *testing.T) {
+			parent, child, original, receipt := block("contract_receive"), block("payout"), block("original"), block("recipient_receive")
+			parent.DescendantBlocks = []*nom.AccountBlock{child}
+			ledger := &researchObservationLedger{momentum: &nom.Momentum{Hash: parent.MomentumAcknowledged.Hash, Height: parent.MomentumAcknowledged.Height}, send: original, confirmation: parent.MomentumAcknowledged.Height, frontier: ReceiverMismatchEnforcementHeight}
+			account := &researchObservationAccount{previous: original}
+			selected := &accountBlockVerifier{block: parent, momentumStore: ledger, frontierStore: ledger, accountStore: account}
+			var outcome error
+			var want error
+			switch id {
+			case "all-public-record-hashes":
+				for role := range fixture.Baseline.Records {
+					b := block(role)
+					if b.ComputeHash() != b.Hash {
+						t.Fatal("actual public record hash differs")
+					}
+				}
+				return
+			case "contract-confirming-context":
+				outcome = selected.momentumAcknowledged()
+			case "child-context-mismatch":
+				child.MomentumAcknowledged.Height++
+				outcome = selected.momentumAcknowledged()
+				want = ErrABMAMustBeTheSame
+			case "wrong-send-confirmation-height":
+				ledger.confirmation++
+				outcome = selected.momentumAcknowledged()
+				want = ErrABMAInvalidForAutoGenerated
+			case "wrong-momentum-hash":
+				parent.MomentumAcknowledged.Hash[0] ^= 1
+				if selected.momentumAcknowledged() == nil {
+					t.Fatal("wrong context accepted")
+				}
+				return
+			case "receive-amount-refusal":
+				receipt.Amount = big.NewInt(1)
+				selected.block = receipt
+				outcome = selected.amounts()
+				want = ErrABAmountMustBeZero
+			case "recipient-acknowledged-context", "recipient-known-height-wrong-ack-hash":
+				selected.block = receipt
+				selected.momentumStore = nil
+				confirmed := fixture.Baseline.Contexts["payout_confirmation"]
+				ledger.momentum = &nom.Momentum{Hash: hash(confirmed["hash_hex"]), Height: u64(confirmed["height"])}
+				if id == "recipient-known-height-wrong-ack-hash" {
+					receipt.MomentumAcknowledged.Hash[0] ^= 1
+					want = ErrABMAMissing
+				}
+				outcome = selected.momentumAcknowledged()
+			case "recipient-from-payout", "unconfirmed-payout", "missing-payout", "already-received-payout", "wrong-receiver-at-enforcement", "wrong-receiver-before-enforcement-helper-accepts":
+				selected.block = receipt
+				selected.momentumStore = nil
+				ledger.send = child
+				ledger.confirmation = receipt.MomentumAcknowledged.Height
+				switch id {
+				case "unconfirmed-payout":
+					ledger.confirmation++
+					want = ErrABFromBlockMissing
+				case "missing-payout":
+					ledger.send = nil
+					want = ErrABFromBlockMissing
+				case "already-received-payout":
+					account.received = true
+					want = ErrABFromBlockAlreadyReceived
+				case "wrong-receiver-at-enforcement":
+					receipt.Address = block("funding").Address
+					want = ErrABFromBlockReceiverMismatch
+				case "wrong-receiver-before-enforcement-helper-accepts":
+					receipt.Address = block("funding").Address
+					ledger.frontier = ReceiverMismatchEnforcementHeight - 1
+				}
+				outcome = selected.fromHash()
+			default:
+				t.Fatal("unselected verifier control")
+			}
+			if outcome != want {
+				t.Fatal("selected source check differs")
+			}
+		})
+	}
+}
