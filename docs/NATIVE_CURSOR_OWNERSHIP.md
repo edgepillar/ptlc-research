@@ -202,6 +202,51 @@ See the [Stage 125 validation snapshot](STAGE125_VALIDATION.md). Source-to-loade
 build identity remains **NOT VERIFIED**, independent assessment is absent and
 application/core remain **NO-GO**.
 
+## Injected pre-native escape requirements and reference paths
+
+A close callback can escape before native delegation. Requirements must retain
+that first attempted/escaped outcome, attempt siblings and the parent
+independently, and compare API invalidation, reference lifetime and peer locks
+without treating any outcome as retirement. Raw exception traceback frames can
+retain a reader after creation, admission and borrowed aliases are removed.
+Conversely, clearing completed frames cannot discharge a separate borrowed
+reference. Neither operation supplies automatic retry or recovery authority.
+
+Two [separate native controls](../tests/test_selected_cursor_preclose_escape_native.py)
+exercise the unchanged attempt owner. A test-only native Cursor subclass checks
+`attempted` through a weak owner reference. The last-created reader deliberately
+raises a synthetic `OSError` before `sqlite3.Cursor.close`; unaffected cursor
+calls delegate once. A native Connection subclass observes the independent
+parent call before delegating. These are selected Python call boundaries, not
+native pointer or loaded-build attestations. Both owners, prior synthetic
+counterexample and all earlier controls remain exact.
+
+The selected CPython profile uses a separate rollback-journal probe, autocommit,
+zero busy timeout, prepared-statement caches of one for the owner and zero for
+the peer, and two same-SQL readers that each consume one row. Successful
+factory/setup, single-thread use, uninterrupted creation/attempt/outcome writes,
+uncorrupted records and nonreentrant callbacks remain cooperative premises.
+The injected escape is deliberate; it is not evidence of a natural SQLite
+close fault. A helper catches the propagated exception without stripping its
+traceback and completes before the selected frame-release steps.
+
+| Control | Required selected observations |
+| --- | --- |
+| Scope primary preserved; explicit cursor aliases removed before frame release | The secondary first escape remains recorded, sibling/parent calls return and APIs invalidate while the peer stays exact `SQLITE_BUSY`. Creation/admission/borrowed aliases are then empty; the failed reader remains live through its secondary traceback, and the successful setup cursor through a back-link to the completed disposal frame. The successful sibling reader is released. Clearing secondary traceback frame locals releases the failed reader and permits the peer while the closed setup cursor remains live; separate completed back-frame clearing releases that object without another close call |
+| Normal exit surfaces the first cleanup escape; borrower retained during frame release | The first escape propagates after sibling/parent attempts, with no scope primary. Creation/admission aliases and completed traceback frame locals are cleared; the borrowed reader remains live and the peer remains exact `SQLITE_BUSY`. Explicit borrowed-reference release empties the selected weak references and permits the peer without retry |
+
+The primary sequence checks six checkpoints and normal exit five against exact
+original/probe bytes, modes,
+device/inode and directory entries. Complete local/reopened accounting must
+remain one original, one charge/event and no effect. Peer lock probes roll back
+without writes. Raw exceptions remain private and are not serialized. Explicit
+frame clearing and reference release are test observations, never application
+cleanup policy. See the [Stage 126 validation snapshot](STAGE126_VALIDATION.md)
+for executed results and separate gates. Natural faults, interruption,
+reentrancy, opaque aliases, exhaustive ownership and independent assessment
+remain unresolved. Source/build identity is **NOT VERIFIED**; application/core
+remain **NO-GO**.
+
 ## Source and application boundaries
 
 The preceding [resource inventory](NATIVE_RESOURCE_INVENTORY.md) and
