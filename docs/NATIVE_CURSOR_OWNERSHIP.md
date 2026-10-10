@@ -123,6 +123,46 @@ contract. Peer lock availability is a checkpoint observation, not permanent
 availability or global disposal. File comparisons are not atomic path continuity,
 race resistance, custody, secure erasure or physical durability.
 
+## Separate cooperative attempt record
+
+The [separate attempt owner](../tests/selected_cursor_attempt_owner.py) retains
+a creation record before its selected registration callback. It marks that
+record `attempted` before looking up or invoking close, then records `returned`
+or `escaped` separately. Disposal visits retained creation records in reverse
+creation order, rather than using admission-registry entries as authority.
+Repeated visits to an attempted record preserve its first outcome without
+another call. Pending and registry aliases of that record supply no additional
+invocation. The preceding owner and its counterexample remain unchanged.
+
+This construction requires cooperative factory return, successful creation-record
+retention and uninterrupted record writes. The selected callback may mutate its
+admission registry, but must not mutate creation or attempt records. A repeated
+factory return of the same retained Python object is refused without closing it
+again. Python object identity is not a native pointer or opaque-alias inventory.
+Record allocation before retention, callback corruption, interruption around the
+attempt mark or outcome writes, and interrupted report construction remain
+unqualified. The fixture does not implement an atomic or durable attempt ledger.
+Selected callers and callbacks also do not re-enter admission or scope disposal;
+reentrant lifecycle behavior and thread/fork ownership are unqualified.
+
+Two [synthetic controls](../tests/test_selected_cursor_attempt_owner.py) select
+materially different exception boundaries without expanding a Cartesian matrix:
+
+| Control | Selected observation |
+| --- | --- |
+| Partial registry insertion, admission escape and first close escape | The callback sees an already retained creation record. Close sees `attempted` before it raises. No cursor is exposed; pending and registry share the record, but scope disposal does not call close again. The admission primary and first cleanup error remain separate; parent close returns once |
+| Normal exit, two admitted creation records and duplicate registry entries | The last-created cursor close escapes, its sibling close returns, and parent close still runs and escapes. Each cursor callback sees `attempted`; each is invoked once despite duplicate registry entries. Normal exit raises the first cursor error after all attempts |
+
+The report retains creation ordinals, first outcomes and raw diagnostic errors.
+An escaped attempt remains incomplete; a returned API callback is not evidence
+of native retirement. Both controls compare original file bytes, mode,
+device/inode, directory entries and complete local/reopened accounting before
+and after: one original, one charge/event and no effect. They add no new native
+invalidation, weak-reference or peer-lock measurements. Raw records are not
+serialized, and no report grants retry, recovery or application authority.
+See the [Stage 124 validation snapshot](STAGE124_VALIDATION.md). Application/core
+remain **NO-GO**; adoption and independent assessment remain separate requirements.
+
 ## Source and application boundaries
 
 The preceding [resource inventory](NATIVE_RESOURCE_INVENTORY.md) and

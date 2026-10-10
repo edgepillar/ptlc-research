@@ -134,4 +134,11 @@ separates insertion from successful admission. A selected callback inserts then
 raises; the first close escapes, while later registry disposal invokes that same
 object again and returns. Requirements must retain each attempt and forbid
 pending/registered aliasing from supplying automatic retry authority. The
-existing owner is unchanged; no attempt ledger or application repair is selected.
+existing owner is unchanged; the counterexample selects no application repair.
+
+A [separate cooperative attempt record](NATIVE_CURSOR_OWNERSHIP.md#separate-cooperative-attempt-record)
+marks an invocation before its selected close callback and retains its first
+outcome. Creation records, rather than registry aliases, control disposal in
+two synthetic fixtures. Uninterrupted record retention and writes are premises;
+this is no atomic/durable ledger, exhaustive inventory or store cleanup repair.
+No new native release observation or application/core readiness follows.
