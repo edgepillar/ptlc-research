@@ -1189,3 +1189,16 @@ and the [validation snapshot](docs/STAGE124_VALIDATION.md). The preceding owner
 and counterexample remain exact. Uninterrupted record writes are a premise;
 atomic/durable recording and native retirement remain unqualified. No application
 cleanup repair is selected; application/core remain **NO-GO**.
+
+## Stage 125: native checkpoints for cursor attempt records
+
+Two [native controls](tests/test_selected_cursor_attempt_native.py) exercise the
+unchanged cooperative attempt owner with duplicate or empty admission aliases.
+Recorded close returns, invalidated APIs, retained creation references and a
+peer's lock acquisition are measured separately. A reader that deliberately
+bypasses creation records retains a busy peer result after recorded closes and
+parent close return. Explicit test-reference release is a distinct checkpoint,
+not recovery authority. See [requirements and profile](docs/NATIVE_CURSOR_OWNERSHIP.md#native-checkpoints-for-attempt-records)
+and the [validation snapshot](docs/STAGE125_VALIDATION.md). The preceding owners
+and negative controls remain exact. Source/build identity and independent
+assessment remain open; application/core remain **NO-GO**.
