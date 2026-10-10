@@ -99,6 +99,9 @@ funding/account proof.
 3. Select and independently assess observation authority, pin provisioning,
    canonicality/finality and durable evidence policy before connecting a verifier
    to recovery. A declared provider, binary hash or callback is not that assessment.
+   The [momentum claim corpus](NOM_MOMENTUM_CONFORMANCE.md) adds bounded hash,
+   header membership, lineage and conservative reorg plans without selecting
+   authority, finality, durable storage or recovery admission.
 4. Qualify signing custody, exact signed transaction storage, account-chain/Plasma
    behavior and restore protection separately. Controlled network composition
    remains outside Stage 0 authorization.

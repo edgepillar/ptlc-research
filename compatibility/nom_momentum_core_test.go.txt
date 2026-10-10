@@ -1,0 +1,232 @@
+// Independently written MIT tests. Source execution uses explicit synthetic stubs.
+package verifier
+
+import (
+	"bytes"
+	"encoding/hex"
+	"encoding/json"
+	"os"
+	"strconv"
+	"testing"
+
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/chain/store"
+	"github.com/zenon-network/go-zenon/common/types"
+)
+
+type researchMomentumHeader struct {
+	Address string `json:"address_hex"`
+	Height  string `json:"height"`
+	Hash    string `json:"hash_hex"`
+}
+
+type researchMomentumInput struct {
+	Version  string                   `json:"version"`
+	Chain    string                   `json:"chain_id"`
+	Previous string                   `json:"previous_hash_hex"`
+	Height   string                   `json:"height"`
+	Time     string                   `json:"timestamp"`
+	Data     string                   `json:"data_hex"`
+	Content  []researchMomentumHeader `json:"content"`
+	Changes  string                   `json:"changes_hash_hex"`
+	Fusion   string                   `json:"next_fusion_price"`
+	Work     string                   `json:"next_work_price"`
+}
+
+type researchMomentumLedger struct {
+	store.Momentum
+	previous *nom.Momentum
+}
+
+func (s *researchMomentumLedger) GetFrontierMomentum() (*nom.Momentum, error) {
+	return s.previous, nil
+}
+func (s *researchMomentumLedger) GetFrontierAccountBlock(types.Address) (*nom.AccountBlock, error) {
+	return nil, nil
+}
+
+func TestResearchNoMMomentumCorpus(t *testing.T) {
+	raw := func(text string, size int) []byte {
+		value, err := hex.DecodeString(text)
+		if err != nil || (size >= 0 && len(value) != size) {
+			t.Fatal("invalid selected public encoding")
+		}
+		return value
+	}
+	u64 := func(text string) uint64 {
+		value, err := strconv.ParseUint(text, 10, 64)
+		if err != nil {
+			t.Fatal("invalid selected public integer")
+		}
+		return value
+	}
+	hash := func(text string) types.Hash { var h types.Hash; copy(h[:], raw(text, 32)); return h }
+	address := func(text string) types.Address { var a types.Address; copy(a[:], raw(text, 20)); return a }
+	momentum := func(input researchMomentumInput) *nom.Momentum {
+		m := &nom.Momentum{Version: u64(input.Version), ChainIdentifier: u64(input.Chain),
+			PreviousHash: hash(input.Previous), Height: u64(input.Height), TimestampUnix: u64(input.Time),
+			Data: raw(input.Data, -1), ChangesHash: hash(input.Changes), NextFusionPrice: u64(input.Fusion), NextWorkPrice: u64(input.Work)}
+		for _, item := range input.Content {
+			m.Content = append(m.Content, &types.AccountHeader{Address: address(item.Address),
+				HashHeight: types.HashHeight{Height: u64(item.Height), Hash: hash(item.Hash)}})
+		}
+		return m
+	}
+	var fixture struct {
+		Schema   string `json:"schema"`
+		Profile  string `json:"profile"`
+		Core     string `json:"core_commit"`
+		Baseline struct {
+			Anchor struct {
+				Hash   string `json:"hash_hex"`
+				Height string `json:"height"`
+			} `json:"anchor"`
+		} `json:"baseline"`
+		Hashes []struct {
+			ID      string                `json:"id"`
+			Input   researchMomentumInput `json:"momentum"`
+			Content string                `json:"content_bytes_hex"`
+			CHash   string                `json:"content_hash_hex"`
+			Hash    string                `json:"hash_hex"`
+		} `json:"hash_vectors"`
+		Controls []string `json:"source_controls"`
+	}
+	data, err := os.ReadFile(os.Getenv("PTLC_NOM_MOMENTUM_FIXTURE"))
+	if err != nil || json.Unmarshal(data, &fixture) != nil || fixture.Schema != "zenon-nom-momentum-corpus-v1" ||
+		fixture.Profile != "zenon-pr138-momentum-claims-v1" || fixture.Core != "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced" ||
+		len(fixture.Hashes) != 24 || len(fixture.Controls) != 26 {
+		t.Fatal("selected public fixture unavailable")
+	}
+	for _, vector := range fixture.Hashes {
+		t.Run("hash/"+vector.ID, func(t *testing.T) {
+			m := momentum(vector.Input)
+			if m.ComputeHash() != hash(vector.Hash) || !bytes.Equal(m.Content.Bytes(), raw(vector.Content, -1)) ||
+				m.Content.Hash() != hash(vector.CHash) {
+				t.Fatal("actual momentum or ordered content digest mismatch")
+			}
+			for index, header := range m.Content {
+				if !bytes.Equal(header.Bytes(), raw(vector.Content, -1)[index*60:(index+1)*60]) {
+					t.Fatal("actual account header layout mismatch")
+				}
+			}
+		})
+	}
+	for _, control := range fixture.Controls {
+		t.Run("control/"+control, func(t *testing.T) {
+			m := momentum(fixture.Hashes[0].Input)
+			ledger := &researchMomentumLedger{previous: &nom.Momentum{Height: u64(fixture.Baseline.Anchor.Height), Hash: hash(fixture.Baseline.Anchor.Hash)}}
+			v := &rawMomentumVerifier{momentum: m, momentumStore: ledger}
+			var observed error
+			wantError := false
+			switch control {
+			case "version-one-legacy":
+				observed = v.version(false)
+			case "version-two-dynamic":
+				m.Version = 2
+				observed = v.version(true)
+			case "version-one-dynamic-refused":
+				observed = v.version(true)
+				wantError = true
+			case "version-two-legacy-refused":
+				m.Version = 2
+				observed = v.version(false)
+				wantError = true
+			case "version-zero-refused":
+				m.Version = 0
+				observed = v.version(false)
+				wantError = true
+			case "version-three-refused":
+				m.Version = 3
+				observed = v.version(true)
+				wantError = true
+			case "legacy-fusion-price-refused":
+				m.NextFusionPrice = 1000
+				observed = v.nextFusionPrice()
+				wantError = true
+			case "legacy-work-price-refused":
+				m.NextWorkPrice = 1000
+				observed = v.nextWorkPrice()
+				wantError = true
+			case "dynamic-fusion-floor":
+				m.Version = 2
+				m.NextFusionPrice = 1000
+				observed = v.nextFusionPrice()
+			case "dynamic-work-below-floor":
+				m.Version = 2
+				m.NextWorkPrice = 999
+				observed = v.nextWorkPrice()
+				wantError = true
+			case "empty-data":
+				observed = v.data()
+			case "nonempty-data-refused":
+				m.Data = []byte{1}
+				observed = v.data()
+				wantError = true
+			case "previous-context":
+				observed = v.previous()
+			case "wrong-previous-hash":
+				m.PreviousHash[0] ^= 1
+				observed = v.previous()
+				wantError = true
+			case "wrong-previous-height":
+				m.Height++
+				observed = v.previous()
+				wantError = true
+			case "content-ordered-membership", "content-wrong-address", "content-wrong-hash", "content-duplicate-header",
+				"content-duplicate-block", "content-missing-block", "content-account-gap":
+				// These are header lookup/account-order stubs, not authenticated blocks.
+				first := &nom.AccountBlock{BlockType: nom.BlockTypeUserSend, Height: 1, Address: m.Content[0].Address,
+					Hash: m.Content[0].Hash}
+				second := &nom.AccountBlock{BlockType: nom.BlockTypeUserSend, Height: 2, Address: first.Address,
+					Hash: m.Content[1].Hash, PreviousHash: first.Hash}
+				one, two := first.Header(), second.Header()
+				m.Content = nom.MomentumContent{&one, &two}
+				v.accountBlocks = []*nom.AccountBlock{first, second}
+				switch control {
+				case "content-wrong-address":
+					one.Address[1] ^= 1
+					wantError = true
+				case "content-wrong-hash":
+					one.Hash[0] ^= 1
+					wantError = true
+				case "content-duplicate-header":
+					m.Content[1] = &one
+					wantError = true
+				case "content-duplicate-block":
+					v.accountBlocks[1] = first
+					wantError = true
+				case "content-missing-block":
+					v.accountBlocks = v.accountBlocks[:1]
+					wantError = true
+				case "content-account-gap":
+					second.PreviousHash[0] ^= 1
+					wantError = true
+				}
+				observed = v.content(false)
+			case "static-missing-signature", "static-invalid-signature", "static-changed-payload":
+				m.Hash = m.ComputeHash()
+				m.PublicKey = make([]byte, 32)
+				if control != "static-missing-signature" {
+					m.Signature = []byte{1}
+				}
+				if control == "static-changed-payload" {
+					m.ChangesHash[0] ^= 1
+				}
+				observed = MomentumStatic(m)
+				wantError = true
+			case "excluded-key-signature-not-hashed":
+				before := m.ComputeHash()
+				m.PublicKey = bytes.Repeat([]byte{0xde}, 32)
+				m.Signature = []byte{0xad}
+				if m.ComputeHash() != before {
+					t.Fatal("excluded source fields changed digest")
+				}
+			default:
+				t.Fatal("unselected source control")
+			}
+			if (observed != nil) != wantError {
+				t.Fatal("actual selected source outcome mismatch")
+			}
+		})
+	}
+}
