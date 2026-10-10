@@ -1176,3 +1176,16 @@ error, first cleanup error and later return remain separate. See
 and the [validation snapshot](docs/STAGE123_VALIDATION.md). The owner source is
 unchanged; no attempt ledger or application repair is selected. Application/core
 remain **NO-GO**.
+
+## Stage 124: cooperative cursor attempt records
+
+A [separate test-only owner](tests/selected_cursor_attempt_owner.py) retains
+creation records before registration and marks an attempt before close. Two
+[synthetic controls](tests/test_selected_cursor_attempt_owner.py) preserve the
+first escaped attempt after partial insertion, and independently attempt sibling
+cursors and the parent on normal exit. Registry aliases grant no additional
+call. See [attempt requirements](docs/NATIVE_CURSOR_OWNERSHIP.md#separate-cooperative-attempt-record)
+and the [validation snapshot](docs/STAGE124_VALIDATION.md). The preceding owner
+and counterexample remain exact. Uninterrupted record writes are a premise;
+atomic/durable recording and native retirement remain unqualified. No application
+cleanup repair is selected; application/core remain **NO-GO**.
