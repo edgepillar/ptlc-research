@@ -87,6 +87,8 @@ jobs:
         run: cargo +1.90.0 test --locked --offline --manifest-path qualification-native-partial/Cargo.toml
       - name: Build public artifact, completion, authentication, enrollment and observation executables
         run: cargo +1.90.0 build --locked --offline --manifest-path qualification/Cargo.toml --examples
+      - name: Qualify fixed-recipient NoM original recovery with the public worker
+        run: python3 -B scripts/qualify_nom_recovery.py
       - name: Record selected offline dependency and worker input evidence
         run: |
           git fetch --no-tags --depth=1 origin bd4b4b523fb3453e2af191eb01973985d6431d66
@@ -314,3 +316,34 @@ jobs:
             python3 -B scripts/qualify_original_read_response.py \
               --original-response-verifier "$ptlc_macho_build/aarch64-apple-darwin/debug/examples/verify_original_read_response"
           done
+
+  pr138-compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install the pinned Go qualification toolchain
+        run: |
+          archive="$RUNNER_TEMP/ptlc-pr138-go.tar.gz"
+          curl --fail --silent --show-error --location https://go.dev/dl/go1.23.12.linux-amd64.tar.gz --output "$archive"
+          printf '%s  %s\n' d3847fef834e9db11bf64e3fb34db9c04db14e068eeb064f49af747010454f90 "$archive" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/ptlc-pr138-go"
+          tar -xzf "$archive" -C "$RUNNER_TEMP/ptlc-pr138-go"
+          printf '%s\n' "$RUNNER_TEMP/ptlc-pr138-go/go/bin" >> "$GITHUB_PATH"
+      - name: Acquire the separate recorded PR138 dependency graph
+        working-directory: compatibility/pr138-go
+        env:
+          GOTOOLCHAIN: local
+        run: |
+          go mod download all
+          go mod verify
+          git diff --exit-code -- go.mod go.sum
+      - name: Verify current-profile corpus and Rust NoM completions offline
+        working-directory: compatibility/pr138-go
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: "off"
+          GOSUMDB: "off"
+        run: go test -mod=readonly -count=1 -v ./...

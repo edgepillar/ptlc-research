@@ -9,3 +9,4 @@ __pycache__/
 tmp/
 coverage/
 /qualification/target/
+/qualification-native-partial/target/

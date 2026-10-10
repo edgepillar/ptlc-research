@@ -1,0 +1,62 @@
+// Independently written MIT research tests, overlaid without editing the node.
+package implementation
+
+import (
+    "bytes"
+    "crypto/ed25519"
+    "encoding/hex"
+    "encoding/json"
+    "os"
+    "path/filepath"
+    "strconv"
+    "testing"
+    "github.com/zenon-network/go-zenon/common/types"
+    "github.com/zenon-network/go-zenon/vm/embedded/definition"
+    "github.com/zenon-network/go-zenon/wallet"
+)
+func TestResearchPR138CompatibilityCorpus(t *testing.T) {
+    raw:=func(s string)[]byte{b,e:=hex.DecodeString(s);if e!=nil{t.Fatal("invalid synthetic encoding")};return b}
+    read:=func(name string,out any){b,e:=os.ReadFile(filepath.Join(os.Getenv("PTLC_COMPAT_FIXTURE_ROOT"),name));if e!=nil{t.Fatal("fixture unavailable")};if json.Unmarshal(b,out)!=nil{t.Fatal("invalid fixture")}}
+    var messages struct {
+        Vectors []struct { Context struct {Chain string `json:"chain_id"`; Point uint8 `json:"point_type"`; ID string `json:"entry_id_hex"`; Destination string `json:"destination_hex"`} `json:"context"`; Message string `json:"message_hex"` } `json:"message_vectors"`
+        Destinations []struct {Point uint8 `json:"point_type"`; Destination string `json:"destination_hex"`; Create bool `json:"create_allowed"`; Payable bool `json:"payable"`} `json:"destination_vectors"`
+    }
+    read("pr138_messages_v1.json",&messages)
+    if len(messages.Vectors)!=48 || len(messages.Destinations)!=15 || hex.EncodeToString(types.PtlcContract.Bytes())!="01b3b6e5adcb4c15ff06318c6318c6318c6318c6" {t.Fatal("profile boundary changed")}
+    for _,v:=range messages.Vectors {
+        chain,e:=strconv.ParseUint(v.Context.Chain,10,64);if e!=nil{t.Fatal(e)}
+        var id types.Hash; var destination types.Address;copy(id[:],raw(v.Context.ID));copy(destination[:],raw(v.Context.Destination))
+        if !bytes.Equal(definition.GetPtlcUnlockMessage(chain,v.Context.Point,id,destination),raw(v.Message)){t.Fatal("actual core digest mismatch")}
+    }
+    var witnesses struct {Vectors []struct {ID string `json:"id"`;Point uint8 `json:"point_type"`;Key string `json:"point_lock_hex"`;Message string `json:"message_hex"`;Witness string `json:"witness_hex"`;ValidPoint bool `json:"valid_point"`;ValidWitness bool `json:"valid_witness"`;SendSize bool `json:"send_size_allowed"`} `json:"vectors"`}
+    read("pr138_witnesses_v1.json",&witnesses);if len(witnesses.Vectors)!=26{t.Fatal("witness count")}
+    keys:=make(map[uint8][]byte)
+    for _,v:=range witnesses.Vectors {
+        key,witness,message:=raw(v.Key),raw(v.Witness),raw(v.Message)
+        validPoint:=checkPointLock(v.Point,key)==nil
+        if validPoint!=v.ValidPoint || isPtlcWitnessSize(len(witness))!=v.SendSize {t.Fatal("actual core point/send mismatch",v.ID)}
+        valid:=false
+        if validPoint {switch v.Point {
+        case 0: accepted,e:=wallet.VerifySignature(ed25519.PublicKey(key),message,witness);valid=e==nil&&accepted
+        case 1:valid=verifyBIP340Signature(message,key,witness)==nil
+        case 2:valid=verifyPointScalar(key,witness)==nil
+        }}
+        if valid!=v.ValidWitness{t.Fatal("actual core witness mismatch",v.ID)}
+        if v.ID=="ed-valid" || v.ID=="bip340-valid" || v.ID=="scalar-valid"{keys[v.Point]=key}
+    }
+    for _,v:=range messages.Destinations {
+        var destination types.Address;copy(destination[:],raw(v.Destination))
+        allowed:=checkPtlc(definition.CreatePtlcParam{PointType:v.Point,PointLock:keys[v.Point],Destination:destination})==nil
+        if allowed!=v.Create || isPayableDestination(destination)!=v.Payable{t.Fatal("actual core destination mismatch")}
+    }
+    var terms struct {Chain string `json:"chain_id"`;Alice string `json:"alice_address_hex"`;Bob string `json:"bob_address_hex"`;Long,Short struct {ID string `json:"entry_id_hex"`;Key string `json:"funder_key_xonly_hex"`}}
+    var completed struct {LongMessage string `json:"long_message_hex"`;ShortMessage string `json:"short_message_hex"`;LongSignature string `json:"long_signature_hex"`;ShortSignature string `json:"short_signature_hex"`}
+    read("nom_terms_v1.json",&terms);read("nom_completions_v1.json",&completed)
+    chain,e:=strconv.ParseUint(terms.Chain,10,64);if e!=nil{t.Fatal(e)}
+    for _,v:=range []struct {id,key,destination,message,signature string}{{terms.Long.ID,terms.Long.Key,terms.Bob,completed.LongMessage,completed.LongSignature},{terms.Short.ID,terms.Short.Key,terms.Alice,completed.ShortMessage,completed.ShortSignature}} {
+        var id types.Hash;var destination types.Address;copy(id[:],raw(v.id));copy(destination[:],raw(v.destination))
+        if !bytes.Equal(definition.GetPtlcUnlockMessage(chain,1,id,destination),raw(v.message)){t.Fatal("NoM message mismatch")}
+        info:=&definition.PtlcInfo{PointType:1,PointLock:raw(v.key)}
+        if verifyPtlcWitness(info,chain,id,destination,raw(v.signature))!=nil{t.Fatal("actual core rejected Rust completion")}
+    }
+}
