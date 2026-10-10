@@ -98,7 +98,7 @@ def _validate(executable, request_bytes, timeout, max_input_bytes, max_output_by
 
 
 def _run(command, request_bytes, *, timeout, max_output_bytes,
-         pass_fds=(), start_new_session=True, owner_pid=None):
+         pass_fds=(), start_new_session=True, owner_pid=None, environment=None):
     """Internal transport: watched guards signal only their owned direct child.
 
     The outer guard has its own group; its nonforking worker stays in that group.
@@ -114,6 +114,7 @@ def _run(command, request_bytes, *, timeout, max_output_bytes,
             command, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL, bufsize=0, close_fds=True,
             start_new_session=start_new_session, pass_fds=pass_fds,
+            env=environment,
         )
         _remaining(deadline, owner_pid)
         selection = selectors.DefaultSelector()
@@ -199,6 +200,19 @@ def run_public_worker(executable, request_bytes, *, timeout, max_input_bytes,
     """
     path = _validate(executable, request_bytes, timeout, max_input_bytes, max_output_bytes)
     return _run([str(path)], request_bytes, timeout=timeout, max_output_bytes=max_output_bytes)
+
+
+def run_clean_environment_public_worker(executable, request_bytes, *, timeout,
+                                        max_input_bytes, max_output_bytes=MAX_OUTPUT_BYTES):
+    """Launch a trusted public worker with an explicitly empty child environment.
+
+    This removes inherited environment variables at exec. It does not select or
+    authenticate the loader, libraries, working directory, executable ancestry,
+    process effects or host. The legacy transport's cleanup and trust limits apply.
+    """
+    path = _validate(executable, request_bytes, timeout, max_input_bytes, max_output_bytes)
+    return _run([str(path)], request_bytes, timeout=timeout,
+                max_output_bytes=max_output_bytes, environment={})
 
 
 def _lease_descriptors(descriptors):

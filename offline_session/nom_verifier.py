@@ -14,11 +14,20 @@ from .nom_recovery import (
     verification_context_digest, context,
 )
 from .pr138 import PROFILE, CompatibilityError, fixed_hex, unlock_message
-from .public_worker import WorkerError, run_public_worker
+from .public_worker import WorkerError, run_public_worker, run_clean_environment_public_worker
+
+
+LEGACY_EXECUTION_PROFILE = "nom-inherited-environment-v1"
+CLEAN_EXECUTION_PROFILE = "nom-empty-environment-v1"
 
 
 class NomPublicVerifier:
-    def __init__(self, executable, expected_sha256_hex, terms, pair):
+    def __init__(self, executable, expected_sha256_hex, terms, pair, *,
+                 execution_profile=LEGACY_EXECUTION_PROFILE):
+        if type(execution_profile) is not str or execution_profile not in (
+                LEGACY_EXECUTION_PROFILE, CLEAN_EXECUTION_PROFILE):
+            raise RecoveryError("unsupported public qualifier execution profile")
+        self._execution_profile = execution_profile
         self._terms = validate_terms(terms); self._pair = validate_pair(pair)
         self.context_digest_hex = verification_context_digest(terms, pair)
         try:
@@ -45,6 +54,9 @@ class NomPublicVerifier:
     @property
     def pair(self): return validate_pair(self._pair)
 
+    @property
+    def execution_profile(self): return self._execution_profile
+
     def request(self, mode, signature_hex=""):
         if mode not in ("verify-pair", "verify-long", "verify-short", "recover-long"):
             raise RecoveryError("unsupported public verification mode")
@@ -66,7 +78,9 @@ class NomPublicVerifier:
         wire = canonical(self.request(mode, signature))
         self._measure()
         try:
-            reply = run_public_worker(str(self._executable), wire, timeout=5, max_input_bytes=8192)
+            runner = (run_clean_environment_public_worker
+                      if self._execution_profile == CLEAN_EXECUTION_PROFILE else run_public_worker)
+            reply = runner(str(self._executable), wire, timeout=5, max_input_bytes=8192)
             value = decode(reply)
             completed = value.get("completed_long_hex") if type(value) is dict else None
             if mode == "recover-long": fixed_hex(completed, 64)
