@@ -1,0 +1,267 @@
+{
+  "schema": "zenon-pr138-witness-corpus-v1",
+  "profile": "zenon-ptlc-unlock:v1",
+  "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+  "vectors": [
+    {
+      "id": "ed-valid",
+      "point_type": 0,
+      "point_lock_hex": "d04ab232742bb4ab3a1368bd4615e4e6d0224ab71a016baf8520a332c9778737",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "c88ea4c2d6b855574bea0d4d291cffb39c1cc394bf65213a57e47765b128f18bf168a024140c38b9a95d73372e3b1da150f55e08c7bafbc680d0be34594f4404",
+      "valid_point": true,
+      "valid_witness": true,
+      "send_size_allowed": true
+    },
+    {
+      "id": "bip340-valid",
+      "point_type": 1,
+      "point_lock_hex": "6360e856310ce5d294e8be33fc807077dc56ac80d95d9cd4ddbd21325eff73f7",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "6cc8398d770145f1ecd85424b7d610528b4b6a07beca9c9104e5c8a07d08688ba6de2976a3bacc024e91557b59147c5f8a417d8ebad6cf46ef7afdb4bb9be2f4",
+      "valid_point": true,
+      "valid_witness": true,
+      "send_size_allowed": true
+    },
+    {
+      "id": "scalar-valid",
+      "point_type": 2,
+      "point_lock_hex": "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "0000000000000000000000000000000000000000000000000000000000000003",
+      "valid_point": true,
+      "valid_witness": true,
+      "send_size_allowed": true
+    },
+    {
+      "id": "ed-wrong-message",
+      "point_type": 0,
+      "point_lock_hex": "d04ab232742bb4ab3a1368bd4615e4e6d0224ab71a016baf8520a332c9778737",
+      "message_hex": "82d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "c88ea4c2d6b855574bea0d4d291cffb39c1cc394bf65213a57e47765b128f18bf168a024140c38b9a95d73372e3b1da150f55e08c7bafbc680d0be34594f4404",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": true
+    },
+    {
+      "id": "bip340-wrong-message",
+      "point_type": 1,
+      "point_lock_hex": "6360e856310ce5d294e8be33fc807077dc56ac80d95d9cd4ddbd21325eff73f7",
+      "message_hex": "82d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "6cc8398d770145f1ecd85424b7d610528b4b6a07beca9c9104e5c8a07d08688ba6de2976a3bacc024e91557b59147c5f8a417d8ebad6cf46ef7afdb4bb9be2f4",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": true
+    },
+    {
+      "id": "scalar-message-independent",
+      "point_type": 2,
+      "point_lock_hex": "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+      "message_hex": "82d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "0000000000000000000000000000000000000000000000000000000000000003",
+      "valid_point": true,
+      "valid_witness": true,
+      "send_size_allowed": true
+    },
+    {
+      "id": "bip340-witness-width-0",
+      "point_type": 1,
+      "point_lock_hex": "6360e856310ce5d294e8be33fc807077dc56ac80d95d9cd4ddbd21325eff73f7",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": false
+    },
+    {
+      "id": "bip340-witness-width-31",
+      "point_type": 1,
+      "point_lock_hex": "6360e856310ce5d294e8be33fc807077dc56ac80d95d9cd4ddbd21325eff73f7",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "00000000000000000000000000000000000000000000000000000000000000",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": false
+    },
+    {
+      "id": "bip340-witness-width-32",
+      "point_type": 1,
+      "point_lock_hex": "6360e856310ce5d294e8be33fc807077dc56ac80d95d9cd4ddbd21325eff73f7",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": true
+    },
+    {
+      "id": "bip340-witness-width-63",
+      "point_type": 1,
+      "point_lock_hex": "6360e856310ce5d294e8be33fc807077dc56ac80d95d9cd4ddbd21325eff73f7",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": false
+    },
+    {
+      "id": "bip340-witness-width-65",
+      "point_type": 1,
+      "point_lock_hex": "6360e856310ce5d294e8be33fc807077dc56ac80d95d9cd4ddbd21325eff73f7",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": false
+    },
+    {
+      "id": "ed-short-witness",
+      "point_type": 0,
+      "point_lock_hex": "d04ab232742bb4ab3a1368bd4615e4e6d0224ab71a016baf8520a332c9778737",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "c88ea4c2d6b855574bea0d4d291cffb39c1cc394bf65213a57e47765b128f18bf168a024140c38b9a95d73372e3b1da150f55e08c7bafbc680d0be34594f44",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": false
+    },
+    {
+      "id": "ed-identity",
+      "point_type": 0,
+      "point_lock_hex": "0100000000000000000000000000000000000000000000000000000000000000",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "c88ea4c2d6b855574bea0d4d291cffb39c1cc394bf65213a57e47765b128f18bf168a024140c38b9a95d73372e3b1da150f55e08c7bafbc680d0be34594f4404",
+      "valid_point": false,
+      "valid_witness": false,
+      "send_size_allowed": true
+    },
+    {
+      "id": "ed-noncanonical-identity",
+      "point_type": 0,
+      "point_lock_hex": "eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "c88ea4c2d6b855574bea0d4d291cffb39c1cc394bf65213a57e47765b128f18bf168a024140c38b9a95d73372e3b1da150f55e08c7bafbc680d0be34594f4404",
+      "valid_point": false,
+      "valid_witness": false,
+      "send_size_allowed": true
+    },
+    {
+      "id": "bip340-invalid-key",
+      "point_type": 1,
+      "point_lock_hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "6cc8398d770145f1ecd85424b7d610528b4b6a07beca9c9104e5c8a07d08688ba6de2976a3bacc024e91557b59147c5f8a417d8ebad6cf46ef7afdb4bb9be2f4",
+      "valid_point": false,
+      "valid_witness": false,
+      "send_size_allowed": true
+    },
+    {
+      "id": "bip340-compressed-key-refused",
+      "point_type": 1,
+      "point_lock_hex": "026360e856310ce5d294e8be33fc807077dc56ac80d95d9cd4ddbd21325eff73f7",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "6cc8398d770145f1ecd85424b7d610528b4b6a07beca9c9104e5c8a07d08688ba6de2976a3bacc024e91557b59147c5f8a417d8ebad6cf46ef7afdb4bb9be2f4",
+      "valid_point": false,
+      "valid_witness": false,
+      "send_size_allowed": true
+    },
+    {
+      "id": "bip340-wrong-signature",
+      "point_type": 1,
+      "point_lock_hex": "6360e856310ce5d294e8be33fc807077dc56ac80d95d9cd4ddbd21325eff73f7",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "6cc8398d770145f1ecd85424b7d610528b4b6a07beca9c9104e5c8a07d08688ba6de2976a3bacc024e91557b59147c5f8a417d8ebad6cf46ef7afdb4bb9be2f5",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": true
+    },
+    {
+      "id": "legacy-signature-refused",
+      "point_type": 1,
+      "point_lock_hex": "6360e856310ce5d294e8be33fc807077dc56ac80d95d9cd4ddbd21325eff73f7",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "2cb0bef1a7e8dac094dcc6f24093bbd53a4bf315de5ced6dc74ebc502666c61522622107358481c3e94e973cb97780d8517963b9e68d1ad27a4e2455222e480c",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": true
+    },
+    {
+      "id": "scalar-zero",
+      "point_type": 2,
+      "point_lock_hex": "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": true
+    },
+    {
+      "id": "scalar-order",
+      "point_type": 2,
+      "point_lock_hex": "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": true
+    },
+    {
+      "id": "scalar-order-plus-one",
+      "point_type": 2,
+      "point_lock_hex": "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364142",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": true
+    },
+    {
+      "id": "scalar-opposite-parity",
+      "point_type": 2,
+      "point_lock_hex": "03f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "0000000000000000000000000000000000000000000000000000000000000003",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": true
+    },
+    {
+      "id": "scalar-short",
+      "point_type": 2,
+      "point_lock_hex": "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "00000000000000000000000000000000000000000000000000000000000000",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": false
+    },
+    {
+      "id": "scalar-long",
+      "point_type": 2,
+      "point_lock_hex": "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "000000000000000000000000000000000000000000000000000000000000000300",
+      "valid_point": true,
+      "valid_witness": false,
+      "send_size_allowed": false
+    },
+    {
+      "id": "scalar-uncompressed-point",
+      "point_type": 2,
+      "point_lock_hex": "04f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9388f7b0f632de8140fe337e62a37f3566500a99934c2231b6cb9fd7584b8e672",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "0000000000000000000000000000000000000000000000000000000000000003",
+      "valid_point": false,
+      "valid_witness": false,
+      "send_size_allowed": true
+    },
+    {
+      "id": "unknown-type-send-size-only",
+      "point_type": 3,
+      "point_lock_hex": "6360e856310ce5d294e8be33fc807077dc56ac80d95d9cd4ddbd21325eff73f7",
+      "message_hex": "83d6d461695f5a60c2016801db2e4d80afe29deae474628abe9229edbae1a206",
+      "witness_hex": "6cc8398d770145f1ecd85424b7d610528b4b6a07beca9c9104e5c8a07d08688ba6de2976a3bacc024e91557b59147c5f8a417d8ebad6cf46ef7afdb4bb9be2f4",
+      "valid_point": false,
+      "valid_witness": false,
+      "send_size_allowed": true
+    }
+  ]
+}
