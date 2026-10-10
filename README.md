@@ -1214,3 +1214,17 @@ retry or recovery authority. See [requirements and selected paths](docs/NATIVE_C
 and the [validation snapshot](docs/STAGE126_VALIDATION.md). The preceding owners
 and controls remain exact. Natural faults, source/build identity and independent
 assessment remain open; application/core remain **NO-GO**.
+
+## Stage 127: creation-record retention escapes
+
+Two [native controls](tests/test_selected_cursor_retention_escape_native.py)
+deliberately fail record insertion after native factory return, before pending,
+admission or exposure. The unchanged owner attempts its existing setup record
+and parent once, preserves the original error and never closes the unrecorded
+candidate. Raw completed traceback frames retain that candidate. An idle Cursor
+and a factory-primed reader have different peer-lock results after their APIs
+become unavailable. Explicit frame/record release supplies selected observations
+and no cleanup, retry or recovery authority. See [requirements](docs/NATIVE_CURSOR_OWNERSHIP.md#creation-record-retention-escape-requirements)
+and [validation](docs/STAGE127_VALIDATION.md). Natural faults, atomic retention,
+native retirement and independent assessment remain open; application/core are
+**NO-GO**.

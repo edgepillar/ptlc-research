@@ -159,3 +159,12 @@ frames and borrowed references are distinct paths. Selected API invalidation,
 weak-reference and peer-lock checks cannot turn explicit test frame/reference
 release into automatic cleanup, native retirement, retry or recovery authority.
 This adds no natural SQLite fault or application/core readiness claim.
+
+The later [creation-record retention escape requirements](NATIVE_CURSOR_OWNERSHIP.md#creation-record-retention-escape-requirements)
+distinguish a created handle from a retained creation record, pending/admission
+state and exposure. A deliberate pre-insertion append failure violates the
+cooperative premise. A returned parent close and invalid candidate API coexist
+with different peer-lock results for an idle versus factory-primed Cursor.
+Completed traceback release grants no cleanup or recovery authority; missing
+records cannot certify handle absence. Natural allocation/interruption failures,
+atomic retention, native retirement and application/core readiness remain open.
