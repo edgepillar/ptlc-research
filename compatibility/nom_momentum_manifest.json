@@ -1,0 +1,125 @@
+{
+  "acquisition_go_sum_sha256": "a4c67abcab8d5b54b6a0ed6fce91e7b431f0dd17de3a13a76e4326f659c5dce6",
+  "application": "NO-GO",
+  "assessment": "UNFILLED",
+  "core": "NO-GO",
+  "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+  "core_file_sha256": {
+    "LICENSE": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "chain/nom/account_block.go": "ac3fa4c6c159a8e5f79a184a4fbde9585e36055ee5ef88ad691af4cdd81a8817",
+    "chain/nom/momentum.go": "4dd63fbe14bb3d9d77c059be567253cd1c23f7621dbff2b113e1c0d321959e00",
+    "chain/nom/momentum_content.go": "831145d2764f3c4b33c4cd5103221cd8257a3ba26a5a184817eceb3b4da208ed",
+    "common/bytes.go": "e14d47080dc19fd383aa2425cb49244c03a765efbb5fdc4b770d7b2e1eb55aee",
+    "common/crypto/hash.go": "7b94f17b28e88591846753ddc54a206fd3f2e267d628108c04a0b815fba967ed",
+    "common/types/account_header.go": "301e60567f004a7d6cb3d3295bdad7a5c4002b15e5c12ee8a807a831bc8144e3",
+    "common/types/hash.go": "6fcf015180e1fe10dc97a8d4b7fbf4deb2c8edbbcf9e895410ac613a7f25c12d",
+    "common/types/hash_height.go": "5d058f06669f0e71c4667e2b86785e14aa24749b804cb534f8919878659df28d",
+    "dp/dp.go": "1dc76fd5f65722bd79f26e4aac98cc3a06913195fa323aba4b1cfae7e43655b6",
+    "go.mod": "ac08476abe3df0bc67f1c5c6868f04889b864310f16a37b0d51a6598b9017a45",
+    "go.sum": "e536610c08abc9f4b979ce39cd5ae7323c3df14a189d186d911ee1d1184b8537",
+    "verifier/account_block.go": "1e25042eb00afbd71f43981c4a94ce9341bf45bd80bd14f994952c0d513c70f3",
+    "verifier/momentum.go": "c519ceeb134c110e4ceca62d613c46966a0a93e65c5251ce5a2fc9e83240cc94",
+    "wallet/crypto.go": "8e208e2a654339bfa533919837278b7fc5c02fb59429a00099e933e91d62a7af",
+    "wallet/keypair.go": "8bca971ad8ac0873c627e974bca72c2b173184f5096ccad7e6cb4bf5df6800a8"
+  },
+  "core_license": "GPL-3.0; separately obtained and referenced, no implementation copied",
+  "core_tree": "b8bb3720dd36e6f9ba0537864c18bbb4a001b910",
+  "expected_counts": {
+    "hash_layout": 24,
+    "reorg_plans": 8,
+    "source_controls": 26,
+    "structural_claims": 32
+  },
+  "input_sha256": {
+    "compatibility/fixtures/nom_momentum_v1.json": "6a3988d6f02eb2818ff5e3e5d51f861a8ff0ce9c09333641eb20ba362c4fc28c",
+    "compatibility/nom_momentum_core_test.go.txt": "14315b228b54008c5607a8e9fb48076cdf233c241367b886f326a9584c8093eb"
+  },
+  "license": "MIT; independently written research material only",
+  "preserved_file_sha256": {
+    "compatibility/fixtures/nom_completions_v1.json": "0e2dc5473bebfe7f3f3d05f57fe3db22459bbe3c64bf9d36ba24937e1c7fe768",
+    "compatibility/fixtures/nom_observation_v1.json": "d1635a363331fb5d27c6b3523c29d95ece180f80e6cb9d885877d28460d16f9c",
+    "compatibility/fixtures/nom_terms_v1.json": "d3cea79c869964a175ee464019db0639b28f5df9e915e88a2504d4a8e33e397b",
+    "compatibility/fixtures/nom_wire_v1.json": "07f0db9421334c0af4dcf5134c33c5697062f0d5bb4291308767090d7edb5471",
+    "compatibility/nom_observation_manifest.json": "59d5e1814f7d16281cf1847b3f422d46f2ad19deb8e7741460a66dc1dec2ba91",
+    "compatibility/nom_observation_state_test.go.txt": "88e7232ef0e54124be7e82ce0cb8cead864ef90ae7c5172b177bbf6cbdff0f5a",
+    "compatibility/nom_observation_verifier_test.go.txt": "4cb01dd7ba9996e7ea3a368d025e28f793c509788296294754bc2a78bc7f2e8b",
+    "compatibility/nom_observation_vm_test.go.txt": "746c8a135fa977f972595ea343534706448b9847c7e85d6d948cee9e2b3d70b6",
+    "compatibility/nom_wire_core_test.go.txt": "36e0bfd6d2b79e071c870ccbe104d2b4373e9642297e59fb0fe4144d29407094",
+    "compatibility/nom_wire_manifest.json": "236ceeae2d6fbd0acd604ba3d88fe75a2ef085523575267bfb4430a155dcd3fc",
+    "offline_session/nom_observation.py": "fba8c92bc6c574c3de7e475774ffcd16a51d9fda7602bdf9fc4707ec60e1f17b",
+    "offline_session/nom_recovery.py": "a187362adee99b5d32002807a2232e14413c46a233efba922e9d2fa32b4f8a2a",
+    "offline_session/nom_wire.py": "d79dd83b98b6a31c3b5b15deb26ea4b671d2ed96dab03bf02381b9648492b839",
+    "scripts/generate_nom_observation.py": "c78809f9691a31258566d28bd4cfe29a39d6c1e8466121422d49c8699988b149",
+    "scripts/qualify_nom_observation_core.py": "ee4b3decf777b5f976d837629929e8ea5eee023a53678ab46a8a4e0a24b0afbd",
+    "scripts/qualify_nom_wire_core.py": "e2f2dbb5cf62407dc8607c59f8022a887112451878f21965626fa2122b95995e"
+  },
+  "profile": "zenon-pr138-momentum-claims-v1",
+  "research_baseline_commit": "e86354ef795add0b0bd7f769f3c01472bd3571ed",
+  "schema": "zenon-nom-momentum-manifest-v1",
+  "sources": [
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/LICENSE"
+    },
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/go.mod"
+    },
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/go.sum"
+    },
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/chain/nom/momentum.go"
+    },
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/chain/nom/momentum_content.go"
+    },
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/chain/nom/account_block.go"
+    },
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/common/types/account_header.go"
+    },
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/common/types/hash.go"
+    },
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/common/types/hash_height.go"
+    },
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/common/bytes.go"
+    },
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/common/crypto/hash.go"
+    },
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/verifier/momentum.go"
+    },
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/verifier/account_block.go"
+    },
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/dp/dp.go"
+    },
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/wallet/keypair.go"
+    },
+    {
+      "role": "Pinned normative source or license; referenced only",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/wallet/crypto.go"
+    }
+  ]
+}
