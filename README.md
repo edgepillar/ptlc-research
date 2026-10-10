@@ -1134,3 +1134,14 @@ forwarding comparison closes the handle. Complete original readback remains
 available before and after fixture cleanup, with one original and zero effects.
 See the [validation snapshot](docs/STAGE119_VALIDATION.md). The selected guard
 and existing store remain unchanged; application/core remain **NO-GO**.
+
+## Stage 120: closed APIs and native lock release
+
+Two [native controls](tests/test_selected_native_release.py) show that a returned
+connection close and rejected SELECT can coexist with a retained reader lock.
+Closing the cursor first supplies a distinct lock-release comparison; explicit
+fixture reference release remains separate. The source-pinned
+[requirements](docs/NATIVE_RELEASE_REQUIREMENTS.md) distinguish API invalidation,
+subordinate handles, selected lock observations and exact original retention.
+See the [validation snapshot](docs/STAGE120_VALIDATION.md). Existing store and
+guard remain unchanged; application/core remain **NO-GO**.
