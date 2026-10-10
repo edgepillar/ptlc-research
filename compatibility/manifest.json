@@ -1,0 +1,45 @@
+{
+  "application": "NO-GO",
+  "assessment": "UNFILLED",
+  "core": "NO-GO",
+  "core_base_commit": "c64ed6279ff1d07335dab0ac36156dec8b5b71e9",
+  "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+  "current_module_sha256": {
+    "compatibility/pr138-go/go.mod": "89800e8ef4be60422136348dccf4f2dd065f45f7e2d1636fe960240c358790e3",
+    "compatibility/pr138-go/go.sum": "04d1047649dc9d98d759ca684b59e83dc03437721ae4060b409e2ed4142cae5c"
+  },
+  "expected_counts": {
+    "destination_vectors": 15,
+    "message_vectors": 48,
+    "witness_vectors": 26
+  },
+  "fixture_origin": "Independently generated public synthetic inputs. No upstream implementation or third-party fixture is copied.",
+  "fixture_sha256": {
+    "compatibility/fixtures/pr138_messages_v1.json": "1845d98943cfaa4e32b447d549a8f46756c216ae71e59675f7eb8fa3f5ecb7d6",
+    "compatibility/fixtures/pr138_witnesses_v1.json": "e78f77c75215b693547cb6239aecfad6a0c325d08b92338ad2eb42639cb80a3a"
+  },
+  "legacy_file_sha256": {
+    "qualification-bitcoin-go/go.mod": "de2a912e690422f694ac5190a7bf310bfa433dfffe38e60b4770c16c4a8c9ee1",
+    "qualification-bitcoin-go/go.sum": "fbc2f869e539282cccfe9b6e4c7d0c44a7a55fba141d4228edcb8765c9e1119e",
+    "qualification-go/go.mod": "3b4095d9676f6583112e3634fa0d7b7b7c474fb02acc21de49b2ab5323ff09d3",
+    "qualification-go/go.sum": "423a3d1229c58dfaa87a993f59bdefb20befe0da288ce53c4e3f451d1832e2ca",
+    "qualification/Cargo.lock": "0b11653ef036a40eeff432fe021c3f479811f28b4d99e6853e68d3a1d68161af",
+    "qualification/Cargo.toml": "7a7494e660c0928889bab63185876580dd65a5f14706b4fbabac434aef59fc8b"
+  },
+  "license": "MIT",
+  "profile": "zenon-ptlc-unlock:v1",
+  "research_baseline_commit": "515a591a6b340e1ebf8bee51c4cbba4af69a2f9e",
+  "schema": "zenon-pr138-compatibility-manifest-v1",
+  "sources": [
+    {
+      "license": "GPL-3.0; referenced only",
+      "role": "Normative proposed message layout and point type widths",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/vm/embedded/definition/ptlc.go"
+    },
+    {
+      "license": "GPL-3.0; referenced only",
+      "role": "Proposed destination and witness acceptance semantics",
+      "url": "https://github.com/zenon-network/go-zenon/blob/45e1bbb48ce6fc19d44c5fbf59ccf5784981fced/vm/embedded/implementation/ptlc.go"
+    }
+  ]
+}
