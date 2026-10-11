@@ -95,6 +95,9 @@ class NativePeer:
     def kill_and_reap(self):
         assert self.sigkill == 0 and self.child.poll() is None
         self.child.kill()
+        # communicate closes stdin. Observe death first so EOF cannot race the
+        # requested kill and trigger the child's command-framing panic.
+        self.child.wait(timeout=10)
         remaining, error = self.child.communicate(timeout=10)
         assert self.child.returncode == -signal.SIGKILL
         assert error == b"" and not remaining.strip() and not self.buffer.strip()
