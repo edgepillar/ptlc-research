@@ -70,6 +70,17 @@ complete admission. New signed predecessors change the funding ids and originals
 no old witness or journal selection is inherited. See its
 [validation record](docs/NOM_ACCOUNT_CONTEXT_VALIDATION.md).
 
+The [new bilateral graph](docs/NOM_BILATERAL_GRAPH.md) binds new funding ids and
+public inner witnesses to two continuous user accounts and one shared contract
+account. Four raw VM cases execute 46 graph steps and 24 selected refusal
+controls, preserving exact public wires, actual memory patches, fixed payouts
+and both token balances. It reruns all 270 preserved account-context source tests
+before five new native tests. Independent OpenSSL checks 51 outer signatures;
+Rust toy tests compare the separately selected adaptor recovery relation.
+Supervisor/Plasma and complete admission, original custody and journal composition
+remain separate unfilled gates; application and core remain **NO-GO**. See its
+[validation boundary](docs/NOM_BILATERAL_GRAPH_VALIDATION.md).
+
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
 The `offline_session` package adds staged public transcript commitments, role-bound public nonce rounds, and a SQLite/checkpoint journal for one-use synthetic operations, exact output replay and explicit unknown outcomes. It stores no secret nonces and has no real signing backend. Process-death, concurrent-owner and rollback-boundary tests exercise its public metadata lifecycle. A separate Rust test-only nonce owner exercises the pinned library using public synthetic seeds; it is not connected to the Python journal.

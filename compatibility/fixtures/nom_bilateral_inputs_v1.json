@@ -1,0 +1,116 @@
+{
+  "boundary": {
+    "account_pool_and_momentum_admission": "NOT_PERFORMED",
+    "application": "NO-GO",
+    "application_signing": "NOT_PERFORMED",
+    "canonicality": "UNFILLED",
+    "construction_security": "NOT ESTABLISHED BY THIS SYNTHETIC GRAPH OR PUBLIC RECOVERY COMPARISON",
+    "core": "NO-GO",
+    "custody": "EXACT PUBLIC WIRES AND ACTUAL MEMORY PATCHES; NO AUTHENTICATED ORIGINAL CUSTODY",
+    "execution": "RAW VM SEND/RECEIVE AND EMBEDDED LIFECYCLE; SELECTED PUBLIC VERIFIER CHECKS",
+    "finality": "UNFILLED",
+    "independent_assessment": "UNFILLED",
+    "journal_composition": "NOT_PERFORMED",
+    "ledger": "SYNTHETIC MOMENTA, CONFIRMATIONS AND ADOPTED MEMORY FRONTIERS; NO NODE START",
+    "recovery_action": "NONE",
+    "restore_fence": "UNFILLED",
+    "source_authentication": "UNFILLED",
+    "subject": "NEW PUBLIC ORIGINALS, TWO USER ACCOUNTS AND ONE SHARED CONTRACT ACCOUNT",
+    "supervisor_and_plasma_admission": "NOT_PERFORMED",
+    "test_signatures": "DISCLOSED CONSTANTS ONLY; OUTER ED25519 AND INNER SECP256K1 ARE SEPARATE KEYS"
+  },
+  "cases": [
+    "complete",
+    "old-inner-before-valid",
+    "cross-leg-inner-before-valid",
+    "wrong-caller-before-valid"
+  ],
+  "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+  "fundings": {
+    "long": {
+      "block": {
+        "address_hex": "0019e9425dcb7b0d14099922e4909cb12afb0500",
+        "amount": "100",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000007d00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000a307fb31c7585b6ccb5dc3ddc844e22b14b7aa000000000000000000000000000000000000000000000000000000000000002079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "1",
+        "momentum_hash_hex": "ce8a47b0e0cc100979a76de3759265fe8595e76cb804b2ed0d368a0f10e822e9",
+        "momentum_height": "10109250",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "01010101010101010101",
+        "version": "1"
+      },
+      "hash_hex": "60b7c653bd13e7a98d6c3f809dd3810e4b9adc8bb392e3c00d9873f6ff3ad3bc"
+    },
+    "short": {
+      "block": {
+        "address_hex": "00a307fb31c7585b6ccb5dc3ddc844e22b14b7aa",
+        "amount": "200",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000003e8000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000019e9425dcb7b0d14099922e4909cb12afb05000000000000000000000000000000000000000000000000000000000000000020c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "1",
+        "momentum_hash_hex": "ce8a47b0e0cc100979a76de3759265fe8595e76cb804b2ed0d368a0f10e822e9",
+        "momentum_height": "10109250",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "02020202020202020202",
+        "version": "1"
+      },
+      "hash_hex": "18c81b658da0e21204f4d6b565b5c1be66056276d0eb335cd3ae75b0880807af"
+    }
+  },
+  "old_funding_ids_hex": {
+    "long": "4ce542f6064f57036509a5a673328c1e48a0194ab2c262c2c259051bdedfd2f4",
+    "short": "a35460139d22f80b9130295c54f7e5407652debae48537633905a938ac271057"
+  },
+  "profile": "zenon-pr138-bilateral-graph-v1",
+  "public_keys": {
+    "alice": "db995fe25169d141cab9bbba92baa01f9f2e1ece7df4cb2ac05190f37fcc1f9d",
+    "bob": "2152f8d19b791d24453242e15f2eab6cb7cffa7b6a5ed30097960e069881db12"
+  },
+  "research_baseline_commit": "6ea773b0efe90f74b7c952cfe03157ee4f24a981",
+  "schema": "zenon-nom-bilateral-inputs-v1",
+  "terms": {
+    "adaptor_point_sec1_hex": "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+    "alice_address_hex": "0019e9425dcb7b0d14099922e4909cb12afb0500",
+    "bob_address_hex": "00a307fb31c7585b6ccb5dc3ddc844e22b14b7aa",
+    "chain_id": "69",
+    "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+    "genesis_hash_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+    "long": {
+      "amount": "100",
+      "entry_id_hex": "60b7c653bd13e7a98d6c3f809dd3810e4b9adc8bb392e3c00d9873f6ff3ad3bc",
+      "expires_at": "2000",
+      "funder": "alice",
+      "funder_key_xonly_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "recipient": "bob",
+      "token_standard_hex": "01010101010101010101"
+    },
+    "minimum_expiry_gap_seconds": "500",
+    "profile": "zenon-ptlc-unlock:v1",
+    "schema": "ptlc-nom-fixed-terms-v1",
+    "session_id_hex": "f9c12e34f44d7624e9bf8359cfa41b28e3e7b09c2d83ddae7ecf64a09d830d68",
+    "short": {
+      "amount": "200",
+      "entry_id_hex": "18c81b658da0e21204f4d6b565b5c1be66056276d0eb335cd3ae75b0880807af",
+      "expires_at": "1000",
+      "funder": "bob",
+      "funder_key_xonly_hex": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+      "recipient": "alice",
+      "token_standard_hex": "02020202020202020202"
+    }
+  }
+}
