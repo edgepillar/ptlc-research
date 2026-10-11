@@ -60,6 +60,16 @@ belong to relocated synthetic accounts and different originals; no selected
 funding, account frontier, signed-original custody or recovery gate is admitted.
 See its [validation boundary](docs/NOM_ACCOUNT_AUTHORIZATION_VALIDATION.md).
 
+The [account-context profile](docs/NOM_ACCOUNT_CONTEXT.md) composes fresh public
+authorization bytes and actual VM recipient patches with the pinned public
+account verifier entry points. Exact account frontiers, batch semantic
+predecessors, mailbox order, receiver enforcement and received markers remain
+separate from signature validity. Empty-frontier source panics and the limited
+descendant structural checks are explicit observations, not normal refusals or
+complete admission. New signed predecessors change the funding ids and originals;
+no old witness or journal selection is inherited. See its
+[validation record](docs/NOM_ACCOUNT_CONTEXT_VALIDATION.md).
+
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
 The `offline_session` package adds staged public transcript commitments, role-bound public nonce rounds, and a SQLite/checkpoint journal for one-use synthetic operations, exact output replay and explicit unknown outcomes. It stores no secret nonces and has no real signing backend. Process-death, concurrent-owner and rollback-boundary tests exercise its public metadata lifecycle. A separate Rust test-only nonce owner exercises the pinned library using public synthetic seeds; it is not connected to the Python journal.
