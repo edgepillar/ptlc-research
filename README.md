@@ -81,6 +81,17 @@ Supervisor/Plasma and complete admission, original custody and journal compositi
 remain separate unfilled gates; application and core remain **NO-GO**. See its
 [validation boundary](docs/NOM_BILATERAL_GRAPH_VALIDATION.md).
 
+The [separate Supervisor/Plasma subject](docs/NOM_SUPERVISOR_PLASMA.md) qualifies
+new public originals through source generation and exact application before one
+memory adoption. Two cases compare 22 steps, per-transaction deltas, canonical
+legacy Plasma and 24 controls. It reruns all 275 preserved source tests before
+three new native tests. Raw originals, failed attempts and an unadopted user
+changes-hash observation are retained. Independent OpenSSL verifies 31 valid
+outer signatures and refuses changed signatures/messages. Pool/momentum
+admission, original custody, Dynamic Plasma, construction assessment and journal
+composition remain separate unfilled gates; application/core remain **NO-GO**.
+See the [validation record](docs/NOM_SUPERVISOR_PLASMA_VALIDATION.md).
+
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
 The `offline_session` package adds staged public transcript commitments, role-bound public nonce rounds, and a SQLite/checkpoint journal for one-use synthetic operations, exact output replay and explicit unknown outcomes. It stores no secret nonces and has no real signing backend. Process-death, concurrent-owner and rollback-boundary tests exercise its public metadata lifecycle. A separate Rust test-only nonce owner exercises the pinned library using public synthetic seeds; it is not connected to the Python journal.
