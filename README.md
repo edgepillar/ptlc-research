@@ -45,6 +45,13 @@ unsigned claims authorize no recovery. Successful witness cases use seeded old
 synthetic entries; the same old witness is rejected for the newly computed Create
 id. No authenticated observer or journal connection is implemented.
 
+The separate [bounded account-history profile](docs/NOM_ACCOUNT_HISTORY.md)
+compares explicit contract and recipient windows from the unchanged VM records.
+It retains failed intermediate receives and repeated from-hash claims while
+preserving every earlier role conflict. Complete selected height coverage is not
+admitted chain history, source authority or recovery permission. See its
+[validation boundary](docs/NOM_ACCOUNT_HISTORY_VALIDATION.md).
+
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
 The `offline_session` package adds staged public transcript commitments, role-bound public nonce rounds, and a SQLite/checkpoint journal for one-use synthetic operations, exact output replay and explicit unknown outcomes. It stores no secret nonces and has no real signing backend. Process-death, concurrent-owner and rollback-boundary tests exercise its public metadata lifecycle. A separate Rust test-only nonce owner exercises the pinned library using public synthetic seeds; it is not connected to the Python journal.
