@@ -1,0 +1,277 @@
+// Independently written MIT qualification; no GPL implementation is copied.
+package implementation
+
+import (
+	"bytes"
+	"encoding/hex"
+	"encoding/json"
+	"math/big"
+	"os"
+	"strconv"
+	"testing"
+	"time"
+
+	"github.com/zenon-network/go-zenon/chain/account"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/common/db"
+	"github.com/zenon-network/go-zenon/common/types"
+	"github.com/zenon-network/go-zenon/vm/constants"
+	"github.com/zenon-network/go-zenon/vm/embedded/definition"
+	"github.com/zenon-network/go-zenon/vm/vm_context"
+)
+
+// Only storage and time exist. All other context calls intentionally panic.
+// No dispatcher, account authorization, balance debit or inclusion is supplied.
+type researchCreatedFundingContext struct {
+	vm_context.AccountVmContext
+	database db.DB
+	momentum *nom.Momentum
+}
+
+func (c *researchCreatedFundingContext) Storage() db.DB { return c.database }
+func (c *researchCreatedFundingContext) GetFrontierMomentum() (*nom.Momentum, error) {
+	return c.momentum, nil
+}
+
+type researchCreatedFundingBlock struct {
+	Hash  string `json:"hash_hex"`
+	Block struct {
+		Version        string   `json:"version"`
+		Chain          string   `json:"chain_id"`
+		Type           string   `json:"block_type"`
+		Address        string   `json:"address_hex"`
+		Height         string   `json:"height"`
+		Previous       string   `json:"previous_hash_hex"`
+		Momentum       string   `json:"momentum_hash_hex"`
+		MomentumHeight string   `json:"momentum_height"`
+		To             string   `json:"to_address_hex"`
+		Amount         string   `json:"amount"`
+		Token          string   `json:"token_standard_hex"`
+		From           string   `json:"from_block_hash_hex"`
+		Descendants    []string `json:"descendant_hashes_hex"`
+		Data           string   `json:"data_hex"`
+		Fused          string   `json:"fused_plasma"`
+		Difficulty     string   `json:"difficulty"`
+		Nonce          string   `json:"nonce_hex"`
+	} `json:"block"`
+	Entry struct {
+		ID          string `json:"id_hex"`
+		Funder      string `json:"time_locked_hex"`
+		Amount      string `json:"amount"`
+		Token       string `json:"token_standard_hex"`
+		Expiry      string `json:"expiration_time"`
+		PointType   uint8  `json:"point_type"`
+		PointLock   string `json:"point_lock_hex"`
+		Destination string `json:"destination_hex"`
+	} `json:"entry"`
+}
+
+func TestResearchNoMCreatedFunding(t *testing.T) {
+	var fixture struct {
+		Schema   string                                 `json:"schema"`
+		Core     string                                 `json:"core_commit"`
+		Profile  string                                 `json:"profile"`
+		Fundings map[string]researchCreatedFundingBlock `json:"fundings"`
+		OldIDs   map[string]string                      `json:"old_entry_ids_hex"`
+		Vectors  []struct {
+			ID          string `json:"id"`
+			Leg         string `json:"leg"`
+			Funding     string `json:"funding_key"`
+			CreateAt    string `json:"create_timestamp"`
+			CreateError string `json:"expect_create_error"`
+			Operations  []struct {
+				Method      string  `json:"method"`
+				At          string  `json:"timestamp"`
+				Caller      string  `json:"caller_hex"`
+				Destination string  `json:"destination_hex"`
+				Chain       string  `json:"chain_id"`
+				ID          string  `json:"id_selection"`
+				Witness     string  `json:"witness_selection"`
+				Error       string  `json:"expect_error"`
+				After       bool    `json:"expect_entry_after"`
+				Payout      *string `json:"expect_payout_to_hex"`
+			} `json:"operations"`
+		} `json:"vectors"`
+	}
+	read := func(name string, value interface{}) {
+		wire, err := os.ReadFile(os.Getenv(name))
+		if err != nil || json.Unmarshal(wire, value) != nil {
+			t.Fatal("selected public fixture unavailable")
+		}
+	}
+	read("PTLC_NOM_CREATED_FIXTURE", &fixture)
+	if fixture.Schema != "zenon-nom-created-funding-corpus-v1" || fixture.Core != "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced" || fixture.Profile != "zenon-pr138-created-funding-v1" || len(fixture.Vectors) != 70 || len(fixture.Fundings) != 20 {
+		t.Fatal("selected created-funding profile differs")
+	}
+	var witnesses, old struct {
+		Long  string `json:"long_signature_hex"`
+		Short string `json:"short_signature_hex"`
+	}
+	read("PTLC_NOM_CREATED_COMPLETIONS", &witnesses)
+	read("PTLC_NOM_OLD_COMPLETIONS", &old)
+	raw := func(value string, size int) []byte {
+		wire, err := hex.DecodeString(value)
+		if err != nil || (size >= 0 && len(wire) != size) {
+			t.Fatal("invalid public encoding")
+		}
+		return wire
+	}
+	hash := func(value string) types.Hash { var h types.Hash; copy(h[:], raw(value, 32)); return h }
+	address := func(value string) types.Address { var a types.Address; copy(a[:], raw(value, 20)); return a }
+	u64 := func(value string) uint64 {
+		n, err := strconv.ParseUint(value, 10, 64)
+		if err != nil {
+			t.Fatal("invalid number")
+		}
+		return n
+	}
+	i64 := func(value string) int64 {
+		n, err := strconv.ParseInt(value, 10, 64)
+		if err != nil {
+			t.Fatal("invalid time")
+		}
+		return n
+	}
+	amount := func(value string) *big.Int {
+		n, ok := new(big.Int).SetString(value, 10)
+		if !ok {
+			t.Fatal("invalid amount")
+		}
+		return n
+	}
+	makeFunding := func(selected researchCreatedFundingBlock) *nom.AccountBlock {
+		b := selected.Block
+		value := &nom.AccountBlock{Version: u64(b.Version), ChainIdentifier: u64(b.Chain), BlockType: u64(b.Type), Address: address(b.Address),
+			Height: u64(b.Height), PreviousHash: hash(b.Previous), MomentumAcknowledged: types.HashHeight{Hash: hash(b.Momentum), Height: u64(b.MomentumHeight)},
+			ToAddress: address(b.To), Amount: amount(b.Amount), FromBlockHash: hash(b.From), Data: raw(b.Data, -1), FusedPlasma: u64(b.Fused), Difficulty: u64(b.Difficulty)}
+		copy(value.TokenStandard[:], raw(b.Token, 10))
+		copy(value.Nonce.Data[:], raw(b.Nonce, 8))
+		if len(b.Descendants) != 0 {
+			t.Fatal("funding cannot contain descendants")
+		}
+		value.Hash = value.ComputeHash()
+		if value.Hash != hash(selected.Hash) || selected.Entry.ID != selected.Hash {
+			t.Fatal("actual full Create hash differs")
+		}
+		return value
+	}
+	wantError := map[string]error{"NONE": nil, "ErrInvalidExpirationTime": constants.ErrInvalidExpirationTime,
+		"ErrExpired": constants.ErrExpired, "ErrPermissionDenied": constants.ErrPermissionDenied, "ErrInvalidPointSignature": constants.ErrInvalidPointSignature,
+		"ErrDataNonExistent": constants.ErrDataNonExistent, "ReclaimNotDue": constants.ReclaimNotDue}
+	seen := make(map[string]bool)
+	for _, vector := range fixture.Vectors {
+		if seen[vector.ID] || vector.ID == "" {
+			t.Fatal("duplicate or missing subject")
+		}
+		seen[vector.ID] = true
+		t.Run(vector.ID, func(t *testing.T) {
+			selected, exists := fixture.Fundings[vector.Funding]
+			if !exists {
+				t.Fatal("unknown funding selection")
+			}
+			funding := makeFunding(selected)
+			if funding.Hash == hash(fixture.OldIDs[vector.Leg]) {
+				t.Fatal("created and old ids must differ")
+			}
+			if vector.Funding != vector.Leg && funding.Hash == hash(fixture.Fundings[vector.Leg].Hash) {
+				t.Fatal("funding mutation did not change its id")
+			}
+			at := time.Unix(i64(vector.CreateAt), 0)
+			ctx := &researchCreatedFundingContext{database: account.NewAccountStore(types.PtlcContract, db.NewMemDB()).Storage(),
+				momentum: &nom.Momentum{ChainIdentifier: funding.ChainIdentifier, Timestamp: &at}}
+			checkStored := func(present bool) {
+				stored, err := definition.GetPtlcInfo(ctx.database, funding.Hash)
+				if !present {
+					if err != constants.ErrDataNonExistent {
+						t.Fatal("deleted entry still available")
+					}
+					return
+				}
+				e := selected.Entry
+				var token types.ZenonTokenStandard
+				copy(token[:], raw(e.Token, 10))
+				if err != nil || stored.Id != funding.Hash || stored.TimeLocked != address(e.Funder) || stored.Destination != address(e.Destination) ||
+					stored.TokenStandard != token || stored.Amount.Cmp(amount(e.Amount)) != 0 || stored.ExpirationTime != i64(e.Expiry) ||
+					stored.PointType != e.PointType || !bytes.Equal(stored.PointLock, raw(e.PointLock, 32)) {
+					t.Fatal("actual stored created terms differ")
+				}
+			}
+			children, err := (&CreatePtlcMethod{MethodName: "Create"}).ReceiveBlock(ctx, funding)
+			expected, exists := wantError[vector.CreateError]
+			if !exists || err != expected || len(children) != 0 {
+				t.Fatal("actual Create outcome differs")
+			}
+			if funding.Hash != funding.ComputeHash() {
+				t.Fatal("canonical Create normalization changed its id")
+			}
+			checkStored(err == nil)
+			for _, operation := range vector.Operations {
+				at = time.Unix(i64(operation.At), 0)
+				ctx.momentum = &nom.Momentum{ChainIdentifier: u64(operation.Chain), Timestamp: &at}
+				id := funding.Hash
+				switch operation.ID {
+				case "created":
+				case "old":
+					id = hash(fixture.OldIDs[vector.Leg])
+				default:
+					t.Fatal("unknown id selection")
+				}
+				witness := witnesses.Long
+				other := witnesses.Short
+				oldWitness := old.Long
+				if vector.Leg == "short" {
+					witness, other, oldWitness = witnesses.Short, witnesses.Long, old.Short
+				}
+				switch operation.Witness {
+				case "selected":
+				case "other-leg":
+					witness = other
+				case "old":
+					witness = oldWitness
+				case "corrupt":
+					changed := raw(witness, 64)
+					changed[0] ^= 1
+					witness = hex.EncodeToString(changed)
+				case "wrong-width":
+					witness = "00"
+				default:
+					t.Fatal("unknown witness selection")
+				}
+				send := &nom.AccountBlock{Address: address(operation.Caller), ToAddress: types.PtlcContract, Amount: big.NewInt(0)}
+				switch operation.Method {
+				case "Unlock":
+					send.Data = definition.ABIPtlc.PackMethodPanic("Unlock", id, raw(witness, -1))
+					children, err = (&UnlockPtlcMethod{MethodName: "Unlock"}).ReceiveBlock(ctx, send)
+				case "ProxyUnlock":
+					send.Data = definition.ABIPtlc.PackMethodPanic("ProxyUnlock", id, address(operation.Destination), raw(witness, -1))
+					children, err = (&ProxyUnlockPtlcMethod{MethodName: "ProxyUnlock"}).ReceiveBlock(ctx, send)
+				case "Reclaim":
+					send.Data = definition.ABIPtlc.PackMethodPanic("Reclaim", id)
+					children, err = (&ReclaimPtlcMethod{MethodName: "Reclaim"}).ReceiveBlock(ctx, send)
+				default:
+					t.Fatal("unknown method")
+				}
+				expected, exists = wantError[operation.Error]
+				if !exists || err != expected {
+					t.Fatal("actual operation outcome differs")
+				}
+				checkStored(operation.After)
+				if operation.Payout == nil {
+					if len(children) != 0 {
+						t.Fatal("unexpected payout")
+					}
+					continue
+				}
+				if len(children) != 1 {
+					t.Fatal("missing single payout")
+				}
+				child := children[0]
+				if child.Address != types.PtlcContract || child.ToAddress != address(*operation.Payout) || child.BlockType != nom.BlockTypeContractSend ||
+					child.TokenStandard != funding.TokenStandard || child.Amount.Cmp(funding.Amount) != 0 || len(child.Data) != 0 ||
+					!child.Hash.IsZero() || !child.PreviousHash.IsZero() || child.Height != 0 || !child.FromBlockHash.IsZero() || len(child.DescendantBlocks) != 0 {
+					t.Fatal("actual payout skeleton differs; no finalized receipt is supplied")
+				}
+			}
+		})
+	}
+}

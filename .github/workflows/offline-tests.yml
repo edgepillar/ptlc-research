@@ -89,6 +89,8 @@ jobs:
         run: cargo +1.90.0 build --locked --offline --manifest-path qualification/Cargo.toml --examples
       - name: Qualify fixed-recipient NoM original recovery with the public worker
         run: python3 -B scripts/qualify_nom_recovery.py
+      - name: Qualify public recovery with computed Create context ids
+        run: python3 -B scripts/qualify_nom_created_recovery.py
       - name: Record selected offline dependency and worker input evidence
         run: |
           git fetch --no-tags --depth=1 origin bd4b4b523fb3453e2af191eb01973985d6431d66
@@ -456,4 +458,13 @@ jobs:
         run: |
           ptlc_go="$(command -v go)"
           python3 -B scripts/qualify_nom_momentum_core.py \
+            --checkout .research-cache/nom-wire-core-source --go "$ptlc_go"
+      - name: Compare send-derived public witnesses with isolated unchanged core methods
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: "off"
+          GOSUMDB: "off"
+        run: |
+          ptlc_go="$(command -v go)"
+          python3 -B scripts/qualify_nom_created_core.py \
             --checkout .research-cache/nom-wire-core-source --go "$ptlc_go"

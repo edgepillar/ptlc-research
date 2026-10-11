@@ -96,6 +96,12 @@ funding/account proof.
    Seeded-entry success does not qualify that created funding record. Full VM
    dispatcher, balances, account admission, activation and canonical inclusion
    remain independent requirements.
+   The additive [send-derived witness corpus](NOM_CREATED_FUNDING.md) now compares
+   actual Create and valid witnesses for both computed ids in isolated storage/time
+   contexts. Its payout skeletons and synthetic two-journal recovery remain separate
+   from finalized account evidence and core-to-journal admission. Execution uses
+   the acknowledged frontier context; later receive inclusion time is not a
+   replacement for that timestamp. Independent live-entry proof remains unfilled.
 3. Select and independently assess observation authority, pin provisioning,
    canonicality/finality and durable evidence policy before connecting a verifier
    to recovery. A declared provider, binary hash or callback is not that assessment.
