@@ -92,6 +92,16 @@ admission, original custody, Dynamic Plasma, construction assessment and journal
 composition remain separate unfilled gates; application/core remain **NO-GO**.
 See the [validation record](docs/NOM_SUPERVISOR_PLASMA_VALIDATION.md).
 
+The [selected account-pool profile](docs/NOM_ACCOUNT_POOL.md) preserves those
+originals while comparing 22 normal admissions, exact duplicate behavior,
+ordered versioned-manager patches and two selected stale-acknowledgement
+callbacks. Changed-wire identifier duplicates and historical child aliases
+remain explicit observations with no recovery authority. It reruns 278 preserved
+source tests before three new tests and leaves stable synthetic bases unchanged.
+Competing forks, resource caps, complete momentum admission and authenticated
+recovery remain unfilled; application/core remain **NO-GO**. See its
+[validation record](docs/NOM_ACCOUNT_POOL_VALIDATION.md).
+
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
 The `offline_session` package adds staged public transcript commitments, role-bound public nonce rounds, and a SQLite/checkpoint journal for one-use synthetic operations, exact output replay and explicit unknown outcomes. It stores no secret nonces and has no real signing backend. Process-death, concurrent-owner and rollback-boundary tests exercise its public metadata lifecycle. A separate Rust test-only nonce owner exercises the pinned library using public synthetic seeds; it is not connected to the Python journal.

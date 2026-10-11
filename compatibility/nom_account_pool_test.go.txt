@@ -1,0 +1,345 @@
+// Independently written MIT overlay; unchanged GPL source is separately obtained.
+package vm
+
+import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"os"
+	"strconv"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/zenon-network/go-zenon/chain"
+	"github.com/zenon-network/go-zenon/chain/account"
+	"github.com/zenon-network/go-zenon/chain/account/mailbox"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/chain/store"
+	"github.com/zenon-network/go-zenon/common/db"
+	"github.com/zenon-network/go-zenon/common/types"
+)
+
+type researchPoolStable struct {
+	roots map[types.Address]db.DB
+	store.Momentum
+}
+
+func (s *researchPoolStable) GetStableAccountDB(a types.Address) db.DB {
+	if s.roots[a] == nil {
+		panic("unselected stable account")
+	}
+	return s.roots[a]
+}
+func (s *researchPoolStable) GetFrontierMomentumStore() store.Momentum { return s }
+func (*researchPoolStable) IsSporkActive(s *types.ImplementedSpork) (bool, error) {
+	if s != types.DynamicPlasmaSpork {
+		panic("unselected pool pricing query")
+	}
+	return false, nil
+}
+
+type researchPoolChain struct {
+	*researchSupervisorChain
+	pool chain.AccountPool
+}
+
+func (s *researchPoolChain) GetAccountStore(a types.Address, h types.HashHeight) store.Account {
+	return s.pool.GetAccountStore(a, h)
+}
+func (s *researchPoolChain) GetFrontierAccountStore(a types.Address) store.Account {
+	return s.pool.GetFrontierAccountStore(a)
+}
+
+func TestResearchNoMAccountPool(t *testing.T) {
+	read := func(name string, value interface{}) {
+		b, e := os.ReadFile(os.Getenv(name))
+		if e != nil || json.Unmarshal(b, value) != nil {
+			t.Fatal("public input unavailable")
+		}
+	}
+	var input struct {
+		Terms map[string]interface{}
+		Cases []string
+	}
+	var corpus struct {
+		Records map[string]struct {
+			Trace []struct {
+				Label string
+				Block struct {
+					Wire string `json:"wire_hex"`
+				}
+				Delta  string `json:"delta_patch_hex"`
+				Before string `json:"before_patch_hex"`
+			}
+		}
+	}
+	read("PTLC_NOM_POOL_INPUT", &input)
+	read("PTLC_NOM_POOL_ORIGINALS", &corpus)
+	if len(input.Cases) != 2 || len(corpus.Records) != 2 {
+		t.Fatal("complete selected subjects required")
+	}
+	raw := func(s string) []byte {
+		b, e := hex.DecodeString(s)
+		if e != nil {
+			t.Fatal("invalid public hex")
+		}
+		return b
+	}
+	hx := func(b []byte) string { return hex.EncodeToString(b) }
+	digest := func(b []byte) string { h := sha256.Sum256(b); return hx(h[:]) }
+	num := func(n uint64) string { return strconv.FormatUint(n, 10) }
+	hh := func(h types.HashHeight) map[string]string {
+		return map[string]string{"hash_hex": hx(h.Hash[:]), "height": num(h.Height)}
+	}
+	addr := func(s string) types.Address {
+		var a types.Address
+		b := raw(s)
+		if len(b) != len(a) {
+			t.Fatal("invalid public address")
+		}
+		copy(a[:], b)
+		return a
+	}
+	wire := func(b *nom.AccountBlock) []byte {
+		v, e := b.Serialize()
+		if e != nil || len(v) > 8192 {
+			t.Fatal("invalid selected wire")
+		}
+		return v
+	}
+	patch := func(b []byte) db.Patch {
+		p, e := db.NewPatchFromDump(b)
+		if e != nil {
+			t.Fatal("selected delta unavailable")
+		}
+		return p
+	}
+	// The actual source account store promotes this public iterator method.
+	// Iterate its complete logical view, rather than its new snapshot's changes.
+	dump := func(c store.Account) []byte {
+		view, ok := c.(interface {
+			NewIterator([]byte) db.StorageIterator
+			Has([]byte) (bool, error)
+		})
+		if !ok {
+			t.Fatal("actual source readable account store required")
+		}
+		it := view.NewIterator(nil)
+		defer it.Release()
+		p := db.NewPatch()
+		for it.Next() {
+			value := it.Value()
+			if value == nil {
+				present, e := view.Has(it.Key())
+				if e != nil || present {
+					t.Fatal("iterator tombstone disagrees with actual key presence")
+				}
+				continue
+			}
+			p.Put(append([]byte(nil), it.Key()...), append([]byte(nil), value...))
+		}
+		if it.Error() != nil {
+			t.Fatal("actual logical state unavailable")
+		}
+		return p.Dump()
+	}
+	frontier := func(c store.Account) map[string]interface{} {
+		b, e := c.Frontier()
+		if e != nil {
+			t.Fatal("actual frontier unavailable")
+		}
+		w := ""
+		if b != nil {
+			w = hx(wire(b))
+		}
+		return map[string]interface{}{"identifier": hh(c.Identifier()), "wire_hex": w}
+	}
+	for _, kind := range input.Cases {
+		t.Run(kind, func(t *testing.T) {
+			selected, ok := corpus.Records[kind]
+			if !ok || len(selected.Trace) < 10 {
+				t.Fatal("complete selected trace required")
+			}
+			roles := map[string]types.Address{"alice": addr(input.Terms["alice_address_hex"].(string)), "bob": addr(input.Terms["bob_address_hex"].(string)), "contract": types.PtlcContract}
+			order := []string{"alice", "bob", "contract"}
+			roots := map[types.Address]db.DB{}
+			ledger := &researchSupervisorLedger{momenta: map[uint64]*nom.Momentum{}, blocks: map[types.Hash]*nom.AccountBlock{}, confirmations: map[types.Hash]uint64{}, accounts: map[types.Address]store.Account{}, mailbox: mailbox.NewAccountMailbox(types.PtlcContract, db.NewMemDB())}
+			for _, role := range order {
+				a := roles[role]
+				roots[a] = db.NewMemDB()
+				ledger.accounts[a] = account.NewAccountStore(a, roots[a])
+			}
+			seeded := map[types.Address]bool{}
+			for _, s := range selected.Trace {
+				b, e := nom.DeserializeAccountBlock(raw(s.Block.Wire))
+				if e != nil {
+					t.Fatal("selected original unavailable")
+				}
+				if !seeded[b.Address] {
+					if roots[b.Address].Apply(patch(raw(s.Before))) != nil {
+						t.Fatal("selected initial state unavailable")
+					}
+					seeded[b.Address] = true
+				}
+			}
+			for i, at := range []int64{100, 700, 800} {
+				now := time.Unix(at, 0)
+				m := &nom.Momentum{ChainIdentifier: 69, Height: 10109300 + uint64(i), Hash: types.NewHash([]byte("public-nom-supervisor-v1:momentum-" + num(uint64(i)))), Timestamp: &now}
+				ledger.momenta[m.Height] = m
+			}
+			ledger.current = ledger.momenta[10109300]
+			pool := chain.NewAccountPool(&researchPoolStable{roots: roots})
+			chainView := &researchPoolChain{researchSupervisorChain: &researchSupervisorChain{ledger: ledger}, pool: pool}
+			supervisor := NewSupervisor(chainView, &researchSupervisorConsensus{ledger: ledger})
+			initial := map[string]string{}
+			for _, role := range order {
+				initial[role] = hx(dump(ledger.accounts[roles[role]]))
+			}
+			allState := func() map[string]string {
+				v := map[string]string{}
+				for _, role := range order {
+					v[role] = hx(dump(pool.GetFrontierAccountStore(roles[role])))
+				}
+				return v
+			}
+			lookup := func(b *nom.AccountBlock) map[string]interface{} {
+				c := pool.GetAccountStore(b.Address, b.Identifier())
+				p := pool.GetPatch(b.Address, b.Identifier())
+				value := map[string]interface{}{"requested_identifier": hh(b.Identifier()), "present": c != nil, "patch_present": p != nil, "patch_hex": "", "frontier": nil, "state_dump_hex": ""}
+				if p != nil {
+					value["patch_hex"] = hx(p.Dump())
+				}
+				if c != nil {
+					value["frontier"] = frontier(c)
+					value["state_dump_hex"] = hx(dump(c))
+				}
+				return value
+			}
+			locker := new(sync.Mutex)
+			add := func(tx *nom.AccountBlockTransaction) error {
+				locker.Lock()
+				defer locker.Unlock()
+				return pool.AddAccountBlockTransaction(locker, tx)
+			}
+			trace, queries := []interface{}{}, []interface{}{}
+			originals := []*nom.AccountBlock{}
+			for index, s := range selected.Trace {
+				b, e := nom.DeserializeAccountBlock(raw(s.Block.Wire))
+				if e != nil || !bytes.Equal(wire(b), raw(s.Block.Wire)) {
+					t.Fatal("exact original round trip differs")
+				}
+				ledger.current = ledger.momenta[b.MomentumAcknowledged.Height]
+				if ledger.current == nil {
+					t.Fatal("unselected acknowledgement")
+				}
+				if b.BlockType == nom.BlockTypeContractReceive {
+					send := ledger.blocks[b.FromBlockHash]
+					if send == nil {
+						t.Fatal("selected synthetic send unavailable")
+					}
+					ledger.mailbox.SequencerPushBack(send.Header())
+				}
+				before := dump(pool.GetFrontierAccountStore(b.Address))
+				beforeFront := frontier(pool.GetFrontierAccountStore(b.Address))
+				tx, e := supervisor.ApplyBlock(b.Copy())
+				if e != nil || tx == nil || !bytes.Equal(wire(tx.Block), wire(b)) || !bytes.Equal(tx.Changes.Dump(), raw(s.Delta)) || !bytes.Equal(before, dump(pool.GetFrontierAccountStore(b.Address))) {
+					t.Fatal("exact Supervisor reproduction on pool context differs", s.Label, e)
+				}
+				delta := append([]byte(nil), tx.Changes.Dump()...)
+				fresh := func(block *nom.AccountBlock) *nom.AccountBlockTransaction {
+					return &nom.AccountBlockTransaction{Block: block.Copy(), Changes: patch(delta)}
+				}
+				nilLocker := interface{}(nil)
+				if index == 0 {
+					control := fresh(tx.Block)
+					err := pool.AddAccountBlockTransaction(nil, control)
+					if err == nil || err.Error() != "insertLocker can't be nil" || control.Changes == nil || !bytes.Equal(delta, control.Changes.Dump()) || !bytes.Equal(before, dump(pool.GetFrontierAccountStore(b.Address))) {
+						t.Fatal("missing-locker refusal changed state")
+					}
+					nilLocker = map[string]interface{}{"error": "ErrMissingInsertLocker", "changes_stolen": false, "state_unchanged": true}
+				}
+				retained := tx.Changes
+				if add(tx) != nil || tx.Changes != nil || !bytes.Equal(wire(b), raw(s.Block.Wire)) {
+					t.Fatal("normal pool admission differs")
+				}
+				after := dump(pool.GetFrontierAccountStore(b.Address))
+				stored := pool.GetPatch(b.Address, b.Identifier())
+				if stored == nil || !bytes.Equal(stored.Dump(), retained.Dump()) {
+					t.Fatal("actual augmented pool patch unavailable")
+				}
+				duplicate := fresh(tx.Block)
+				if add(duplicate) != nil || duplicate.Changes == nil || !bytes.Equal(duplicate.Changes.Dump(), delta) || !bytes.Equal(after, dump(pool.GetFrontierAccountStore(b.Address))) {
+					t.Fatal("exact duplicate idempotence differs")
+				}
+				changed := interface{}(nil)
+				if b.BlockType != nom.BlockTypeContractReceive {
+					other := tx.Block.Copy()
+					other.ChangesHash[0] ^= 1
+					duplicate := fresh(other)
+					if other.Identifier() != b.Identifier() || other.ComputeHash() != b.Hash || bytes.Equal(wire(other), wire(b)) || add(duplicate) != nil || duplicate.Changes == nil || !bytes.Equal(duplicate.Changes.Dump(), delta) || !bytes.Equal(after, dump(pool.GetFrontierAccountStore(b.Address))) || !bytes.Equal(wire(b), wire(mustResearchPoolFrontier(t, pool.GetAccountStore(b.Address, b.Identifier())))) {
+						t.Fatal("same-identifier changed-wire idempotence differs")
+					}
+					changed = map[string]interface{}{"wire_hex": hx(wire(other)), "hash_hex": hx(other.Hash[:]), "signature_hex": hx(other.Signature), "changes_hash_hex": hx(other.ChangesHash[:]), "result": "PASS", "changes_stolen": false, "state_sha256_before": digest(after), "state_sha256_after": digest(dump(pool.GetFrontierAccountStore(b.Address))), "stored_wire_hex": hx(wire(b))}
+				}
+				children := []interface{}{}
+				for _, child := range b.DescendantBlocks {
+					children = append(children, lookup(child))
+				}
+				trace = append(trace, map[string]interface{}{"label": s.Label, "original_wire_hex": hx(wire(b)), "original_wire_sha256": digest(wire(b)), "applied_wire_hex": hx(wire(tx.Block)), "delta_patch_hex": hx(delta), "before_state_dump_hex": hx(before), "after_state_dump_hex": hx(after), "frontier_before": beforeFront, "frontier_after": frontier(pool.GetFrontierAccountStore(b.Address)), "result": "PASS", "base_plasma": num(tx.Block.BasePlasma), "total_plasma": num(tx.Block.TotalPlasma), "transaction_changes_stolen": tx.Changes == nil, "retained_augmented_patch_hex": hx(retained.Dump()), "stored_pool_patch_hex": hx(stored.Dump()), "duplicate": map[string]interface{}{"result": "PASS", "changes_stolen": false, "state_sha256_before": digest(after), "state_sha256_after": digest(dump(pool.GetFrontierAccountStore(b.Address)))}, "changed_wire_duplicate": changed, "nil_locker": nilLocker, "child_views": children})
+				originals = append(originals, b)
+				ledger.blocks[b.Hash] = b.Copy()
+				ledger.confirmations[b.Hash] = ledger.current.Height
+				for _, child := range b.DescendantBlocks {
+					ledger.blocks[child.Hash] = child.Copy()
+					ledger.confirmations[child.Hash] = ledger.current.Height
+				}
+			}
+			beforeRollback := allState()
+			// A selected public callback, not chain.RollbackTo or an authenticated event.
+			ledger.current = ledger.momenta[10109300]
+			listener, ok := pool.(interface{ DeleteMomentum(*nom.DetailedMomentum) })
+			if !ok {
+				t.Fatal("actual source momentum callback required")
+			}
+			listener.DeleteMomentum(&nom.DetailedMomentum{Momentum: ledger.momenta[10109301]})
+			afterRollback := allState()
+			for _, b := range originals {
+				queries = append(queries, lookup(b))
+				for _, child := range b.DescendantBlocks {
+					queries = append(queries, lookup(child))
+				}
+			}
+			pending := map[string][]string{}
+			stableAfter := map[string]string{}
+			for _, role := range order {
+				pending[role] = []string{}
+				for _, b := range pool.GetUncommittedAccountBlocksByAddress(roles[role]) {
+					pending[role] = append(pending[role], hx(wire(b)))
+				}
+				stableAfter[role] = hx(dump(ledger.accounts[roles[role]]))
+				if stableAfter[role] != initial[role] {
+					t.Fatal("stable input changed")
+				}
+			}
+			value := map[string]interface{}{"schema": "zenon-nom-account-pool-record-v1", "id": kind, "initial_stable_state": initial, "final_stable_state": stableAfter, "trace": trace, "before_rollback": beforeRollback, "after_rollback": afterRollback, "rollback_callback": map[string]interface{}{"popped_height": "10109301", "current_height": "10109300", "included_account_blocks": 0, "authenticated": false}, "remaining_pending_wires": pending, "post_rollback_views": queries, "signing_calls": 0}
+			result, err := json.Marshal(value)
+			if err != nil || len(result) > 4194304 {
+				t.Fatal("bounded public record unavailable")
+			}
+			t.Log("PTLC_RESEARCH_POOL_RECORD " + string(result))
+		})
+	}
+}
+
+func mustResearchPoolFrontier(t *testing.T, c store.Account) *nom.AccountBlock {
+	if c == nil {
+		t.Fatal("selected account view unavailable")
+	}
+	b, e := c.Frontier()
+	if e != nil || b == nil {
+		t.Fatal("selected original frontier unavailable")
+	}
+	return b
+}
