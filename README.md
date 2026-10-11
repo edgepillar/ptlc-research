@@ -372,6 +372,17 @@ selected from-hash guard refuses the imported post-receive marker. This is no
 full account admission, authenticated state proof or atomic journal integration.
 Both application/core remain **NO-GO**. See [validation](docs/NOM_VM_PATH_VALIDATION.md).
 
+The separate [VM evidence opening profile](docs/NOM_VM_OPENINGS.md) adds typed
+Unlock, contract receive, payout and recipient receive payloads for both legs,
+bound to the complete read/reply and exact base-opening bytes. Fresh source
+execution reproduces ten public projections. Comparisons expose the independent
+synthetic recipient frontiers and numbered momentum stubs rather than silently
+combining them with selected chain claims. Reclaim/refund and raw replay cannot
+establish unlock success or duplicate admission. Four grammars remain unselected;
+all eleven authority requirements, full account admission and recovery admission
+remain independent and unfilled. Application/core remain **NO-GO**.
+See [validation](docs/NOM_VM_OPENINGS_VALIDATION.md).
+
 Obtain scoped independent assessments of the original construction subject in the [review brief](docs/INDEPENDENT_REVIEW.md) and the separate exact subject in the [observation brief](docs/OBSERVATION_REVIEW.md). Record assumptions, findings, examined dependencies and excluded surfaces in their distinct unfilled reports. Both assessments are pending; later changes need an explicit delta assessment. This package prepares that work without introducing private signing, node access or reviewer outreach.
 
 Use the bounded admission model's counterexamples to define an explicit public-observation authorization and exhaustion/recovery policy before enforcing an envelope requirement or adding transport. The baseline model's finite shared allowance still permits recovery blockage; no safe funded policy has been selected. Durable local pin selection is available; trustworthy pin establishment remains external. Preserve a separately reviewed authorization path for public-witness recovery: Alice may reveal the Zenon signature while withholding an auxiliary authentication envelope. Observation selection, evidence retention, pin provisioning/rotation and aggregate verification-rate control remain unresolved. Connect a reviewed private signing worker only after resolving fresh entropy, secret memory, restored-copy protection, and its journal boundary. Restoring both matching database/checkpoint copies can still permit another synthetic Alice producer call or replenish Bob's allowance. Independent construction review, authenticated chain observations and funding/time authorization remain prerequisites for a current-node PTLC port and two-party regtest/devnet work.
