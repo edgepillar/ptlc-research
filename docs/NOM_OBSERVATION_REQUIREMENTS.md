@@ -106,6 +106,11 @@ funding/account proof.
    original/candidate claims and possible disclosure across controlled process
    restart. Coherent old restore remains unsafe; a local receipt supplies no
    trusted reconciliation or journal admission.
+   The separate [authority/freshness/restore contract](NOM_AUTHORITY_CONTRACT.md)
+   now frames these independent selections and eleven evidence obligations. Its
+   complete replies remain unauthenticated, and its finite atomic-entry comparison
+   assumes an ideal external current world and nonrollback ledger/fence. No source
+   service, proof opening, restore protection or recovery admission is implemented.
 4. Qualify signing custody, exact signed transaction storage, account-chain/Plasma
    behavior and restore protection separately. Controlled network composition
    remains outside Stage 0 authorization.

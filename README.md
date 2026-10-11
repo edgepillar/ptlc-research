@@ -340,6 +340,13 @@ without repair. Coherent restore and independent copies remain unsafe controls;
 funding/live-entry revalidation, source authority and recovery admission stay
 independent. See [validation](docs/NOM_EVIDENCE_RETENTION_VALIDATION.md).
 
+The separate [NoM authority contract](docs/NOM_AUTHORITY_CONTRACT.md) frames exact
+network, checkpoint, consumer knowledge, candidate and original selections with
+eleven evidence obligations. Even complete replies remain forgeable claims and
+permit no recovery. A finite ordering comparison exposes stale/split checks and
+source/consumer restore or copy failures against explicit ideal external premises.
+See [validation](docs/NOM_AUTHORITY_VALIDATION.md); application/core remain NO-GO.
+
 Obtain scoped independent assessments of the original construction subject in the [review brief](docs/INDEPENDENT_REVIEW.md) and the separate exact subject in the [observation brief](docs/OBSERVATION_REVIEW.md). Record assumptions, findings, examined dependencies and excluded surfaces in their distinct unfilled reports. Both assessments are pending; later changes need an explicit delta assessment. This package prepares that work without introducing private signing, node access or reviewer outreach.
 
 Use the bounded admission model's counterexamples to define an explicit public-observation authorization and exhaustion/recovery policy before enforcing an envelope requirement or adding transport. The baseline model's finite shared allowance still permits recovery blockage; no safe funded policy has been selected. Durable local pin selection is available; trustworthy pin establishment remains external. Preserve a separately reviewed authorization path for public-witness recovery: Alice may reveal the Zenon signature while withholding an auxiliary authentication envelope. Observation selection, evidence retention, pin provisioning/rotation and aggregate verification-rate control remain unresolved. Connect a reviewed private signing worker only after resolving fresh entropy, secret memory, restored-copy protection, and its journal boundary. Restoring both matching database/checkpoint copies can still permit another synthetic Alice producer call or replenish Bob's allowance. Independent construction review, authenticated chain observations and funding/time authorization remain prerequisites for a current-node PTLC port and two-party regtest/devnet work.
