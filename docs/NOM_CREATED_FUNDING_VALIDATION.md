@@ -35,6 +35,29 @@ history-preserving integration remain separate acceptance gates. Push-triggered
 main CI is a further gate; a green PR result does not satisfy it. Completed
 hosted evidence is recorded in the PR only after exact-head verification.
 
+The first hosted PR run failed the generic Python matrix because its new actual
+worker test assumed the executable built in a different job was available. The
+native adaptor/created-recovery, fresh-worker and unchanged-core jobs passed.
+That assumption was removed in a separate history-preserving commit: generic
+Python tests now require missing-worker refusal before any journal opens; actual
+native success remains mandatory in the dedicated job after example builds.
+Original failed job logs and the complete failed workflow archive are retained
+separately. The earlier local result is not a hosted pass. Corrected local and
+fresh hosted acceptance gates must be completed before main integration.
+
+The corrected local Python 3.12.14 suite passed all 2,575 tests with required
+OpenSSL, zero skips/ResourceWarnings and unchanged hashes of all 431 selected
+code/fixture/CI/test files. The corrected directed run passed 20 tests. The actual
+created-context public worker recovery was rechecked separately and passed under
+the empty-environment profile. The previous 194 Rust, 58 standalone Go and
+51/45/37/71 source comparison results remain source-current: their measured
+native source/fixture/qualifier hashes are unchanged by this tests/docs repair.
+The complete failed original PR workflow ran 2,575 tests in each Python profile
+with the same missing-worker error; all four profiles failed and seven other
+jobs passed. That run and its original ZIP are not reclassified as success.
+Corrected staged artifact checks cover 1,384 versions of 692 files; whitespace
+checks pass. A fresh hosted run at the appended commit is mandatory before main.
+
 These checks do not qualify the full VM, account signatures or custody, balance
 accounting, acknowledged context authority, source/proof provisioning,
 canonicality/finality, nonrollback current/restore mechanisms, atomic journal
