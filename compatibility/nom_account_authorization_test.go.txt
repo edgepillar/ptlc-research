@@ -1,0 +1,260 @@
+// Independently written MIT test overlay. The separately obtained node remains unchanged.
+package verifier
+
+import (
+	"bytes"
+	"crypto/ed25519"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"math/big"
+	"os"
+	"strconv"
+	"testing"
+
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/common/types"
+)
+
+func TestResearchNoMAccountAuthorization(t *testing.T) {
+	read := func(name string, target interface{}) {
+		wire, err := os.ReadFile(os.Getenv(name))
+		if err != nil || json.Unmarshal(wire, target) != nil {
+			t.Fatal("selected synthetic input unavailable")
+		}
+	}
+	var plan struct {
+		Schema  string                                 `json:"schema"`
+		Vectors []struct{ ID, Leg, Role, Kind string } `json:"vectors"`
+	}
+	read("PTLC_NOM_ACCOUNT_AUTH_PLAN", &plan)
+	var source struct {
+		Schema   string `json:"schema"`
+		Baseline map[string]struct {
+			Blocks map[string]struct {
+				Hash    string                 `json:"hash_hex"`
+				Changes string                 `json:"changes_hash_hex"`
+				Block   map[string]interface{} `json:"block"`
+			} `json:"blocks"`
+		} `json:"baseline"`
+	}
+	read("PTLC_NOM_ACCOUNT_AUTH_SOURCE", &source)
+	if plan.Schema != "zenon-nom-account-authorization-plan-v1" || len(plan.Vectors) != 126 ||
+		source.Schema != "zenon-nom-vm-verifier-input-v1" || len(source.Baseline) != 2 {
+		t.Fatal("complete independently selected subject required")
+	}
+	raw := func(s string, width int) []byte {
+		b, err := hex.DecodeString(s)
+		if err != nil || (width >= 0 && len(b) != width) {
+			t.Fatal("invalid public byte selection")
+		}
+		return b
+	}
+	num := func(s string) uint64 {
+		n, err := strconv.ParseUint(s, 10, 64)
+		if err != nil {
+			t.Fatal("invalid public number selection")
+		}
+		return n
+	}
+	hash := func(s string) types.Hash { var v types.Hash; copy(v[:], raw(s, 32)); return v }
+	address := func(s string) types.Address { var v types.Address; copy(v[:], raw(s, 20)); return v }
+	errorLabel := func(err error) string {
+		switch err {
+		case nil:
+			return "PASS"
+		case ErrABHashInvalid:
+			return "ErrABHashInvalid"
+		case ErrABSignatureMissing:
+			return "ErrABSignatureMissing"
+		case ErrABPublicKeyMissing:
+			return "ErrABPublicKeyMissing"
+		case ErrABSignatureInvalid:
+			return "ErrABSignatureInvalid"
+		case ErrABPublicKeyWrongAddress:
+			return "ErrABPublicKeyWrongAddress"
+		case ErrABPublicKeyMustBeZero:
+			return "ErrABPublicKeyMustBeZero"
+		case ErrABSignatureMustBeZero:
+			return "ErrABSignatureMustBeZero"
+		default:
+			t.Fatal("unexpected selected source check")
+			return "UNSELECTED"
+		}
+	}
+	seen := map[string]bool{}
+	for _, v := range plan.Vectors {
+		if v.ID == "" || seen[v.ID] {
+			t.Fatal("unselected repeated control")
+		}
+		seen[v.ID] = true
+		t.Run(v.ID, func(t *testing.T) {
+			selected, ok := source.Baseline[v.Leg]
+			if !ok {
+				t.Fatal("missing fresh VM leg")
+			}
+			var block func(string) *nom.AccountBlock
+			block = func(role string) *nom.AccountBlock {
+				r, exists := selected.Blocks[role]
+				if !exists {
+					t.Fatal("missing fresh VM block")
+				}
+				b := r.Block
+				amount, exists := new(big.Int).SetString(b["amount"].(string), 10)
+				if !exists {
+					t.Fatal("invalid public amount")
+				}
+				value := &nom.AccountBlock{Version: num(b["version"].(string)), ChainIdentifier: num(b["chain_id"].(string)),
+					BlockType: num(b["block_type"].(string)), Hash: hash(r.Hash), ChangesHash: hash(r.Changes),
+					PreviousHash: hash(b["previous_hash_hex"].(string)), Height: num(b["height"].(string)),
+					MomentumAcknowledged: types.HashHeight{Hash: hash(b["momentum_hash_hex"].(string)), Height: num(b["momentum_height"].(string))},
+					Address:              address(b["address_hex"].(string)), ToAddress: address(b["to_address_hex"].(string)),
+					Amount: amount, FromBlockHash: hash(b["from_block_hash_hex"].(string)), Data: raw(b["data_hex"].(string), -1),
+					FusedPlasma: num(b["fused_plasma"].(string)), Difficulty: num(b["difficulty"].(string))}
+				copy(value.TokenStandard[:], raw(b["token_standard_hex"].(string), 10))
+				copy(value.Nonce.Data[:], raw(b["nonce_hex"].(string), 8))
+				for _, child := range b["descendant_hashes_hex"].([]interface{}) {
+					found := ""
+					for name, candidate := range selected.Blocks {
+						if candidate.Hash == child.(string) {
+							found = name
+						}
+					}
+					if found == "" {
+						t.Fatal("full actual child unavailable")
+					}
+					value.DescendantBlocks = append(value.DescendantBlocks, block(found))
+				}
+				return value
+			}
+			original := block(v.Role)
+			encode := func(b *nom.AccountBlock) []byte {
+				wire, err := b.Serialize()
+				if err != nil || len(wire) == 0 || len(wire) > 8192 {
+					t.Fatal("typed byte selection differs")
+				}
+				return wire
+			}
+			originalWire := encode(original)
+			b := original.Copy()
+			// These seeds are deliberately public test constants, never wallet inputs.
+			seed := bytes.Repeat([]byte{0x41}, ed25519.SeedSize)
+			if v.Leg == "short" {
+				seed = bytes.Repeat([]byte{0x42}, ed25519.SeedSize)
+			}
+			key := ed25519.NewKeyFromSeed(seed)
+			pub := key.Public().(ed25519.PublicKey)
+			user := !types.IsEmbeddedAddress(b.Address)
+			if user && v.Kind != "unsigned" {
+				b.PublicKey = pub
+				if v.Kind != "foreign-signature" {
+					b.Address = types.PubKeyToAddress(pub)
+					b.Hash = b.ComputeHash()
+				}
+				b.Signature = ed25519.Sign(key, b.Hash.Bytes())
+			}
+			wantHash, wantSignature, wantProducer := "PASS", "PASS", "PASS"
+			switch v.Kind {
+			case "unsigned":
+				wantSignature, wantProducer = "ErrABSignatureMissing", "ErrABPublicKeyWrongAddress"
+			case "foreign-signature":
+				wantProducer = "ErrABPublicKeyWrongAddress"
+			case "relocated-authorized", "empty-authorization", "unknown-protobuf-field", "duplicate-protobuf-version":
+			case "changed-data-old-hash":
+				b.Data = append(b.Data, 0x7f)
+				wantHash = "ErrABHashInvalid"
+			case "changed-data-old-signature":
+				b.Data = append(b.Data, 0x7f)
+				b.Hash = b.ComputeHash()
+				wantSignature = "ErrABSignatureInvalid"
+			case "changed-data-resigned":
+				b.Data = append(b.Data, 0x7f)
+				b.Hash = b.ComputeHash()
+				b.Signature = ed25519.Sign(key, b.Hash.Bytes())
+			case "missing-signature":
+				b.Signature = nil
+				wantSignature = "ErrABSignatureMissing"
+			case "missing-key":
+				b.PublicKey = nil
+				wantSignature, wantProducer = "ErrABPublicKeyMissing", "ErrABPublicKeyWrongAddress"
+			case "short-key":
+				b.PublicKey = b.PublicKey[:31]
+				wantSignature, wantProducer = "ErrABSignatureInvalid", "ErrABPublicKeyWrongAddress"
+			case "short-signature":
+				b.Signature = b.Signature[:63]
+				wantSignature = "ErrABSignatureInvalid"
+			case "bad-signature":
+				b.Signature[0] ^= 1
+				wantSignature = "ErrABSignatureInvalid"
+			case "changed-changes-hash":
+				b.ChangesHash[0] ^= 1
+			case "changed-base-plasma":
+				b.BasePlasma = 1
+			case "changed-total-plasma":
+				b.TotalPlasma = 1
+			case "nonempty-key":
+				b.PublicKey = pub
+				wantSignature = "ErrABPublicKeyMustBeZero"
+			case "nonempty-signature":
+				b.Signature = bytes.Repeat([]byte{0x51}, 64)
+				wantSignature = "ErrABSignatureMustBeZero"
+			default:
+				t.Fatal("unselected source control")
+			}
+			wire := encode(b)
+			switch v.Kind {
+			case "unknown-protobuf-field":
+				wire = append(wire, 0xa0, 0x06, 0x01)
+			case "duplicate-protobuf-version":
+				wire = append(wire, 0x08, 0x01)
+			}
+			decoded, err := nom.DeserializeAccountBlock(wire)
+			if err != nil {
+				t.Fatal("selected typed roundtrip refused")
+			}
+			roundtrip := encode(decoded)
+			check := &accountBlockTransactionVerifier{transaction: &nom.AccountBlockTransaction{Block: decoded}}
+			checks := map[string]string{"hash": errorLabel(check.hash()), "signature": errorLabel(check.signature()), "producer": errorLabel(check.producer())}
+			if checks["hash"] != wantHash || checks["signature"] != wantSignature || checks["producer"] != wantProducer {
+				t.Fatal("selected outer authorization boundary differs")
+			}
+			if user && checks["hash"] == "PASS" && checks["signature"] == "PASS" && checks["producer"] == "PASS" {
+				if check.all() != nil {
+					t.Fatal("user transaction-only checks differ")
+				}
+			}
+			if b.Hash != decoded.Hash || b.ComputeHash() != decoded.ComputeHash() ||
+				!bytes.Equal(b.PublicKey, decoded.PublicKey) || !bytes.Equal(b.Signature, decoded.Signature) ||
+				b.ChangesHash != decoded.ChangesHash || b.BasePlasma != decoded.BasePlasma || b.TotalPlasma != decoded.TotalPlasma {
+				t.Fatal("typed roundtrip changed selected fields")
+			}
+			hexHash := func(value types.Hash) string { return hex.EncodeToString(value.Bytes()) }
+			digest := func(value []byte) string { sum := sha256.Sum256(value); return hex.EncodeToString(sum[:]) }
+			fields := map[string]interface{}{
+				"version": strconv.FormatUint(decoded.Version, 10), "chain_id": strconv.FormatUint(decoded.ChainIdentifier, 10),
+				"block_type": strconv.FormatUint(decoded.BlockType, 10), "previous_hash_hex": hexHash(decoded.PreviousHash),
+				"height": strconv.FormatUint(decoded.Height, 10), "momentum_hash_hex": hexHash(decoded.MomentumAcknowledged.Hash),
+				"momentum_height": strconv.FormatUint(decoded.MomentumAcknowledged.Height, 10), "address_hex": hex.EncodeToString(decoded.Address.Bytes()),
+				"to_address_hex": hex.EncodeToString(decoded.ToAddress.Bytes()), "amount": decoded.Amount.String(),
+				"token_standard_hex": hex.EncodeToString(decoded.TokenStandard.Bytes()), "from_block_hash_hex": hexHash(decoded.FromBlockHash),
+				"data_hex": hex.EncodeToString(decoded.Data), "fused_plasma": strconv.FormatUint(decoded.FusedPlasma, 10),
+				"difficulty": strconv.FormatUint(decoded.Difficulty, 10), "nonce_hex": hex.EncodeToString(decoded.Nonce.Data[:]),
+				"descendant_hashes_hex": []string{},
+			}
+			for _, child := range decoded.DescendantBlocks {
+				fields["descendant_hashes_hex"] = append(fields["descendant_hashes_hex"].([]string), hexHash(child.Hash))
+			}
+			record := map[string]interface{}{"schema": "zenon-nom-account-authorization-record-v1", "id": v.ID, "leg": v.Leg, "role": v.Role, "kind": v.Kind,
+				"block": fields, "source_hash_hex": hexHash(original.Hash), "hash_hex": hexHash(decoded.Hash), "computed_hash_hex": hexHash(decoded.ComputeHash()),
+				"changes_hash_hex": hexHash(decoded.ChangesHash), "base_plasma": strconv.FormatUint(decoded.BasePlasma, 10), "total_plasma": strconv.FormatUint(decoded.TotalPlasma, 10),
+				"public_key_hex": hex.EncodeToString(decoded.PublicKey), "signature_hex": hex.EncodeToString(decoded.Signature),
+				"wire_hex": hex.EncodeToString(wire), "wire_sha256": digest(wire), "reencoded_wire_hex": hex.EncodeToString(roundtrip),
+				"original_wire_hex": hex.EncodeToString(originalWire), "checks": checks}
+			out, err := json.Marshal(record)
+			if err != nil {
+				t.Fatal("public projection unavailable")
+			}
+			t.Log("PTLC_RESEARCH_ACCOUNT_AUTH_RECORD " + string(out))
+		})
+	}
+}
