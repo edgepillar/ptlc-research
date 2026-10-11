@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from offline_session.nom_recovery import context, validate_terms
 from offline_session.nom_wire import account_block_hash, decode_call
@@ -158,14 +159,14 @@ class NoMCreatedFundingTests(unittest.TestCase):
             (root / MANIFEST).write_text(json.dumps(manifest))
             with self.assertRaisesRegex(ValueError, "subject changed"): inputs(root)
 
-    def test_actual_public_worker_recovers_originals_after_reopen_in_created_contexts(self):
-        result = qualify(ROOT / "qualification/target/debug/examples/verify_nom_swap")
-        self.assertEqual(result["outcome"], "PASS")
-        self.assertEqual(result["old_and_cross_leg_completions"], "REFUSED")
-        self.assertEqual(result["original_recovery"]["two_journal_original_recovery"], "verified")
-        self.assertEqual(result["core_journal_composition"], "NOT_PERFORMED")
-        self.assertEqual(result["source_authentication"], "UNFILLED")
-        self.assertEqual((result["application"], result["core"]), ("NO-GO", "NO-GO"))
+    def test_missing_public_worker_refuses_before_either_journal_is_opened(self):
+        # Native success is qualified by the dedicated job after its build.
+        # A generic Python job must neither assume a binary nor skip this gate.
+        with tempfile.TemporaryDirectory() as directory:
+            missing = Path(directory) / "missing-public-worker"
+            with patch("scripts.qualify_nom_created_recovery.NomRecovery.open") as opened:
+                with self.assertRaises(FileNotFoundError): qualify(missing)
+                opened.assert_not_called()
 
 
 if __name__ == "__main__": unittest.main()

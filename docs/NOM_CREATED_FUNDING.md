@@ -97,6 +97,11 @@ context selection uses the acknowledged store. Neither the latest node clock
 nor receive-confirmation time may be substituted for that context. A source
 method frontier at/after expiry refuses Unlock even with a valid witness.
 
+General Python tests require missing-worker refusal before either journal opens;
+they do not assume a separately built native binary. Actual successful native
+recovery is mandatory in the dedicated qualification job after example builds.
+No missing executable is silently skipped or replaced by a positive mock.
+
 ## Remaining acceptance gates
 
 This increment provides mathematical and isolated source compatibility evidence.
