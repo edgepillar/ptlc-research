@@ -1,0 +1,2209 @@
+{
+  "boundary": {
+    "account_records": "PUBLIC HASH INPUTS; NOT SIGNED OR ADMITTED",
+    "application": "NO-GO",
+    "balance_accounting": "NOT_PERFORMED",
+    "canonicality": "UNFILLED",
+    "core": "NO-GO",
+    "finality": "UNFILLED",
+    "outer_account_authorization": "NOT_PERFORMED",
+    "rollback_protection": "UNFILLED",
+    "source_authentication": "UNFILLED",
+    "source_execution": "ISOLATED METHODS WITH SYNTHETIC STORAGE AND TIME",
+    "witness_origin": "DISCLOSED TOY CONSTANTS IN TESTS ONLY"
+  },
+  "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+  "fundings": {
+    "long": {
+      "block": {
+        "address_hex": "0011111111111111111111111111111111111111",
+        "amount": "100",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000007d0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000022222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000002079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "7",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "f7623a975398484274e477f543edc576a8d7fd07bd438e0ffc795c7e63728297",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "01010101010101010101",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "100",
+        "destination_hex": "0022222222222222222222222222222222222222",
+        "expiration_time": "2000",
+        "id_hex": "4ce542f6064f57036509a5a673328c1e48a0194ab2c262c2c259051bdedfd2f4",
+        "point_lock_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "point_type": 1,
+        "time_locked_hex": "0011111111111111111111111111111111111111",
+        "token_standard_hex": "01010101010101010101"
+      },
+      "hash_hex": "4ce542f6064f57036509a5a673328c1e48a0194ab2c262c2c259051bdedfd2f4"
+    },
+    "long-changed-amount": {
+      "block": {
+        "address_hex": "0011111111111111111111111111111111111111",
+        "amount": "101",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000007d0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000022222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000002079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "7",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "f7623a975398484274e477f543edc576a8d7fd07bd438e0ffc795c7e63728297",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "01010101010101010101",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "101",
+        "destination_hex": "0022222222222222222222222222222222222222",
+        "expiration_time": "2000",
+        "id_hex": "e49771ad0c828e2aca932b9bf82e2300142dd2abe899a92545968cef950f3b4b",
+        "point_lock_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "point_type": 1,
+        "time_locked_hex": "0011111111111111111111111111111111111111",
+        "token_standard_hex": "01010101010101010101"
+      },
+      "hash_hex": "e49771ad0c828e2aca932b9bf82e2300142dd2abe899a92545968cef950f3b4b"
+    },
+    "long-changed-chain": {
+      "block": {
+        "address_hex": "0011111111111111111111111111111111111111",
+        "amount": "100",
+        "block_type": "2",
+        "chain_id": "70",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000007d0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000022222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000002079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "7",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "f7623a975398484274e477f543edc576a8d7fd07bd438e0ffc795c7e63728297",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "01010101010101010101",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "100",
+        "destination_hex": "0022222222222222222222222222222222222222",
+        "expiration_time": "2000",
+        "id_hex": "4e88dc174a746b4464c1a4f65cf6a28fd6cedc44750b16114dd9971f1a99044b",
+        "point_lock_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "point_type": 1,
+        "time_locked_hex": "0011111111111111111111111111111111111111",
+        "token_standard_hex": "01010101010101010101"
+      },
+      "hash_hex": "4e88dc174a746b4464c1a4f65cf6a28fd6cedc44750b16114dd9971f1a99044b"
+    },
+    "long-changed-expiry": {
+      "block": {
+        "address_hex": "0011111111111111111111111111111111111111",
+        "amount": "100",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee0000000000000000000000000000000000000000000000000000000000000834000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000022222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000002079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "7",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "f7623a975398484274e477f543edc576a8d7fd07bd438e0ffc795c7e63728297",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "01010101010101010101",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "100",
+        "destination_hex": "0022222222222222222222222222222222222222",
+        "expiration_time": "2100",
+        "id_hex": "f5e2e6e5f96360c1bba8a1987ba2eb7eccf4573850579f24d7f60290e9cce03a",
+        "point_lock_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "point_type": 1,
+        "time_locked_hex": "0011111111111111111111111111111111111111",
+        "token_standard_hex": "01010101010101010101"
+      },
+      "hash_hex": "f5e2e6e5f96360c1bba8a1987ba2eb7eccf4573850579f24d7f60290e9cce03a"
+    },
+    "long-changed-funder": {
+      "block": {
+        "address_hex": "0033333333333333333333333333333333333333",
+        "amount": "100",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000007d0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000022222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000002079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "7",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "f7623a975398484274e477f543edc576a8d7fd07bd438e0ffc795c7e63728297",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "01010101010101010101",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "100",
+        "destination_hex": "0022222222222222222222222222222222222222",
+        "expiration_time": "2000",
+        "id_hex": "ef6c7e45c20e0b294ecca0cb8417b986a31bcd3d7d3fbe427bbdaf95a9df4ae6",
+        "point_lock_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "point_type": 1,
+        "time_locked_hex": "0033333333333333333333333333333333333333",
+        "token_standard_hex": "01010101010101010101"
+      },
+      "hash_hex": "ef6c7e45c20e0b294ecca0cb8417b986a31bcd3d7d3fbe427bbdaf95a9df4ae6"
+    },
+    "long-changed-key": {
+      "block": {
+        "address_hex": "0011111111111111111111111111111111111111",
+        "amount": "100",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000007d00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000222222222222222222222222222222222222220000000000000000000000000000000000000000000000000000000000000020c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "7",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "f7623a975398484274e477f543edc576a8d7fd07bd438e0ffc795c7e63728297",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "01010101010101010101",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "100",
+        "destination_hex": "0022222222222222222222222222222222222222",
+        "expiration_time": "2000",
+        "id_hex": "5a9db02f187e4dc818d6ff261a8f573ebd12545637dd6be2395185d4c4c99a74",
+        "point_lock_hex": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "point_type": 1,
+        "time_locked_hex": "0011111111111111111111111111111111111111",
+        "token_standard_hex": "01010101010101010101"
+      },
+      "hash_hex": "5a9db02f187e4dc818d6ff261a8f573ebd12545637dd6be2395185d4c4c99a74"
+    },
+    "long-changed-nonce": {
+      "block": {
+        "address_hex": "0011111111111111111111111111111111111111",
+        "amount": "100",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000007d0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000022222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000002079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "7",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000001",
+        "previous_hash_hex": "f7623a975398484274e477f543edc576a8d7fd07bd438e0ffc795c7e63728297",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "01010101010101010101",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "100",
+        "destination_hex": "0022222222222222222222222222222222222222",
+        "expiration_time": "2000",
+        "id_hex": "04c7f58b0c1a8484052c14ab494bcd71e7762913211f6caa993df9874c23c875",
+        "point_lock_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "point_type": 1,
+        "time_locked_hex": "0011111111111111111111111111111111111111",
+        "token_standard_hex": "01010101010101010101"
+      },
+      "hash_hex": "04c7f58b0c1a8484052c14ab494bcd71e7762913211f6caa993df9874c23c875"
+    },
+    "long-changed-previous": {
+      "block": {
+        "address_hex": "0011111111111111111111111111111111111111",
+        "amount": "100",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000007d0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000022222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000002079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "7",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "3f50e1d858360f74ff8452e4366c17a5db1ec9fd819adcd1e94a34023869fafa",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "01010101010101010101",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "100",
+        "destination_hex": "0022222222222222222222222222222222222222",
+        "expiration_time": "2000",
+        "id_hex": "253a6d6f8f6117e14800802b1068434f12602f6985aceefa300899e5bdf4a7a6",
+        "point_lock_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "point_type": 1,
+        "time_locked_hex": "0011111111111111111111111111111111111111",
+        "token_standard_hex": "01010101010101010101"
+      },
+      "hash_hex": "253a6d6f8f6117e14800802b1068434f12602f6985aceefa300899e5bdf4a7a6"
+    },
+    "long-changed-recipient": {
+      "block": {
+        "address_hex": "0011111111111111111111111111111111111111",
+        "amount": "100",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000007d0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000033333333333333333333333333333333333333000000000000000000000000000000000000000000000000000000000000002079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "7",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "f7623a975398484274e477f543edc576a8d7fd07bd438e0ffc795c7e63728297",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "01010101010101010101",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "100",
+        "destination_hex": "0033333333333333333333333333333333333333",
+        "expiration_time": "2000",
+        "id_hex": "fab8c6a440218bab32c3f2ea3be9cdd58da2ff9b9123d47102cee95c7871417c",
+        "point_lock_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "point_type": 1,
+        "time_locked_hex": "0011111111111111111111111111111111111111",
+        "token_standard_hex": "01010101010101010101"
+      },
+      "hash_hex": "fab8c6a440218bab32c3f2ea3be9cdd58da2ff9b9123d47102cee95c7871417c"
+    },
+    "long-changed-token": {
+      "block": {
+        "address_hex": "0011111111111111111111111111111111111111",
+        "amount": "100",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000007d0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000022222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000002079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "7",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "f7623a975398484274e477f543edc576a8d7fd07bd438e0ffc795c7e63728297",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "03030303030303030303",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "100",
+        "destination_hex": "0022222222222222222222222222222222222222",
+        "expiration_time": "2000",
+        "id_hex": "53fbe1d6bb5112f5fd841d9439cb8242db152e92e295e9150dac5c02b19b8fb8",
+        "point_lock_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "point_type": 1,
+        "time_locked_hex": "0011111111111111111111111111111111111111",
+        "token_standard_hex": "03030303030303030303"
+      },
+      "hash_hex": "53fbe1d6bb5112f5fd841d9439cb8242db152e92e295e9150dac5c02b19b8fb8"
+    },
+    "short": {
+      "block": {
+        "address_hex": "0022222222222222222222222222222222222222",
+        "amount": "200",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000003e80000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000020c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "9",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "c439b5847381c54be55731b65a979755f70b6f37c5abd2111e95457c6520f662",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "02020202020202020202",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "200",
+        "destination_hex": "0011111111111111111111111111111111111111",
+        "expiration_time": "1000",
+        "id_hex": "a35460139d22f80b9130295c54f7e5407652debae48537633905a938ac271057",
+        "point_lock_hex": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "point_type": 1,
+        "time_locked_hex": "0022222222222222222222222222222222222222",
+        "token_standard_hex": "02020202020202020202"
+      },
+      "hash_hex": "a35460139d22f80b9130295c54f7e5407652debae48537633905a938ac271057"
+    },
+    "short-changed-amount": {
+      "block": {
+        "address_hex": "0022222222222222222222222222222222222222",
+        "amount": "201",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000003e80000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000020c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "9",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "c439b5847381c54be55731b65a979755f70b6f37c5abd2111e95457c6520f662",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "02020202020202020202",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "201",
+        "destination_hex": "0011111111111111111111111111111111111111",
+        "expiration_time": "1000",
+        "id_hex": "26adbfb11390ddde06f2830af038da37d1bbcb93abad951f8edd91399b04c32b",
+        "point_lock_hex": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "point_type": 1,
+        "time_locked_hex": "0022222222222222222222222222222222222222",
+        "token_standard_hex": "02020202020202020202"
+      },
+      "hash_hex": "26adbfb11390ddde06f2830af038da37d1bbcb93abad951f8edd91399b04c32b"
+    },
+    "short-changed-chain": {
+      "block": {
+        "address_hex": "0022222222222222222222222222222222222222",
+        "amount": "200",
+        "block_type": "2",
+        "chain_id": "70",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000003e80000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000020c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "9",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "c439b5847381c54be55731b65a979755f70b6f37c5abd2111e95457c6520f662",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "02020202020202020202",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "200",
+        "destination_hex": "0011111111111111111111111111111111111111",
+        "expiration_time": "1000",
+        "id_hex": "3e747de2946dcf1fb71abc822534d01d61a4856746b355b440a067763e7cfe4f",
+        "point_lock_hex": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "point_type": 1,
+        "time_locked_hex": "0022222222222222222222222222222222222222",
+        "token_standard_hex": "02020202020202020202"
+      },
+      "hash_hex": "3e747de2946dcf1fb71abc822534d01d61a4856746b355b440a067763e7cfe4f"
+    },
+    "short-changed-expiry": {
+      "block": {
+        "address_hex": "0022222222222222222222222222222222222222",
+        "amount": "200",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee000000000000000000000000000000000000000000000000000000000000044c0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000020c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "9",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "c439b5847381c54be55731b65a979755f70b6f37c5abd2111e95457c6520f662",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "02020202020202020202",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "200",
+        "destination_hex": "0011111111111111111111111111111111111111",
+        "expiration_time": "1100",
+        "id_hex": "f2543777063d60b0a9a47e73f8c28074fd2736c97830e0efeb58420e6e3324b3",
+        "point_lock_hex": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "point_type": 1,
+        "time_locked_hex": "0022222222222222222222222222222222222222",
+        "token_standard_hex": "02020202020202020202"
+      },
+      "hash_hex": "f2543777063d60b0a9a47e73f8c28074fd2736c97830e0efeb58420e6e3324b3"
+    },
+    "short-changed-funder": {
+      "block": {
+        "address_hex": "0033333333333333333333333333333333333333",
+        "amount": "200",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000003e80000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000020c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "9",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "c439b5847381c54be55731b65a979755f70b6f37c5abd2111e95457c6520f662",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "02020202020202020202",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "200",
+        "destination_hex": "0011111111111111111111111111111111111111",
+        "expiration_time": "1000",
+        "id_hex": "f52596323476b5853ea58444466337bd2dcb07fe284a42438569036d13d1310c",
+        "point_lock_hex": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "point_type": 1,
+        "time_locked_hex": "0033333333333333333333333333333333333333",
+        "token_standard_hex": "02020202020202020202"
+      },
+      "hash_hex": "f52596323476b5853ea58444466337bd2dcb07fe284a42438569036d13d1310c"
+    },
+    "short-changed-key": {
+      "block": {
+        "address_hex": "0022222222222222222222222222222222222222",
+        "amount": "200",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000003e8000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000011111111111111111111111111111111111111000000000000000000000000000000000000000000000000000000000000002079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "9",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "c439b5847381c54be55731b65a979755f70b6f37c5abd2111e95457c6520f662",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "02020202020202020202",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "200",
+        "destination_hex": "0011111111111111111111111111111111111111",
+        "expiration_time": "1000",
+        "id_hex": "c06963d72bbe8648dfca77d6b42cf166cff6c4797e4e73b4cf3da039ed1735f0",
+        "point_lock_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "point_type": 1,
+        "time_locked_hex": "0022222222222222222222222222222222222222",
+        "token_standard_hex": "02020202020202020202"
+      },
+      "hash_hex": "c06963d72bbe8648dfca77d6b42cf166cff6c4797e4e73b4cf3da039ed1735f0"
+    },
+    "short-changed-nonce": {
+      "block": {
+        "address_hex": "0022222222222222222222222222222222222222",
+        "amount": "200",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000003e80000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000020c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "9",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000001",
+        "previous_hash_hex": "c439b5847381c54be55731b65a979755f70b6f37c5abd2111e95457c6520f662",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "02020202020202020202",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "200",
+        "destination_hex": "0011111111111111111111111111111111111111",
+        "expiration_time": "1000",
+        "id_hex": "1a96cdcbb16367d1128f5c098d13ccd530cc8bfb11fa406154d8ff4020167397",
+        "point_lock_hex": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "point_type": 1,
+        "time_locked_hex": "0022222222222222222222222222222222222222",
+        "token_standard_hex": "02020202020202020202"
+      },
+      "hash_hex": "1a96cdcbb16367d1128f5c098d13ccd530cc8bfb11fa406154d8ff4020167397"
+    },
+    "short-changed-previous": {
+      "block": {
+        "address_hex": "0022222222222222222222222222222222222222",
+        "amount": "200",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000003e80000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000020c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "9",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "183fe3f1b3e2ec2e980723530f9bf112cecc9e6531902003b41ca2993ac3ca13",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "02020202020202020202",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "200",
+        "destination_hex": "0011111111111111111111111111111111111111",
+        "expiration_time": "1000",
+        "id_hex": "8b3b42752bc203451b85a2eb7f0579ab4ed8e07d0b2bf468ca55430e1cdbfa69",
+        "point_lock_hex": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "point_type": 1,
+        "time_locked_hex": "0022222222222222222222222222222222222222",
+        "token_standard_hex": "02020202020202020202"
+      },
+      "hash_hex": "8b3b42752bc203451b85a2eb7f0579ab4ed8e07d0b2bf468ca55430e1cdbfa69"
+    },
+    "short-changed-recipient": {
+      "block": {
+        "address_hex": "0022222222222222222222222222222222222222",
+        "amount": "200",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000003e80000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000333333333333333333333333333333333333330000000000000000000000000000000000000000000000000000000000000020c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "9",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "c439b5847381c54be55731b65a979755f70b6f37c5abd2111e95457c6520f662",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "02020202020202020202",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "200",
+        "destination_hex": "0033333333333333333333333333333333333333",
+        "expiration_time": "1000",
+        "id_hex": "0cf0fb00732a6a247eb204423d09a324dd880191d68b0e88387351da3f763ee5",
+        "point_lock_hex": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "point_type": 1,
+        "time_locked_hex": "0022222222222222222222222222222222222222",
+        "token_standard_hex": "02020202020202020202"
+      },
+      "hash_hex": "0cf0fb00732a6a247eb204423d09a324dd880191d68b0e88387351da3f763ee5"
+    },
+    "short-changed-token": {
+      "block": {
+        "address_hex": "0022222222222222222222222222222222222222",
+        "amount": "200",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000003e80000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000000000000020c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "0",
+        "height": "9",
+        "momentum_hash_hex": "5495b790d15f98d057bf9de30a3536a2118f96ca25171b8b070a52d8c61a12cb",
+        "momentum_height": "99",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "c439b5847381c54be55731b65a979755f70b6f37c5abd2111e95457c6520f662",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "03030303030303030303",
+        "version": "1"
+      },
+      "entry": {
+        "amount": "200",
+        "destination_hex": "0011111111111111111111111111111111111111",
+        "expiration_time": "1000",
+        "id_hex": "36b74bdc9c4c0d98dd23e9005d5c71493ec84b8170a2787526010e76e9622f2e",
+        "point_lock_hex": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "point_type": 1,
+        "time_locked_hex": "0022222222222222222222222222222222222222",
+        "token_standard_hex": "03030303030303030303"
+      },
+      "hash_hex": "36b74bdc9c4c0d98dd23e9005d5c71493ec84b8170a2787526010e76e9622f2e"
+    }
+  },
+  "old_entry_ids_hex": {
+    "long": "4444444444444444444444444444444444444444444444444444444444444444",
+    "short": "5555555555555555555555555555555555555555555555555555555555555555"
+  },
+  "profile": "zenon-pr138-created-funding-v1",
+  "research_baseline_commit": "7327a9c52d657192871f5a1958bb530d4ea63a9b",
+  "schema": "zenon-nom-created-funding-corpus-v1",
+  "terms": {
+    "adaptor_point_sec1_hex": "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+    "alice_address_hex": "0011111111111111111111111111111111111111",
+    "bob_address_hex": "0022222222222222222222222222222222222222",
+    "chain_id": "69",
+    "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+    "genesis_hash_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+    "long": {
+      "amount": "100",
+      "entry_id_hex": "4ce542f6064f57036509a5a673328c1e48a0194ab2c262c2c259051bdedfd2f4",
+      "expires_at": "2000",
+      "funder": "alice",
+      "funder_key_xonly_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "recipient": "bob",
+      "token_standard_hex": "01010101010101010101"
+    },
+    "minimum_expiry_gap_seconds": "500",
+    "profile": "zenon-ptlc-unlock:v1",
+    "schema": "ptlc-nom-fixed-terms-v1",
+    "session_id_hex": "a4d3648553fe825650365ca9914e159207c29e20f00c24ba32db77ac55336a17",
+    "short": {
+      "amount": "200",
+      "entry_id_hex": "a35460139d22f80b9130295c54f7e5407652debae48537633905a938ac271057",
+      "expires_at": "1000",
+      "funder": "bob",
+      "funder_key_xonly_hex": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+      "recipient": "alice",
+      "token_standard_hex": "02020202020202020202"
+    }
+  },
+  "vectors": [
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-create-stores-send-derived-id",
+      "leg": "long",
+      "operations": []
+    },
+    {
+      "create_timestamp": "2000",
+      "expect_create_error": "ErrInvalidExpirationTime",
+      "funding_key": "long",
+      "id": "long-create-at-expiry",
+      "leg": "long",
+      "operations": []
+    },
+    {
+      "create_timestamp": "2001",
+      "expect_create_error": "ErrInvalidExpirationTime",
+      "funding_key": "long",
+      "id": "long-create-after-expiry",
+      "leg": "long",
+      "operations": []
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-direct-at-reference-send-confirmation-time",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0022222222222222222222222222222222222222",
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "900",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-direct-one-second-before-expiry",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0022222222222222222222222222222222222222",
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "1999",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-direct-at-expiry",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrExpired",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "2000",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-direct-after-expiry",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrExpired",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "2001",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-proxy-funder-fixed-recipient",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0022222222222222222222222222222222222222",
+          "id_selection": "created",
+          "method": "ProxyUnlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-proxy-third-party-fixed-recipient",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0033333333333333333333333333333333333333",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0022222222222222222222222222222222222222",
+          "id_selection": "created",
+          "method": "ProxyUnlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-direct-wrong-caller",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrPermissionDenied",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-proxy-wrong-recipient",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrPermissionDenied",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "ProxyUnlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-wrong-chain-witness",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "70",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-old-entry-id",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrDataNonExistent",
+          "expect_payout_to_hex": null,
+          "id_selection": "old",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-cross-leg-witness",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "other-leg"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-old-synthetic-witness",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "old"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-corrupt-witness",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "corrupt"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-wrong-width-witness",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "wrong-width"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-reclaim-one-second-before-expiry",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ReclaimNotDue",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Reclaim",
+          "timestamp": "1999",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-reclaim-at-expiry",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0011111111111111111111111111111111111111",
+          "id_selection": "created",
+          "method": "Reclaim",
+          "timestamp": "2000",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-reclaim-after-expiry",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0011111111111111111111111111111111111111",
+          "id_selection": "created",
+          "method": "Reclaim",
+          "timestamp": "2001",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-reclaim-wrong-caller",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrPermissionDenied",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Reclaim",
+          "timestamp": "2000",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-direct-replay-after-deletion",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0022222222222222222222222222222222222222",
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        },
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": false,
+          "expect_error": "ErrDataNonExistent",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-unlock-then-reclaim",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0022222222222222222222222222222222222222",
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        },
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": false,
+          "expect_error": "ErrDataNonExistent",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Reclaim",
+          "timestamp": "2000",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-reclaim-then-unlock",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0011111111111111111111111111111111111111",
+          "id_selection": "created",
+          "method": "Reclaim",
+          "timestamp": "2000",
+          "witness_selection": "selected"
+        },
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": false,
+          "expect_error": "ErrDataNonExistent",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "2000",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-invalid-then-valid-original",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "corrupt"
+        },
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0022222222222222222222222222222222222222",
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long",
+      "id": "long-proxy-then-direct-replay",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0033333333333333333333333333333333333333",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0022222222222222222222222222222222222222",
+          "id_selection": "created",
+          "method": "ProxyUnlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        },
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": false,
+          "expect_error": "ErrDataNonExistent",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long-changed-previous",
+      "id": "long-changed-previous-refuses-baseline-witness",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long-changed-nonce",
+      "id": "long-changed-nonce-refuses-baseline-witness",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long-changed-amount",
+      "id": "long-changed-amount-refuses-baseline-witness",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long-changed-token",
+      "id": "long-changed-token-refuses-baseline-witness",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long-changed-expiry",
+      "id": "long-changed-expiry-refuses-baseline-witness",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long-changed-key",
+      "id": "long-changed-key-refuses-baseline-witness",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long-changed-recipient",
+      "id": "long-changed-recipient-refuses-baseline-witness",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0033333333333333333333333333333333333333",
+          "chain_id": "69",
+          "destination_hex": "0033333333333333333333333333333333333333",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long-changed-chain",
+      "id": "long-changed-chain-refuses-baseline-witness",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "70",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "long-changed-funder",
+      "id": "long-changed-funder-refuses-baseline-witness",
+      "leg": "long",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-create-stores-send-derived-id",
+      "leg": "short",
+      "operations": []
+    },
+    {
+      "create_timestamp": "1000",
+      "expect_create_error": "ErrInvalidExpirationTime",
+      "funding_key": "short",
+      "id": "short-create-at-expiry",
+      "leg": "short",
+      "operations": []
+    },
+    {
+      "create_timestamp": "1001",
+      "expect_create_error": "ErrInvalidExpirationTime",
+      "funding_key": "short",
+      "id": "short-create-after-expiry",
+      "leg": "short",
+      "operations": []
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-direct-at-reference-send-confirmation-time",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0011111111111111111111111111111111111111",
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "900",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-direct-one-second-before-expiry",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0011111111111111111111111111111111111111",
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "999",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-direct-at-expiry",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrExpired",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "1000",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-direct-after-expiry",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrExpired",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "1001",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-proxy-funder-fixed-recipient",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0011111111111111111111111111111111111111",
+          "id_selection": "created",
+          "method": "ProxyUnlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-proxy-third-party-fixed-recipient",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0033333333333333333333333333333333333333",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0011111111111111111111111111111111111111",
+          "id_selection": "created",
+          "method": "ProxyUnlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-direct-wrong-caller",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrPermissionDenied",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-proxy-wrong-recipient",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0022222222222222222222222222222222222222",
+          "expect_entry_after": true,
+          "expect_error": "ErrPermissionDenied",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "ProxyUnlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-wrong-chain-witness",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "70",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-old-entry-id",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrDataNonExistent",
+          "expect_payout_to_hex": null,
+          "id_selection": "old",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-cross-leg-witness",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "other-leg"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-old-synthetic-witness",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "old"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-corrupt-witness",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "corrupt"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-wrong-width-witness",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "wrong-width"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-reclaim-one-second-before-expiry",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ReclaimNotDue",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Reclaim",
+          "timestamp": "999",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-reclaim-at-expiry",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0022222222222222222222222222222222222222",
+          "id_selection": "created",
+          "method": "Reclaim",
+          "timestamp": "1000",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-reclaim-after-expiry",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0022222222222222222222222222222222222222",
+          "id_selection": "created",
+          "method": "Reclaim",
+          "timestamp": "1001",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-reclaim-wrong-caller",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrPermissionDenied",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Reclaim",
+          "timestamp": "1000",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-direct-replay-after-deletion",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0011111111111111111111111111111111111111",
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        },
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": false,
+          "expect_error": "ErrDataNonExistent",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-unlock-then-reclaim",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0011111111111111111111111111111111111111",
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        },
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": false,
+          "expect_error": "ErrDataNonExistent",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Reclaim",
+          "timestamp": "1000",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-reclaim-then-unlock",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0022222222222222222222222222222222222222",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0022222222222222222222222222222222222222",
+          "id_selection": "created",
+          "method": "Reclaim",
+          "timestamp": "1000",
+          "witness_selection": "selected"
+        },
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": false,
+          "expect_error": "ErrDataNonExistent",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "1000",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-invalid-then-valid-original",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "corrupt"
+        },
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0011111111111111111111111111111111111111",
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short",
+      "id": "short-proxy-then-direct-replay",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0033333333333333333333333333333333333333",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": false,
+          "expect_error": "NONE",
+          "expect_payout_to_hex": "0011111111111111111111111111111111111111",
+          "id_selection": "created",
+          "method": "ProxyUnlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        },
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": false,
+          "expect_error": "ErrDataNonExistent",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short-changed-previous",
+      "id": "short-changed-previous-refuses-baseline-witness",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short-changed-nonce",
+      "id": "short-changed-nonce-refuses-baseline-witness",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short-changed-amount",
+      "id": "short-changed-amount-refuses-baseline-witness",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short-changed-token",
+      "id": "short-changed-token-refuses-baseline-witness",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short-changed-expiry",
+      "id": "short-changed-expiry-refuses-baseline-witness",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short-changed-key",
+      "id": "short-changed-key-refuses-baseline-witness",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short-changed-recipient",
+      "id": "short-changed-recipient-refuses-baseline-witness",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0033333333333333333333333333333333333333",
+          "chain_id": "69",
+          "destination_hex": "0033333333333333333333333333333333333333",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short-changed-chain",
+      "id": "short-changed-chain-refuses-baseline-witness",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "70",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    },
+    {
+      "create_timestamp": "100",
+      "expect_create_error": "NONE",
+      "funding_key": "short-changed-funder",
+      "id": "short-changed-funder-refuses-baseline-witness",
+      "leg": "short",
+      "operations": [
+        {
+          "caller_hex": "0011111111111111111111111111111111111111",
+          "chain_id": "69",
+          "destination_hex": "0011111111111111111111111111111111111111",
+          "expect_entry_after": true,
+          "expect_error": "ErrInvalidPointSignature",
+          "expect_payout_to_hex": null,
+          "id_selection": "created",
+          "method": "Unlock",
+          "timestamp": "700",
+          "witness_selection": "selected"
+        }
+      ]
+    }
+  ]
+}
