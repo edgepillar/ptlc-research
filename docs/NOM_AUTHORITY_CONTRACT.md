@@ -131,8 +131,10 @@ python3 -B -m scripts.model_nom_authority --policy ideal-atomic-entry
 
 A partial schedule cap reports incomplete and exits 2. Green model output cannot
 establish canonicality, source provisioning or an available nonrollback service.
-Next, independently select and assess the authority/proof and restore protocol,
-then qualify a separate evidence-opening adapter at its exact use boundary.
+The separate [public-opening comparison](NOM_EVIDENCE_OPENINGS.md) now opens three
+selected typed payloads without selecting source authority or proof verification;
+eight obligation profiles remain unselected. Next, independently select and
+assess the authority/proof and restore protocol and its exact use boundary.
 Keep application recovery, actual signed-original custody, operational network
 composition and any core contribution behind their independent requirements.
 See [validation and evidence limits](NOM_AUTHORITY_VALIDATION.md).

@@ -110,7 +110,12 @@ funding/account proof.
    now frames these independent selections and eleven evidence obligations. Its
    complete replies remain unauthenticated, and its finite atomic-entry comparison
    assumes an ideal external current world and nonrollback ledger/fence. No source
-   service, proof opening, restore protection or recovery admission is implemented.
+   service, authenticated proof verification, restore protection or recovery
+   admission is implemented.
+   The separate [public-opening comparison](NOM_EVIDENCE_OPENINGS.md) expands three
+   commitments into both funding hash-input records, exact synthetic originals
+   and raw momentum bytes. It distinguishes structural mismatches and leaves
+   eight proof profiles, source authority and recovery admission unfilled.
 4. Qualify signing custody, exact signed transaction storage, account-chain/Plasma
    behavior and restore protection separately. Controlled network composition
    remains outside Stage 0 authorization.
