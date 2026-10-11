@@ -1,0 +1,310 @@
+{
+  "boundary": {
+    "account_admission": "NOT_PERFORMED",
+    "account_storage": "ACTUAL MEMORY ACCOUNT STORES AND VM CONTEXT LIFECYCLE",
+    "activation": "NOT_PERFORMED",
+    "application": "NO-GO",
+    "application_signing": "NOT_PERFORMED",
+    "canonicality": "UNFILLED",
+    "chain_observation": "NOT_PERFORMED",
+    "core": "NO-GO",
+    "core_journal_composition": "NOT_PERFORMED",
+    "finality": "UNFILLED",
+    "independent_assessment": "UNFILLED",
+    "ledger_and_spork_gate": "CALLER_SELECTED_SYNTHETIC_STUBS",
+    "receipt_replay": "RAW VM CREDIT IS NOT AN ADMISSION GUARD",
+    "rollback_protection": "UNFILLED",
+    "source_authentication": "UNFILLED",
+    "supervisor_and_plasma_admission": "NOT_PERFORMED"
+  },
+  "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+  "funding_fixture": "compatibility/fixtures/nom_created_funding_v1.json",
+  "profile": "zenon-pr138-composed-vm-path-v1",
+  "public_completions": "compatibility/fixtures/nom_created_completions_v1.json",
+  "research_baseline_commit": "07df9a96e0ac9caf71dfa0ad7d40f001207baaa8",
+  "schema": "zenon-nom-vm-path-corpus-v1",
+  "verifier_vectors": [
+    {
+      "id": "long-source-generated-hashes",
+      "kind": "source-generated-hashes",
+      "leg": "long"
+    },
+    {
+      "id": "long-parent-child-confirming-context",
+      "kind": "parent-child-confirming-context",
+      "leg": "long"
+    },
+    {
+      "id": "long-child-context-mismatch",
+      "kind": "child-context-mismatch",
+      "leg": "long"
+    },
+    {
+      "id": "long-parent-wrong-confirmation-height",
+      "kind": "parent-wrong-confirmation-height",
+      "leg": "long"
+    },
+    {
+      "id": "long-recipient-from-generated-payout",
+      "kind": "recipient-from-generated-payout",
+      "leg": "long"
+    },
+    {
+      "id": "long-missing-payout",
+      "kind": "missing-payout",
+      "leg": "long"
+    },
+    {
+      "id": "long-unconfirmed-payout",
+      "kind": "unconfirmed-payout",
+      "leg": "long"
+    },
+    {
+      "id": "long-already-received-payout",
+      "kind": "already-received-payout",
+      "leg": "long"
+    },
+    {
+      "id": "long-wrong-recipient-at-enforcement",
+      "kind": "wrong-recipient-at-enforcement",
+      "leg": "long"
+    },
+    {
+      "id": "long-wrong-recipient-before-enforcement-helper-allows",
+      "kind": "wrong-recipient-before-enforcement-helper-allows",
+      "leg": "long"
+    },
+    {
+      "id": "long-known-height-wrong-ack-hash",
+      "kind": "known-height-wrong-ack-hash",
+      "leg": "long"
+    },
+    {
+      "id": "long-parent-mutated-ack-hash",
+      "kind": "parent-mutated-ack-hash",
+      "leg": "long"
+    },
+    {
+      "id": "short-source-generated-hashes",
+      "kind": "source-generated-hashes",
+      "leg": "short"
+    },
+    {
+      "id": "short-parent-child-confirming-context",
+      "kind": "parent-child-confirming-context",
+      "leg": "short"
+    },
+    {
+      "id": "short-child-context-mismatch",
+      "kind": "child-context-mismatch",
+      "leg": "short"
+    },
+    {
+      "id": "short-parent-wrong-confirmation-height",
+      "kind": "parent-wrong-confirmation-height",
+      "leg": "short"
+    },
+    {
+      "id": "short-recipient-from-generated-payout",
+      "kind": "recipient-from-generated-payout",
+      "leg": "short"
+    },
+    {
+      "id": "short-missing-payout",
+      "kind": "missing-payout",
+      "leg": "short"
+    },
+    {
+      "id": "short-unconfirmed-payout",
+      "kind": "unconfirmed-payout",
+      "leg": "short"
+    },
+    {
+      "id": "short-already-received-payout",
+      "kind": "already-received-payout",
+      "leg": "short"
+    },
+    {
+      "id": "short-wrong-recipient-at-enforcement",
+      "kind": "wrong-recipient-at-enforcement",
+      "leg": "short"
+    },
+    {
+      "id": "short-wrong-recipient-before-enforcement-helper-allows",
+      "kind": "wrong-recipient-before-enforcement-helper-allows",
+      "leg": "short"
+    },
+    {
+      "id": "short-known-height-wrong-ack-hash",
+      "kind": "known-height-wrong-ack-hash",
+      "leg": "short"
+    },
+    {
+      "id": "short-parent-mutated-ack-hash",
+      "kind": "parent-mutated-ack-hash",
+      "leg": "short"
+    }
+  ],
+  "vm_vectors": [
+    {
+      "id": "long-direct-success",
+      "kind": "direct-success",
+      "leg": "long"
+    },
+    {
+      "id": "long-proxy-funder-success",
+      "kind": "proxy-funder-success",
+      "leg": "long"
+    },
+    {
+      "id": "long-proxy-third-success",
+      "kind": "proxy-third-success",
+      "leg": "long"
+    },
+    {
+      "id": "long-invalid-witness-then-valid",
+      "kind": "invalid-witness-then-valid",
+      "leg": "long"
+    },
+    {
+      "id": "long-wrong-caller-then-valid",
+      "kind": "wrong-caller-then-valid",
+      "leg": "long"
+    },
+    {
+      "id": "long-wrong-proxy-recipient-then-valid",
+      "kind": "wrong-proxy-recipient-then-valid",
+      "leg": "long"
+    },
+    {
+      "id": "long-old-witness-then-valid",
+      "kind": "old-witness-then-valid",
+      "leg": "long"
+    },
+    {
+      "id": "long-cross-leg-witness-then-valid",
+      "kind": "cross-leg-witness-then-valid",
+      "leg": "long"
+    },
+    {
+      "id": "long-unlock-at-expiry-then-reclaim",
+      "kind": "unlock-at-expiry-then-reclaim",
+      "leg": "long"
+    },
+    {
+      "id": "long-early-reclaim-then-unlock",
+      "kind": "early-reclaim-then-unlock",
+      "leg": "long"
+    },
+    {
+      "id": "long-unlock-replay-after-deletion",
+      "kind": "unlock-replay-after-deletion",
+      "leg": "long"
+    },
+    {
+      "id": "long-proxy-then-direct-replay",
+      "kind": "proxy-then-direct-replay",
+      "leg": "long"
+    },
+    {
+      "id": "long-create-at-expiry-refunds",
+      "kind": "create-at-expiry-refunds",
+      "leg": "long"
+    },
+    {
+      "id": "long-insufficient-funding-balance",
+      "kind": "insufficient-funding-balance",
+      "leg": "long"
+    },
+    {
+      "id": "long-insufficient-contract-balance-rolls-back",
+      "kind": "insufficient-contract-balance-rolls-back",
+      "leg": "long"
+    },
+    {
+      "id": "long-raw-receive-replay-needs-verifier",
+      "kind": "raw-receive-replay-needs-verifier",
+      "leg": "long"
+    },
+    {
+      "id": "short-direct-success",
+      "kind": "direct-success",
+      "leg": "short"
+    },
+    {
+      "id": "short-proxy-funder-success",
+      "kind": "proxy-funder-success",
+      "leg": "short"
+    },
+    {
+      "id": "short-proxy-third-success",
+      "kind": "proxy-third-success",
+      "leg": "short"
+    },
+    {
+      "id": "short-invalid-witness-then-valid",
+      "kind": "invalid-witness-then-valid",
+      "leg": "short"
+    },
+    {
+      "id": "short-wrong-caller-then-valid",
+      "kind": "wrong-caller-then-valid",
+      "leg": "short"
+    },
+    {
+      "id": "short-wrong-proxy-recipient-then-valid",
+      "kind": "wrong-proxy-recipient-then-valid",
+      "leg": "short"
+    },
+    {
+      "id": "short-old-witness-then-valid",
+      "kind": "old-witness-then-valid",
+      "leg": "short"
+    },
+    {
+      "id": "short-cross-leg-witness-then-valid",
+      "kind": "cross-leg-witness-then-valid",
+      "leg": "short"
+    },
+    {
+      "id": "short-unlock-at-expiry-then-reclaim",
+      "kind": "unlock-at-expiry-then-reclaim",
+      "leg": "short"
+    },
+    {
+      "id": "short-early-reclaim-then-unlock",
+      "kind": "early-reclaim-then-unlock",
+      "leg": "short"
+    },
+    {
+      "id": "short-unlock-replay-after-deletion",
+      "kind": "unlock-replay-after-deletion",
+      "leg": "short"
+    },
+    {
+      "id": "short-proxy-then-direct-replay",
+      "kind": "proxy-then-direct-replay",
+      "leg": "short"
+    },
+    {
+      "id": "short-create-at-expiry-refunds",
+      "kind": "create-at-expiry-refunds",
+      "leg": "short"
+    },
+    {
+      "id": "short-insufficient-funding-balance",
+      "kind": "insufficient-funding-balance",
+      "leg": "short"
+    },
+    {
+      "id": "short-insufficient-contract-balance-rolls-back",
+      "kind": "insufficient-contract-balance-rolls-back",
+      "leg": "short"
+    },
+    {
+      "id": "short-raw-receive-replay-needs-verifier",
+      "kind": "raw-receive-replay-needs-verifier",
+      "leg": "short"
+    }
+  ]
+}

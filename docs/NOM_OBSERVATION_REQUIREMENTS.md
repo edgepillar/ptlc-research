@@ -102,6 +102,13 @@ funding/account proof.
    from finalized account evidence and core-to-journal admission. Execution uses
    the acknowledged frontier context; later receive inclusion time is not a
    replacement for that timestamp. Independent live-entry proof remains unfilled.
+   The additive [composed VM path](NOM_VM_PATH.md) now covers actual memory-store
+   balances, embedded dispatch/lifecycle, finalized payment descendants and
+   recipient credit. A separate selected verifier consumes its actual blocks and
+   pre/post receive patches. Ledger lookup, confirmation context, spork selection
+   and frontier adoption remain synthetic. Raw receipt replay demonstrates why
+   VM credit alone is not an admission guard. Full admission, context authority,
+   canonical inclusion and atomic recovery entry remain independent requirements.
 3. Select and independently assess observation authority, pin provisioning,
    canonicality/finality and durable evidence policy before connecting a verifier
    to recovery. A declared provider, binary hash or callback is not that assessment.
