@@ -54,7 +54,7 @@ in the table below remain unimplemented.
 | Successful unlock | Contract receive tied to the exact original send, canonical execution context and successful state transition; distinguish reclaim or failed execution | UNIMPLEMENTED |
 | Contract payout | Recomputed child hash, verified parent/child/account linkage, contract sender, exact fixed recipient, token, amount and acknowledged momentum | UNIMPLEMENTED |
 | Recipient receipt | Recipient account receive referencing the verified contract payout, canonical inclusion and the selected spendability/finality rule | UNIMPLEMENTED |
-| Reorg reconciliation | Exact old/new momentum lineage and displaced evidence, retained original bytes and disclosure state, explicit trusted reconciliation | UNIMPLEMENTED |
+| Reorg reconciliation | Exact old/new momentum lineage and displaced evidence, retained original bytes and disclosure state, explicit trusted reconciliation | LOCAL CLAIM RETENTION ONLY; AUTHORITY/RESTORE UNQUALIFIED |
 
 The BIP340 funding key authorizes the inner contract witness. The outer account
 key and signature authorize the account transaction. Role labels, a valid inner
@@ -102,6 +102,10 @@ funding/account proof.
    The [momentum claim corpus](NOM_MOMENTUM_CONFORMANCE.md) adds bounded hash,
    header membership, lineage and conservative reorg plans without selecting
    authority, finality, durable storage or recovery admission.
+   The separate [public-evidence backend](NOM_EVIDENCE_RETENTION.md) retains
+   original/candidate claims and possible disclosure across controlled process
+   restart. Coherent old restore remains unsafe; a local receipt supplies no
+   trusted reconciliation or journal admission.
 4. Qualify signing custody, exact signed transaction storage, account-chain/Plasma
    behavior and restore protection separately. Controlled network composition
    remains outside Stage 0 authorization.
