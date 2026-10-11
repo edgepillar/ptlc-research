@@ -1,0 +1,12 @@
+{
+  "long_message_hex": "2f500d624c7ab0471b3961465604126f4ace92b80bb9f9dec7fae8efaf849855",
+  "long_signature_hex": "182ae27df4f6ea8252a087ae3d6f76894ac99d6d720429c0f179271c7cb80b6c3aca1ca5cf2a07363b53002c0f0c68c7af2548f56ad357b1c62c0b8dedef8e7c",
+  "pair": {
+    "long_presignature_hex": "02c9356f2ac87ae8e36b476e91dd0bb20d0cd8961e41cc5f35a743a98980d7a2ba3aca1ca5cf2a07363b53002c0f0c68c7af2548f56ad357b1c62c0b8dedef8e7f",
+    "schema": "ptlc-nom-public-pair-v1",
+    "short_presignature_hex": "0324f47a9f1537ecbc191ad842fc71d8ae8c7738792cca1a4ef53e28627b8ac2338a407d8116ca27aecd9df20a4e1324b70092eceea885ed1d4badd6d1a6d05cbc"
+  },
+  "schema": "ptlc-nom-supervisor-public-completions-v1",
+  "short_message_hex": "f2bfef7dd4e5bc86524ad880db9224f194bdf3be5fbc065eb6262da5b6f430cb",
+  "short_signature_hex": "72d8c886dd2aa3c701f7d47def78cdc6b58a04d6dd3de0eb55f863f6dae699a48a407d8116ca27aecd9df20a4e1324b70092eceea885ed1d4badd6d1a6d05cb9"
+}

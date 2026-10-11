@@ -1,0 +1,129 @@
+{
+  "boundary": {
+    "account_pool_and_momentum_admission": "NOT_PERFORMED",
+    "application": "NO-GO",
+    "application_signing": "NOT_PERFORMED",
+    "canonicality": "UNFILLED",
+    "complete_admission": "UNFILLED",
+    "construction_security": "NOT ESTABLISHED BY SYNTHETIC SUPERVISOR OR PUBLIC RECOVERY TESTS",
+    "core": "NO-GO",
+    "custody": "EXACT PUBLIC ORIGINALS PRESERVED; NO APPLICATION ORIGINAL CUSTODY",
+    "dynamic_plasma": "NOT_SELECTED; LEGACY CACHE VIEW ONLY",
+    "execution": "PUBLIC SUPERVISOR GENERATION AND EXACT APPLY REPRODUCTION BEFORE ONE MEMORY ADOPTION",
+    "finality": "UNFILLED",
+    "independent_assessment": "UNFILLED",
+    "journal_composition": "NOT_PERFORMED",
+    "ledger": "SYNTHETIC MOMENTA, CONFIRMATIONS, FUSION AND MEMORY FRONTIERS; NO NODE START",
+    "patches": "PER-TRANSACTION DELTAS AND INDEPENDENT SELECTED BATCH REPLAY; NO AUTHENTICATED STATE PROOF",
+    "recovery_action": "NONE",
+    "restore_fence": "UNFILLED",
+    "source_authentication": "UNFILLED",
+    "subject": "NEW PUBLIC PLASMA-COMMITTED ORIGINALS; TWO USERS AND ONE SHARED CONTRACT",
+    "supervisor_generation": "SELECTED SYNTHETIC GENERATE AND APPLY METHODS ONLY",
+    "test_signatures": "DISCLOSED CONSTANTS ONLY; SEPARATE OUTER ED25519 AND INNER SECP256K1 KEYS"
+  },
+  "cache_selection": {
+    "capacity": "420000",
+    "committed_plasma": "0",
+    "dynamic_plasma_spork": false,
+    "fusion_amount": "20000000000",
+    "ptlc_spork": true
+  },
+  "canonical_base_plasma": {
+    "Create": 52500,
+    "Receive": 21000,
+    "Unlock": 73500
+  },
+  "cases": [
+    "complete",
+    "old-inner-before-valid"
+  ],
+  "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+  "fundings": {
+    "long": {
+      "block": {
+        "address_hex": "0019e9425dcb7b0d14099922e4909cb12afb0500",
+        "amount": "100",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000007d00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000a307fb31c7585b6ccb5dc3ddc844e22b14b7aa000000000000000000000000000000000000000000000000000000000000002079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "52500",
+        "height": "1",
+        "momentum_hash_hex": "84997d2f4f44a4f61fb6e4f1e7ac2a3cf9f3ad14b51fdeb42e4b994f1de0e727",
+        "momentum_height": "10109300",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "01010101010101010101",
+        "version": "1"
+      },
+      "hash_hex": "f69ba13c5d8397369f0070cab9895cab767ae057e41be624fdfa0406da954ad6"
+    },
+    "short": {
+      "block": {
+        "address_hex": "00a307fb31c7585b6ccb5dc3ddc844e22b14b7aa",
+        "amount": "200",
+        "block_type": "2",
+        "chain_id": "69",
+        "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000003e8000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000019e9425dcb7b0d14099922e4909cb12afb05000000000000000000000000000000000000000000000000000000000000000020c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "descendant_hashes_hex": [],
+        "difficulty": "0",
+        "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "fused_plasma": "52500",
+        "height": "1",
+        "momentum_hash_hex": "84997d2f4f44a4f61fb6e4f1e7ac2a3cf9f3ad14b51fdeb42e4b994f1de0e727",
+        "momentum_height": "10109300",
+        "nonce_hex": "0000000000000000",
+        "previous_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+        "token_standard_hex": "02020202020202020202",
+        "version": "1"
+      },
+      "hash_hex": "95939f089d8545099800c61b55f11018636aadd594bd5ed5ee26951b2c33c99f"
+    }
+  },
+  "old_funding_ids_hex": {
+    "long": "60b7c653bd13e7a98d6c3f809dd3810e4b9adc8bb392e3c00d9873f6ff3ad3bc",
+    "short": "18c81b658da0e21204f4d6b565b5c1be66056276d0eb335cd3ae75b0880807af"
+  },
+  "profile": "zenon-pr138-supervisor-plasma-v1",
+  "public_keys": {
+    "alice": "db995fe25169d141cab9bbba92baa01f9f2e1ece7df4cb2ac05190f37fcc1f9d",
+    "bob": "2152f8d19b791d24453242e15f2eab6cb7cffa7b6a5ed30097960e069881db12"
+  },
+  "research_baseline_commit": "9f64e3ef808731c888b3163fd10d0502a9a14339",
+  "schema": "zenon-nom-supervisor-inputs-v1",
+  "terms": {
+    "adaptor_point_sec1_hex": "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+    "alice_address_hex": "0019e9425dcb7b0d14099922e4909cb12afb0500",
+    "bob_address_hex": "00a307fb31c7585b6ccb5dc3ddc844e22b14b7aa",
+    "chain_id": "69",
+    "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+    "genesis_hash_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+    "long": {
+      "amount": "100",
+      "entry_id_hex": "f69ba13c5d8397369f0070cab9895cab767ae057e41be624fdfa0406da954ad6",
+      "expires_at": "2000",
+      "funder": "alice",
+      "funder_key_xonly_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "recipient": "bob",
+      "token_standard_hex": "01010101010101010101"
+    },
+    "minimum_expiry_gap_seconds": "500",
+    "profile": "zenon-ptlc-unlock:v1",
+    "schema": "ptlc-nom-fixed-terms-v1",
+    "session_id_hex": "aea05990dcad28ff9877f87c4753c6b7bdca9ac361340e027b853f0d7b60cf91",
+    "short": {
+      "amount": "200",
+      "entry_id_hex": "95939f089d8545099800c61b55f11018636aadd594bd5ed5ee26951b2c33c99f",
+      "expires_at": "1000",
+      "funder": "bob",
+      "funder_key_xonly_hex": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+      "recipient": "alice",
+      "token_standard_hex": "02020202020202020202"
+    }
+  }
+}
