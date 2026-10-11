@@ -1,0 +1,438 @@
+// Independently written MIT tests; unchanged GPL core is referenced only.
+package vm
+
+import (
+	"bytes"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"math/big"
+	"os"
+	"strconv"
+	"testing"
+	"time"
+
+	"github.com/zenon-network/go-zenon/chain/account"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/chain/store"
+	"github.com/zenon-network/go-zenon/common/db"
+	"github.com/zenon-network/go-zenon/common/types"
+	"github.com/zenon-network/go-zenon/vm/constants"
+	"github.com/zenon-network/go-zenon/vm/embedded/definition"
+	"github.com/zenon-network/go-zenon/vm/vm_context"
+)
+
+// Ledger lookups and spork gates are explicit test selections, not authority.
+type researchVMPathLedger struct {
+	store.Momentum
+	momentum *nom.Momentum
+	blocks   map[types.Hash]*nom.AccountBlock
+}
+
+func (s *researchVMPathLedger) GetFrontierMomentum() (*nom.Momentum, error) { return s.momentum, nil }
+func (s *researchVMPathLedger) ChainIdentifier() uint64                     { return s.momentum.ChainIdentifier }
+func (s *researchVMPathLedger) GetAccountBlockByHash(h types.Hash) (*nom.AccountBlock, error) {
+	b := s.blocks[h]
+	if b == nil {
+		return nil, errors.New("synthetic ledger lookup unavailable")
+	}
+	return b.Copy(), nil
+}
+
+type researchVMPathCache struct{ store.Cache }
+
+func (*researchVMPathCache) IsSporkActive(s *types.ImplementedSpork) (bool, error) {
+	return s == types.PtlcSpork, nil
+}
+
+func TestResearchNoMVMPath(t *testing.T) {
+	read := func(name string, value interface{}) {
+		b, err := os.ReadFile(os.Getenv(name))
+		if err != nil || json.Unmarshal(b, value) != nil {
+			t.Fatal("selected public input unavailable")
+		}
+	}
+	var fixture struct {
+		Schema  string                           `json:"schema"`
+		Core    string                           `json:"core_commit"`
+		Vectors []struct{ ID, Leg, Kind string } `json:"vm_vectors"`
+	}
+	read("PTLC_NOM_VM_PATH_FIXTURE", &fixture)
+	if fixture.Schema != "zenon-nom-vm-path-corpus-v1" || fixture.Core != "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced" || len(fixture.Vectors) != 32 {
+		t.Fatal("complete VM profile required")
+	}
+	var funding struct {
+		Fundings map[string]struct {
+			Hash  string                 `json:"hash_hex"`
+			Block map[string]interface{} `json:"block"`
+			Entry map[string]interface{} `json:"entry"`
+		} `json:"fundings"`
+	}
+	var completions, old map[string]interface{}
+	read("PTLC_NOM_VM_FUNDING", &funding)
+	read("PTLC_NOM_VM_COMPLETIONS", &completions)
+	read("PTLC_NOM_VM_OLD_COMPLETIONS", &old)
+	raw := func(s string, size int) []byte {
+		v, err := hex.DecodeString(s)
+		if err != nil || (size >= 0 && len(v) != size) {
+			t.Fatal("invalid public encoding")
+		}
+		return v
+	}
+	hash := func(s string) types.Hash { var v types.Hash; copy(v[:], raw(s, 32)); return v }
+	address := func(s string) types.Address { var v types.Address; copy(v[:], raw(s, 20)); return v }
+	number := func(s string) uint64 {
+		v, err := strconv.ParseUint(s, 10, 64)
+		if err != nil {
+			t.Fatal("invalid number")
+		}
+		return v
+	}
+	decimal := func(s string) *big.Int {
+		v, ok := new(big.Int).SetString(s, 10)
+		if !ok {
+			t.Fatal("invalid amount")
+		}
+		return v
+	}
+	encode := func(b *nom.AccountBlock) map[string]interface{} {
+		amount := "0"
+		if b.Amount != nil {
+			amount = b.Amount.String()
+		}
+		children := []string{}
+		for _, c := range b.DescendantBlocks {
+			children = append(children, hex.EncodeToString(c.Hash[:]))
+		}
+		return map[string]interface{}{"hash_hex": hex.EncodeToString(b.Hash[:]), "changes_hash_hex": hex.EncodeToString(b.ChangesHash[:]),
+			"block": map[string]interface{}{"version": fmt.Sprint(b.Version), "chain_id": fmt.Sprint(b.ChainIdentifier), "block_type": fmt.Sprint(b.BlockType),
+				"previous_hash_hex": hex.EncodeToString(b.PreviousHash[:]), "height": fmt.Sprint(b.Height), "momentum_hash_hex": hex.EncodeToString(b.MomentumAcknowledged.Hash[:]), "momentum_height": fmt.Sprint(b.MomentumAcknowledged.Height),
+				"address_hex": hex.EncodeToString(b.Address[:]), "to_address_hex": hex.EncodeToString(b.ToAddress[:]), "amount": amount, "token_standard_hex": hex.EncodeToString(b.TokenStandard[:]),
+				"from_block_hash_hex": hex.EncodeToString(b.FromBlockHash[:]), "descendant_hashes_hex": children, "data_hex": hex.EncodeToString(b.Data), "fused_plasma": fmt.Sprint(b.FusedPlasma), "difficulty": fmt.Sprint(b.Difficulty), "nonce_hex": hex.EncodeToString(b.Nonce.Data[:])}}
+	}
+	seen := map[string]bool{}
+	for _, v := range fixture.Vectors {
+		if seen[v.ID] || v.ID == "" {
+			t.Fatal("duplicate or empty source subject")
+		}
+		seen[v.ID] = true
+		t.Run(v.ID, func(t *testing.T) {
+			f, ok := funding.Fundings[v.Leg]
+			if !ok {
+				t.Fatal("unknown public leg")
+			}
+			b := f.Block
+			fund := &nom.AccountBlock{Version: number(b["version"].(string)), ChainIdentifier: number(b["chain_id"].(string)), BlockType: number(b["block_type"].(string)), Address: address(b["address_hex"].(string)), ToAddress: address(b["to_address_hex"].(string)), Height: number(b["height"].(string)), PreviousHash: hash(b["previous_hash_hex"].(string)), MomentumAcknowledged: types.HashHeight{Hash: hash(b["momentum_hash_hex"].(string)), Height: number(b["momentum_height"].(string))}, Amount: decimal(b["amount"].(string)), Data: raw(b["data_hex"].(string), -1), FusedPlasma: number(b["fused_plasma"].(string)), Difficulty: number(b["difficulty"].(string))}
+			copy(fund.TokenStandard[:], raw(b["token_standard_hex"].(string), 10))
+			copy(fund.Nonce.Data[:], raw(b["nonce_hex"].(string), 8))
+			fund.Hash = fund.ComputeHash()
+			if fund.Hash != hash(f.Hash) {
+				t.Fatal("actual Create hash differs")
+			}
+			recipient := address(f.Entry["destination_hex"].(string))
+			third := address("00" + fmt.Sprintf("%038x", 3))
+			expiry := int64(number(f.Entry["expiration_time"].(string)))
+			at := time.Unix(100, 0)
+			ledger := &researchVMPathLedger{momentum: &nom.Momentum{ChainIdentifier: fund.ChainIdentifier, Height: 101, Hash: hash(fmt.Sprintf("%064x", 101)), Timestamp: &at}, blocks: map[types.Hash]*nom.AccountBlock{fund.Hash: fund.Copy()}}
+			cache := &researchVMPathCache{}
+			accounts := map[types.Address]vm_context.AccountVmContext{}
+			roots := map[types.Address]db.DB{}
+			get := func(a types.Address) vm_context.AccountVmContext {
+				if accounts[a] == nil {
+					root := db.NewMemDB()
+					roots[a] = root
+					accounts[a] = vm_context.NewAccountContext(ledger, account.NewAccountStore(a, root), cache, nil)
+				}
+				return accounts[a]
+			}
+			funderCtx, contractCtx, recipientCtx := get(fund.Address), get(types.PtlcContract), get(recipient)
+			budget := new(big.Int).Mul(fund.Amount, big.NewInt(2))
+			if v.Kind == "insufficient-funding-balance" {
+				budget.Sub(fund.Amount, big.NewInt(1))
+			}
+			if err := funderCtx.SetBalance(fund.TokenStandard, budget); err != nil {
+				t.Fatal("public budget setup failed")
+			}
+			balance := func(c vm_context.AccountVmContext) *big.Int {
+				b, err := c.GetBalance(fund.TokenStandard)
+				if err != nil {
+					t.Fatal("actual balance unavailable")
+				}
+				return b
+			}
+			entry := func(present bool) {
+				e, err := definition.GetPtlcInfo(contractCtx.Storage(), fund.Hash)
+				if present {
+					if err != nil || e.Id != fund.Hash || e.Amount.Cmp(fund.Amount) != 0 || e.Destination != recipient {
+						t.Fatal("actual entry differs")
+					}
+				} else if err != constants.ErrDataNonExistent {
+					t.Fatal("entry should be absent")
+				}
+			}
+			blocks := map[string]interface{}{"funding": encode(fund)}
+			events := []map[string]interface{}{}
+			receiptPatches := map[string]string{}
+			adopt := func(c vm_context.AccountVmContext, block *nom.AccountBlock) {
+				wire, err := block.Serialize()
+				if err != nil || db.SetFrontier(roots[*c.Address()], block.Identifier(), wire) != nil {
+					t.Fatal("synthetic frontier adoption failed")
+				}
+			}
+			errorName := func(err error) string {
+				if err == nil {
+					return "NONE"
+				}
+				for name, value := range map[string]error{"ErrInsufficientBalance": constants.ErrInsufficientBalance, "ErrInvalidExpirationTime": constants.ErrInvalidExpirationTime, "ErrInvalidPointSignature": constants.ErrInvalidPointSignature, "ErrPermissionDenied": constants.ErrPermissionDenied, "ErrExpired": constants.ErrExpired, "ReclaimNotDue": constants.ReclaimNotDue, "ErrDataNonExistent": constants.ErrDataNonExistent} {
+					if err == value {
+						return name
+					}
+				}
+				t.Fatal("unselected source error")
+				return "UNSELECTED"
+			}
+			generate := func(label string, send *nom.AccountBlock, want error) *nom.AccountBlock {
+				previous, err := contractCtx.Frontier()
+				if err != nil {
+					t.Fatal("actual frontier unavailable")
+				}
+				ledger.blocks[send.Hash] = send.Copy()
+				parent, methodErr, internalErr := NewVM(contractCtx, ledger).generateEmbeddedReceive(send.Hash)
+				if internalErr != nil || methodErr != want || parent == nil || parent.Hash != parent.ComputeHash() || parent.FromBlockHash != send.Hash || parent.MomentumAcknowledged != ledger.momentum.Identifier() || !bytes.Equal(parent.Data, []byte{0, 0, 0, 0, 0, 0, 0, byte(errToStatus(want))}) {
+					t.Fatal("actual composed VM outcome differs")
+				}
+				prevHash := types.ZeroHash
+				nextHeight := uint64(1)
+				if previous != nil {
+					prevHash = previous.Hash
+					nextHeight = previous.Height + 1
+				}
+				for i, child := range parent.DescendantBlocks {
+					if child.Hash != child.ComputeHash() || child.PreviousHash != prevHash || child.Height != nextHeight || child.MomentumAcknowledged != parent.MomentumAcknowledged || child.Address != types.PtlcContract || child.Amount.Cmp(fund.Amount) != 0 || child.TokenStandard != fund.TokenStandard {
+						t.Fatal("actual payout ancestry or asset differs")
+					}
+					blocks[fmt.Sprintf("%s-payout-%d", label, i)] = encode(child)
+					ledger.blocks[child.Hash] = child.Copy()
+					prevHash = child.Hash
+					nextHeight++
+				}
+				if parent.PreviousHash != prevHash || parent.Height != nextHeight {
+					t.Fatal("actual parent ancestry differs")
+				}
+				blocks[label+"-send"] = encode(send)
+				blocks[label+"-receive"] = encode(parent)
+				events = append(events, map[string]interface{}{"label": label, "error": errorName(methodErr), "status": fmt.Sprint(errToStatus(methodErr)), "payouts": len(parent.DescendantBlocks)})
+				adopt(contractCtx, parent)
+				return parent
+			}
+			receive := func(label string, child *nom.AccountBlock, target types.Address) {
+				c := get(target)
+				previous, err := c.Frontier()
+				if err != nil {
+					t.Fatal("actual recipient frontier unavailable")
+				}
+				if v.Kind == "direct-success" {
+					p, err := c.Changes()
+					if err != nil {
+						t.Fatal("actual pre-receive patch unavailable")
+					}
+					receiptPatches["before_hex"] = hex.EncodeToString(p.Dump())
+				}
+				b := &nom.AccountBlock{Version: 1, ChainIdentifier: fund.ChainIdentifier, BlockType: nom.BlockTypeUserReceive, Address: target, Amount: big.NewInt(0), FromBlockHash: child.Hash, MomentumAcknowledged: ledger.momentum.Identifier(), Height: 1}
+				if previous != nil {
+					b.PreviousHash = previous.Hash
+					b.Height = previous.Height + 1
+				}
+				if err := NewVM(c, ledger).applyReceive(b); err != nil || !c.IsReceived(child.Hash) {
+					t.Fatal("actual receive credit or marker differs")
+				}
+				patch, err := c.Changes()
+				if err != nil {
+					t.Fatal("actual recipient patch unavailable")
+				}
+				b.ChangesHash = db.PatchHash(patch)
+				b.Hash = b.ComputeHash()
+				adopt(c, b)
+				blocks[label] = encode(b)
+				if v.Kind == "direct-success" {
+					p, err := c.Changes()
+					if err != nil {
+						t.Fatal("actual post-receive patch unavailable")
+					}
+					receiptPatches["after_hex"] = hex.EncodeToString(p.Dump())
+				}
+			}
+			if err := NewVM(funderCtx, ledger).applySend(fund); v.Kind == "insufficient-funding-balance" {
+				if err != constants.ErrInsufficientBalance || balance(funderCtx).Cmp(budget) != 0 {
+					t.Fatal("funding refusal debited balance")
+				}
+				events = append(events, map[string]interface{}{"label": "funding-send", "error": errorName(err), "status": "0", "payouts": 0})
+				entry(false)
+			} else {
+				if err != nil || fund.Hash != fund.ComputeHash() || balance(funderCtx).Cmp(fund.Amount) != 0 {
+					t.Fatal("actual funding debit differs")
+				}
+				if v.Kind == "create-at-expiry-refunds" {
+					at = time.Unix(expiry, 0)
+					ledger.momentum.Timestamp = &at
+				}
+				createErr := error(nil)
+				if v.Kind == "create-at-expiry-refunds" {
+					createErr = constants.ErrInvalidExpirationTime
+				}
+				created := generate("create", fund, createErr)
+				if createErr != nil {
+					if len(created.DescendantBlocks) != 1 || created.DescendantBlocks[0].ToAddress != fund.Address || balance(contractCtx).Sign() != 0 {
+						t.Fatal("actual create refund differs")
+					}
+					receive("refund-recipient-receive", created.DescendantBlocks[0], fund.Address)
+					entry(false)
+				} else {
+					if len(created.DescendantBlocks) != 0 || balance(contractCtx).Cmp(fund.Amount) != 0 {
+						t.Fatal("actual funding credit differs")
+					}
+					entry(true)
+					sequence := uint64(0)
+					claim := func(label, method string, caller, destination types.Address, witness []byte, timestamp int64, want error) *nom.AccountBlock {
+						sequence++
+						at = time.Unix(timestamp, 0)
+						ledger.momentum = &nom.Momentum{ChainIdentifier: fund.ChainIdentifier, Height: 102 + sequence, Hash: hash(fmt.Sprintf("%064x", 102+sequence)), Timestamp: &at}
+						var data []byte
+						switch method {
+						case "Unlock":
+							data = definition.ABIPtlc.PackMethodPanic(method, fund.Hash, witness)
+						case "ProxyUnlock":
+							data = definition.ABIPtlc.PackMethodPanic(method, fund.Hash, destination, witness)
+						case "Reclaim":
+							data = definition.ABIPtlc.PackMethodPanic(method, fund.Hash)
+						default:
+							t.Fatal("unknown selected method")
+						}
+						send := &nom.AccountBlock{Version: 1, ChainIdentifier: fund.ChainIdentifier, BlockType: nom.BlockTypeUserSend, Address: caller, ToAddress: types.PtlcContract, Height: 20 + sequence, MomentumAcknowledged: ledger.momentum.Identifier(), Amount: big.NewInt(0), Data: data}
+						send.PreviousHash = hash(fmt.Sprintf("%064x", 300+sequence))
+						send.Hash = send.ComputeHash()
+						if err := NewVM(get(caller), ledger).applySend(send); err != nil {
+							t.Fatal("actual claim send validation differs")
+						}
+						return generate(label, send, want)
+					}
+					witness := raw(completions[v.Leg+"_signature_hex"].(string), 64)
+					valid := func(method string, caller types.Address, timestamp int64) *nom.AccountBlock {
+						return claim("unlock", method, caller, recipient, witness, timestamp, nil)
+					}
+					var paid *nom.AccountBlock
+					switch v.Kind {
+					case "direct-success", "raw-receive-replay-needs-verifier":
+						paid = valid("Unlock", recipient, 900)
+					case "proxy-funder-success":
+						paid = valid("ProxyUnlock", fund.Address, 900)
+					case "proxy-third-success":
+						paid = valid("ProxyUnlock", third, 900)
+					case "invalid-witness-then-valid", "old-witness-then-valid", "cross-leg-witness-then-valid", "wrong-caller-then-valid", "wrong-proxy-recipient-then-valid", "early-reclaim-then-unlock":
+						bad := append([]byte(nil), witness...)
+						method := "Unlock"
+						caller := recipient
+						dest := recipient
+						want := constants.ErrInvalidPointSignature
+						if v.Kind == "invalid-witness-then-valid" {
+							bad[0] ^= 1
+						}
+						if v.Kind == "old-witness-then-valid" {
+							bad = raw(old[v.Leg+"_signature_hex"].(string), 64)
+						}
+						if v.Kind == "cross-leg-witness-then-valid" {
+							other := "short"
+							if v.Leg == "short" {
+								other = "long"
+							}
+							bad = raw(completions[other+"_signature_hex"].(string), 64)
+						}
+						if v.Kind == "wrong-caller-then-valid" {
+							caller = third
+							want = constants.ErrPermissionDenied
+						}
+						if v.Kind == "wrong-proxy-recipient-then-valid" {
+							method = "ProxyUnlock"
+							caller = third
+							dest = third
+							want = constants.ErrPermissionDenied
+						}
+						if v.Kind == "early-reclaim-then-unlock" {
+							method = "Reclaim"
+							caller = fund.Address
+							want = constants.ReclaimNotDue
+						}
+						failed := claim("refused", method, caller, dest, bad, 900, want)
+						if len(failed.DescendantBlocks) != 0 || balance(contractCtx).Cmp(fund.Amount) != 0 {
+							t.Fatal("refused claim changed funds")
+						}
+						entry(true)
+						paid = valid("Unlock", recipient, 900)
+					case "unlock-at-expiry-then-reclaim":
+						failed := claim("refused", "Unlock", recipient, recipient, witness, expiry, constants.ErrExpired)
+						if len(failed.DescendantBlocks) != 0 {
+							t.Fatal("expired claim paid")
+						}
+						entry(true)
+						paid = claim("reclaim", "Reclaim", fund.Address, recipient, nil, expiry, nil)
+					case "unlock-replay-after-deletion", "proxy-then-direct-replay":
+						method := "Unlock"
+						caller := recipient
+						if v.Kind == "proxy-then-direct-replay" {
+							method = "ProxyUnlock"
+							caller = third
+						}
+						paid = valid(method, caller, 900)
+						failed := claim("replay", "Unlock", recipient, recipient, witness, 900, constants.ErrDataNonExistent)
+						if len(failed.DescendantBlocks) != 0 || balance(contractCtx).Sign() != 0 {
+							t.Fatal("deleted entry replay paid")
+						}
+						entry(false)
+					case "insufficient-contract-balance-rolls-back":
+						corrupt := new(big.Int).Sub(fund.Amount, big.NewInt(1))
+						if err := contractCtx.SetBalance(fund.TokenStandard, corrupt); err != nil {
+							t.Fatal("negative fixture setup failed")
+						}
+						failed := claim("refused", "Unlock", recipient, recipient, witness, 900, constants.ErrInsufficientBalance)
+						if len(failed.DescendantBlocks) != 0 || balance(contractCtx).Cmp(corrupt) != 0 {
+							t.Fatal("VM rollback did not restore corrupted input state")
+						}
+						entry(true)
+					default:
+						t.Fatal("unselected VM control")
+					}
+					if paid != nil {
+						if len(paid.DescendantBlocks) != 1 || balance(contractCtx).Sign() != 0 {
+							t.Fatal("actual successful payout differs")
+						}
+						entry(false)
+						to := recipient
+						if v.Kind == "unlock-at-expiry-then-reclaim" {
+							to = fund.Address
+						}
+						if paid.DescendantBlocks[0].ToAddress != to {
+							t.Fatal("fixed payout destination differs")
+						}
+						receive("recipient-receive", paid.DescendantBlocks[0], to)
+						if v.Kind == "raw-receive-replay-needs-verifier" {
+							// This intentionally bypasses admission. MarkAsReceived is
+							// a marker, not the verifier's duplicate-receive guard.
+							receive("raw-replayed-recipient-receive", paid.DescendantBlocks[0], to)
+							if balance(recipientCtx).Cmp(new(big.Int).Mul(fund.Amount, big.NewInt(2))) != 0 {
+								t.Fatal("raw VM replay boundary differs")
+							}
+						}
+					}
+				}
+			}
+			_, entryErr := definition.GetPtlcInfo(contractCtx.Storage(), fund.Hash)
+			record := map[string]interface{}{"schema": "zenon-nom-vm-path-record-v1", "id": v.ID, "leg": v.Leg, "kind": v.Kind, "funding_id_hex": f.Hash, "amount": fund.Amount.String(), "entry_present": entryErr == nil, "events": events, "blocks": blocks, "receipt_patches": receiptPatches, "balances": map[string]string{"funder": balance(funderCtx).String(), "contract": balance(contractCtx).String(), "recipient": balance(recipientCtx).String(), "third": balance(get(third)).String()}}
+			wire, err := json.Marshal(record)
+			if err != nil {
+				t.Fatal("public result encoding failed")
+			}
+			t.Logf("PTLC_RESEARCH_VM_RECORD %s", wire)
+		})
+	}
+}

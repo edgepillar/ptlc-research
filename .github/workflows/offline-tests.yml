@@ -468,3 +468,12 @@ jobs:
           ptlc_go="$(command -v go)"
           python3 -B scripts/qualify_nom_created_core.py \
             --checkout .research-cache/nom-wire-core-source --go "$ptlc_go"
+      - name: Compare composed VM accounting and source receipt guards offline
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: "off"
+          GOSUMDB: "off"
+        run: |
+          ptlc_go="$(command -v go)"
+          python3 -B scripts/qualify_nom_vm_path.py \
+            --checkout .research-cache/nom-wire-core-source --go "$ptlc_go"

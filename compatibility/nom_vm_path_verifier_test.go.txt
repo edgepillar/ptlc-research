@@ -1,0 +1,201 @@
+// Independently written MIT checks using blocks and patches emitted by the VM.
+package verifier
+
+import (
+	"encoding/hex"
+	"encoding/json"
+	"math/big"
+	"os"
+	"strconv"
+	"testing"
+
+	"github.com/zenon-network/go-zenon/chain/account"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/chain/store"
+	"github.com/zenon-network/go-zenon/common/db"
+	"github.com/zenon-network/go-zenon/common/types"
+)
+
+type researchVMReceiptLedger struct {
+	store.Momentum
+	momentum     *nom.Momentum
+	send         *nom.AccountBlock
+	confirmation uint64
+	frontier     uint64
+}
+
+func (s *researchVMReceiptLedger) GetFrontierMomentum() (*nom.Momentum, error) {
+	return s.momentum, nil
+}
+func (s *researchVMReceiptLedger) GetMomentumByHeight(h uint64) (*nom.Momentum, error) {
+	if h == s.momentum.Height {
+		return s.momentum, nil
+	}
+	return nil, nil
+}
+func (s *researchVMReceiptLedger) GetAccountBlockByHash(h types.Hash) (*nom.AccountBlock, error) {
+	if s.send != nil && h == s.send.Hash {
+		return s.send.Copy(), nil
+	}
+	return nil, nil
+}
+func (s *researchVMReceiptLedger) GetBlockConfirmationHeight(types.Hash) (uint64, error) {
+	return s.confirmation, nil
+}
+func (s *researchVMReceiptLedger) Identifier() types.HashHeight {
+	return types.HashHeight{Height: s.frontier}
+}
+
+func TestResearchNoMVMReceiptVerifier(t *testing.T) {
+	read := func(name string, value interface{}) {
+		b, err := os.ReadFile(os.Getenv(name))
+		if err != nil || json.Unmarshal(b, value) != nil {
+			t.Fatal("selected public source result unavailable")
+		}
+	}
+	var fixture struct {
+		Schema  string                           `json:"schema"`
+		Vectors []struct{ ID, Leg, Kind string } `json:"verifier_vectors"`
+	}
+	read("PTLC_NOM_VM_PATH_FIXTURE", &fixture)
+	if fixture.Schema != "zenon-nom-vm-path-corpus-v1" || len(fixture.Vectors) != 24 {
+		t.Fatal("complete receipt verifier controls required")
+	}
+	var results struct {
+		Schema   string `json:"schema"`
+		Baseline map[string]struct {
+			Blocks map[string]struct {
+				Hash    string                 `json:"hash_hex"`
+				Changes string                 `json:"changes_hash_hex"`
+				Block   map[string]interface{} `json:"block"`
+			} `json:"blocks"`
+			Patches map[string]string `json:"receipt_patches"`
+		} `json:"baseline"`
+	}
+	read("PTLC_NOM_VM_SOURCE_RESULTS", &results)
+	if results.Schema != "zenon-nom-vm-verifier-input-v1" || len(results.Baseline) != 2 {
+		t.Fatal("both VM-generated baselines required")
+	}
+	raw := func(s string, size int) []byte {
+		b, err := hex.DecodeString(s)
+		if err != nil || (size >= 0 && len(b) != size) {
+			t.Fatal("invalid public source encoding")
+		}
+		return b
+	}
+	hash := func(s string) types.Hash { var h types.Hash; copy(h[:], raw(s, 32)); return h }
+	address := func(s string) types.Address { var a types.Address; copy(a[:], raw(s, 20)); return a }
+	number := func(s string) uint64 {
+		v, err := strconv.ParseUint(s, 10, 64)
+		if err != nil {
+			t.Fatal("invalid number")
+		}
+		return v
+	}
+	seen := map[string]bool{}
+	for _, v := range fixture.Vectors {
+		if v.ID == "" || seen[v.ID] {
+			t.Fatal("duplicate or empty verifier subject")
+		}
+		seen[v.ID] = true
+		t.Run(v.ID, func(t *testing.T) {
+			selected, ok := results.Baseline[v.Leg]
+			if !ok {
+				t.Fatal("missing source-generated leg")
+			}
+			block := func(role string) *nom.AccountBlock {
+				r, ok := selected.Blocks[role]
+				if !ok {
+					t.Fatal("missing actual source block")
+				}
+				b := r.Block
+				amount, ok := new(big.Int).SetString(b["amount"].(string), 10)
+				if !ok {
+					t.Fatal("invalid amount")
+				}
+				value := &nom.AccountBlock{Version: number(b["version"].(string)), ChainIdentifier: number(b["chain_id"].(string)), BlockType: number(b["block_type"].(string)), Hash: hash(r.Hash), ChangesHash: hash(r.Changes), PreviousHash: hash(b["previous_hash_hex"].(string)), Height: number(b["height"].(string)), MomentumAcknowledged: types.HashHeight{Hash: hash(b["momentum_hash_hex"].(string)), Height: number(b["momentum_height"].(string))}, Address: address(b["address_hex"].(string)), ToAddress: address(b["to_address_hex"].(string)), Amount: amount, FromBlockHash: hash(b["from_block_hash_hex"].(string)), Data: raw(b["data_hex"].(string), -1), FusedPlasma: number(b["fused_plasma"].(string)), Difficulty: number(b["difficulty"].(string))}
+				copy(value.TokenStandard[:], raw(b["token_standard_hex"].(string), 10))
+				copy(value.Nonce.Data[:], raw(b["nonce_hex"].(string), 8))
+				for _, child := range b["descendant_hashes_hex"].([]interface{}) {
+					value.DescendantBlocks = append(value.DescendantBlocks, &nom.AccountBlock{Hash: hash(child.(string))})
+				}
+				return value
+			}
+			parent, payout, send, receipt := block("unlock-receive"), block("unlock-payout-0"), block("unlock-send"), block("recipient-receive")
+			parent.DescendantBlocks = []*nom.AccountBlock{payout}
+			ledger := &researchVMReceiptLedger{momentum: &nom.Momentum{Hash: parent.MomentumAcknowledged.Hash, Height: parent.MomentumAcknowledged.Height}, send: send, confirmation: parent.MomentumAcknowledged.Height, frontier: ReceiverMismatchEnforcementHeight}
+			root := db.NewMemDB()
+			accountStore := account.NewAccountStore(receipt.Address, root)
+			before, err := db.NewPatchFromDump(raw(selected.Patches["before_hex"], -1))
+			if err != nil || accountStore.Apply(before) != nil || accountStore.IsReceived(payout.Hash) {
+				t.Fatal("actual VM pre-receive patch differs")
+			}
+			verifier := &accountBlockVerifier{block: parent, momentumStore: ledger, frontierStore: ledger, accountStore: accountStore}
+			var got, want error
+			switch v.Kind {
+			case "source-generated-hashes":
+				for role := range selected.Blocks {
+					b := block(role)
+					if b.ComputeHash() != b.Hash {
+						t.Fatal("actual generated block hash differs")
+					}
+				}
+				return
+			case "parent-child-confirming-context":
+				got = verifier.momentumAcknowledged()
+			case "child-context-mismatch":
+				payout.MomentumAcknowledged.Height++
+				got = verifier.momentumAcknowledged()
+				want = ErrABMAMustBeTheSame
+			case "parent-wrong-confirmation-height":
+				ledger.confirmation++
+				got = verifier.momentumAcknowledged()
+				want = ErrABMAInvalidForAutoGenerated
+			case "parent-mutated-ack-hash":
+				parent.MomentumAcknowledged.Hash[0] ^= 1
+				if verifier.momentumAcknowledged() == nil {
+					t.Fatal("changed acknowledged hash accepted")
+				}
+				return
+			case "known-height-wrong-ack-hash":
+				verifier.block = receipt
+				verifier.momentumStore = nil
+				receipt.MomentumAcknowledged.Hash[0] ^= 1
+				got = verifier.momentumAcknowledged()
+				want = ErrABMAMissing
+			case "recipient-from-generated-payout", "missing-payout", "unconfirmed-payout", "already-received-payout", "wrong-recipient-at-enforcement", "wrong-recipient-before-enforcement-helper-allows":
+				verifier.block = receipt
+				verifier.momentumStore = nil
+				ledger.send = payout
+				ledger.confirmation = receipt.MomentumAcknowledged.Height
+				switch v.Kind {
+				case "missing-payout":
+					ledger.send = nil
+					want = ErrABFromBlockMissing
+				case "unconfirmed-payout":
+					ledger.confirmation++
+					want = ErrABFromBlockMissing
+				case "already-received-payout":
+					// Import the exact actual VM state patch, not a Boolean stub.
+					after, err := db.NewPatchFromDump(raw(selected.Patches["after_hex"], -1))
+					if err != nil || accountStore.Apply(after) != nil || !accountStore.IsReceived(payout.Hash) {
+						t.Fatal("actual VM post-receive patch differs")
+					}
+					want = ErrABFromBlockAlreadyReceived
+				case "wrong-recipient-at-enforcement":
+					receipt.Address = block("funding").Address
+					want = ErrABFromBlockReceiverMismatch
+				case "wrong-recipient-before-enforcement-helper-allows":
+					receipt.Address = block("funding").Address
+					ledger.frontier = ReceiverMismatchEnforcementHeight - 1
+				}
+				got = verifier.fromHash()
+			default:
+				t.Fatal("unselected verifier control")
+			}
+			if got != want {
+				t.Fatal("selected receipt verifier result differs")
+			}
+		})
+	}
+}
