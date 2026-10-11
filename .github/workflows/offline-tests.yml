@@ -495,3 +495,12 @@ jobs:
           ptlc_go="$(command -v go)"
           python3 -B scripts/qualify_nom_account_history.py \
             --checkout .research-cache/nom-wire-core-source --go "$ptlc_go"
+      - name: Compare outer account checks and exact public protobuf bytes offline
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: "off"
+          GOSUMDB: "off"
+        run: |
+          ptlc_go="$(command -v go)"
+          python3 -B scripts/qualify_nom_account_authorization.py \
+            --checkout .research-cache/nom-wire-core-source --go "$ptlc_go"

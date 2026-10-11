@@ -52,6 +52,14 @@ preserving every earlier role conflict. Complete selected height coverage is not
 admitted chain history, source authority or recovery permission. See its
 [validation boundary](docs/NOM_ACCOUNT_HISTORY_VALIDATION.md).
 
+The [account-authorization corpus](docs/NOM_ACCOUNT_AUTHORIZATION.md) separately
+compares real source hash/signature/producer checks and typed public protobuf
+bytes. Wrong-account signatures, changed contents, excluded metadata and raw
+protobuf aliases remain explicit counterexamples. Passing public test signatures
+belong to relocated synthetic accounts and different originals; no selected
+funding, account frontier, signed-original custody or recovery gate is admitted.
+See its [validation boundary](docs/NOM_ACCOUNT_AUTHORIZATION_VALIDATION.md).
+
 The repository includes a historical scalar-disclosure regression, pinned BIP340 adaptor experiments, real synthetic Taproot claim/refund transactions checked by an independent Go script engine, and an exhaustive finite schedule model. All experiments use public synthetic inputs and contact neither chain. Dependency acquisition is a separate network step.
 
 The `offline_session` package adds staged public transcript commitments, role-bound public nonce rounds, and a SQLite/checkpoint journal for one-use synthetic operations, exact output replay and explicit unknown outcomes. It stores no secret nonces and has no real signing backend. Process-death, concurrent-owner and rollback-boundary tests exercise its public metadata lifecycle. A separate Rust test-only nonce owner exercises the pinned library using public synthetic seeds; it is not connected to the Python journal.
