@@ -1,0 +1,310 @@
+// Independently written MIT overlay; unchanged GPL source is separately obtained.
+package vm
+
+import (
+	"bytes"
+	"crypto/ed25519"
+	"crypto/sha256"
+	"encoding/binary"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"math/big"
+	"strconv"
+	"strings"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/zenon-network/go-zenon/chain"
+	"github.com/zenon-network/go-zenon/chain/account"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/chain/store"
+	"github.com/zenon-network/go-zenon/common/db"
+	"github.com/zenon-network/go-zenon/common/types"
+	"github.com/zenon-network/go-zenon/pow"
+)
+
+type researchForkChain struct{ *researchPoolChain }
+type researchForkCache struct{ *researchSupervisorCache }
+
+func (s *researchForkChain) GetCacheStore(h types.HashHeight) store.Cache {
+	base := s.researchSupervisorChain.GetCacheStore(h)
+	if base == nil {
+		return nil
+	}
+	return &researchForkCache{base.(*researchSupervisorCache)}
+}
+func (s *researchForkCache) GetStakeBeneficialAmount(a types.Address) (*big.Int, error) {
+	if s.chain.ledger.accounts[a] == nil {
+		panic("unselected fusion account")
+	}
+	return big.NewInt(500000000000), nil
+}
+
+func TestResearchNoMPoolForks(t *testing.T) {
+	if chain.MaxUncommittedBlocksPerAccount != 500 {
+		t.Fatal("actual cap must remain unchanged")
+	}
+	hx := func(b []byte) string { return hex.EncodeToString(b) }
+	digest := func(b []byte) string { h := sha256.Sum256(b); return hx(h[:]) }
+	num := func(n uint64) string { return strconv.FormatUint(n, 10) }
+	hh := func(h types.HashHeight) map[string]string {
+		return map[string]string{"hash_hex": hx(h.Hash[:]), "height": num(h.Height)}
+	}
+	wire := func(b *nom.AccountBlock) []byte {
+		v, e := b.Serialize()
+		if e != nil || len(v) > 8192 {
+			t.Fatal("selected wire unavailable")
+		}
+		return v
+	}
+	dump := func(s store.Account) []byte {
+		v, ok := s.(interface {
+			NewIterator([]byte) db.StorageIterator
+			Has([]byte) (bool, error)
+		})
+		if !ok {
+			t.Fatal("actual logical iterator required")
+		}
+		it := v.NewIterator(nil)
+		defer it.Release()
+		p := db.NewPatch()
+		for it.Next() {
+			value := it.Value()
+			if value == nil {
+				has, e := v.Has(it.Key())
+				if e != nil || has {
+					t.Fatal("tombstone presence differs")
+				}
+				continue
+			}
+			p.Put(append([]byte(nil), it.Key()...), append([]byte(nil), value...))
+		}
+		if it.Error() != nil {
+			t.Fatal("complete logical view unavailable")
+		}
+		return p.Dump()
+	}
+	encode := func(b *nom.AccountBlock) map[string]interface{} {
+		w := wire(b)
+		round, e := nom.DeserializeAccountBlock(w)
+		if e != nil || !bytes.Equal(w, wire(round)) {
+			t.Fatal("exact round trip differs")
+		}
+		return map[string]interface{}{"hash_hex": hx(b.Hash[:]), "computed_hash_hex": hx(b.ComputeHash().Bytes()), "wire_hex": hx(w), "wire_sha256": digest(w), "roundtrip_wire_hex": hx(wire(round)),
+			"public_key_hex": hx(b.PublicKey), "signature_hex": hx(b.Signature), "children": []interface{}{}, "changes_hash_hex": hx(b.ChangesHash[:]), "semantic_previous": hh(b.Previous()),
+			"block": map[string]interface{}{"version": num(b.Version), "chain_id": num(b.ChainIdentifier), "block_type": num(b.BlockType), "address_hex": hx(b.Address[:]), "to_address_hex": hx(b.ToAddress[:]), "height": num(b.Height), "previous_hash_hex": hx(b.PreviousHash[:]), "momentum_hash_hex": hx(b.MomentumAcknowledged.Hash[:]), "momentum_height": num(b.MomentumAcknowledged.Height), "amount": b.Amount.String(), "token_standard_hex": hx(b.TokenStandard[:]), "from_block_hash_hex": hx(b.FromBlockHash[:]), "descendant_hashes_hex": []string{}, "data_hex": hx(b.Data), "fused_plasma": num(b.FusedPlasma), "difficulty": num(b.Difficulty), "nonce_hex": hx(b.Nonce.Data[:])}}
+	}
+	for _, kind := range []string{"ratio-higher", "ratio-lower", "tie-smaller", "tie-larger", "actual-cap-500"} {
+		t.Run(kind, func(t *testing.T) {
+			key := ed25519.NewKeyFromSeed(bytes.Repeat([]byte{0x51}, 32))
+			pub := key.Public().(ed25519.PublicKey)
+			a := types.PubKeyToAddress(pub)
+			peerPub, e := hex.DecodeString("2012cb90ca60e8e5d8daf66e2272d2233e0486d557e8c66141ed8920177d7eb7")
+			if e != nil {
+				t.Fatal("selected public peer unavailable")
+			}
+			peer := types.PubKeyToAddress(peerPub)
+			root := db.NewMemDB()
+			stable := account.NewAccountStore(a, root)
+			now := time.Unix(100, 0)
+			m := &nom.Momentum{ChainIdentifier: 69, Height: 10109300, Hash: types.NewHash([]byte("public-nom-pool-forks-v1:momentum")), Timestamp: &now}
+			ledger := &researchSupervisorLedger{current: m, momenta: map[uint64]*nom.Momentum{m.Height: m}, blocks: map[types.Hash]*nom.AccountBlock{}, confirmations: map[types.Hash]uint64{}, accounts: map[types.Address]store.Account{a: stable}}
+			pool := chain.NewAccountPool(&researchPoolStable{roots: map[types.Address]db.DB{a: root}})
+			view := &researchForkChain{&researchPoolChain{researchSupervisorChain: &researchSupervisorChain{ledger: ledger}, pool: pool}}
+			supervisor := NewSupervisor(view, &researchSupervisorConsensus{ledger: ledger})
+			signatures := 0
+			signer := func(data []byte) ([]byte, *types.Address, []byte, error) {
+				signatures++
+				return ed25519.Sign(key, data), &a, pub, nil
+			}
+			initial := hx(dump(stable))
+			candidates := map[string]interface{}{}
+			originals := map[string]*nom.AccountBlock{}
+			deltas := map[string][]byte{}
+			generate := func(label string, previous types.HashHeight, data byte, fused uint64, work bool) *nom.AccountBlock {
+				before := pool.GetFrontierAccountStore(a).Identifier()
+				count := signatures
+				b := &nom.AccountBlock{BlockType: nom.BlockTypeUserSend, Address: a, ToAddress: peer, Amount: big.NewInt(0), Height: previous.Height + 1, PreviousHash: previous.Hash, FusedPlasma: fused}
+				if data != 0 {
+					b.Data = []byte{data}
+				}
+				if work {
+					b.Difficulty = 31500000
+					copy(b.Nonce.Data[:], []byte{0xb4, 0x6a, 0x98, 0, 0, 0, 0, 0})
+					if !pow.CheckPoWNonce(b) {
+						t.Fatal("public fixed work nonce differs")
+					}
+				}
+				tx, err := supervisor.GenerateFromTemplate(b, signer)
+				if err != nil || tx == nil || signatures != count+1 || before != pool.GetFrontierAccountStore(a).Identifier() {
+					t.Fatal("selected generation failed or changed memory")
+				}
+				original := tx.Block.Copy()
+				originalWire := wire(original)
+				delta := append([]byte(nil), tx.Changes.Dump()...)
+				applied, err := supervisor.ApplyBlock(original.Copy())
+				base, baseErr := CanonicalBasePlasma(view, original)
+				if err != nil || baseErr != nil || applied == nil || signatures != count+1 || !bytes.Equal(originalWire, wire(applied.Block)) || !bytes.Equal(delta, applied.Changes.Dump()) || before != pool.GetFrontierAccountStore(a).Identifier() {
+					t.Fatal("exact source apply differs")
+				}
+				originals[label] = original
+				deltas[label] = delta
+				available, err := AvailablePlasma(view.GetCacheStore(m.Identifier()), pool.GetAccountStore(a, previous))
+				if err != nil {
+					t.Fatal("selected available plasma unavailable")
+				}
+				candidates[label] = map[string]interface{}{"block": encode(original), "delta_patch_hex": hx(delta), "applied_wire_hex": hx(wire(applied.Block)), "applied_delta_hex": hx(applied.Changes.Dump()), "generation_signatures": 1, "apply_signatures": 0, "base_plasma": num(original.BasePlasma), "total_plasma": num(original.TotalPlasma), "canonical_base": num(base), "available_before": num(available)}
+				return original
+			}
+			checkpoint := func() map[string]interface{} {
+				blocks := pool.GetUncommittedAccountBlocksByAddress(a)
+				pendingBytes := []byte{}
+				for _, b := range blocks {
+					w := wire(b)
+					size := make([]byte, 4)
+					binary.BigEndian.PutUint32(size, uint32(len(w)))
+					pendingBytes = append(pendingBytes, size...)
+					pendingBytes = append(pendingBytes, w...)
+				}
+				s := pool.GetFrontierAccountStore(a)
+				used, e := s.GetChainPlasma()
+				if e != nil {
+					t.Fatal("selected chain plasma unavailable")
+				}
+				return map[string]interface{}{"frontier": hh(s.Identifier()), "state_dump_hex": hx(dump(s)), "pending_count": len(blocks), "pending_wire_sha256": digest(pendingBytes), "used_plasma": used.String()}
+			}
+			locker := new(sync.Mutex)
+			trace := []interface{}{}
+			checkpoints := map[string]interface{}{"initial": checkpoint()}
+			add := func(label, want string) {
+				b := originals[label]
+				p, e := db.NewPatchFromDump(deltas[label])
+				if e != nil {
+					t.Fatal("selected delta unavailable")
+				}
+				tx := &nom.AccountBlockTransaction{Block: b.Copy(), Changes: p}
+				before := pool.GetFrontierAccountStore(a).Identifier()
+				count := signatures
+				locker.Lock()
+				err := pool.AddAccountBlockTransaction(locker, tx)
+				locker.Unlock()
+				result := "PASS"
+				if err != nil {
+					switch {
+					case err == chain.ErrPlasmaRatioIsWorse:
+						result = "ErrPlasmaRatioIsWorse"
+					case err == chain.ErrHashTieBreak:
+						result = "ErrHashTieBreak"
+					case errors.Is(err, chain.ErrFailedToAddAccountBlockTransaction) && strings.Contains(err.Error(), "max uncommitted blocks per account reached"):
+						result = "ErrUncommittedCap"
+					default:
+						t.Fatal("unselected pool error")
+					}
+				}
+				if result != want || signatures != count || !bytes.Equal(wire(b), wire(originals[label])) {
+					t.Fatal("normal insertion result or original differs")
+				}
+				stored := pool.GetPatch(a, b.Identifier())
+				storedHex := ""
+				if stored != nil {
+					storedHex = hx(stored.Dump())
+				}
+				trace = append(trace, map[string]interface{}{"label": label, "result": result, "frontier_before": hh(before), "frontier_after": hh(pool.GetFrontierAccountStore(a).Identifier()), "changes_stolen": tx.Changes == nil, "retained_patch_hex": hx(p.Dump()), "stored_patch_hex": storedHex, "pending_count": len(pool.GetUncommittedAccountBlocksByAddress(a))})
+			}
+			views := []interface{}{}
+			lookup := func(label string) {
+				b := originals[label]
+				s := pool.GetAccountStore(a, b.Identifier())
+				p := pool.GetPatch(a, b.Identifier())
+				v := map[string]interface{}{"label": label, "present": s != nil, "patch_present": p != nil, "patch_hex": "", "frontier": nil, "state_sha256": ""}
+				if s != nil {
+					v["frontier"] = hh(s.Identifier())
+					v["state_sha256"] = digest(dump(s))
+				}
+				if p != nil {
+					v["patch_hex"] = hx(p.Dump())
+				}
+				views = append(views, v)
+			}
+			if kind == "actual-cap-500" {
+				previous := types.ZeroHashHeight
+				for i := 1; i <= 500; i++ {
+					label := "block-" + strconv.Itoa(i)
+					fused := uint64(21000)
+					if i == 1 {
+						fused = 0
+					}
+					b := generate(label, previous, 0, fused, i == 1)
+					add(label, "PASS")
+					previous = b.Identifier()
+					if i == 1 || i == 499 || i == 500 {
+						checkpoints[label] = checkpoint()
+					}
+				}
+				generate("block-501", previous, 0, 21000, false)
+				add("block-501", "ErrUncommittedCap")
+				checkpoints["cap-refusal"] = checkpoint()
+				add("block-500", "PASS")
+				checkpoints["cap-duplicate"] = checkpoint()
+				b := originals["block-500"]
+				generate("replacement-500", b.Previous(), 0, 21001, false)
+				add("replacement-500", "PASS")
+				checkpoints["cap-replacement"] = checkpoint()
+				add("replacement-500", "PASS")
+				checkpoints["replacement-duplicate"] = checkpoint()
+				lookup("block-499")
+				lookup("block-500")
+				lookup("block-501")
+				lookup("replacement-500")
+			} else {
+				prefix := generate("prefix", types.ZeroHashHeight, 0, 21000, false)
+				add("prefix", "PASS")
+				generate("candidate-a", prefix.Identifier(), 1, 21068, false)
+				fused := uint64(21068)
+				if strings.HasPrefix(kind, "ratio-") {
+					fused = 42136
+				}
+				generate("candidate-b", prefix.Identifier(), 2, fused, false)
+				first, second := "candidate-a", "candidate-b"
+				want := "PASS"
+				if kind == "ratio-lower" {
+					first, second = second, first
+					want = "ErrPlasmaRatioIsWorse"
+				}
+				if strings.HasPrefix(kind, "tie-") {
+					small, large := first, second
+					if bytes.Compare(originals[small].Hash[:], originals[large].Hash[:]) > 0 {
+						small, large = large, small
+					}
+					first, second = large, small
+					if kind == "tie-larger" {
+						first, second = small, large
+						want = "ErrHashTieBreak"
+					}
+				}
+				add(first, "PASS")
+				b := generate("suffix-3", originals[first].Identifier(), 0, 21000, false)
+				add("suffix-3", "PASS")
+				generate("suffix-4", b.Identifier(), 0, 21000, false)
+				add("suffix-4", "PASS")
+				checkpoints["before-competitor"] = checkpoint()
+				add(second, want)
+				checkpoints["after-competitor"] = checkpoint()
+				for _, label := range []string{"prefix", "candidate-a", "candidate-b", "suffix-3", "suffix-4"} {
+					lookup(label)
+				}
+			}
+			if initial != hx(dump(stable)) || chain.MaxUncommittedBlocksPerAccount != 500 {
+				t.Fatal("stable input or cap changed")
+			}
+			record := map[string]interface{}{"schema": "zenon-nom-pool-forks-record-v1", "id": kind, "initial_stable_state": initial, "final_stable_state": hx(dump(stable)), "candidates": candidates, "trace": trace, "checkpoints": checkpoints, "views": views, "signing_calls": signatures, "cap": 500, "fusion_amount": "500000000000", "dynamic_plasma": false}
+			data, e := json.Marshal(record)
+			if e != nil || len(data) > 8*1024*1024 {
+				t.Fatal("bounded complete record unavailable")
+			}
+			t.Log("PTLC_RESEARCH_POOL_FORK_RECORD " + string(data))
+		})
+	}
+}

@@ -540,3 +540,12 @@ jobs:
           ptlc_go="$(command -v go)"
           python3 -B scripts/qualify_nom_account_pool.py \
             --checkout .research-cache/nom-wire-core-source --go "$ptlc_go"
+      - name: Compare source-valid account forks and the actual 500 pending-block cap
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: "off"
+          GOSUMDB: "off"
+        run: |
+          ptlc_go="$(command -v go)"
+          python3 -B scripts/qualify_nom_pool_forks.py \
+            --checkout .research-cache/nom-wire-core-source --go "$ptlc_go"

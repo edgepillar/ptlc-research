@@ -1372,6 +1372,18 @@ and the [validation snapshot](docs/STAGE126_VALIDATION.md). The preceding owners
 and controls remain exact. Natural faults, source/build identity and independent
 assessment remain open; application/core remain **NO-GO**.
 
+## Source-valid pool forks and the actual 500-block cap
+
+[Separate zero-amount user controls](docs/NOM_POOL_FORKS.md) qualify four legacy
+ratio/hash fork cases and the actual 500 pending-block boundary through source
+generation, exact replay without signing and normal pool insertion. A fixed public PoW
+witness lets a source-valid 501st candidate reach the pool limit. Exact retries
+and a higher-priority replacement at cap preserve the selected source policy.
+Complete logical checkpoints and ordered wire digests follow independent replay.
+All preceding swap originals and witnesses remain exact. See [validation](docs/NOM_POOL_FORKS_VALIDATION.md).
+Dependency eviction, momentum admission and external authority remain unfilled;
+application/core are **NO-GO**.
+
 ## Stage 127: creation-record retention escapes
 
 Two [native controls](tests/test_selected_cursor_retention_escape_native.py)
