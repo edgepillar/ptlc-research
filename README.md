@@ -1443,3 +1443,14 @@ is selected only after every original observation satisfies a complete-batch
 admissible order. Both variants need not appear, and fairness is not established.
 The [validation boundary](docs/NOM_CONTENT_CAP_VALIDATION.md) keeps local,
 hosted PR and push/main acceptance separate. Application/core remain **NO-GO**.
+
+The additive [two-momentum rollback profile](docs/NOM_MULTI_ROLLBACK.md) follows
+an actual empty successor and the preserved PTLC batch through two public memory
+pops. Complete state is compared before and after each original pool callback.
+Fresh M2-acknowledged receipt and suffix controls survive the M3 pop with their
+original wires and patches, then disappear on the M2 pop. An unrelated
+M1-acknowledged original survives both. Exact-frontier rollback is a complete
+logical no-op. The [validation boundary](docs/NOM_MULTI_ROLLBACK_VALIDATION.md)
+requires separate local, hosted PR and push/main acceptance. Persistent recovery,
+partial failure, authenticated provenance and application/core readiness remain
+unfilled.
