@@ -1,0 +1,78 @@
+{
+  "schema": "ptlc-nom-strict-open-qualification-v1",
+  "research_baseline_commit": "9a6c97054713e1075b3c159f405665d49850d2a0",
+  "synthetic_notice": "Disclosed public synthetic journal and observation inputs only",
+  "cases": [
+    {
+      "cut": "after-remote-short",
+      "charged": 0,
+      "retained_result": false,
+      "retained_long_original": false,
+      "recovery_worker_entries": 0,
+      "actor_exit_code": 72,
+      "strict_result_checks": 0
+    },
+    {
+      "cut": "after-recovery-admitted",
+      "charged": 1,
+      "retained_result": false,
+      "retained_long_original": false,
+      "recovery_worker_entries": 0,
+      "actor_exit_code": 72,
+      "strict_result_checks": 0
+    },
+    {
+      "cut": "after-public-reply",
+      "charged": 1,
+      "retained_result": false,
+      "retained_long_original": false,
+      "recovery_worker_entries": 1,
+      "actor_exit_code": 72,
+      "strict_result_checks": 0
+    },
+    {
+      "cut": "after-recovered",
+      "charged": 1,
+      "retained_result": true,
+      "retained_long_original": false,
+      "recovery_worker_entries": 1,
+      "actor_exit_code": 72,
+      "strict_result_checks": 1
+    },
+    {
+      "cut": "after-original",
+      "charged": 1,
+      "retained_result": true,
+      "retained_long_original": true,
+      "recovery_worker_entries": 1,
+      "actor_exit_code": 72,
+      "strict_result_checks": 1
+    }
+  ],
+  "adversarial_copy": "SEPARATE SELF-REHASHED ZERO PUBLIC RESULT; NEVER REPLACES ORIGINAL",
+  "boundary": {
+    "application": "NO-GO",
+    "core": "NO-GO",
+    "recovery_action": "NONE",
+    "hold_admission": "NOT_COMPOSED",
+    "native_query_context": "NOT_COMPOSED",
+    "observation_source": "DISCLOSED SYNTHETIC ALLOWLIST ONLY",
+    "current_chain_authority": "UNFILLED",
+    "restore_fence": "UNFILLED",
+    "atomic_work_admission": "UNFILLED",
+    "independent_runtime": "UNFILLED",
+    "process_death": "SELECTED ACTOR os._exit(72) OBSERVED",
+    "interior_write_or_fsync_fault": "NOT_PERFORMED",
+    "power_loss": "NOT_PERFORMED",
+    "cut_kind": "EXPLICIT PROCESS EXIT AFTER COMPLETE FSYNC OR RETURNED PUBLIC REPLY",
+    "runner": "SEPARATE TRUSTED ACTOR AND ORIGINAL-CAPTURE QUALIFICATION TRANSPORT",
+    "hostile_process_containment": "NOT_ESTABLISHED",
+    "runtime_authentication": "UNFILLED",
+    "selected_open": "ptlc-nom-strict-read-only-open-v1",
+    "journal_access": "EXISTING FILE; READ-ONLY DESCRIPTOR; NO CREATION",
+    "present_result": "DIRECT PUBLIC VERIFICATION BEFORE OWNER RETURN",
+    "legacy_open": "UNCHANGED; RESULT-ONLY ENCODING ACCEPTANCE PRESERVED",
+    "recovery_entry": "REFUSED BEFORE WORKER ENTRY BY SELECTED READ-ONLY OWNER",
+    "current_observation_revalidation": "NOT_PERFORMED; RETAINED HISTORY ONLY"
+  }
+}
