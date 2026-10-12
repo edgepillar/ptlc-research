@@ -1,0 +1,438 @@
+// Independently written MIT overlay; unchanged GPL source is separately obtained.
+package vm
+
+import (
+	"bytes"
+	"crypto/ed25519"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"math/big"
+	"os"
+	"strconv"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/zenon-network/go-zenon/chain"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/common/db"
+	"github.com/zenon-network/go-zenon/common/types"
+)
+
+// Producer acceptance is selected research input, not elected authentication.
+type researchMultiConsensus struct{ *researchBatchConsensus }
+
+func (c *researchMultiConsensus) VerifyMomentumProducer(m *nom.Momentum) (bool, error) {
+	if m.Height != 10109302 && m.Height != 10109303 {
+		panic("unselected producer query")
+	}
+	c.calls++
+	return true, nil
+}
+
+func TestResearchNoMMultiRollback(t *testing.T) {
+	t.Run("preserved-batch-two-actual-pops", func(t *testing.T) {
+		hx := func(b []byte) string { return hex.EncodeToString(b) }
+		num := func(n uint64) string { return strconv.FormatUint(n, 10) }
+		raw := func(v string) []byte {
+			b, e := hex.DecodeString(v)
+			if e != nil {
+				t.Fatal("public hex unavailable")
+			}
+			return b
+		}
+		patch := func(v string) db.Patch {
+			p, err := db.NewPatchFromDump(raw(v))
+			if err != nil {
+				t.Fatal("public patch unavailable")
+			}
+			return p
+		}
+		dump := func(s interface{}) []byte {
+			v, ok := s.(interface {
+				NewIterator([]byte) db.StorageIterator
+				Has([]byte) (bool, error)
+			})
+			if !ok {
+				t.Fatal("complete iterator required")
+			}
+			it := v.NewIterator(nil)
+			defer it.Release()
+			p := db.NewPatch()
+			for it.Next() {
+				if it.Value() == nil {
+					has, e := v.Has(it.Key())
+					if e != nil || has {
+						t.Fatal("ambiguous deleted key")
+					}
+					continue
+				}
+				p.Put(append([]byte(nil), it.Key()...), append([]byte(nil), it.Value()...))
+			}
+			if it.Error() != nil {
+				t.Fatal("complete logical view unavailable")
+			}
+			return p.Dump()
+		}
+		awire := func(b *nom.AccountBlock) []byte {
+			w, e := b.Serialize()
+			if e != nil {
+				t.Fatal("public account wire unavailable")
+			}
+			return w
+		}
+		mwire := func(b *nom.Momentum) []byte {
+			w, e := b.Serialize()
+			if e != nil {
+				t.Fatal("public momentum wire unavailable")
+			}
+			return w
+		}
+		var input struct {
+			Root    string            `json:"root_hex"`
+			Parent  string            `json:"parent_wire_hex"`
+			Delta   string            `json:"parent_delta_hex"`
+			Receipt string            `json:"old_receipt_wire_hex"`
+			Roles   map[string]string `json:"roles"`
+		}
+		data, e := os.ReadFile(os.Getenv("PTLC_NOM_MULTI_INPUT"))
+		if e != nil || json.Unmarshal(data, &input) != nil {
+			t.Fatal("selected public input unavailable")
+		}
+		root := db.NewMemDB()
+		if root.Apply(patch(input.Root)) != nil {
+			t.Fatal("selected seed unavailable")
+		}
+		c := &researchBatchChain{researchAdmissionChain: &researchAdmissionChain{genesis: &researchAdmissionGenesis{}, manager: db.NewMemDBManager(root.Snapshot())}}
+		defer c.manager.Stop()
+		c.pool = chain.NewAccountPool(c)
+		mp := chain.NewMomentumPool(c.manager, c.genesis)
+		con := &researchMultiConsensus{&researchBatchConsensus{researchAdmissionConsensus: &researchAdmissionConsensus{response: "accept"}, view: c}}
+		s := NewSupervisor(c, con)
+		addresses := map[string]types.Address{}
+		for role, v := range input.Roles {
+			a, e := types.BytesToAddress(raw(v))
+			if e != nil {
+				t.Fatal("public address unavailable")
+			}
+			addresses[role] = a
+		}
+		parent, e := nom.DeserializeAccountBlock(raw(input.Parent))
+		if e != nil || len(parent.DescendantBlocks) != 1 {
+			t.Fatal("preserved parent required")
+		}
+		child := parent.DescendantBlocks[0]
+		oldReceipt, e := nom.DeserializeAccountBlock(raw(input.Receipt))
+		if e != nil {
+			t.Fatal("preserved old receipt required")
+		}
+		keys := map[string]ed25519.PrivateKey{}
+		for role, v := range map[string]byte{"alice": 0x41, "unrelated": 0x61, "producer": 0x64} {
+			keys[role] = ed25519.NewKeyFromSeed(bytes.Repeat([]byte{v}, 32))
+		}
+		accountSigns, momentumSigns := 0, 0
+		signer := func(role string, m bool) SignFunc {
+			return func(data []byte) ([]byte, *types.Address, []byte, error) {
+				if m {
+					momentumSigns++
+				} else {
+					accountSigns++
+				}
+				a := types.PubKeyToAddress(keys[role].Public().(ed25519.PublicKey))
+				return ed25519.Sign(keys[role], data), &a, keys[role].Public().(ed25519.PublicKey), nil
+			}
+		}
+		locker := new(sync.Mutex)
+		locked := func(f func() error) error { locker.Lock(); defer locker.Unlock(); return f() }
+		wires := func(d *nom.DetailedMomentum) []string {
+			v := []string{}
+			for _, b := range d.AccountBlocks {
+				v = append(v, hx(awire(b)))
+			}
+			return v
+		}
+		candidates := map[string]interface{}{}
+		patches := map[string]string{}
+		blocks := map[string]*nom.AccountBlock{"parent": parent, "child": child, "old-receipt": oldReceipt}
+		encodeBlock := func(b *nom.AccountBlock) map[string]interface{} {
+			w := awire(b)
+			digest := sha256.Sum256(w)
+			round, e := nom.DeserializeAccountBlock(w)
+			if e != nil || !bytes.Equal(w, awire(round)) {
+				t.Fatal("exact account roundtrip differs")
+			}
+			return map[string]interface{}{"wire_hex": hx(w), "wire_sha256": hx(digest[:]), "semantic_previous": map[string]string{"hash_hex": hx(b.PreviousHash[:]), "height": num(b.Previous().Height)}, "public_key_hex": hx(b.PublicKey), "signature_hex": hx(b.Signature), "hash_hex": hx(b.Hash[:]), "computed_hash_hex": hx(b.ComputeHash().Bytes()), "changes_hash_hex": hx(b.ChangesHash[:]), "children": []interface{}{}, "roundtrip_wire_hex": hx(awire(round)),
+				"block": map[string]interface{}{"version": num(b.Version), "chain_id": num(b.ChainIdentifier), "block_type": num(b.BlockType), "address_hex": hx(b.Address[:]), "to_address_hex": hx(b.ToAddress[:]), "height": num(b.Height), "previous_hash_hex": hx(b.PreviousHash[:]), "momentum_hash_hex": hx(b.MomentumAcknowledged.Hash[:]), "momentum_height": num(b.MomentumAcknowledged.Height), "amount": b.Amount.String(), "token_standard_hex": hx(b.TokenStandard[:]), "from_block_hash_hex": hx(b.FromBlockHash[:]), "descendant_hashes_hex": []string{}, "data_hex": hx(b.Data), "fused_plasma": num(b.FusedPlasma), "difficulty": num(b.Difficulty), "nonce_hex": hx(b.Nonce.Data[:])}}
+		}
+		encodeMomentum := func(m *nom.Momentum) map[string]interface{} {
+			content := []interface{}{}
+			for _, h := range m.Content {
+				content = append(content, map[string]string{"address_hex": hx(h.Address[:]), "height": num(h.Height), "hash_hex": hx(h.Hash[:])})
+			}
+			return map[string]interface{}{"hash_hex": hx(m.Hash[:]), "wire_hex": hx(mwire(m)), "roundtrip_wire_hex": hx(mwire(m)), "public_key_hex": hx(m.PublicKey), "signature_hex": hx(m.Signature), "momentum": map[string]interface{}{"version": num(m.Version), "chain_id": num(m.ChainIdentifier), "previous_hash_hex": hx(m.PreviousHash[:]), "height": num(m.Height), "timestamp": num(m.TimestampUnix), "data_hex": hx(m.Data), "content": content, "changes_hash_hex": hx(m.ChangesHash[:]), "next_fusion_price": num(m.NextFusionPrice), "next_work_price": num(m.NextWorkPrice)}}
+		}
+
+		checkpoint := func(readPool bool) map[string]interface{} {
+			ms := mp.GetFrontierMomentumStore()
+			m, e := ms.GetFrontierMomentum()
+			if e != nil {
+				t.Fatal("actual momentum unavailable")
+			}
+			v := map[string]interface{}{"global_dump_hex": hx(dump(ms)), "momentum": encodeMomentum(m)}
+			for _, role := range []string{"alice", "bob", "contract", "unrelated"} {
+				a := addresses[role]
+				item := map[string]interface{}{"stable_hex": hx(dump(ms.GetAccountStore(a))), "mailbox_hex": hx(dump(ms.GetAccountMailbox(a)))}
+				if readPool {
+					pending := []string{}
+					for _, b := range c.pool.GetUncommittedAccountBlocksByAddress(a) {
+						pending = append(pending, hx(awire(b)))
+					}
+					item["pool_hex"] = hx(dump(c.pool.GetFrontierAccountStore(a)))
+					item["pending_wires"] = pending
+				}
+				v[role] = item
+			}
+			for _, label := range []string{"parent", "child", "old-receipt"} {
+				b := blocks[label]
+				found, e := ms.GetAccountBlockByHash(b.Hash)
+				if e != nil {
+					t.Fatal("actual lookup unavailable")
+				}
+				w := ""
+				if found != nil {
+					w = hx(awire(found))
+				}
+				h, e := ms.GetBlockConfirmationHeight(b.Hash)
+				if e != nil {
+					t.Fatal("actual confirmation unavailable")
+				}
+				v[label] = map[string]string{"wire_hex": w, "confirmation_height": num(h)}
+			}
+			return v
+		}
+		var checks map[string]interface{}
+		intermediateAliases := map[string]interface{}{}
+		events := []interface{}{}
+		before := func(kind string, d *nom.DetailedMomentum) {
+			events = append(events, map[string]interface{}{"phase": kind + "-before-account-pool", "momentum_wire_hex": hx(mwire(d.Momentum)), "included_wires": wires(d), "checkpoint": checkpoint(false)})
+		}
+		after := func(kind string, d *nom.DetailedMomentum) {
+			events = append(events, map[string]interface{}{"phase": kind + "-after-account-pool", "momentum_wire_hex": hx(mwire(d.Momentum)), "included_wires": wires(d), "checkpoint": checkpoint(true)})
+			if kind == "delete" && len(events) == 6 {
+				checks["after-first-pop"] = checkpoint(true)
+				for _, label := range []string{"fresh-dependent-receive", "fresh-dependent-suffix", "unrelated-old-ack"} {
+					block := blocks[label]
+					p := c.pool.GetPatch(block.Address, block.Identifier())
+					v := c.pool.GetAccountStore(block.Address, block.Identifier())
+					w := ""
+					if p != nil {
+						w = hx(p.Dump())
+					}
+					intermediateAliases[label] = map[string]interface{}{"present": v != nil, "patch_present": p != nil, "patch_hex": w}
+				}
+			}
+		}
+		mp.Register(&researchBatchListener{insert: func(d *nom.DetailedMomentum) { before("insert", d) }, remove: func(d *nom.DetailedMomentum) { before("delete", d) }})
+		mp.Register(c.pool.(chain.MomentumEventListener))
+		mp.Register(&researchBatchListener{insert: func(d *nom.DetailedMomentum) { after("insert", d) }, remove: func(d *nom.DetailedMomentum) { after("delete", d) }})
+		checks = map[string]interface{}{"initial": checkpoint(true)}
+		initial := hx(dump(c.manager.Frontier()))
+		anchor := mp.GetFrontierMomentumStore().Identifier()
+		tx, e := s.ApplyBlock(parent.Copy())
+		if e != nil || tx == nil || hx(awire(tx.Block)) != input.Parent || hx(tx.Changes.Dump()) != input.Delta || hx(dump(c.manager.Frontier())) != initial {
+			t.Fatal("exact preserved parent apply differs", e)
+		}
+		if locked(func() error { return c.pool.AddAccountBlockTransaction(locker, tx) }) != nil || tx.Changes != nil {
+			t.Fatal("normal parent add differs")
+		}
+		patches["parent"] = hx(c.pool.GetPatch(parent.Address, parent.Identifier()).Dump())
+		patches["child"] = hx(c.pool.GetPatch(child.Address, child.Identifier()).Dump())
+		selected := c.pool.GetNewMomentumContent()
+		selection := []string{}
+		content := nom.MomentumContent{}
+		if len(selected) != 2 {
+			t.Fatal("actual batch selector omitted an original")
+		}
+		for _, b := range selected {
+			selection = append(selection, hx(awire(b)))
+			h := b.Header()
+			content = append(content, &h)
+		}
+		if selection[0] != hx(awire(child)) || selection[1] != input.Parent || patches["child"] != "" {
+			t.Fatal("child before parent and empty child patch required")
+		}
+		checks["before-insertion"] = checkpoint(true)
+		timestamp := time.Unix(701, 0)
+		m := &nom.Momentum{Version: 1, ChainIdentifier: 69, Height: anchor.Height + 1, PreviousHash: anchor.Hash, TimestampUnix: 701, Timestamp: &timestamp, Content: content}
+		generated, e := s.GenerateMomentum(&nom.DetailedMomentum{Momentum: m, AccountBlocks: selected}, signer("producer", true))
+		if e != nil || generated == nil {
+			t.Fatal("selected batch momentum generation differs", e)
+		}
+		delta := hx(generated.Changes.Dump())
+		applied, e := s.ApplyMomentum(&nom.DetailedMomentum{Momentum: generated.Momentum, AccountBlocks: selected})
+		if e != nil || applied == nil || hx(applied.Changes.Dump()) != delta || hx(dump(c.manager.Frontier())) != initial {
+			t.Fatal("exact batch momentum apply differs", e)
+		}
+		stateDigest := func(v interface{}) string {
+			b, e := json.Marshal(v)
+			if e != nil {
+				t.Fatal("state digest unavailable")
+			}
+			h := sha256.Sum256(b)
+			return hx(h[:])
+		}
+		controls := map[string]interface{}{}
+		t.Run("missing-add-locker", func(t *testing.T) {
+			e := mp.AddMomentumTransaction(nil, applied)
+			if e == nil || applied.Changes == nil || len(events) != 0 || hx(dump(c.manager.Frontier())) != initial {
+				t.Fatal("missing add locker changed state")
+			}
+			controls["missing-add-locker"] = map[string]interface{}{"error": e.Error(), "state_unchanged": true, "callbacks": 0, "checkpoint_before_sha256": stateDigest(checks["before-insertion"]), "checkpoint_after_sha256": stateDigest(checkpoint(true))}
+		})
+		if locked(func() error { return mp.AddMomentumTransaction(locker, applied) }) != nil || applied.Changes != nil || len(events) != 2 {
+			t.Fatal("actual public momentum add differs")
+		}
+		stored := hx(c.manager.GetPatch(generated.Momentum.Identifier()).Dump())
+		checks["after-insertion"] = checkpoint(true)
+		t.Run("old-receipt-before-confirmation", func(t *testing.T) {
+			before := checkpoint(true)
+			n := accountSigns
+			rejected, e := s.ApplyBlock(oldReceipt.Copy())
+			if e == nil || rejected != nil || n != accountSigns {
+				t.Fatal("old acknowledgement accepted the later actual confirmation")
+			}
+			after := checkpoint(true)
+			a, _ := json.Marshal(before)
+			b, _ := json.Marshal(after)
+			if !bytes.Equal(a, b) {
+				t.Fatal("old receipt refusal changed state")
+			}
+			controls["old-receipt-before-confirmation"] = map[string]interface{}{"error": e.Error(), "original_wire_hex": input.Receipt, "transaction_present": false, "signatures": 0, "state_unchanged": true, "checkpoint_before_sha256": stateDigest(before), "checkpoint_after_sha256": stateDigest(after)}
+		})
+
+		// Insert the empty successor before generating any pending controls.
+		// The selected content is deliberately empty; no public selector is
+		// called to claim a cross-account order or the fullness of production.
+		checks["before-second-insertion"] = checkpoint(true)
+		previousRoot := hx(dump(c.manager.Frontier()))
+		at := time.Unix(702, 0)
+		empty := &nom.Momentum{Version: 1, ChainIdentifier: 69, Height: generated.Momentum.Height + 1, PreviousHash: generated.Momentum.Hash, TimestampUnix: 702, Timestamp: &at, Content: nom.MomentumContent{}}
+		second, e := s.GenerateMomentum(&nom.DetailedMomentum{Momentum: empty, AccountBlocks: []*nom.AccountBlock{}}, signer("producer", true))
+		if e != nil || second == nil {
+			t.Fatal("actual empty successor generation differs", e)
+		}
+		secondDelta := hx(second.Changes.Dump())
+		exactSecond, e := s.ApplyMomentum(&nom.DetailedMomentum{Momentum: second.Momentum, AccountBlocks: []*nom.AccountBlock{}})
+		if e != nil || exactSecond == nil || hx(exactSecond.Changes.Dump()) != secondDelta || hx(dump(c.manager.Frontier())) != previousRoot {
+			t.Fatal("exact empty successor apply changed stable state", e)
+		}
+		if locked(func() error { return mp.AddMomentumTransaction(locker, exactSecond) }) != nil || exactSecond.Changes != nil || len(events) != 4 {
+			t.Fatal("normal empty successor insertion differs")
+		}
+		secondStored := hx(c.manager.GetPatch(second.Momentum.Identifier()).Dump())
+		checks["after-second-insertion"] = checkpoint(true)
+		admit := func(label, role string, receive bool, ack types.HashHeight) {
+			a := addresses[role]
+			previous := c.pool.GetFrontierAccountStore(a).Identifier()
+			used, e := c.pool.GetAccountStore(a, previous).GetChainPlasma()
+			if e != nil {
+				t.Fatal("public plasma unavailable")
+			}
+			b := &nom.AccountBlock{BlockType: nom.BlockTypeUserSend, Address: a, ToAddress: addresses["bob"], Amount: big.NewInt(0), TokenStandard: types.ZeroTokenStandard, MomentumAcknowledged: ack}
+			if receive {
+				b.BlockType = nom.BlockTypeUserReceive
+				b.ToAddress = types.ZeroAddress
+				b.FromBlockHash = child.Hash
+			}
+			g, e := s.GenerateFromTemplate(b, signer(role, false))
+			if e != nil || g == nil {
+				t.Fatal("fresh separate account generation differs", label, e)
+			}
+			delta := hx(g.Changes.Dump())
+			original := g.Block.Copy()
+			exact, e := s.ApplyBlock(original.Copy())
+			if e != nil || exact == nil || hx(exact.Changes.Dump()) != delta || !bytes.Equal(awire(exact.Block), awire(original)) {
+				t.Fatal("exact fresh account apply differs", label, e)
+			}
+			cost, e := CanonicalBasePlasma(c, original)
+			if e != nil {
+				t.Fatal("selected cost unavailable")
+			}
+			available, e := AvailablePlasma(c.GetCacheStore(original.MomentumAcknowledged), c.pool.GetAccountStore(a, previous))
+			if e != nil {
+				t.Fatal("selected budget unavailable")
+			}
+			candidates[label] = map[string]interface{}{"block": encodeBlock(original), "delta_patch_hex": delta, "applied_delta_hex": hx(exact.Changes.Dump()), "applied_wire_hex": hx(awire(exact.Block)), "generation_signatures": 1, "apply_signatures": 0, "base_plasma": num(original.BasePlasma), "total_plasma": num(original.TotalPlasma), "canonical_base": num(cost), "available_before": num(available), "used_before": used.String()}
+			if locked(func() error { return c.pool.AddAccountBlockTransaction(locker, exact) }) != nil || exact.Changes != nil {
+				t.Fatal("normal fresh account add differs")
+			}
+			blocks[label] = original
+			patches[label] = hx(c.pool.GetPatch(a, original.Identifier()).Dump())
+		}
+		admit("fresh-dependent-receive", "alice", true, generated.Momentum.Identifier())
+		admit("fresh-dependent-suffix", "alice", false, generated.Momentum.Identifier())
+		admit("unrelated-old-ack", "unrelated", false, anchor)
+		checks["before-rollback"] = checkpoint(true)
+		for _, kind := range []string{"missing-rollback-locker", "wrong-target-height", "wrong-target-hash"} {
+			t.Run(kind, func(t *testing.T) {
+				target := anchor
+				lock := sync.Locker(locker)
+				switch kind {
+				case "missing-rollback-locker":
+					lock = nil
+				case "wrong-target-height":
+					target.Height--
+				case "wrong-target-hash":
+					target.Hash[0] ^= 1
+				}
+				before := checkpoint(true)
+				e := locked(func() error { return mp.RollbackTo(lock, target) })
+				after := checkpoint(true)
+				a, _ := json.Marshal(before)
+				b, _ := json.Marshal(after)
+				if e == nil || !bytes.Equal(a, b) || len(events) != 4 {
+					t.Fatal("target refusal changed stable or pool state")
+				}
+				controls[kind] = map[string]interface{}{"error": e.Error(), "state_unchanged": true, "callbacks": 0, "checkpoint_before_sha256": stateDigest(before), "checkpoint_after_sha256": stateDigest(after), "target": map[string]string{"hash_hex": hx(target.Hash[:]), "height": num(target.Height)}, "locker_present": lock != nil}
+			})
+		}
+
+		t.Run("already-at-frontier", func(t *testing.T) {
+			before := checkpoint(true)
+			n, m := accountSigns, momentumSigns
+			e := locked(func() error { return mp.RollbackTo(locker, second.Momentum.Identifier()) })
+			after := checkpoint(true)
+			if e != nil || stateDigest(before) != stateDigest(after) || len(events) != 4 || n != accountSigns || m != momentumSigns {
+				t.Fatal("frontier no-op changed complete logical state")
+			}
+			target := second.Momentum.Identifier()
+			controls["already-at-frontier"] = map[string]interface{}{"result": "NO_OP", "callbacks": 0, "signatures": 0, "checkpoint_before_sha256": stateDigest(before), "checkpoint_after_sha256": stateDigest(after), "target": map[string]string{"hash_hex": hx(target.Hash[:]), "height": num(target.Height)}}
+		})
+		if locked(func() error { return mp.RollbackTo(locker, anchor) }) != nil || len(events) != 8 || hx(dump(c.manager.Frontier())) != initial {
+			t.Fatal("actual rollback did not restore exact stable root")
+		}
+		checks["after-rollback"] = checkpoint(true)
+		aliases := map[string]interface{}{}
+		for _, label := range []string{"parent", "child", "fresh-dependent-receive", "fresh-dependent-suffix", "unrelated-old-ack"} {
+			b := blocks[label]
+			p := c.pool.GetPatch(b.Address, b.Identifier())
+			v := c.pool.GetAccountStore(b.Address, b.Identifier())
+			w := ""
+			if p != nil {
+				w = hx(p.Dump())
+			}
+			aliases[label] = map[string]interface{}{"present": v != nil, "patch_present": p != nil, "patch_hex": w}
+		}
+		queryIds := []interface{}{}
+		for _, h := range c.queries {
+			queryIds = append(queryIds, map[string]string{"hash_hex": hx(h.Hash[:]), "height": num(h.Height)})
+		}
+		record := map[string]interface{}{"snapshot_identifiers": queryIds, "schema": "zenon-nom-multi-rollback-record-v1", "id": "preserved-batch-two-actual-pops", "input": input, "selection_wires": selection, "parent_apply_signatures": 0, "pool_patches": patches, "candidates": candidates, "momentum": encodeMomentum(generated.Momentum), "delta_patch_hex": delta, "exact_apply_patch_hex": delta, "manager_patch_hex": stored, "checkpoints": checks, "events": events, "controls": controls, "post_rollback_aliases": aliases, "intermediate_pending_aliases": intermediateAliases, "second_momentum": map[string]interface{}{"momentum": encodeMomentum(second.Momentum), "delta_patch_hex": secondDelta, "exact_apply_patch_hex": secondDelta, "manager_patch_hex": secondStored}, "account_signatures": accountSigns, "momentum_signatures": momentumSigns, "producer_calls": con.calls, "snapshot_calls": c.views}
+		encoded, e := json.Marshal(record)
+		if e != nil {
+			t.Fatal("public record unavailable")
+		}
+		t.Log("PTLC_RESEARCH_MULTI_ROLLBACK_RECORD " + string(encoded))
+	})
+}
