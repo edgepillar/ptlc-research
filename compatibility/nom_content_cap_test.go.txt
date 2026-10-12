@@ -1,0 +1,265 @@
+// Independently written MIT overlay; unchanged GPL source is separately obtained.
+package vm
+
+import (
+	"bytes"
+	"crypto/ed25519"
+	"crypto/sha256"
+	"encoding/binary"
+	"encoding/hex"
+	"encoding/json"
+	"math/big"
+	"os"
+	"strconv"
+	"sync"
+	"testing"
+
+	"github.com/zenon-network/go-zenon/chain"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/chain/store"
+	"github.com/zenon-network/go-zenon/common/db"
+	"github.com/zenon-network/go-zenon/common/types"
+)
+
+type researchCapChain struct {
+	*researchBatchChain
+	user types.Address
+}
+type researchCapCache struct {
+	*researchBatchCache
+	user types.Address
+}
+
+func (c *researchCapChain) GetCacheStore(h types.HashHeight) store.Cache {
+	if c.manager.Get(h) == nil {
+		return nil
+	}
+	return &researchCapCache{&researchBatchCache{&researchAdmissionCache{id: h}}, c.user}
+}
+func (c *researchCapCache) GetStakeBeneficialAmount(a types.Address) (*big.Int, error) {
+	if a == c.user {
+		return big.NewInt(500000000000), nil
+	}
+	return c.researchAdmissionCache.GetStakeBeneficialAmount(a)
+}
+
+func TestResearchNoMContentCap(t *testing.T) {
+	t.Run("preserved-batch-default-cap", func(t *testing.T) {
+		if chain.MaxAccountBlocksInMomentum != 100 || chain.MaxUncommittedBlocksPerAccount != 500 {
+			t.Fatal("actual process defaults must remain unchanged")
+		}
+		hx := func(b []byte) string { return hex.EncodeToString(b) }
+		num := func(n uint64) string { return strconv.FormatUint(n, 10) }
+		raw := func(v string) []byte {
+			b, e := hex.DecodeString(v)
+			if e != nil {
+				t.Fatal("public hex unavailable")
+			}
+			return b
+		}
+		patch := func(v string) db.Patch {
+			p, e := db.NewPatchFromDump(raw(v))
+			if e != nil {
+				t.Fatal("public patch unavailable")
+			}
+			return p
+		}
+		dump := func(s interface{}) []byte {
+			v, ok := s.(interface {
+				NewIterator([]byte) db.StorageIterator
+				Has([]byte) (bool, error)
+			})
+			if !ok {
+				t.Fatal("complete logical iterator required")
+			}
+			it := v.NewIterator(nil)
+			defer it.Release()
+			p := db.NewPatch()
+			for it.Next() {
+				if it.Value() == nil {
+					has, e := v.Has(it.Key())
+					if e != nil || has {
+						t.Fatal("ambiguous deleted key")
+					}
+					continue
+				}
+				p.Put(append([]byte(nil), it.Key()...), append([]byte(nil), it.Value()...))
+			}
+			if it.Error() != nil {
+				t.Fatal("complete logical view unavailable")
+			}
+			return p.Dump()
+		}
+		wire := func(b *nom.AccountBlock) []byte {
+			v, e := b.Serialize()
+			if e != nil {
+				t.Fatal("public account wire unavailable")
+			}
+			return v
+		}
+		digest := func(v []byte) string { h := sha256.Sum256(v); return hx(h[:]) }
+		stateDigest := func(v interface{}) string {
+			b, e := json.Marshal(v)
+			if e != nil {
+				t.Fatal("state digest unavailable")
+			}
+			return digest(b)
+		}
+		var input struct {
+			Root    string            `json:"root_hex"`
+			Parent  string            `json:"parent_wire_hex"`
+			Delta   string            `json:"parent_delta_hex"`
+			Receipt string            `json:"old_receipt_wire_hex"`
+			Roles   map[string]string `json:"roles"`
+		}
+		data, e := os.ReadFile(os.Getenv("PTLC_NOM_CAP_INPUT"))
+		if e != nil || json.Unmarshal(data, &input) != nil {
+			t.Fatal("selected public input unavailable")
+		}
+		root := db.NewMemDB()
+		if root.Apply(patch(input.Root)) != nil {
+			t.Fatal("selected seed unavailable")
+		}
+		user, e := types.BytesToAddress(raw(input.Roles["unrelated"]))
+		if e != nil {
+			t.Fatal("public user unavailable")
+		}
+		peer, e := types.BytesToAddress(raw(input.Roles["bob"]))
+		if e != nil {
+			t.Fatal("public peer unavailable")
+		}
+		c := &researchCapChain{researchBatchChain: &researchBatchChain{researchAdmissionChain: &researchAdmissionChain{genesis: &researchAdmissionGenesis{}, manager: db.NewMemDBManager(root.Snapshot())}}, user: user}
+		defer c.manager.Stop()
+		c.pool = chain.NewAccountPool(c)
+		s := NewSupervisor(c, &researchBatchConsensus{researchAdmissionConsensus: &researchAdmissionConsensus{response: "accept"}, view: c.researchBatchChain})
+		parent, e := nom.DeserializeAccountBlock(raw(input.Parent))
+		if e != nil || len(parent.DescendantBlocks) != 1 {
+			t.Fatal("exact preserved parent required")
+		}
+		child := parent.DescendantBlocks[0]
+		anchor := c.GetFrontierMomentumStore().Identifier()
+		key := ed25519.NewKeyFromSeed(bytes.Repeat([]byte{0x61}, 32))
+		pub := key.Public().(ed25519.PublicKey)
+		if types.PubKeyToAddress(pub) != user {
+			t.Fatal("disclosed public key differs")
+		}
+		signs := 0
+		signer := func(data []byte) ([]byte, *types.Address, []byte, error) {
+			signs++
+			return ed25519.Sign(key, data), &user, pub, nil
+		}
+		locker := new(sync.Mutex)
+		add := func(tx *nom.AccountBlockTransaction) {
+			locker.Lock()
+			defer locker.Unlock()
+			if c.pool.AddAccountBlockTransaction(locker, tx) != nil || tx.Changes != nil {
+				t.Fatal("normal public pool admission differs")
+			}
+		}
+		encode := func(b *nom.AccountBlock) map[string]interface{} {
+			w := wire(b)
+			round, e := nom.DeserializeAccountBlock(w)
+			if e != nil || !bytes.Equal(w, wire(round)) {
+				t.Fatal("exact account roundtrip differs")
+			}
+			return map[string]interface{}{"hash_hex": hx(b.Hash[:]), "computed_hash_hex": hx(b.ComputeHash().Bytes()), "wire_hex": hx(w), "wire_sha256": digest(w), "roundtrip_wire_hex": hx(wire(round)), "public_key_hex": hx(b.PublicKey), "signature_hex": hx(b.Signature), "children": []interface{}{}, "changes_hash_hex": hx(b.ChangesHash[:]), "semantic_previous": map[string]string{"hash_hex": hx(b.PreviousHash[:]), "height": num(b.Previous().Height)},
+				"block": map[string]interface{}{"version": num(b.Version), "chain_id": num(b.ChainIdentifier), "block_type": num(b.BlockType), "address_hex": hx(b.Address[:]), "to_address_hex": hx(b.ToAddress[:]), "height": num(b.Height), "previous_hash_hex": hx(b.PreviousHash[:]), "momentum_hash_hex": hx(b.MomentumAcknowledged.Hash[:]), "momentum_height": num(b.MomentumAcknowledged.Height), "amount": b.Amount.String(), "token_standard_hex": hx(b.TokenStandard[:]), "from_block_hash_hex": hx(b.FromBlockHash[:]), "descendant_hashes_hex": []string{}, "data_hex": hx(b.Data), "fused_plasma": num(b.FusedPlasma), "difficulty": num(b.Difficulty), "nonce_hex": hx(b.Nonce.Data[:])}}
+		}
+		checkpoint := func() map[string]interface{} {
+			v := map[string]interface{}{"global_hex": hx(dump(c.manager.Frontier()))}
+			for role, a := range map[string]types.Address{"contract": parent.Address, "unrelated": user} {
+				pending := c.pool.GetUncommittedAccountBlocksByAddress(a)
+				framed := []byte{}
+				for _, b := range pending {
+					w := wire(b)
+					size := make([]byte, 4)
+					binary.BigEndian.PutUint32(size, uint32(len(w)))
+					framed = append(framed, size...)
+					framed = append(framed, w...)
+				}
+				v[role] = map[string]interface{}{"pool_hex": hx(dump(c.pool.GetFrontierAccountStore(a))), "pending_count": len(pending), "pending_wire_sha256": digest(framed)}
+			}
+			return v
+		}
+		checks := map[string]interface{}{"initial": checkpoint()}
+		tx, e := s.ApplyBlock(parent.Copy())
+		if e != nil || tx == nil || hx(wire(tx.Block)) != input.Parent || hx(tx.Changes.Dump()) != input.Delta || signs != 0 {
+			t.Fatal("exact preserved parent apply differs", e)
+		}
+		add(tx)
+		patches := map[string]string{"parent": hx(c.pool.GetPatch(parent.Address, parent.Identifier()).Dump()), "child": hx(c.pool.GetPatch(child.Address, child.Identifier()).Dump())}
+		checks["parent-admitted"] = checkpoint()
+		catalog := map[types.Hash]int{child.Hash: 0, parent.Hash: 1}
+		catalogWire := map[int]string{0: hx(wire(child)), 1: input.Parent}
+		indices := func(blocks []*nom.AccountBlock) []int {
+			v := []int{}
+			for _, b := range blocks {
+				i, ok := catalog[b.Hash]
+				if !ok || catalogWire[i] != hx(wire(b)) {
+					t.Fatal("getter returned an unselected or changed wire")
+				}
+				v = append(v, i)
+			}
+			return v
+		}
+		candidates := []interface{}{}
+		observations := map[string]interface{}{}
+		for n := 1; n <= 101; n++ {
+			previous := c.pool.GetFrontierAccountStore(user).Identifier()
+			used, e := c.pool.GetAccountStore(user, previous).GetChainPlasma()
+			if e != nil {
+				t.Fatal("selected used plasma unavailable")
+			}
+			available, e := AvailablePlasma(c.GetCacheStore(anchor), c.pool.GetAccountStore(user, previous))
+			if e != nil {
+				t.Fatal("selected budget unavailable")
+			}
+			before := checkpoint()
+			count := signs
+			g, e := s.GenerateFromTemplate(&nom.AccountBlock{BlockType: nom.BlockTypeUserSend, Address: user, ToAddress: peer, Amount: big.NewInt(0), TokenStandard: types.ZeroTokenStandard, MomentumAcknowledged: anchor}, signer)
+			if e != nil || g == nil || signs != count+1 {
+				t.Fatal("separate public control generation differs", e)
+			}
+			original := g.Block.Copy()
+			delta := hx(g.Changes.Dump())
+			exact, e := s.ApplyBlock(original.Copy())
+			cost, ce := CanonicalBasePlasma(c, original)
+			if e != nil || ce != nil || exact == nil || hx(exact.Changes.Dump()) != delta || !bytes.Equal(wire(exact.Block), wire(original)) || signs != count+1 || stateDigest(before) != stateDigest(checkpoint()) {
+				t.Fatal("exact separate apply changed state or wire", e)
+			}
+			candidates = append(candidates, map[string]interface{}{"block": encode(original), "delta_patch_hex": delta, "applied_delta_hex": hx(exact.Changes.Dump()), "applied_wire_hex": hx(wire(exact.Block)), "generation_signatures": 1, "apply_signatures": 0, "base_plasma": num(original.BasePlasma), "total_plasma": num(original.TotalPlasma), "canonical_base": num(cost), "available_before": num(available), "used_before": used.String()})
+			catalog[original.Hash] = n + 1
+			catalogWire[n+1] = hx(wire(original))
+			add(exact)
+			patches[num(uint64(n))] = hx(c.pool.GetPatch(user, original.Identifier()).Dump())
+			if n >= 98 {
+				label := "unrelated-" + num(uint64(n))
+				t.Run(label, func(t *testing.T) {
+					before := checkpoint()
+					checks[label] = before
+					rows := []interface{}{}
+					for read := 0; read < 16; read++ {
+						all := indices(c.pool.GetAllUncommittedAccountBlocks())
+						selected := indices(c.pool.GetNewMomentumContent())
+						after := checkpoint()
+						if len(all) != n+2 || len(selected) > 100 || stateDigest(before) != stateDigest(after) || signs != n {
+							t.Fatal("actual getters changed state or process bounds")
+						}
+						rows = append(rows, map[string]interface{}{"all_indices": all, "selection_indices": selected, "checkpoint_before_sha256": stateDigest(before), "checkpoint_after_sha256": stateDigest(after), "signatures": 0})
+					}
+					observations[label] = rows
+				})
+			}
+		}
+		queryIDs := []interface{}{}
+		for _, h := range c.queries {
+			queryIDs = append(queryIDs, map[string]string{"hash_hex": hx(h.Hash[:]), "height": num(h.Height)})
+		}
+		record := map[string]interface{}{"schema": "zenon-nom-content-cap-record-v1", "id": "preserved-batch-default-cap", "input": input, "actual_cap": chain.MaxAccountBlocksInMomentum, "actual_pending_cap": chain.MaxUncommittedBlocksPerAccount, "parent_apply_signatures": 0, "account_signatures": signs, "momentum_signatures": 0, "candidates": candidates, "pool_patches": patches, "checkpoints": checks, "observations": observations, "snapshot_identifiers": queryIDs}
+		encoded, e := json.Marshal(record)
+		if e != nil || len(encoded) > 2*1024*1024 {
+			t.Fatal("bounded complete source record unavailable")
+		}
+		t.Log("PTLC_RESEARCH_CONTENT_CAP_RECORD " + string(encoded))
+	})
+}
