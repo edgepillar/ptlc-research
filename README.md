@@ -1454,3 +1454,13 @@ logical no-op. The [validation boundary](docs/NOM_MULTI_ROLLBACK_VALIDATION.md)
 requires separate local, hosted PR and push/main acceptance. Persistent recovery,
 partial failure, authenticated provenance and application/core readiness remain
 unfilled.
+
+The additive [rollback refusal profile](docs/NOM_ROLLBACK_REFUSAL.md) selects an
+error before the first actual memory pop and after one successful delegated pop.
+The real public rollback returns the original error in the first case and typed
+`ErrCanonicalStateUncertain` in the second. Complete M3 or M2 state and all
+original pending wires and patches remain; neither call reaches M1 or retries.
+The [validation boundary](docs/NOM_ROLLBACK_REFUSAL_VALIDATION.md) preserves
+failed development evidence and keeps local, exact-head PR and push/main gates
+separate. Persistent recovery, journal composition and authenticated provenance
+remain unfilled. Application/core remain **NO-GO**; recovery action is **NONE**.
