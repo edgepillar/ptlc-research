@@ -1421,3 +1421,14 @@ The synthetic anchor, memory insertion and callbacks do not authenticate a
 chain or authorize recovery. See the [validation boundary](docs/NOM_MOMENTUM_ADMISSION_VALIDATION.md).
 Persistent caller ordering, batched content, producer authentication and the
 independent application/core gates remain unfilled; both stay **NO-GO**.
+
+The additive [batched rollback profile](docs/NOM_BATCHED_ROLLBACK.md) joins the
+actual account-pool selector, momentum execution, public memory insertion and
+public rollback listener sequence. The exact preserved contract child and
+parent occur together in actual prefetch and callbacks. A newly composed
+confirmation causes the old synthetic receipt to be refused; its bytes remain
+unchanged. Separate fresh public controls exercise dependent-manager eviction
+and retention of an unrelated original. Complete independent state, exact
+callback ordering and refusal checkpoint digests are compared after freshly
+rerunning all prior source profiles. This does not establish authenticated
+recovery, persistent behavior, unique eviction cause or application readiness.
