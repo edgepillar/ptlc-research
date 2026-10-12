@@ -5,6 +5,12 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+The selected [journal partial HOLD projection](docs/NOM_JOURNAL_HOLD.md) binds
+full existing journal bytes under the strict read-only owner. Persisted charged
+ordinals acquire stable research identifiers and remain execution UNKNOWN;
+missing results and originals stay absent. This comparison supplies no recovery
+admission, durable projection store, current authority or restore fence.
+
 The selected [strict read-only reference open](docs/NOM_STRICT_OPEN.md) directly
 verifies each present public recovery result before returning its owner. Missing
 output stays missing, and the frozen legacy writer/open remains unchanged.
