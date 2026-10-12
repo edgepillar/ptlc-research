@@ -5,6 +5,12 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+The selected [strict read-only reference open](docs/NOM_STRICT_OPEN.md) directly
+verifies each present public recovery result before returning its owner. Missing
+output stays missing, and the frozen legacy writer/open remains unchanged.
+Actual process-death journals and a separate invalid-result copy qualify this
+boundary. See [validation](docs/NOM_STRICT_OPEN_VALIDATION.md).
+
 The separate [explicit process-death qualification](docs/NOM_PROCESS_DEATH.md)
 observes five disposable owner exits with actual public-worker stream custody.
 It reopens the same original journals without recovery reentry, absent-output
