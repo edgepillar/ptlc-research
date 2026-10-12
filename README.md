@@ -1432,3 +1432,14 @@ and retention of an unrelated original. Complete independent state, exact
 callback ordering and refusal checkpoint digests are compared after freshly
 rerunning all prior source profiles. This does not establish authenticated
 recovery, persistent behavior, unique eviction cause or application readiness.
+
+The additive [default-cap content profile](docs/NOM_CONTENT_CAP.md) checks the
+actual public selector with the unchanged 100-header cap. An exactly preserved
+PTLC child/parent batch is combined with 101 separately generated and exactly
+applied public user controls. Complete independent state and all 64 actual
+selections are checked at 98, 99, 100 and 101 users. Account-map order is
+unspecified; separate getter reads may differ. A deterministic property corpus
+is selected only after every original observation satisfies a complete-batch
+admissible order. Both variants need not appear, and fairness is not established.
+The [validation boundary](docs/NOM_CONTENT_CAP_VALIDATION.md) keeps local,
+hosted PR and push/main acceptance separate. Application/core remain **NO-GO**.
