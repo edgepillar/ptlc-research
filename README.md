@@ -1408,4 +1408,16 @@ truncation. The unrelated account retains two exact originals. Complete logical
 readback and ordered patch replay are independently checked. These are selected
 source observations, not authenticated rollback or recovery authority. See the
 [validation boundary](docs/NOM_POOL_DEPENDENCIES_VALIDATION.md). Application/core
-remain **NO-GO**; actual momentum acceptance is the next separate source gate.
+remain **NO-GO**; actual momentum acceptance is qualified separately below.
+
+The additive [momentum execution profile](docs/NOM_MOMENTUM_ADMISSION.md) uses
+the actual Supervisor, momentum store and local memory manager for two ordered
+plain sends followed by one receive. Complete account roots, global headers,
+confirmation heights, balance indexes and mailbox ownership are independently
+projected. Thirteen refused candidates preserve the exact stable base and sign
+zero times. Producer acceptance, rejection and error are explicit selected
+responses; a valid self-signature does not establish elected producer authority.
+The synthetic anchor, memory insertion and callbacks do not authenticate a
+chain or authorize recovery. See the [validation boundary](docs/NOM_MOMENTUM_ADMISSION_VALIDATION.md).
+Persistent caller ordering, batched content, producer authentication and the
+independent application/core gates remain unfilled; both stay **NO-GO**.
