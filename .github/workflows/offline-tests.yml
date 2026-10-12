@@ -594,3 +594,12 @@ jobs:
           ptlc_go="$(command -v go)"
           python3 -B scripts/qualify_nom_multi_rollback.py \
             --checkout .research-cache/nom-wire-core-source --go "$ptlc_go"
+      - name: Compare selected public rollback refusal and complete retained prefixes
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: "off"
+          GOSUMDB: "off"
+        run: |
+          ptlc_go="$(command -v go)"
+          python3 -B scripts/qualify_nom_rollback_refusal.py \
+            --checkout .research-cache/nom-wire-core-source --go "$ptlc_go"

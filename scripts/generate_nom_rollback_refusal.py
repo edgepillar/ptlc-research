@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+"""Select actual source refusal and the complete successfully removed prefix."""
+
+from offline_session.pr138 import CORE_COMMIT
+
+PROFILE = "zenon-pr138-rollback-refusal-v1"
+BASE = "4c2986bde70c83c9e5a8e9dfd18c91161c9481a7"
+FIXTURE = "compatibility/fixtures/nom_rollback_refusal_v1.json"
+CASES = ("before-first-pop", "after-one-actual-pop")
+CONTROLS = ("missing-add-locker", "missing-rollback-locker", "wrong-target-height", "wrong-target-hash", "old-receipt-before-confirmation", "already-at-frontier")
+BOUNDARY = {
+    "application": "NO-GO", "core": "NO-GO", "recovery_action": "NONE",
+    "subject": "EXACT PRESERVED CONTRACT PARENT AND CHILD; FRESH SEPARATELY LABELED PUBLIC MEMORY CONTROLS",
+    "execution": "ACTUAL SUPERVISOR EXACT PARENT APPLY, MOMENTUM GENERATE AND APPLY, PUBLIC MOMENTUM POOL ADD AND ROLLBACK",
+    "content": "ACTUAL ACCOUNT POOL SELECTOR; CHILD THEN PARENT WITHOUT MANUAL CALLBACK CONTENT",
+    "callbacks": "COMPLETE STABLE BEFORE POOL; COMPLETE STABLE AND PENDING AFTER POOL; ONLY SUCCESSFUL POPS EMIT ACTUAL DELETE CALLBACKS",
+    "fault": "SELECTED ERROR BEFORE DELEGATION; ALL SUCCESSFUL POPS DELEGATE TO THE ACTUAL UNCHANGED MEMORY MANAGER",
+    "classification": "ZERO POPS RETURNS ORIGINAL ERROR; ONE ACTUAL POP RETURNS ACTUAL ErrCanonicalStateUncertain WITH ORIGINAL ROLLBACK ERROR IDENTITY",
+    "failed_prefetch": "NOT DIRECTLY INSTRUMENTED; ACTUAL PREFETCH BEFORE POP IS A PINNED SOURCE ORDER CLAIM",
+    "target": "NEITHER FAILED CALL REACHES M1; ZERO AUTOMATIC RETRIES OR REPLACEMENT OPERATIONS",
+    "second_momentum": "ACTUAL GENERATED AND EXACTLY APPLIED EMPTY SUCCESSOR INSERTED BEFORE FRESH PENDING CONTROLS",
+    "intermediate": "COMPLETE M3 AFTER FIRST REFUSAL; COMPLETE M2 AFTER ONE REAL POP; ALL THREE ORIGINAL PENDING CONTROLS RETAIN EXACT WIRES AND PATCHES",
+    "no_op": "ROLLBACK TO EXACT CURRENT FRONTIER EMITS ZERO CALLBACKS AND CHANGES NO COMPLETE LOGICAL CHECKPOINT",
+    "admission": "FRESH RECEIPT AND SUFFIX EXACT APPLY; OLD SYNTHETIC RECEIPT REFUSED AND NEVER INSERTED",
+    "eviction": "M2 IS NOT POPPED; ALL THREE ORIGINAL PENDING CONTROLS REMAIN; NO EVICTION CAUSE CLAIM",
+    "preservation": "ALL PRIOR FUNDING, INNER WITNESS, RECEIPT, SOURCE PROFILES AND FAILED EVIDENCE UNCHANGED",
+    "anchor": "SELECTED SYNTHETIC GLOBAL STATE AND MOMENTUM; NOT AN AUTHENTICATED CHAIN",
+    "producer": "EXPLICIT SELECTED ACCEPT RESPONSE; ELECTED PRODUCER AUTHENTICATION UNFILLED",
+    "signing": "DISCLOSED PUBLIC 0x41, 0x61 AND 0x64 TEST SEEDS ONLY; EXACT APPLY AND REFUSALS SIGN ZERO TIMES",
+    "sporks": "SELECTED PTLC ACCOUNT CACHE; ACTUAL EMPTY SPORK STORE; NO NODE OR NETWORK ACTIVATION",
+    "dynamic_plasma": "NOT_SELECTED; LEGACY INACTIVE PRICING",
+    "persistent_manager": "NOT_SELECTED", "batch_capacity_boundary": "NOT_SELECTED",
+    "atomicity": "NOT_PERFORMED; SINGLE-THREADED MEMORY CONTROLS",
+    "network_node_admission": "NOT_PERFORMED", "application_signing": "NOT_PERFORMED",
+    "journal_composition": "NOT_PERFORMED", "source_authentication": "UNFILLED", "canonicality": "UNFILLED",
+    "finality": "UNFILLED", "original_custody": "UNFILLED", "restore_fence": "UNFILLED",
+    "independent_assessment": "UNFILLED", "construction_security": "NOT ESTABLISHED BY SELECTED MEMORY FAULT CONTROLS",
+}
+
+
+def corpus(records):
+    return {"schema": "zenon-nom-rollback-refusal-corpus-v1", "profile": PROFILE,
+            "core_commit": CORE_COMMIT, "research_baseline_commit": BASE, "records": records, **BOUNDARY}
