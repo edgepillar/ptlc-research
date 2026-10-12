@@ -1397,3 +1397,15 @@ and no cleanup, retry or recovery authority. See [requirements](docs/NATIVE_CURS
 and [validation](docs/STAGE127_VALIDATION.md). Natural faults, atomic retention,
 native retirement and independent assessment remain open; application/core are
 **NO-GO**.
+
+The additive [dependent receive profile](docs/NOM_POOL_DEPENDENCIES.md) compares
+actual pool event callbacks after explicit synthetic stable, lookup, confirmation
+and mailbox reconstitution. Twenty-three separate plain-account candidates
+preserve every old swap original and witness. Two nonempty send callbacks remove
+the complete dependent recipient manager, including its prefix; a deliberately
+incomplete empty callback instead retains that prefix after stale-height
+truncation. The unrelated account retains two exact originals. Complete logical
+readback and ordered patch replay are independently checked. These are selected
+source observations, not authenticated rollback or recovery authority. See the
+[validation boundary](docs/NOM_POOL_DEPENDENCIES_VALIDATION.md). Application/core
+remain **NO-GO**; actual momentum acceptance is the next separate source gate.
