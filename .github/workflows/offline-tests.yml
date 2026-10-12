@@ -95,6 +95,8 @@ jobs:
         run: python3 -B scripts/qualify_nom_recovery.py
       - name: Qualify actual public-worker reference-journal interruption custody
         run: python3 -B scripts/qualify_nom_recovery_cuts.py
+      - name: Qualify explicit reference-journal process death with the public worker
+        run: python3 -B scripts/qualify_nom_process_death.py
       - name: Qualify public recovery with computed Create context ids
         run: python3 -B scripts/qualify_nom_created_recovery.py
       - name: Record selected offline dependency and worker input evidence

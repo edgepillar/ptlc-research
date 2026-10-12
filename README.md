@@ -5,6 +5,12 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+The separate [explicit process-death qualification](docs/NOM_PROCESS_DEATH.md)
+observes five disposable owner exits with actual public-worker stream custody.
+It reopens the same original journals without recovery reentry, absent-output
+construction or hold admission. Power loss, interior disk faults and current
+source authority remain unqualified. See [validation](docs/NOM_PROCESS_DEATH_VALIDATION.md).
+
 The separate [reference interruption custody qualification](docs/NOM_RECOVERY_CUTS.md)
 exercises five actual public-worker/reference-journal cuts and reopens exact
 original journals without automatic recovery. Result-only replay, rejecting
