@@ -48,6 +48,8 @@ jobs:
         run: python3 -m unittest discover -s tests -v
       - name: Check artifact hygiene
         run: python3 scripts/check_artifacts.py
+      - name: Compare missing NoM original custody without reconstruction
+        run: python3 -B scripts/qualify_nom_partial_custody.py
       - name: Compare selected NoM uncertainty retention without recovery admission
         run: python3 -B scripts/qualify_nom_uncertainty.py
       - name: Compare source policy and protected-use cutoffs

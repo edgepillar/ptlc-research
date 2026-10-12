@@ -5,6 +5,12 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+The separate [partial original custody comparison](docs/NOM_PARTIAL_CUSTODY.md)
+keeps charged unknown work, absent long output, a retained public result and
+exact retained original bytes distinct. Source labels cannot fill missing bytes
+or authorize recovery. Actual reference-journal cuts remain a separate gate;
+see [validation](docs/NOM_PARTIAL_CUSTODY_VALIDATION.md).
+
 The [selected uncertainty hold](docs/NOM_UNCERTAINTY_HOLD.md) now retains exact
 originals, prior evidence, possible disclosure and charged work after either
 selected rollback refusal. Unavailable and forgeable complete source claims
