@@ -5,6 +5,12 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+The separate [reference interruption custody qualification](docs/NOM_RECOVERY_CUTS.md)
+exercises five actual public-worker/reference-journal cuts and reopens exact
+original journals without automatic recovery. Result-only replay, rejecting
+observer replay and coherent old-prefix controls retain their authority limits.
+See [validation](docs/NOM_RECOVERY_CUTS_VALIDATION.md).
+
 The separate [partial original custody comparison](docs/NOM_PARTIAL_CUSTODY.md)
 keeps charged unknown work, absent long output, a retained public result and
 exact retained original bytes distinct. Source labels cannot fill missing bytes

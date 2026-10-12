@@ -93,6 +93,8 @@ jobs:
         run: cargo +1.90.0 build --locked --offline --manifest-path qualification/Cargo.toml --examples
       - name: Qualify fixed-recipient NoM original recovery with the public worker
         run: python3 -B scripts/qualify_nom_recovery.py
+      - name: Qualify actual public-worker reference-journal interruption custody
+        run: python3 -B scripts/qualify_nom_recovery_cuts.py
       - name: Qualify public recovery with computed Create context ids
         run: python3 -B scripts/qualify_nom_created_recovery.py
       - name: Record selected offline dependency and worker input evidence

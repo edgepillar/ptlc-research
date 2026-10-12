@@ -1,0 +1,59 @@
+{
+  "schema": "ptlc-nom-reference-cuts-v1",
+  "research_baseline_commit": "9cf598b2bf935d54da140a846d8886af13e0df0a",
+  "synthetic_notice": "Disclosed public synthetic journal and observation inputs only",
+  "cases": [
+    {
+      "cut": "after-remote-short",
+      "charged": 0,
+      "retained_result": false,
+      "retained_long_original": false,
+      "recovery_worker_entries": 0
+    },
+    {
+      "cut": "after-recovery-admitted",
+      "charged": 1,
+      "retained_result": false,
+      "retained_long_original": false,
+      "recovery_worker_entries": 0
+    },
+    {
+      "cut": "worker-reply-withheld",
+      "charged": 1,
+      "retained_result": false,
+      "retained_long_original": false,
+      "recovery_worker_entries": 1
+    },
+    {
+      "cut": "after-recovered",
+      "charged": 1,
+      "retained_result": true,
+      "retained_long_original": false,
+      "recovery_worker_entries": 1
+    },
+    {
+      "cut": "after-original",
+      "charged": 1,
+      "retained_result": true,
+      "retained_long_original": true,
+      "recovery_worker_entries": 1
+    }
+  ],
+  "boundary": {
+    "application": "NO-GO",
+    "core": "NO-GO",
+    "recovery_action": "NONE",
+    "hold_admission": "NOT_COMPOSED",
+    "native_query_context": "NOT_COMPOSED",
+    "observation_source": "DISCLOSED SYNTHETIC ALLOWLIST ONLY",
+    "current_chain_authority": "UNFILLED",
+    "restore_fence": "UNFILLED",
+    "atomic_work_admission": "UNFILLED",
+    "independent_runtime": "UNFILLED",
+    "process_death": "NOT_PERFORMED",
+    "interior_write_or_fsync_fault": "NOT_PERFORMED",
+    "cut_kind": "CONTROLLED POST-FSYNC EXCEPTION OR WITHHELD WORKER REPLY",
+    "runner": "SEPARATE SINGLE-THREAD ORIGINAL-CAPTURE QUALIFICATION TRANSPORT",
+    "hostile_process_containment": "NOT_ESTABLISHED"
+  }
+}
