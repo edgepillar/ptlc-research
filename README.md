@@ -5,6 +5,14 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+The [selected uncertainty hold](docs/NOM_UNCERTAINTY_HOLD.md) now retains exact
+originals, prior evidence, possible disclosure and charged work after either
+selected rollback refusal. Unavailable and forgeable complete source claims
+supply no recovery action. Its separate finite comparison covers 84 schedules
+and 408 transitions; this pure requirement is not composed with a trusted
+observer, journal or authenticated chain. See its
+[validation](docs/NOM_UNCERTAINTY_HOLD_VALIDATION.md).
+
 **Status: additive PR #138 compatibility corpus and CANDIDATE-02 fixed-recipient
 NoM reference recovery with a separate selected worker build/environment profile
 and pinned public ABI/account hash conformance, following the preserved Stage 127
