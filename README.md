@@ -5,6 +5,12 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+The separate [full projection capsule](docs/NOM_CAPSULE.md) stores exact journal
+and HOLD bytes under a create-only private owner. A read-only consumer compares
+two bounded snapshots and supplies HOLD with UNKNOWN work and absent output
+preserved. Readability does not prove currentness, producer origin or power-loss
+survival. See [validation scope](docs/NOM_CAPSULE_VALIDATION.md).
+
 The selected [journal partial HOLD projection](docs/NOM_JOURNAL_HOLD.md) binds
 full existing journal bytes under the strict read-only owner. Persisted charged
 ordinals acquire stable research identifiers and remain execution UNKNOWN;
