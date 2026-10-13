@@ -30,7 +30,7 @@ class CapsuleControls(unittest.TestCase):
         cls.short, cls.long = FixtureHost.short, FixtureHost.long
         cls.sources = FixtureHost.sources
         cls.capsule_report = qualification.qualify(FixtureHost.worker,
-            evidence_directory=FixtureHost.directory / "capsule-originals")
+            evidence_directory=(FixtureHost.directory / "capsule-originals").resolve())
 
     @classmethod
     def tearDownClass(cls):

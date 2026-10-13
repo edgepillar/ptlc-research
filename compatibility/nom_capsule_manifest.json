@@ -6,7 +6,7 @@
     "offline_session/nom_capsule.py": "0c9e388f4dcfb6d16861f05141489f534a188743940e69ebb3a06e4b4eb6060f",
     "scripts/qualify_nom_capsule.py": "f1db52f5cfa451304e4c3a3cab181bbb11ca0e6ee6abfc6c60d7b78dccfe5aed",
     "scripts/nom_capsule_actor.py": "f4f20fada25dcfc56f1cb96fae182f8173c6c98e8014f3b62bc97e5d440123bb",
-    "tests/test_nom_capsule.py": "4b4eb3c949e4b5bb466f0e89282379716e6a8c9f44510a5489260b515f03cae8",
+    "tests/test_nom_capsule.py": "cb81689def9b650984e94ef74853d5fb5a977bce1496bea9f2066e8477b835c6",
     "compatibility/fixtures/nom_capsule_v1.json": "89ea7b27b89581f75fc4a50e4723453a81b21cdce9d9284958be85f16743039c"
   },
   "preserved_file_sha256": {
