@@ -55,3 +55,29 @@ gates. Successful fixture matching does not establish native mathematics;
 readability or ordinary flush returns do not establish physical power-loss
 survival, currentness, producer origin or application recovery authority.
 Application/core remain NO-GO; recovery action NONE.
+
+## Exact integer metadata follow-up
+
+After the initial exact-head PR and separate main acceptance, a retained public
+capsule comparison found that numeric equality accepted decimal aliases for
+`journal_sequence` and `journal_bytes`. One new regression method reproduced
+eight failed subcases across four admitted HOLD states against the old reader.
+That expected-red unit run remains NOT_QUALIFIED and its original failure output
+is preserved. Its first harness missed the singular `1 test` summary; a separate
+read-only classification used the original complete output without rerunning or
+reconstructing it.
+
+The follow-up requires exact integer types before journal comparison. All 51
+capsule methods, including the eight alias refusals, passed with the actual
+system-ancestor temporary-path alias. Fresh native measurement preserved 169
+source selections, seven actor exits and 67 actual public requests; consumers
+entered zero workers. Complete Python 3.12.14 regression passed 3,332 tests and
+all 906 required directed identities, with required OpenSSL, zero skips and zero
+ResourceWarnings. The 564 selected code/fixture/CI/test hashes stayed unchanged.
+The unchanged compilation inputs retain their separate 202 Rust and 58 Go
+outcomes; exact input readback is required and this reuse is not a new build
+claim. Fresh exact-head PR and separate push/main acceptance remain required
+before this follow-up receives complete publication acceptance.
+
+Valid producer bytes and every authority boundary remain separate from this
+metadata check. Application/core remain NO-GO; recovery action NONE.

@@ -3,10 +3,10 @@
   "profile": "ptlc-nom-capsule-qualification-v1",
   "research_baseline_commit": "9c77941751f3b6b3f5f6bd5962d4b8b3bd30e751",
   "input_sha256": {
-    "offline_session/nom_capsule.py": "0c9e388f4dcfb6d16861f05141489f534a188743940e69ebb3a06e4b4eb6060f",
+    "offline_session/nom_capsule.py": "bb04c16ba649118e303cbc8e492cdd670e5bbcb68ef81b05494805e7724bf90f",
     "scripts/qualify_nom_capsule.py": "f1db52f5cfa451304e4c3a3cab181bbb11ca0e6ee6abfc6c60d7b78dccfe5aed",
     "scripts/nom_capsule_actor.py": "f4f20fada25dcfc56f1cb96fae182f8173c6c98e8014f3b62bc97e5d440123bb",
-    "tests/test_nom_capsule.py": "cb81689def9b650984e94ef74853d5fb5a977bce1496bea9f2066e8477b835c6",
+    "tests/test_nom_capsule.py": "94df49802551385efa01554544a116c82dea95b8316690b84b38adeaa9cc2586",
     "compatibility/fixtures/nom_capsule_v1.json": "89ea7b27b89581f75fc4a50e4723453a81b21cdce9d9284958be85f16743039c"
   },
   "preserved_file_sha256": {

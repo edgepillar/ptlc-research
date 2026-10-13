@@ -55,7 +55,8 @@ def _selected(value):
     _require(type(value) is dict and value.keys() == {
         "schema", "journal_hex", "journal_sha256", "journal_bytes", "journal_head_hex",
         "journal_sequence", "role", "partial_hold_hex", "selection_digest_hex"})
-    _require(value["schema"] == projection.PROFILE)
+    _require(value["schema"] == projection.PROFILE
+        and type(value["journal_bytes"]) is int and type(value["journal_sequence"]) is int)
     journal = bytes.fromhex(value["journal_hex"])
     replay, head, sequence = projection._replay(journal)
     held = partial._state(partial.uncertainty._decode(bytes.fromhex(value["partial_hold_hex"])))
