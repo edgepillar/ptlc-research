@@ -23,6 +23,11 @@ ASCII JSON envelope retains the full original journal and separate HOLD bytes.
 The maximum encoded size is 5 MiB. The source parser and HOLD selection are
 replayed structurally; encoding enters no verifier or recovery worker.
 
+The selected `journal_bytes` and `journal_sequence` metadata must be exact JSON
+integers. Equal-valued decimal aliases refuse even when the caller selects a new
+digest for the altered envelope. This check does not authenticate that digest or
+change the original journal, charged work, worker or recovery boundary.
+
 `CapsuleOwner.create` requires a nonexistent directory beneath a private owned
 parent. It creates a private directory and owner marker, and observes ordinary
 file/directory flush returns. It does not adopt an existing directory. Existing

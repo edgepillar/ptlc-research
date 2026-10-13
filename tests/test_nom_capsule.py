@@ -143,6 +143,20 @@ class CapsuleControls(unittest.TestCase):
         value = json.loads(self.wire()); value["selected_projection"]["journal_sequence"] -= 1
         with self.assertRaises(capsule.CapsuleRefused): self.read_value(capsule._wire(value))
 
+    def test_rehashed_decimal_metadata_refuses_equal_integer_aliases(self):
+        for index in range(1, 5):
+            original = self.wire(self.selected(index))
+            self.assertEqual(self.read_value(original).canonical_bytes, original)
+            for field in ("journal_sequence", "journal_bytes"):
+                with self.subTest(index=index, field=field):
+                    value = json.loads(original)
+                    exact = value["selected_projection"][field]
+                    self.assertIs(type(exact), int)
+                    value["selected_projection"][field] = float(exact)
+                    self.assertEqual(value["selected_projection"][field], exact)
+                    with self.assertRaises(capsule.CapsuleRefused):
+                        self.read_value(capsule._wire(value))
+
     def test_rehashed_capsule_cannot_fill_absent_output(self):
         value = json.loads(self.wire(self.selected(2)))
         other = self.selected(3).as_dict()
