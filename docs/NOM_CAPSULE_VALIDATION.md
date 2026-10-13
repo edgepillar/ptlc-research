@@ -34,6 +34,15 @@ monitor, cross-volume clone and cache-ownership refusals retain their original
 sources and available outputs. Incomplete output and held partial data are not
 reconstructed or counted as passes.
 
+The first hosted PR run passed nine jobs but failed both macOS unit profiles
+during capsule class setup: 3,281 prior tests ran, while the 50 new tests were
+NOT_RUN. The complete original failed ZIP passed CRC and SHA-256 checks and
+remains retained. The unit fixture now selects its physical evidence path before
+the strict owner is entered. Ownership and symlink refusals remain unchanged;
+50 controls also passed with an actual system-ancestor alias in the fixture
+temporary prefix. The new selected source requires fresh complete local and
+exact-head hosted acceptance.
+
 Private evidence uses bounded owned storage, standard production free-space
 floors, explicit object references and one protected object per digest. Original
 archives and historical ownership/custody gaps are preserved. Artifact checks
