@@ -17,6 +17,12 @@ bytes. New challenges and larger counters cannot replace exact continuation.
 Restoring both selections together still matches; this is local retention, with
 no current-head selection or external restore fence. All results stay HOLD.
 
+The separate [capsule/read binding](docs/NOM_CAPSULE_QUERY.md) requires both
+actually retained originals and binds the full capsule selection and charged
+UNKNOWN work to an independently prepared read. Missing long originals refuse.
+New source challenges, revisions and incarnations do not replenish work;
+unsigned matching claims remain HOLD with no current or restore authority.
+
 The selected [journal partial HOLD projection](docs/NOM_JOURNAL_HOLD.md) binds
 full existing journal bytes under the strict read-only owner. Persisted charged
 ordinals acquire stable research identifiers and remain execution UNKNOWN;

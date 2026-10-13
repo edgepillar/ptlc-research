@@ -1,0 +1,42 @@
+{
+  "schema": "ptlc-nom-capsule-read-qualification-v1",
+  "research_baseline_commit": "a05ef5dae6198278ff5493663a15f810dce93a45",
+  "synthetic_notice": "Retained public synthetic originals and independently selected source labels only",
+  "admitted_source_indices": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "full_binding_outcomes": [
+    "REFUSED",
+    "REFUSED",
+    "REFUSED",
+    "HOLD"
+  ],
+  "source_coverage": [
+    "COMPLETE_CLAIM",
+    "INCOMPLETE_CLAIM",
+    "CONTRADICTED_CLAIM",
+    "UNAVAILABLE_CLAIM"
+  ],
+  "source_authentication": "NOT_PERFORMED",
+  "prior_worker_calls": 67,
+  "binding_worker_calls": 0,
+  "boundary": {
+    "application": "NO-GO",
+    "core": "NO-GO",
+    "recovery_action": "NONE",
+    "binding_worker_calls": 0,
+    "source_authentication": "NOT_PERFORMED",
+    "source_currentness": "UNFILLED",
+    "restore_fence": "UNFILLED",
+    "atomic_entry": "NOT_IMPLEMENTED",
+    "missing_original_conversion": "REFUSED; NO FILLING OR CONSTRUCTION",
+    "consumer_retention_pins": "SEPARATE CALLER ASSERTIONS; NOT DERIVED FROM RECOVERY JOURNAL",
+    "coherent_old_pair": "CAN MATCH; HOLD ONLY",
+    "native_query_pairing": "NOT_COMPOSED",
+    "preserved_core_source_outcomes": 342,
+    "new_core_source_outcomes": 0
+  }
+}
