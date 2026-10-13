@@ -11,6 +11,12 @@ two bounded snapshots and supplies HOLD with UNKNOWN work and absent output
 preserved. Readability does not prove currentness, producer origin or power-loss
 survival. See [validation scope](docs/NOM_CAPSULE_VALIDATION.md).
 
+The separate [capsule continuation comparison](docs/NOM_CAPSULE_CONTINUITY.md)
+refuses an older or divergent journal relative to independently retained full
+bytes. New challenges and larger counters cannot replace exact continuation.
+Restoring both selections together still matches; this is local retention, with
+no current-head selection or external restore fence. All results stay HOLD.
+
 The selected [journal partial HOLD projection](docs/NOM_JOURNAL_HOLD.md) binds
 full existing journal bytes under the strict read-only owner. Persisted charged
 ordinals acquire stable research identifiers and remain execution UNKNOWN;

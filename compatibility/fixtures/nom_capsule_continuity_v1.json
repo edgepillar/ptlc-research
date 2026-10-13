@@ -1,0 +1,58 @@
+{
+  "schema": "ptlc-nom-capsule-continuity-qualification-v1",
+  "research_baseline_commit": "a0b6aa44e8fa8775c00b1538533fc18cf4439987",
+  "synthetic_notice": "Disclosed public synthetic journal originals; no chain authority",
+  "admitted_source_indices": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "relation_matrix": [
+    [
+      "EXACT_REPLAY",
+      "EXACT_REPLAY",
+      "STRICT_EXTENSION",
+      "STRICT_EXTENSION"
+    ],
+    [
+      "EXACT_REPLAY",
+      "EXACT_REPLAY",
+      "STRICT_EXTENSION",
+      "STRICT_EXTENSION"
+    ],
+    [
+      "REFUSED",
+      "REFUSED",
+      "EXACT_REPLAY",
+      "STRICT_EXTENSION"
+    ],
+    [
+      "REFUSED",
+      "REFUSED",
+      "REFUSED",
+      "EXACT_REPLAY"
+    ]
+  ],
+  "different_challenge_relation": "SAME_JOURNAL",
+  "coherent_old_pair_relation": "EXACT_REPLAY",
+  "reformatted_same_head": "REFUSED",
+  "prior_worker_calls": 67,
+  "comparison_worker_calls": 0,
+  "boundary": {
+    "application": "NO-GO",
+    "core": "NO-GO",
+    "recovery_action": "NONE",
+    "signature_mathematics": "NOT_PERFORMED BY CONTINUATION COMPARISON",
+    "comparison_worker_calls": 0,
+    "source_currentness": "UNFILLED",
+    "consumer_restore_fence": "UNFILLED",
+    "atomic_work_admission": "UNFILLED",
+    "current_head_selection": "NOT_IMPLEMENTED",
+    "durable_comparison_storage": "NOT_IMPLEMENTED",
+    "coherent_old_pair": "MATCHES; HOLD ONLY",
+    "original_capsules": "PRESERVE BOTH; NO OVERWRITE OR REPAIR",
+    "preserved_core_source_outcomes": 342,
+    "new_core_source_outcomes": 0
+  }
+}
