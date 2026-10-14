@@ -1,0 +1,38 @@
+{
+  "schema": "ptlc-nom-source-checkpoint-qualification-v1",
+  "research_baseline_commit": "08791450c314767ba8723be0e135ddde555589ad",
+  "synthetic_notice": "Disclosed synthetic historical role signatures; never source truth or restore admission",
+  "positive_contexts": [
+    "primary",
+    "unavailable",
+    "root_rotation",
+    "source_rotation",
+    "checkpoint_rotation",
+    "new_epoch",
+    "new_challenge"
+  ],
+  "signature_worker_requests": 23,
+  "successful_signature_requests": 9,
+  "refused_signature_requests": 14,
+  "successful_public_signature_checks": 27,
+  "independently_verified_go_contexts": 7,
+  "callback_forgery": "ZERO SIGNATURES CAN MATCH FORGED CALLBACK; ACTUAL NATIVE WORKER REFUSES",
+  "coherent_restore": "ALL HISTORICAL SIGNATURES STILL VALID; HOLD ONLY",
+  "boundary": {
+    "application": "NO-GO",
+    "core": "NO-GO",
+    "recovery_action": "NONE",
+    "root_provisioning": "UNFILLED",
+    "operational_source_authentication": "NOT_PERFORMED",
+    "source_currentness": "UNFILLED",
+    "consumer_nonrollback_checkpoint": "UNFILLED",
+    "checkpoint_storage": "NOT_IMPLEMENTED",
+    "atomic_entry": "NOT_IMPLEMENTED",
+    "signature_scope": "HISTORICAL PUBLIC SELECTED-ROLE MATHEMATICS ONLY",
+    "prior_worker_calls": 67,
+    "framing_worker_calls": 0,
+    "native_query_pairing": "NOT_COMPOSED",
+    "preserved_core_source_outcomes": 342,
+    "new_core_source_outcomes": 0
+  }
+}
