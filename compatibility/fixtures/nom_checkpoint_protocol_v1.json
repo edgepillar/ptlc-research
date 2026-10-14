@@ -1,0 +1,47 @@
+{
+  "boundary": {
+    "application": "NO-GO",
+    "atomic_service_cas": "NOT_IMPLEMENTED",
+    "atomic_work_entry": "NOT_IMPLEMENTED",
+    "checkpoint_storage": "NOT_IMPLEMENTED",
+    "core": "NO-GO",
+    "native_query_pairing": "NOT_COMPOSED",
+    "new_core_source_outcomes": 0,
+    "preserved_core_source_outcomes": 342,
+    "protocol_worker_calls": 0,
+    "recovery_action": "NONE",
+    "reply_authentication": "UNSIGNED REFERENCE FRAMING ONLY",
+    "root_provisioning": "UNFILLED",
+    "service_nonrollback": "INDEPENDENT CALLER PREMISE; NOT_IMPLEMENTED",
+    "signature_mathematics": "NOT_PERFORMED BY THIS PROFILE",
+    "source_currentness": "UNFILLED"
+  },
+  "expected_checkpoint_selection": "EXACT INDEPENDENT EXPECTATION; NO MINIMUM-TO-NEW-HEAD DISCOVERY",
+  "refusal_controls": [
+    "stale_compare_and_advance",
+    "regressed_journal",
+    "diverged_journal",
+    "old_reply",
+    "new_service_query",
+    "numeric_alias",
+    "missing_original",
+    "exhausted_reference"
+  ],
+  "relation_controls": [
+    "matching",
+    "local_ahead",
+    "local_behind",
+    "unavailable_source",
+    "source_rotations",
+    "new_challenge"
+  ],
+  "research_baseline_commit": "af39c1911ffe4a8cc6cb535d4b75bad95b35ac34",
+  "schema": "ptlc-nom-checkpoint-protocol-qualification-v1",
+  "synthetic_notice": "Reference transitions over a retained public fixture; no source truth or nonrollback service",
+  "unsafe_controls": [
+    "coherent_restore",
+    "fresh_bootstrap_from_old_local",
+    "fork_from_old_reference",
+    "unsigned_reply_forgery"
+  ]
+}
