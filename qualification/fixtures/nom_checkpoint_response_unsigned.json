@@ -1,0 +1,294 @@
+{
+  "cases": {
+    "fresh_old_candidate": {
+      "declaration": {
+        "algorithm": "BIP340-SHA256",
+        "authority_epoch": 1,
+        "purpose": "checkpoint-candidate-response-role",
+        "root_key_hex": "6a27aedb12c9a3015ecdf2ead78755cfc3ef72d2c60ccd0033da18fbf9979641",
+        "root_transition": "independent-reprovisioning",
+        "schema": "ptlc-nom-checkpoint-response-authority-v1",
+        "service_selection": {
+          "checkpoint_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+          "max_snapshots": 16,
+          "purpose": "external-reference-retention-only",
+          "realm": {
+            "binary_digest_hex": "1010101010101010101010101010101010101010101010101010101010101010",
+            "canonicality_policy_digest_hex": "1616161616161616161616161616161616161616161616161616161616161616",
+            "chain_id": "69",
+            "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+            "finality_policy_digest_hex": "1717171717171717171717171717171717171717171717171717171717171717",
+            "freshness_policy_digest_hex": "1818181818181818181818181818181818181818181818181818181818181818",
+            "genesis_hash_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+            "restore_policy_digest_hex": "1919191919191919191919191919191919191919191919191919191919191919",
+            "spork_state_digest_hex": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "schema": "ptlc-nom-checkpoint-service-selection-v1",
+          "service_epoch": 1,
+          "service_id_hex": "c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1"
+        },
+        "service_selection_digest_hex": "a1c605d3a2705de4084d766571507089e35a05e15cb28db229ba0011dc830e2a",
+        "work_scope_digest_hex": "50124a818b0ab9553496dec50d3b398f55958f794e5d7f3dd88bd9685151a0c7"
+      },
+      "discovery_message_digest_hex": "18358f8554900931c68f8f1acff72b05f31fe881bc064c889a5bd0492ba2e1e2",
+      "query_digest_hex": "1dbb8449ce4b623ed24da18bb9f47138bc8fae6130a41c1e63b1a81274a20cdd",
+      "response_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "root_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "schema": "ptlc-nom-checkpoint-response-request-v1"
+    },
+    "later_minimum": {
+      "declaration": {
+        "algorithm": "BIP340-SHA256",
+        "authority_epoch": 1,
+        "purpose": "checkpoint-candidate-response-role",
+        "root_key_hex": "6a27aedb12c9a3015ecdf2ead78755cfc3ef72d2c60ccd0033da18fbf9979641",
+        "root_transition": "independent-reprovisioning",
+        "schema": "ptlc-nom-checkpoint-response-authority-v1",
+        "service_selection": {
+          "checkpoint_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+          "max_snapshots": 16,
+          "purpose": "external-reference-retention-only",
+          "realm": {
+            "binary_digest_hex": "1010101010101010101010101010101010101010101010101010101010101010",
+            "canonicality_policy_digest_hex": "1616161616161616161616161616161616161616161616161616161616161616",
+            "chain_id": "69",
+            "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+            "finality_policy_digest_hex": "1717171717171717171717171717171717171717171717171717171717171717",
+            "freshness_policy_digest_hex": "1818181818181818181818181818181818181818181818181818181818181818",
+            "genesis_hash_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+            "restore_policy_digest_hex": "1919191919191919191919191919191919191919191919191919191919191919",
+            "spork_state_digest_hex": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "schema": "ptlc-nom-checkpoint-service-selection-v1",
+          "service_epoch": 1,
+          "service_id_hex": "c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1"
+        },
+        "service_selection_digest_hex": "a1c605d3a2705de4084d766571507089e35a05e15cb28db229ba0011dc830e2a",
+        "work_scope_digest_hex": "50124a818b0ab9553496dec50d3b398f55958f794e5d7f3dd88bd9685151a0c7"
+      },
+      "discovery_message_digest_hex": "9a7f62e814668440904b2bdbbc063efbfcd287092a6344214bac5649ea66ba20",
+      "query_digest_hex": "11049b9c980a7c6a923f612059d14d236b741fecc9c47b267dd73783a52c3374",
+      "response_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "root_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "schema": "ptlc-nom-checkpoint-response-request-v1"
+    },
+    "minimum_candidate": {
+      "declaration": {
+        "algorithm": "BIP340-SHA256",
+        "authority_epoch": 1,
+        "purpose": "checkpoint-candidate-response-role",
+        "root_key_hex": "6a27aedb12c9a3015ecdf2ead78755cfc3ef72d2c60ccd0033da18fbf9979641",
+        "root_transition": "independent-reprovisioning",
+        "schema": "ptlc-nom-checkpoint-response-authority-v1",
+        "service_selection": {
+          "checkpoint_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+          "max_snapshots": 16,
+          "purpose": "external-reference-retention-only",
+          "realm": {
+            "binary_digest_hex": "1010101010101010101010101010101010101010101010101010101010101010",
+            "canonicality_policy_digest_hex": "1616161616161616161616161616161616161616161616161616161616161616",
+            "chain_id": "69",
+            "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+            "finality_policy_digest_hex": "1717171717171717171717171717171717171717171717171717171717171717",
+            "freshness_policy_digest_hex": "1818181818181818181818181818181818181818181818181818181818181818",
+            "genesis_hash_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+            "restore_policy_digest_hex": "1919191919191919191919191919191919191919191919191919191919191919",
+            "spork_state_digest_hex": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "schema": "ptlc-nom-checkpoint-service-selection-v1",
+          "service_epoch": 1,
+          "service_id_hex": "c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1"
+        },
+        "service_selection_digest_hex": "a1c605d3a2705de4084d766571507089e35a05e15cb28db229ba0011dc830e2a",
+        "work_scope_digest_hex": "50124a818b0ab9553496dec50d3b398f55958f794e5d7f3dd88bd9685151a0c7"
+      },
+      "discovery_message_digest_hex": "698cd257de00bf4e096804a9a8ca2c6e9f9bde1bd0ec622a424ed2111802724f",
+      "query_digest_hex": "3de416dbb735d2576f1103b9a0b56a550f8e60f6f0952dda01945410bfe9a61e",
+      "response_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "root_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "schema": "ptlc-nom-checkpoint-response-request-v1"
+    },
+    "new_epoch": {
+      "declaration": {
+        "algorithm": "BIP340-SHA256",
+        "authority_epoch": 2,
+        "purpose": "checkpoint-candidate-response-role",
+        "root_key_hex": "6a27aedb12c9a3015ecdf2ead78755cfc3ef72d2c60ccd0033da18fbf9979641",
+        "root_transition": "independent-reprovisioning",
+        "schema": "ptlc-nom-checkpoint-response-authority-v1",
+        "service_selection": {
+          "checkpoint_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+          "max_snapshots": 16,
+          "purpose": "external-reference-retention-only",
+          "realm": {
+            "binary_digest_hex": "1010101010101010101010101010101010101010101010101010101010101010",
+            "canonicality_policy_digest_hex": "1616161616161616161616161616161616161616161616161616161616161616",
+            "chain_id": "69",
+            "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+            "finality_policy_digest_hex": "1717171717171717171717171717171717171717171717171717171717171717",
+            "freshness_policy_digest_hex": "1818181818181818181818181818181818181818181818181818181818181818",
+            "genesis_hash_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+            "restore_policy_digest_hex": "1919191919191919191919191919191919191919191919191919191919191919",
+            "spork_state_digest_hex": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "schema": "ptlc-nom-checkpoint-service-selection-v1",
+          "service_epoch": 1,
+          "service_id_hex": "c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1"
+        },
+        "service_selection_digest_hex": "a1c605d3a2705de4084d766571507089e35a05e15cb28db229ba0011dc830e2a",
+        "work_scope_digest_hex": "50124a818b0ab9553496dec50d3b398f55958f794e5d7f3dd88bd9685151a0c7"
+      },
+      "discovery_message_digest_hex": "6e003ef5264cfd65c7621e31a0fa1f90600572488c7bf70fd019a6b2921dc99b",
+      "query_digest_hex": "3de416dbb735d2576f1103b9a0b56a550f8e60f6f0952dda01945410bfe9a61e",
+      "response_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "root_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "schema": "ptlc-nom-checkpoint-response-request-v1"
+    },
+    "newer_candidate": {
+      "declaration": {
+        "algorithm": "BIP340-SHA256",
+        "authority_epoch": 1,
+        "purpose": "checkpoint-candidate-response-role",
+        "root_key_hex": "6a27aedb12c9a3015ecdf2ead78755cfc3ef72d2c60ccd0033da18fbf9979641",
+        "root_transition": "independent-reprovisioning",
+        "schema": "ptlc-nom-checkpoint-response-authority-v1",
+        "service_selection": {
+          "checkpoint_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+          "max_snapshots": 16,
+          "purpose": "external-reference-retention-only",
+          "realm": {
+            "binary_digest_hex": "1010101010101010101010101010101010101010101010101010101010101010",
+            "canonicality_policy_digest_hex": "1616161616161616161616161616161616161616161616161616161616161616",
+            "chain_id": "69",
+            "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+            "finality_policy_digest_hex": "1717171717171717171717171717171717171717171717171717171717171717",
+            "freshness_policy_digest_hex": "1818181818181818181818181818181818181818181818181818181818181818",
+            "genesis_hash_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+            "restore_policy_digest_hex": "1919191919191919191919191919191919191919191919191919191919191919",
+            "spork_state_digest_hex": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "schema": "ptlc-nom-checkpoint-service-selection-v1",
+          "service_epoch": 1,
+          "service_id_hex": "c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1"
+        },
+        "service_selection_digest_hex": "a1c605d3a2705de4084d766571507089e35a05e15cb28db229ba0011dc830e2a",
+        "work_scope_digest_hex": "50124a818b0ab9553496dec50d3b398f55958f794e5d7f3dd88bd9685151a0c7"
+      },
+      "discovery_message_digest_hex": "6e003ef5264cfd65c7621e31a0fa1f90600572488c7bf70fd019a6b2921dc99b",
+      "query_digest_hex": "3de416dbb735d2576f1103b9a0b56a550f8e60f6f0952dda01945410bfe9a61e",
+      "response_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "root_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "schema": "ptlc-nom-checkpoint-response-request-v1"
+    },
+    "root_rotation": {
+      "declaration": {
+        "algorithm": "BIP340-SHA256",
+        "authority_epoch": 1,
+        "purpose": "checkpoint-candidate-response-role",
+        "root_key_hex": "9fbe8ad98eb962605c09d4541bf3ea4f95323236e3d729824e946376160f7031",
+        "root_transition": "independent-reprovisioning",
+        "schema": "ptlc-nom-checkpoint-response-authority-v1",
+        "service_selection": {
+          "checkpoint_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+          "max_snapshots": 16,
+          "purpose": "external-reference-retention-only",
+          "realm": {
+            "binary_digest_hex": "1010101010101010101010101010101010101010101010101010101010101010",
+            "canonicality_policy_digest_hex": "1616161616161616161616161616161616161616161616161616161616161616",
+            "chain_id": "69",
+            "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+            "finality_policy_digest_hex": "1717171717171717171717171717171717171717171717171717171717171717",
+            "freshness_policy_digest_hex": "1818181818181818181818181818181818181818181818181818181818181818",
+            "genesis_hash_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+            "restore_policy_digest_hex": "1919191919191919191919191919191919191919191919191919191919191919",
+            "spork_state_digest_hex": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "schema": "ptlc-nom-checkpoint-service-selection-v1",
+          "service_epoch": 1,
+          "service_id_hex": "c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1"
+        },
+        "service_selection_digest_hex": "a1c605d3a2705de4084d766571507089e35a05e15cb28db229ba0011dc830e2a",
+        "work_scope_digest_hex": "50124a818b0ab9553496dec50d3b398f55958f794e5d7f3dd88bd9685151a0c7"
+      },
+      "discovery_message_digest_hex": "6e003ef5264cfd65c7621e31a0fa1f90600572488c7bf70fd019a6b2921dc99b",
+      "query_digest_hex": "3de416dbb735d2576f1103b9a0b56a550f8e60f6f0952dda01945410bfe9a61e",
+      "response_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "root_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "schema": "ptlc-nom-checkpoint-response-request-v1"
+    },
+    "sibling_candidate": {
+      "declaration": {
+        "algorithm": "BIP340-SHA256",
+        "authority_epoch": 1,
+        "purpose": "checkpoint-candidate-response-role",
+        "root_key_hex": "6a27aedb12c9a3015ecdf2ead78755cfc3ef72d2c60ccd0033da18fbf9979641",
+        "root_transition": "independent-reprovisioning",
+        "schema": "ptlc-nom-checkpoint-response-authority-v1",
+        "service_selection": {
+          "checkpoint_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+          "max_snapshots": 16,
+          "purpose": "external-reference-retention-only",
+          "realm": {
+            "binary_digest_hex": "1010101010101010101010101010101010101010101010101010101010101010",
+            "canonicality_policy_digest_hex": "1616161616161616161616161616161616161616161616161616161616161616",
+            "chain_id": "69",
+            "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+            "finality_policy_digest_hex": "1717171717171717171717171717171717171717171717171717171717171717",
+            "freshness_policy_digest_hex": "1818181818181818181818181818181818181818181818181818181818181818",
+            "genesis_hash_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+            "restore_policy_digest_hex": "1919191919191919191919191919191919191919191919191919191919191919",
+            "spork_state_digest_hex": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "schema": "ptlc-nom-checkpoint-service-selection-v1",
+          "service_epoch": 1,
+          "service_id_hex": "c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1"
+        },
+        "service_selection_digest_hex": "a1c605d3a2705de4084d766571507089e35a05e15cb28db229ba0011dc830e2a",
+        "work_scope_digest_hex": "50124a818b0ab9553496dec50d3b398f55958f794e5d7f3dd88bd9685151a0c7"
+      },
+      "discovery_message_digest_hex": "16e6c3c537b87f3ff6559fc02130091d2d7756c401afa59c5c3822146fa67256",
+      "query_digest_hex": "3de416dbb735d2576f1103b9a0b56a550f8e60f6f0952dda01945410bfe9a61e",
+      "response_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "root_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "schema": "ptlc-nom-checkpoint-response-request-v1"
+    },
+    "unavailable_service": {
+      "declaration": {
+        "algorithm": "BIP340-SHA256",
+        "authority_epoch": 1,
+        "purpose": "checkpoint-candidate-response-role",
+        "root_key_hex": "6a27aedb12c9a3015ecdf2ead78755cfc3ef72d2c60ccd0033da18fbf9979641",
+        "root_transition": "independent-reprovisioning",
+        "schema": "ptlc-nom-checkpoint-response-authority-v1",
+        "service_selection": {
+          "checkpoint_key_hex": "1428f3a3532ff4f1cac70f7292bfad06d1037f800ee8839b56ebba917a22e900",
+          "max_snapshots": 16,
+          "purpose": "external-reference-retention-only",
+          "realm": {
+            "binary_digest_hex": "1010101010101010101010101010101010101010101010101010101010101010",
+            "canonicality_policy_digest_hex": "1616161616161616161616161616161616161616161616161616161616161616",
+            "chain_id": "69",
+            "core_commit": "45e1bbb48ce6fc19d44c5fbf59ccf5784981fced",
+            "finality_policy_digest_hex": "1717171717171717171717171717171717171717171717171717171717171717",
+            "freshness_policy_digest_hex": "1818181818181818181818181818181818181818181818181818181818181818",
+            "genesis_hash_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+            "restore_policy_digest_hex": "1919191919191919191919191919191919191919191919191919191919191919",
+            "spork_state_digest_hex": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "schema": "ptlc-nom-checkpoint-service-selection-v1",
+          "service_epoch": 1,
+          "service_id_hex": "c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1"
+        },
+        "service_selection_digest_hex": "a1c605d3a2705de4084d766571507089e35a05e15cb28db229ba0011dc830e2a",
+        "work_scope_digest_hex": "50124a818b0ab9553496dec50d3b398f55958f794e5d7f3dd88bd9685151a0c7"
+      },
+      "discovery_message_digest_hex": "7653b19af2e8b9923419c908f05d0e325df71a0d6ffd4bc6d62417775fcf2e3e",
+      "query_digest_hex": "3de416dbb735d2576f1103b9a0b56a550f8e60f6f0952dda01945410bfe9a61e",
+      "response_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "root_signature_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "schema": "ptlc-nom-checkpoint-response-request-v1"
+    }
+  },
+  "schema": "ptlc-nom-checkpoint-response-unsigned-fixture-v1",
+  "synthetic_notice": "Public framing only; native test generator signs fixed disclosed tags 111,112 and 83"
+}

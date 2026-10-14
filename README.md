@@ -1555,3 +1555,18 @@ unsigned forgery remain successful unsafe controls. The
 all 196 previous measurements and separates local, PR and push/main acceptance.
 Authenticated current service reads, external nonrollback storage and atomic
 work entry remain unfilled. Application/core remain **NO-GO**; recovery **NONE**.
+
+The additive [selected checkpoint response signatures](docs/NOM_CHECKPOINT_RESPONSE.md)
+bind a separate root grant to the exact service policy and work scope, then verify
+the candidate/outage statement under that policy's checkpoint key. Complete actual
+discovery openings precede verification. Expected digests are fixed before the
+verifier call; request mutation and differently bound results refuse. A separate
+Rust worker and Go checks qualify public BIP340 mathematics with disclosed synthetic
+vectors, without reusing old enrollment/source/custody permissions. Signed old
+candidates, coherent old selections, signed siblings, packet-selected roots, forged
+callbacks and signed outages remain unsafe controls. Its
+[qualification boundary](docs/NOM_CHECKPOINT_RESPONSE_VALIDATION.md) preserves all
+201 earlier inputs and separates actual native exits, local regression, hosted PR
+and push/main acceptance. Current service reads, real root provisioning, nonrollback
+storage and operation entry remain unfilled. Application/core **NO-GO**; recovery
+**NONE**.
