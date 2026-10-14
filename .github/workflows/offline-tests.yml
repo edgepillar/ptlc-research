@@ -11,7 +11,7 @@ permissions:
 jobs:
   offline-tests:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 45
+    timeout-minutes: 65
     strategy:
       fail-fast: false
       matrix:
@@ -76,7 +76,7 @@ jobs:
 
   adaptor-qualification:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -111,6 +111,8 @@ jobs:
         run: python3 -B scripts/qualify_nom_source_checkpoint.py
       - name: Compare selected NoM external checkpoint reference transitions
         run: python3 -B scripts/qualify_nom_checkpoint_protocol.py
+      - name: Compare minimum-bound NoM checkpoint discovery and complete evidence openings
+        run: python3 -B scripts/qualify_nom_checkpoint_discovery.py
       - name: Qualify public recovery with computed Create context ids
         run: python3 -B scripts/qualify_nom_created_recovery.py
       - name: Record selected offline dependency and worker input evidence

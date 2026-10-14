@@ -1542,3 +1542,16 @@ store or atomic work entry is implemented. The
 [qualification boundary](docs/NOM_CHECKPOINT_PROTOCOL_VALIDATION.md) preserves
 all prior measurements and separates local, hosted PR and push/main acceptance.
 Application/core remain **NO-GO**; recovery action is **NONE**.
+
+The additive [minimum-bound checkpoint discovery](docs/NOM_CHECKPOINT_DISCOVERY.md)
+binds a complete known history before inspecting an untrusted newer candidate.
+Complete original openings and every known source view are required; counters,
+headers and recovered bytes cannot replace them. Outage preserves the known
+minimum and larger local UNKNOWN work. A new response preimage commits to the
+complete query and reply without selecting a signer or granting authority.
+Freshly challenged old candidates, coherent restore, sibling candidates and
+unsigned forgery remain successful unsafe controls. The
+[qualification boundary](docs/NOM_CHECKPOINT_DISCOVERY_VALIDATION.md) retains
+all 196 previous measurements and separates local, PR and push/main acceptance.
+Authenticated current service reads, external nonrollback storage and atomic
+work entry remain unfilled. Application/core remain **NO-GO**; recovery **NONE**.

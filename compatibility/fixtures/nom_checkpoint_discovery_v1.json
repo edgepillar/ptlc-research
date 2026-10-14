@@ -1,0 +1,54 @@
+{
+  "boundary": {
+    "application": "NO-GO",
+    "atomic_service_cas": "NOT_IMPLEMENTED",
+    "atomic_work_entry": "NOT_IMPLEMENTED",
+    "candidate_latest": "NOT_ESTABLISHED",
+    "checkpoint_storage": "NOT_IMPLEMENTED",
+    "complete_openings": "ACTUAL RETAINED ORIGINALS REQUIRED; NEVER RECONSTRUCTED FROM HEADERS",
+    "core": "NO-GO",
+    "current_service_read": "NOT_IMPLEMENTED",
+    "discovery_worker_calls": 0,
+    "native_query_pairing": "NOT_COMPOSED",
+    "new_core_source_outcomes": 0,
+    "preserved_core_source_outcomes": 342,
+    "recovery_action": "NONE",
+    "response_authentication": "UNSIGNED REFERENCE CANDIDATE ONLY",
+    "root_provisioning": "UNFILLED",
+    "service_nonrollback": "NOT_IMPLEMENTED",
+    "signature_mathematics": "NOT_PERFORMED",
+    "source_currentness": "UNFILLED"
+  },
+  "known_minimum": "COMPLETE INDEPENDENT HISTORY AND SERVICE SELECTION; NOT SELECTED FROM CANDIDATE",
+  "message_preimage": "NEW DOMAIN OVER COMPLETE QUERY AND REPLY; NO SIGNER OR AUTHORITY CONSTRUCTION",
+  "refusal_controls": [
+    "missing_opening",
+    "below_minimum",
+    "sibling_after_minimum",
+    "changed_service",
+    "old_challenge_reply",
+    "lineage_gap",
+    "numeric_alias",
+    "missing_original",
+    "changed_minimum_source_view",
+    "oversized_reply"
+  ],
+  "relation_controls": [
+    "minimum_candidate",
+    "newer_candidate",
+    "later_minimum",
+    "local_ahead",
+    "extension_without_new_charge",
+    "unavailable_source",
+    "unavailable_service"
+  ],
+  "research_baseline_commit": "8f9f4afde9a6949b6f7377f7f03549c41a49e2f7",
+  "schema": "ptlc-nom-checkpoint-discovery-qualification-v1",
+  "synthetic_notice": "Public reference lineage selections, not service currentness or new execution receipts",
+  "unsafe_controls": [
+    "fresh_challenge_old_candidate",
+    "coherent_restore",
+    "sibling_candidates_after_same_minimum",
+    "unsigned_candidate_forgery"
+  ]
+}
