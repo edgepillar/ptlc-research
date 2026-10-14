@@ -35,13 +35,28 @@ bounded wire/depth, corrupt/cyclic histories, challenge/domain separation and
 absence of module process/network/file/signing entry points. No application
 signer, native verifier, core source or dependency version changes.
 
-CI orchestration allows 65 minutes for each complete Python profile and 25 minutes
+CI orchestration allows 90 minutes for each complete Python profile and 25 minutes
 for the adaptor qualification job containing the additional public discovery
 step. The previous accepted Linux/Python 3.13 main job took 2,665 seconds under
 its 45-minute ceiling; the new 32-control local target took 515.387 seconds.
-These are separate measured scopes, not a prediction of hosted duration. The
-extra orchestration allowance preserves every check and changes no worker limit
-or subprocess deadline.
+These separate scopes do not predict hosted duration.
+
+The first hosted PR run at
+[`8294199d1975286b879464502d53b6fba43accfd`](https://github.com/edgepillar/ptlc-research/commit/8294199d1975286b879464502d53b6fba43accfd)
+passed ten jobs but reached the 65-minute job ceiling in Ubuntu/Python 3.13.
+[Run 38533510503, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/38533510503)
+reports `cancelled` with the annotation that maximum execution time was exceeded.
+Its original archive SHA-256 is
+`91668362e7a5aa778075a7530e7f1c258eaf130f421e5c9480ca3edf1a9089af`.
+That profile contains 2,763 completed test lines and no complete unittest summary;
+it is not qualified. The original archive and incomplete output are retained.
+No test assertion failure was identified in that partial output. The cause of
+the slower hosted execution is not established.
+
+The revised 90-minute orchestration ceiling preserves every test and changes no
+worker limit or subprocess deadline. It is a bounded allowance for a fresh
+complete run, not acceptance of the interrupted run or a duration guarantee.
+The adaptor ceiling and all other workflow steps remain unchanged.
 
 Complete local regression requires OpenSSL, zero skipped tests and zero
 ResourceWarnings, followed by artifact/privacy checks and explicit generic
