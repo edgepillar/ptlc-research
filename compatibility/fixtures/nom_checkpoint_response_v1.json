@@ -1,0 +1,46 @@
+{
+  "boundary": {
+    "actual_openings": "COMPLETE RETAINED CONTEXTS REQUIRED BEFORE VERIFICATION; NEVER RECONSTRUCTED",
+    "application": "NO-GO",
+    "atomic_service_cas": "NOT_IMPLEMENTED",
+    "atomic_work_entry": "NOT_IMPLEMENTED",
+    "candidate_latest": "NOT_ESTABLISHED",
+    "checkpoint_storage": "NOT_IMPLEMENTED",
+    "core": "NO-GO",
+    "current_service_read": "NOT_IMPLEMENTED",
+    "framing_core_worker_calls": 0,
+    "independent_assessment": "UNFILLED",
+    "new_core_source_outcomes": 0,
+    "physical_power_loss": "UNFILLED",
+    "preserved_core_source_outcomes": 342,
+    "recovery_action": "NONE",
+    "root_provisioning": "UNFILLED",
+    "service_nonrollback": "NOT_IMPLEMENTED",
+    "signature_mathematics": "SELECTED PUBLIC ROOT GRANT AND RESPONSE; ACTUAL NATIVE EXITS MEASURED SEPARATELY"
+  },
+  "expected_native_refusals": 14,
+  "expected_native_requests": 23,
+  "expected_native_successes": 9,
+  "positive_contexts": [
+    "minimum_candidate",
+    "newer_candidate",
+    "later_minimum",
+    "unavailable_service",
+    "fresh_old_candidate",
+    "sibling_candidate",
+    "root_rotation",
+    "new_epoch"
+  ],
+  "research_baseline_commit": "2bf22c4abcf253807b46d04138ae1f50759a60ab",
+  "root_role": "SEPARATE SELECTED ROOT; SERVICE POLICY FIXES THE RESPONSE KEY; REAL PROVISIONING UNFILLED",
+  "schema": "ptlc-nom-checkpoint-response-qualification-v1",
+  "synthetic_notice": "Fixed disclosed tags 111,112 and 83; no application signer or private key input",
+  "unsafe_controls": [
+    "freshly_signed_old_candidate",
+    "coherent_restore",
+    "signed_siblings",
+    "packet_selected_root_mathematics",
+    "forged_callback_zero_response_signature",
+    "signed_outage"
+  ]
+}
