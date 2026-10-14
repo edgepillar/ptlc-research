@@ -1520,3 +1520,14 @@ The [validation boundary](docs/NOM_ROLLBACK_REFUSAL_VALIDATION.md) preserves
 failed development evidence and keeps local, exact-head PR and push/main gates
 separate. Persistent recovery, journal composition and authenticated provenance
 remain unfilled. Application/core remain **NO-GO**; recovery action is **NONE**.
+
+The additive [historical NoM source and custody signatures](docs/NOM_SOURCE_CHECKPOINT.md)
+bind an independently selected root declaration, source claim and consumer
+checkpoint to the complete retained capsule/read context. Rust and Go check
+three separate public role signatures. Unknown work survives challenges and
+role rotation; missing original custody cannot be filled by a signed statement.
+Coherent old signed tuples still replay and a signed checkpoint supplies no
+external nonrollback storage or source currentness. The
+[qualification boundary](docs/NOM_SOURCE_CHECKPOINT_VALIDATION.md) keeps actual
+local results, exact-head hosted PR checks and separate push/main acceptance
+distinct. Application/core remain **NO-GO**; recovery action is **NONE**.
