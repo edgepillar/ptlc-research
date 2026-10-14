@@ -1531,3 +1531,14 @@ external nonrollback storage or source currentness. The
 [qualification boundary](docs/NOM_SOURCE_CHECKPOINT_VALIDATION.md) keeps actual
 local results, exact-head hosted PR checks and separate push/main acceptance
 distinct. Application/core remain **NO-GO**; recovery action is **NONE**.
+
+The separate [NoM checkpoint reference protocol](docs/NOM_CHECKPOINT_PROTOCOL.md)
+compares complete local journals with an independently selected reference head.
+Local restore preserves the newer UNKNOWN charge list; a stale expected head,
+regression or fork refuses. Challenges and source rotation supply no work
+allowance. Coherent restore, old-state bootstrap, functional fork and unsigned
+reply forgery remain explicit unsafe controls. No service, signer, nonrollback
+store or atomic work entry is implemented. The
+[qualification boundary](docs/NOM_CHECKPOINT_PROTOCOL_VALIDATION.md) preserves
+all prior measurements and separates local, hosted PR and push/main acceptance.
+Application/core remain **NO-GO**; recovery action is **NONE**.
