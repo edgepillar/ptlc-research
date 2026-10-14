@@ -1570,3 +1570,16 @@ callbacks and signed outages remain unsafe controls. Its
 and push/main acceptance. Current service reads, real root provisioning, nonrollback
 storage and operation entry remain unfilled. Application/core **NO-GO**; recovery
 **NONE**.
+
+The additive [checkpoint read ordering reference](docs/NOM_CHECKPOINT_READ_ORDERING.md)
+gives publications and reads an explicit finite order over actual complete states.
+An independently retained trace must contain the exact selected read prefix and
+evaluation opening. Later writes preserve the old read instant and larger UNKNOWN
+list; they establish no currentness at delivery. Old/forked read traces, skipped
+publications, reused challenges and descriptor-only custody refuse. Coherent old
+anchor restore, bootstrap after lost read history and independently selected
+siblings remain successful unsafe controls. Its
+[qualification boundary](docs/NOM_CHECKPOINT_READ_ORDERING_VALIDATION.md) keeps
+earlier signature mathematics separate and preserves all 213 previous inputs.
+No service, signer, shared CAS, nonrollback store or work entry is implemented.
+Application/core **NO-GO**; recovery **NONE**.
