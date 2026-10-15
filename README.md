@@ -1583,3 +1583,16 @@ siblings remain successful unsafe controls. Its
 earlier signature mathematics separate and preserves all 213 previous inputs.
 No service, signer, shared CAS, nonrollback store or work entry is implemented.
 Application/core **NO-GO**; recovery **NONE**.
+
+The additive [anchor lifecycle reference](docs/NOM_ANCHOR_LIFECYCLE.md) retains
+complete pending transitions through lost acknowledgment comparisons. Exact
+expected-state pins, one-event trace extensions and unused request nonces bind
+each reference update. Retirement preserves history in a terminal tombstone.
+Missing records, outage and matching historical requests all retain UNKNOWN work
+without retry, republication, replenishment or reenrollment permission. Coherent
+restore, independent copies and explicit research reenrollment still expose
+missing nonrollback authority. Its
+[qualification boundary](docs/NOM_ANCHOR_LIFECYCLE_VALIDATION.md) preserves all
+218 earlier inputs. No operational acknowledgment, shared atomic service, durable
+store or original work entry is implemented. Application/core **NO-GO**; recovery
+**NONE**.
