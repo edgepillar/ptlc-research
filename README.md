@@ -1609,3 +1609,12 @@ and explicit research reenrollment remain unsafe controls. Its
 223 earlier inputs. Independent service authority, nonrollback retention,
 original-operation entry and physical power loss remain unfilled.
 Application/core **NO-GO**; recovery **NONE**.
+
+The [anchor service acceptance obligations](docs/NOM_ANCHOR_SERVICE_ACCEPTANCE.md)
+connect the accepted local retention counterexamples to seven unfilled gates:
+independent provisioning, enrollment/retirement continuity, shared durable
+transitions, authenticated current evaluation, external nonrollback retention,
+original-operation entry and independent qualification. They specify the required
+lookup bindings and review evidence without selecting an operational construction,
+new signature role or wire format. Existing unsafe controls remain explicit;
+application/core **NO-GO**, recovery **NONE**.
