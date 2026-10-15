@@ -1596,3 +1596,16 @@ missing nonrollback authority. Its
 218 earlier inputs. No operational acknowledgment, shared atomic service, durable
 store or original work entry is implemented. Application/core **NO-GO**; recovery
 **NONE**.
+
+The separate [anchor transition journal experiment](docs/NOM_ANCHOR_TRANSITION_JOURNAL.md)
+retains one exact pending request and optional functional transition in a bounded
+selected POSIX file. Explicit exclusive creation is separate from existing-file
+open. Missing, malformed and interrupted records grant no bootstrap or retry;
+complete reopen requires the original actual custody and supplies only a new
+local fsync acknowledgment. Lost replies stay UNKNOWN, retirement remains a
+reference tombstone, and lookup never appends. Coherent copies, old-image restore
+and explicit research reenrollment remain unsafe controls. Its
+[validation scope](docs/NOM_ANCHOR_TRANSITION_JOURNAL_VALIDATION.md) preserves all
+223 earlier inputs. Independent service authority, nonrollback retention,
+original-operation entry and physical power loss remain unfilled.
+Application/core **NO-GO**; recovery **NONE**.
