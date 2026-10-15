@@ -1,0 +1,60 @@
+{
+  "boundary": {
+    "additional_signature_requests": 0,
+    "application": "NO-GO",
+    "atomic_work_entry": "NOT_IMPLEMENTED",
+    "authority_provisioning": "UNFILLED",
+    "automatic_reenrollment": false,
+    "automatic_retry": false,
+    "core": "NO-GO",
+    "current_lookup_authentication": "NOT_ESTABLISHED",
+    "independent_assessment": "UNFILLED",
+    "new_core_source_outcomes": 0,
+    "new_worker_calls": 0,
+    "nonrollback": "UNPROTECTED",
+    "physical_power_loss": "UNQUALIFIED",
+    "preserved_core_source_outcomes": 342,
+    "publication_outcome": "UNKNOWN",
+    "recovery_action": "NONE",
+    "replenish_work": false,
+    "retention": "SELECTED LOCAL FSYNC; COMPLETE ACTUAL CUSTODY REQUIRED SEPARATELY",
+    "same_request_republication": false,
+    "shared_service_cas": "NOT_IMPLEMENTED"
+  },
+  "max_log_bytes": 196608,
+  "max_record_bytes": 98304,
+  "max_records": 2,
+  "refusal_controls": [
+    "missing_existing",
+    "duplicate_create",
+    "duplicate_transition",
+    "descriptor_before",
+    "descriptor_hold",
+    "changed_request",
+    "wrong_before",
+    "partial_record",
+    "extra_tail",
+    "reordered_records",
+    "symlink",
+    "hardlink"
+  ],
+  "relation_controls": [
+    "pending_reference_not_found",
+    "retained_reference_request",
+    "exact_reopen",
+    "retirement_tombstone",
+    "ack_lost_before_fsync",
+    "ack_lost_after_fsync",
+    "ack_lost_before_return",
+    "inspection_does_not_append"
+  ],
+  "research_baseline_commit": "4105577f0b5d87b44ae9c00f4cb332d1fecd0dc4",
+  "schema": "ptlc-nom-anchor-transition-journal-qualification-v1",
+  "synthetic_notice": "Selected POSIX reference retention; no independent service or original work",
+  "unsafe_controls": [
+    "coherent_old_restore",
+    "independent_file_copies",
+    "explicit_reenrollment",
+    "restored_pre_retirement"
+  ]
+}
