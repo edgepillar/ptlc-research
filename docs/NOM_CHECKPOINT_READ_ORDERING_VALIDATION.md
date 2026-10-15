@@ -60,8 +60,12 @@ push/main CI plus original archive are another acceptance gate. Failed or partia
 evidence must stay unqualified and preserved. No result follows from labels alone.
 
 CI changes only overall orchestration: complete Python jobs allow 120 minutes
-instead of 90, and adaptor qualification allows 45 instead of 35 with the added
-ordering step. The prior accepted PR/main Linux/Python 3.13 jobs took 4,738/4,735
+instead of 90. The initial ordering increment allowed 45 minutes instead of 35
+for adaptor qualification. Its PR job passed in 2,656 seconds, but the separate
+main job exceeded 45 minutes and was cancelled even though every completed
+step label was successful. That complete failed original remains preserved and
+unaccepted. A separate correction allows 60 minutes for the whole adaptor job;
+fresh exact-head PR and separate main acceptance remain required. The prior accepted PR/main Linux/Python 3.13 jobs took 4,738/4,735
 seconds and the adaptor jobs 1,650/1,647 seconds. The revised local 28-method target
 took 558.343 seconds; the complete original qualifier took 467.218 seconds.
 These are separate actual scopes, not predictions of hosted duration. No worker
