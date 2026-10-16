@@ -1,8 +1,10 @@
 # Finite NoM anchor SQLite comparison validation scope
 
 Research baseline: `981a11dec4075ceb9096e4f75e74708daf971601`.
-Current disposition of the new public implementation: **NOT_RUN**. The source,
-tests, selected schema and native evidence reviewer are prepared for qualification.
+Current disposition of the corrected public implementation: **TARGETED_ONLY;
+NOT_FULLY_QUALIFIED**. Its 44 targeted methods passed, including the scanner
+deadline and retained email-refusal controls. Complete corrected-source
+regression and a fresh complete native profile remain NOT_RUN.
 Earlier private prototype executions, a locally stored engine or earlier green
 CI cannot qualify these changed public inputs. No public Draft PR, main
 integration, native platform acceptance or independent assessment is claimed.
@@ -14,15 +16,54 @@ inputs in total. The fixture selects 22 comparisons, 53 supervised captures,
 reference lengths/digests are model output; they are not independent protocol
 test vectors or independent implementation assessment.
 
-Forty-two new test methods are defined. They cover actual-custody refusals,
+Forty-four new test methods are defined. They cover actual-custody refusals,
 material size/type boundaries, original output retention, identity replacement,
 links, partial retention intents, incomplete capture, refusal of changed source
 archives before compilation, optimized-runtime refusal, non-adoption of old
-build transcripts and read-only graph refusal. They have not been executed at
-this source revision. Required full regression is at least 3,632 tests and 1,206
+build transcripts, read-only graph refusal and native-sized hex scanning without
+removing email punctuation checks. Targeted execution had zero skips and
+ResourceWarnings. Required full regression is at least 3,634 tests and 1,208
 directed identities, with zero skips, mandatory OpenSSL verification, zero
 ResourceWarnings and the complete earlier controls unchanged. Definition counts
 alone establish no test result.
+
+At the preceding implementation revision, the 42 targeted methods passed with
+zero skips and ResourceWarnings. A fresh public engine build and all 22 selected
+native comparisons completed with actual exits of zero. The subsequent read-only
+graph review hit its unchanged 300-second deadline: actual exit -9, incomplete
+output. The complete profile is therefore NOT_QUALIFIED. Original streams, native
+images and the complete comparison manifest remain retained; they are not replaced
+by a later result. The changed detector starts at a complete email local-part
+boundary so absent email markers in large hex fields do not cause repeated
+suffix scans. Current-source tests, complete graph review and fresh qualification
+remain required; the earlier native observations are not a current-source PASS.
+
+A separate corrected-reader execution verified the complete retained original
+graph at its original source context within the unchanged 300-second limit.
+This corroborates the original 54 CLI observations; it does not replace the
+corrected source's required fresh profile. A bounded differential control
+reproduced the previous scanner timeout on a 2 MiB hex value and completed the
+same input after the exact detector correction. Email punctuation and long
+local-part refusal remain tested.
+
+The preceding implementation's full-regression attempt stopped before a test
+summary: actual exit -9, incomplete output, resource-monitor disposition
+`DISK_OR_TASK_QUOTA`. Its more specific refusal cause is UNKNOWN; a disk-space
+shortage or a test regression is not inferred from that generic receipt.
+The original partial output remains NOT_QUALIFIED and retained. Subsequent local
+qualification runs use serialized task lifecycles, with the production free-space
+floor and all existing test deadlines unchanged.
+
+The separate current-upstream context was requalified at
+[`0df0c3e25a3286fd53906730106bbf39513ee304`](https://github.com/zenon-network/go-zenon/commit/0df0c3e25a3286fd53906730106bbf39513ee304):
+439 original files matched their Git blob identities, and fresh local executions
+repeated the 48-message, 26-witness, 15-destination and two-completion comparison,
+the ABI/hash corpus and 342 stateful outcomes. The exact published
+[upstream test file](https://github.com/zenon-network/go-zenon/pull/152) also
+passed 12 targeted and 20 full definition-package outcomes with normal vet on
+Go 1.23.12, Darwin arm64. Targeted outcomes overlap the full package. These are
+separate source-pinned local facts; earlier frozen CI profiles, hosted upstream
+CI and independent assessment are not relabeled by this run.
 
 Qualification must retain original actual exit and output-completeness evidence
 for every attempt. A wrapper exit of zero may preserve an expected native exit

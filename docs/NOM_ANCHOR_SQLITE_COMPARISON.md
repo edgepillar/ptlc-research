@@ -5,7 +5,7 @@ Research baseline:
 The [service candidate](NOM_ANCHOR_SERVICE_CANDIDATE.md) proposes a trusted
 administrative ledger. This increment prepares one offline storage comparison
 with the unchanged functional reference. Its current execution disposition is
-[NOT_RUN](NOM_ANCHOR_SQLITE_COMPARISON_VALIDATION.md). Source preparation and
+[TARGETED_ONLY; NOT_FULLY_QUALIFIED](NOM_ANCHOR_SQLITE_COMPARISON_VALIDATION.md). Source preparation and
 golden values do not qualify the changed implementation.
 
 There is no service, network listener, authentication role, application signer,

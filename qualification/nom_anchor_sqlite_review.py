@@ -18,7 +18,9 @@ _DIGEST = re.compile(r"[0-9a-f]{64}")
 _LABEL = re.compile(r"[a-z0-9][a-z0-9._/-]{0,127}")
 _PRIVATE = re.compile(
     rb"/(?:Users|home|Volumes|private)/[^\s\x00]+|[A-Za-z]:\\Users\\|"
-    rb"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[.][A-Za-z]{2,}|"
+    # Start at the complete local-part boundary. Retrying inside a megabyte
+    # hex field makes an absent email marker cause quadratic backtracking.
+    rb"(?<![A-Za-z0-9._%+-])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[.][A-Za-z]{2,}|"
     rb"-----BEGIN (?:[A-Z0-9]+ )?PRIVATE KEY-----|"
     rb"(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[A-Z0-9]{16})|"
     rb"\blocalhost\b|\b[A-Za-z0-9_-]+[.]local\b", re.I)
