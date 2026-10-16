@@ -12,6 +12,15 @@ from qualification import nom_anchor_sqlite_capture as capture
 
 
 class SqlCaptureBoundaries(unittest.TestCase):
+    def test_selected_basename_is_an_exact_relative_uri(self):
+        self.assertEqual(capture.selected_database_uri('selected-case.db', 'rw'),
+            'file:selected-case.db?mode=rw')
+
+    def test_parent_path_is_not_copied_into_the_native_uri(self):
+        value = capture.selected_database_uri(Path('synthetic-parent') / 'selected.db', 'ro')
+        self.assertEqual(value, 'file:selected.db?mode=ro')
+        self.assertNotIn('synthetic-parent', value)
+
     def call_main(self, arguments):
         output = io.StringIO()
         with contextlib.redirect_stdout(output):

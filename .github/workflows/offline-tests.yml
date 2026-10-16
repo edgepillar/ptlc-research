@@ -9,6 +9,105 @@ permissions:
   contents: read
 
 jobs:
+  nom-anchor-sqlite:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            engine-platform: linux
+          - os: macos-latest
+            engine-platform: darwin
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.13"
+      - name: Admit a new finite hosted qualification workspace
+        id: workspace
+        shell: bash
+        run: |
+          set -eu
+          ptlc_sqlite_root="$(mktemp -d "$RUNNER_TEMP/ptlc-sqlite.XXXXXX")"
+          chmod 700 "$ptlc_sqlite_root"
+          mkdir "$ptlc_sqlite_root/temporary"
+          chmod 700 "$ptlc_sqlite_root/temporary"
+          printf 'PTLC_SQLITE_JOB_ROOT=%s\n' "$ptlc_sqlite_root" >> "$GITHUB_ENV"
+          printf 'TMPDIR=%s/temporary\n' "$ptlc_sqlite_root" >> "$GITHUB_ENV"
+          cd "$ptlc_sqlite_root"
+          python3 -B - <<'PY'
+          import json
+          import shutil
+          floor, reservation = 10 * 1024**3, 1024**3
+          if shutil.disk_usage('.').free < floor + reservation:
+              raise SystemExit('REFUSED: finite hosted workspace free-space admission')
+          print(json.dumps(dict(scope='NEW ISOLATED HOSTED JOB ONLY', free_space_floor=floor,
+              expected_reservation=reservation, evidence_limit=128*1024**2,
+              database_fixture_limit=256*1024**2, os_filesystem_quota='NOT CLAIMED')))
+          PY
+      - name: Acquire one bounded pinned SQLite source archive
+        shell: bash
+        run: |
+          set -eu
+          cd "$PTLC_SQLITE_JOB_ROOT"
+          curl --disable --fail --silent --show-error --location --max-redirs 2 \
+            --proto '=https' --proto-redir '=https' --max-time 120 --max-filesize 2990479 \
+            --output selected-source.zip https://www.sqlite.org/2026/sqlite-amalgamation-3540000.zip
+      - name: Build and identity-probe the exact offline engine
+        shell: bash
+        run: |
+          set -eu
+          ptlc_sqlite_cc="$(command -v cc)"
+          python3 -B scripts/prepare_nom_anchor_sqlite_engine.py \
+            --source-archive "$PTLC_SQLITE_JOB_ROOT/selected-source.zip" \
+            --output-directory "$PTLC_SQLITE_JOB_ROOT/engine" --c-compiler "$ptlc_sqlite_cc" \
+            --ci-transcript
+      - name: Compare complete reference bytes and actual native failure cuts
+        id: native
+        shell: bash
+        run: |
+          set -eu
+          python3 -B - <<'PY'
+          import os
+          import shutil
+          if shutil.disk_usage(os.environ['PTLC_SQLITE_JOB_ROOT']).free < 11*1024**3:
+              raise SystemExit('REFUSED: native comparison free-space admission')
+          PY
+          python3 -B scripts/qualify_nom_anchor_sqlite.py \
+            --sqlite-cli "$PTLC_SQLITE_JOB_ROOT/engine/sqlite3" \
+            --engine-record "$PTLC_SQLITE_JOB_ROOT/engine/engine.json" \
+            --evidence-directory "$PTLC_SQLITE_JOB_ROOT/evidence"
+      - name: Review original graph and sharing before retention
+        id: output-check
+        if: always() && steps.workspace.outcome == 'success'
+        shell: bash
+        run: |
+          set -eu
+          if [ '${{ steps.native.outcome }}' = 'success' ]; then
+            python3 -B scripts/check_nom_anchor_sqlite_evidence.py \
+              --evidence-directory "$PTLC_SQLITE_JOB_ROOT/evidence" \
+              --expect-platform '${{ matrix.engine-platform }}'
+          else
+            python3 -B scripts/check_nom_anchor_sqlite_evidence.py \
+              --evidence-directory "$PTLC_SQLITE_JOB_ROOT/evidence" --allow-incomplete-for-retention
+          fi
+      - name: Preserve this attempt's checked synthetic originals
+        if: always() && steps.output-check.outcome == 'success'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nom-anchor-sqlite-${{ runner.os }}-${{ github.run_id }}-attempt-${{ github.run_attempt }}
+          path: ${{ env.PTLC_SQLITE_JOB_ROOT }}/evidence/
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+          archive: true
+
   offline-tests:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 180
