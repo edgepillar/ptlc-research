@@ -1618,3 +1618,10 @@ original-operation entry and independent qualification. They specify the require
 lookup bindings and review evidence without selecting an operational construction,
 new signature role or wire format. Existing unsafe controls remain explicit;
 application/core **NO-GO**, recovery **NONE**.
+
+The separate [anchor service candidate](docs/NOM_ANCHOR_SERVICE_CANDIDATE.md)
+proposes one administered external ledger and a local SQLite transaction boundary
+for an offline experiment. Its trusted-history assumptions, lost-commit/reply
+dispositions and seven unfilled acceptance gates are explicit. It implements no
+service, authentication role or original-operation entry; application/core
+**NO-GO**, recovery **NONE**.
