@@ -135,6 +135,10 @@ jobs:
         run: |
           git fetch --no-tags --depth=1 origin a80d14f1bc223e7d20901837fe84804fc7c1bce5
           python3 -B scripts/check_worker_review_subject.py --expect-commit a80d14f1bc223e7d20901837fe84804fc7c1bce5 --expect-manifest-sha256 f140380fe8c2a11387316c5b8ed7269cdce239f89592ded26588decf1c42c75e
+      - name: Acquire and inspect pinned NoM recovery delta source
+        run: |
+          git fetch --no-tags --depth=1 origin c560f5dc504818252703fdeaecc2ff96a3f86059 a98dfe7b2fbfc8f8c2b378b34a524e1c1cdff8e7
+          python3 -B scripts/check_nom_recovery_delta_subject.py --expect-commit a98dfe7b2fbfc8f8c2b378b34a524e1c1cdff8e7 --expect-manifest-sha256 d08cd8c85c04a0f4bbb8568ef3f87b5302f597686d520b2e208d99b993deb372
       - name: Select macOS OpenSSL verifier
         if: runner.os == 'macOS'
         run: |

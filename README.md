@@ -88,6 +88,12 @@ same-run mathematics do not authenticate compiler support, SDK contents, loaded
 libraries or future execution. This later packaging does not fill any historical
 review or the [new independent assessment](docs/NOM_WORKER_REVIEW_REPORT_TEMPLATE.md).
 
+The [separate NoM recovery delta brief](docs/NOM_RECOVERY_DELTA_REVIEW.md) freezes
+all 969 files at the later retention/SQLite source and maps its complete delta
+from the earlier 620-file NoM subject. Eleven earlier review inputs remain
+unchanged. See [local packaging validation](docs/NOM_RECOVERY_DELTA_REVIEW_VALIDATION.md);
+the new independent report remains UNFILLED and grants no operational permission.
+
 The [public NoM wire corpus](docs/NOM_WIRE_CONFORMANCE.md) separately compares
 typed contract ABI, account hash inputs and original-byte counterexamples with
 the exact unchanged core source. It leaves the synthetic journals intact and
