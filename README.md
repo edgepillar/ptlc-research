@@ -1626,12 +1626,16 @@ dispositions and seven unfilled acceptance gates are explicit. It implements no
 service, authentication role or original-operation entry; application/core
 **NO-GO**, recovery **NONE**.
 
-The prepared [finite anchor SQLite comparison](docs/NOM_ANCHOR_SQLITE_COMPARISON.md)
+The [finite anchor SQLite comparison](docs/NOM_ANCHOR_SQLITE_COMPARISON.md)
 selects a pinned offline engine build, complete synthetic reference bytes and a
-bounded expected-state schema. Its intended native corpus retains contention,
+bounded expected-state schema. Its fresh local native run retains contention,
 capacity, process-death and lost-reply evidence, with four successful unsafe
 restore/copy/reenrollment controls. A separate reader checks original output and
-refuses incomplete evidence as qualification. The current changed implementation
-is [NOT_FULLY_QUALIFIED](docs/NOM_ANCHOR_SQLITE_COMPARISON_VALIDATION.md); no service, current
-authentication, nonrollback authority or original work entry is admitted.
+refuses incomplete evidence as qualification. Complete local regression passed
+3,634 tests and 1,208 directed identities, with zero skips and ResourceWarnings.
+The [validation scope](docs/NOM_ANCHOR_SQLITE_COMPARISON_VALIDATION.md) records
+the complete local native/reader result and retains the earlier failed attempts;
+hosted platform and main acceptance require separate fresh original evidence.
+No service, current authentication, nonrollback authority or original work entry
+is admitted.
 Application/core **NO-GO**; recovery **NONE**.
