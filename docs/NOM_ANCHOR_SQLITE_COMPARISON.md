@@ -3,10 +3,12 @@
 Research baseline:
 [`981a11dec4075ceb9096e4f75e74708daf971601`](https://github.com/edgepillar/ptlc-research/tree/981a11dec4075ceb9096e4f75e74708daf971601).
 The [service candidate](NOM_ANCHOR_SERVICE_CANDIDATE.md) proposes a trusted
-administrative ledger. This increment prepares one offline storage comparison
-with the unchanged functional reference. Its current execution disposition is
-[TARGETED_ONLY; NOT_FULLY_QUALIFIED](NOM_ANCHOR_SQLITE_COMPARISON_VALIDATION.md). Source preparation and
-golden values do not qualify the changed implementation.
+administrative ledger. This increment adds one offline storage comparison
+with the unchanged functional reference. Complete local regression and a fresh
+native comparison/reader run passed for implementation
+`1e57968ad7ed4af924834e67ae73f6474127d63c`. Its local report records
+[LOCAL_REGRESSION_AND_NATIVE_VERIFIED; HOSTED_PENDING](NOM_ANCHOR_SQLITE_COMPARISON_VALIDATION.md).
+These finite local results do not qualify an operational service.
 
 There is no service, network listener, authentication role, application signer,
 work-entry adapter, retry mechanism or operational acknowledgment. All seven
@@ -94,8 +96,10 @@ promotion is implemented.
 
 The [qualifier](../scripts/qualify_nom_anchor_sqlite.py) selects 22 comparisons,
 53 supervised captures and 54 actual CLI invocations; the contention capture
-contains a second native invocation. These are intended execution requirements,
-not current PASS evidence.
+contains a second native invocation. The fresh Darwin arm64 execution completed
+these counts, and the separate read-only reviewer accepted the complete original
+graph. Hosted platform execution and downloaded artifact acceptance are separate
+requirements; this document records no such acceptance.
 
 | Selected boundary | Required retained observation |
 | --- | --- |
@@ -150,7 +154,7 @@ service correctness. Review performs no native execution or state repair.
 An incomplete graph may be retained only as NOT_QUALIFIED; allowing retention
 does not waive complete comparison acceptance.
 
-The proposed hosted profile acquires the one bounded pinned source archive,
+The configured hosted profile acquires the one bounded pinned source archive,
 then runs offline build/comparison/review on Linux and macOS. It publishes only
 the checked synthetic graph. Build SDK-path output and arbitrary environment logs
 are excluded; safe original compiler/probe streams are separately retained in
@@ -158,5 +162,5 @@ the original job log. A withheld stream or missing artifact is an incomplete
 acceptance gate. Artifact names include the run attempt and never overwrite an
 earlier failed artifact. Fresh exact-head PR and push/main checks, original CI
 archives and downloaded native evidence are separate requirements. Nothing in
-this prepared source admits application signing, wallet access, node activation,
+this experiment admits application signing, wallet access, node activation,
 deployment, transaction broadcast or funds.

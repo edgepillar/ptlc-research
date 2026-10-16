@@ -1,13 +1,28 @@
 # Finite NoM anchor SQLite comparison validation scope
 
 Research baseline: `981a11dec4075ceb9096e4f75e74708daf971601`.
-Current disposition of the corrected public implementation: **TARGETED_ONLY;
-NOT_FULLY_QUALIFIED**. Its 44 targeted methods passed, including the scanner
-deadline and retained email-refusal controls. Complete corrected-source
-regression and a fresh complete native profile remain NOT_RUN.
-Earlier private prototype executions, a locally stored engine or earlier green
-CI cannot qualify these changed public inputs. No public Draft PR, main
-integration, native platform acceptance or independent assessment is claimed.
+Disposition recorded by this local qualification report:
+**LOCAL_REGRESSION_AND_NATIVE_VERIFIED; HOSTED_PENDING**. The tested implementation
+is `1e57968ad7ed4af924834e67ae73f6474127d63c`. Complete local regression ran
+3,634 tests and 1,208 directed identities in 3,681.265 seconds, with mandatory
+OpenSSL verification, zero skips and zero ResourceWarnings. All 969 tracked
+source files remained unchanged during that run. A separate fresh offline engine
+build, native comparison and complete original graph review passed on Darwin
+arm64. Earlier private prototypes and earlier green CI do not replace these
+new executions. Hosted platform acceptance, main integration and independent
+assessment of this implementation are not established by this report.
+
+The full regression's original stderr is 696,359 bytes, SHA-256
+`ab7b6d916f8c7059db1b4b378ff62de4b8c90b97532f3e4f7bcb629bec9f643f`.
+The tested local SQLite binary SHA-256 is
+`f2e9ff3a9fd938e04ea2fbff98c1ddbfc34d4b9b977d1e6dfb0486b232261a50`.
+The complete native graph manifest is 45,497 bytes, SHA-256
+`b3a9eddf63c11c04fa45a370511af543b2a3f0def3c2c84b1d55f1c0b36b0ee7`.
+Its separate reviewer checked 140 retained objects, 538 original events and
+69,855,885 retained bytes, including 19 original image groups, with zero
+incomplete intents. Actual build/comparison/reviewer exits were zero and their
+output was complete. Expected native refusals and selected process deaths remain
+their original distinct observations.
 
 The selected corpus preserves 228 earlier runtime inputs and adds sixteen
 selected implementation/test/fixture files plus its measured manifest: 245
@@ -21,11 +36,12 @@ material size/type boundaries, original output retention, identity replacement,
 links, partial retention intents, incomplete capture, refusal of changed source
 archives before compilation, optimized-runtime refusal, non-adoption of old
 build transcripts, read-only graph refusal and native-sized hex scanning without
-removing email punctuation checks. Targeted execution had zero skips and
-ResourceWarnings. Required full regression is at least 3,634 tests and 1,208
-directed identities, with zero skips, mandatory OpenSSL verification, zero
-ResourceWarnings and the complete earlier controls unchanged. Definition counts
-alone establish no test result.
+removing email punctuation checks. The targeted run and the later complete
+regression had zero skips and ResourceWarnings. All required earlier directed
+identities occurred exactly once in the full original output. The report update
+changes documentation only; publication still requires a byte-identical bridge
+for every tested implementation and measured runtime input. Reuse is not another
+test execution, and definition counts alone establish no result.
 
 At the preceding implementation revision, the 42 targeted methods passed with
 zero skips and ResourceWarnings. A fresh public engine build and all 22 selected
@@ -35,13 +51,13 @@ output. The complete profile is therefore NOT_QUALIFIED. Original streams, nativ
 images and the complete comparison manifest remain retained; they are not replaced
 by a later result. The changed detector starts at a complete email local-part
 boundary so absent email markers in large hex fields do not cause repeated
-suffix scans. Current-source tests, complete graph review and fresh qualification
-remain required; the earlier native observations are not a current-source PASS.
+suffix scans. The new tests, complete graph review and fresh profile above supply
+separate corrected-source evidence; the earlier observations are not reclassified.
 
 A separate corrected-reader execution verified the complete retained original
 graph at its original source context within the unchanged 300-second limit.
 This corroborates the original 54 CLI observations; it does not replace the
-corrected source's required fresh profile. A bounded differential control
+corrected source's fresh profile reported above. A bounded differential control
 reproduced the previous scanner timeout on a 2 MiB hex value and completed the
 same input after the exact detector correction. Email punctuation and long
 local-part refusal remain tested.
@@ -54,7 +70,7 @@ The original partial output remains NOT_QUALIFIED and retained. Subsequent local
 qualification runs use serialized task lifecycles, with the production free-space
 floor and all existing test deadlines unchanged.
 
-The separate current-upstream context was requalified at
+The separate upstream context was requalified at
 [`0df0c3e25a3286fd53906730106bbf39513ee304`](https://github.com/zenon-network/go-zenon/commit/0df0c3e25a3286fd53906730106bbf39513ee304):
 439 original files matched their Git blob identities, and fresh local executions
 repeated the 48-message, 26-witness, 15-destination and two-completion comparison,
@@ -84,7 +100,7 @@ of the complete service construction.
 
 Before publication, complete local regression, fresh actual native comparison,
 original graph review, artifact/privacy checks, explicit generic unsigned commit
-metadata and the exact remote destination are required. The proposed CI increment
+metadata and the exact remote destination are required. The configured CI increment
 adds two native SQL platform jobs to the earlier eleven jobs. All thirteen fresh
 exact-head PR jobs, completed-step metadata, original CI ZIP SHA-256/CRC/full
 payload acceptance and both downloaded native graph artifacts must pass before
@@ -92,6 +108,13 @@ normal history-preserving main integration. The exact published main head and
 its separate push-triggered CI/archive/native-artifact acceptance remain a second
 gate. Missing, expired, withheld or failed evidence is not a pass. Failed artifact
 names include their original run attempt and must not be overwritten.
+
+A separate reader-extension control preserved all 52 selected original views
+from the accepted eleven-job parent archive. Two additional jobs existed only
+as in-memory synthetic inputs, supplying six new reader views. Five missing,
+ambiguous or inconsistent native-original controls refused. These are bounded
+reader compatibility checks, never thirteen-job hosted acceptance or downloaded
+native artifact verification.
 
 The new schema and CLI are test-only storage machinery. They add no Rust
 application signing request, Go core execution, wallet operation or original work
