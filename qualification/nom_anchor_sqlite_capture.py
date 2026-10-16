@@ -19,7 +19,17 @@ MAX_STDERR = 64 * 1024
 TIMEOUT = 20
 
 
+def selected_database_uri(database, mode):
+    """A fixed synthetic basename keeps host paths out of original CLI errors."""
+    name = Path(database).name
+    if mode not in ('ro', 'rw') or re.fullmatch(r'[a-z0-9][a-z0-9_-]*[.]db', name) is None:
+        raise ValueError('selected synthetic database basename required')
+    return 'file:' + name + '?mode=' + mode
+
+
 def capture(arguments):
+    if not __debug__:
+        raise ValueError('unoptimized qualification runtime required')
     assert len(arguments) in (6, 7)
     binary, binary_pin, database, script, mode, cut = arguments[:6]
     assert re.fullmatch('[0-9a-f]{64}', binary_pin)
@@ -31,8 +41,7 @@ def capture(arguments):
     assert 0 < len(sql) <= MAX_SQL_BYTES and sql.isascii()
     workspace = Path(database).parent
     assert workspace.is_dir() and not Path(database).is_symlink()
-    assert re.fullmatch(r'[a-z0-9][a-z0-9_-]*\.db', Path(database).name)
-    uri = 'file:' + Path(database).name + '?mode=' + mode
+    uri = selected_database_uri(database, mode)
     argv = [binary, '-init', '/dev/null', '-batch', '-bail', '-noheader', '-list', uri]
     process = subprocess.Popen(argv, cwd=workspace, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         env=dict(PATH='/usr/bin:/bin', LC_ALL='C', TMPDIR=str(workspace)), close_fds=True)
@@ -86,6 +95,7 @@ def capture(arguments):
     selected_death = False
     timed_out = False
     contender = None
+    contender_attempted = False
     failed_contender_wrapper = None
     continuation = b''
     try:
@@ -97,8 +107,14 @@ def capture(arguments):
             if cut == 'contend_at_marker' and contender is None and marker.is_set():
                 # This exact source-pinned wrapper emits at most the declared native
                 # stream caps plus JSON hex expansion. It is not a hostile runner.
-                second = subprocess.run([sys.executable, '-B', __file__, binary, binary_pin,
-                    database, contender_script, 'rw', 'none'], capture_output=True, timeout=TIMEOUT + 10)
+                contender_attempted = True
+                try:
+                    second = subprocess.run([sys.executable, '-B', __file__, binary, binary_pin,
+                        database, contender_script, 'rw', 'none'], capture_output=True, timeout=TIMEOUT + 10)
+                except subprocess.TimeoutExpired as error:
+                    failed_contender_wrapper = dict(actual_exit=None, stdout_hex=(error.output or b'').hex(),
+                        stderr_hex=(error.stderr or b'').hex(), output_complete=False)
+                    raise
                 if second.returncode != 0 or len(second.stdout) > 10 * 1024**2 or second.stderr:
                     failed_contender_wrapper = dict(actual_exit=second.returncode,
                         stdout_hex=second.stdout.hex(), stderr_hex=second.stderr.hex())
@@ -144,7 +160,7 @@ def capture(arguments):
         capture_errors=errors, binary_unchanged=hashlib.sha256(Path(binary).read_bytes()).hexdigest() == binary_pin,
         scope='ONE TRUSTED NONFORKING NATIVE CLI; EXPECTED REFUSAL AND SELECTED DEATH EXITS ARE RETAINED')
     result['processes_reaped'] = (process.returncode is not None and failed_contender_wrapper is None
-        and (contender is None or contender.get('processes_reaped') is True))
+        and (not contender_attempted or (contender is not None and contender.get('processes_reaped') is True)))
     result['numeric_sqlite_error_code'] = 'NOT_CAPTURED_BY_CLI'
     return result
 

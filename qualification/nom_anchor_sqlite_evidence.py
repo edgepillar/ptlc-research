@@ -13,7 +13,7 @@ import stat
 import uuid
 
 SCHEMA = "ptlc-nom-anchor-sqlite-evidence-v1"
-MAX_OBJECT_BYTES = 20 * 1024**2
+MAX_OBJECT_BYTES = 32 * 1024**2
 MAX_TOTAL_BYTES = 128 * 1024**2
 MAX_OBJECTS = 256
 MAX_EVENTS = 2048
