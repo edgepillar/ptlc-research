@@ -2,6 +2,8 @@
 import hashlib
 import os
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -95,3 +97,18 @@ class SqlOriginalReviewBoundaries(unittest.TestCase):
         (self.directory / "objects" / hashlib.sha256(raw).hexdigest()).write_bytes(raw)
         with self.assertRaises(review.ReviewRefused):
             review.review(self.directory, self.root, allow_incomplete=True)
+
+    def test_native_sized_hex_without_email_finishes_within_its_deadline(self):
+        selected = subprocess.run([sys.executable, "-B", "-c",
+            "from qualification.nom_anchor_sqlite_review import sharing; "
+            "sharing(b'f' * (2 * 1024**2)); print('checked')"],
+            cwd=Path(__file__).resolve().parents[1], stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE, timeout=10, check=False)
+        self.assertEqual(selected.returncode, 0)
+        self.assertEqual(selected.stdout, b"checked\n")
+        self.assertEqual(selected.stderr, b"")
+
+    def test_email_punctuation_and_long_local_parts_remain_refused(self):
+        for local in (b"synthetic.user+tag", b"f" * (256 * 1024)):
+            with self.assertRaises(review.ReviewRefused):
+                review.sharing(local + b"@" + b"example.invalid")
