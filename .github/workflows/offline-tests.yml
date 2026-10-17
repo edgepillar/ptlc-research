@@ -184,6 +184,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Install pinned Rust toolchain
         run: rustup toolchain install 1.90.0 --profile minimal --component rustfmt
       - name: Fetch locked qualification dependencies
@@ -206,6 +207,107 @@ jobs:
           python3 -B scripts/qualify_nom_recovery_snapshot.py \
             --executable "$ptlc_snapshot_worker" --expect-executable-sha256 "$ptlc_snapshot_pin" \
             --evidence "$ptlc_snapshot_evidence"
+      - name: Qualify two-phase signed-wire NoM recovery with the public worker
+        id: nom_signed_recovery
+        run: |
+          set -eu
+          umask 077
+          ptlc_signed_worker="$GITHUB_WORKSPACE/qualification/target/debug/examples/verify_nom_swap"
+          ptlc_signed_pin="$(PTLC_SIGNED_WORKER="$ptlc_signed_worker" python3 -B -c 'import hashlib, os; from pathlib import Path; print(hashlib.sha256(Path(os.environ["PTLC_SIGNED_WORKER"]).read_bytes()).hexdigest())')"
+          mkdir -p qualification/signed-recovery-evidence
+          python3 -B scripts/qualify_nom_signed_recovery.py \
+            --executable "$ptlc_signed_worker" --expect-executable-sha256 "$ptlc_signed_pin" \
+            --subject-commit "${{ github.event.pull_request.head.sha || github.sha }}" \
+            --evidence "$GITHUB_WORKSPACE/qualification/signed-recovery-evidence"
+      - name: Retain exact signed-wire recovery original streams
+        if: always() && steps.nom_signed_recovery.outcome != 'skipped'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nom-signed-recovery-linux-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: error
+          retention-days: 90
+          path: |
+            qualification/signed-recovery-evidence/journals/alice.log
+            qualification/signed-recovery-evidence/journals/bob.log
+            qualification/signed-recovery-evidence/journals/invalid-wire-control.log
+            qualification/signed-recovery-evidence/worker/call-001.stdin
+            qualification/signed-recovery-evidence/worker/call-001.stdout
+            qualification/signed-recovery-evidence/worker/call-001.stderr
+            qualification/signed-recovery-evidence/worker/call-001.receipt.json
+            qualification/signed-recovery-evidence/worker/call-002.stdin
+            qualification/signed-recovery-evidence/worker/call-002.stdout
+            qualification/signed-recovery-evidence/worker/call-002.stderr
+            qualification/signed-recovery-evidence/worker/call-002.receipt.json
+            qualification/signed-recovery-evidence/worker/call-003.stdin
+            qualification/signed-recovery-evidence/worker/call-003.stdout
+            qualification/signed-recovery-evidence/worker/call-003.stderr
+            qualification/signed-recovery-evidence/worker/call-003.receipt.json
+            qualification/signed-recovery-evidence/worker/call-004.stdin
+            qualification/signed-recovery-evidence/worker/call-004.stdout
+            qualification/signed-recovery-evidence/worker/call-004.stderr
+            qualification/signed-recovery-evidence/worker/call-004.receipt.json
+            qualification/signed-recovery-evidence/worker/call-005.stdin
+            qualification/signed-recovery-evidence/worker/call-005.stdout
+            qualification/signed-recovery-evidence/worker/call-005.stderr
+            qualification/signed-recovery-evidence/worker/call-005.receipt.json
+            qualification/signed-recovery-evidence/worker/call-006.stdin
+            qualification/signed-recovery-evidence/worker/call-006.stdout
+            qualification/signed-recovery-evidence/worker/call-006.stderr
+            qualification/signed-recovery-evidence/worker/call-006.receipt.json
+            qualification/signed-recovery-evidence/worker/call-007.stdin
+            qualification/signed-recovery-evidence/worker/call-007.stdout
+            qualification/signed-recovery-evidence/worker/call-007.stderr
+            qualification/signed-recovery-evidence/worker/call-007.receipt.json
+            qualification/signed-recovery-evidence/worker/call-008.stdin
+            qualification/signed-recovery-evidence/worker/call-008.stdout
+            qualification/signed-recovery-evidence/worker/call-008.stderr
+            qualification/signed-recovery-evidence/worker/call-008.receipt.json
+            qualification/signed-recovery-evidence/worker/call-009.stdin
+            qualification/signed-recovery-evidence/worker/call-009.stdout
+            qualification/signed-recovery-evidence/worker/call-009.stderr
+            qualification/signed-recovery-evidence/worker/call-009.receipt.json
+            qualification/signed-recovery-evidence/worker/call-010.stdin
+            qualification/signed-recovery-evidence/worker/call-010.stdout
+            qualification/signed-recovery-evidence/worker/call-010.stderr
+            qualification/signed-recovery-evidence/worker/call-010.receipt.json
+            qualification/signed-recovery-evidence/worker/call-011.stdin
+            qualification/signed-recovery-evidence/worker/call-011.stdout
+            qualification/signed-recovery-evidence/worker/call-011.stderr
+            qualification/signed-recovery-evidence/worker/call-011.receipt.json
+            qualification/signed-recovery-evidence/worker/call-012.stdin
+            qualification/signed-recovery-evidence/worker/call-012.stdout
+            qualification/signed-recovery-evidence/worker/call-012.stderr
+            qualification/signed-recovery-evidence/worker/call-012.receipt.json
+            qualification/signed-recovery-evidence/worker/call-013.stdin
+            qualification/signed-recovery-evidence/worker/call-013.stdout
+            qualification/signed-recovery-evidence/worker/call-013.stderr
+            qualification/signed-recovery-evidence/worker/call-013.receipt.json
+            qualification/signed-recovery-evidence/worker/call-014.stdin
+            qualification/signed-recovery-evidence/worker/call-014.stdout
+            qualification/signed-recovery-evidence/worker/call-014.stderr
+            qualification/signed-recovery-evidence/worker/call-014.receipt.json
+            qualification/signed-recovery-evidence/worker/call-015.stdin
+            qualification/signed-recovery-evidence/worker/call-015.stdout
+            qualification/signed-recovery-evidence/worker/call-015.stderr
+            qualification/signed-recovery-evidence/worker/call-015.receipt.json
+            qualification/signed-recovery-evidence/worker/call-016.stdin
+            qualification/signed-recovery-evidence/worker/call-016.stdout
+            qualification/signed-recovery-evidence/worker/call-016.stderr
+            qualification/signed-recovery-evidence/worker/call-016.receipt.json
+            qualification/signed-recovery-evidence/worker/call-017.stdin
+            qualification/signed-recovery-evidence/worker/call-017.stdout
+            qualification/signed-recovery-evidence/worker/call-017.stderr
+            qualification/signed-recovery-evidence/worker/call-017.receipt.json
+            qualification/signed-recovery-evidence/worker/call-018.stdin
+            qualification/signed-recovery-evidence/worker/call-018.stdout
+            qualification/signed-recovery-evidence/worker/call-018.stderr
+            qualification/signed-recovery-evidence/worker/call-018.receipt.json
+            qualification/signed-recovery-evidence/worker/call-019.stdin
+            qualification/signed-recovery-evidence/worker/call-019.stdout
+            qualification/signed-recovery-evidence/worker/call-019.stderr
+            qualification/signed-recovery-evidence/worker/call-019.receipt.json
+            qualification/signed-recovery-evidence/qualification-result.json
+            qualification/signed-recovery-evidence/retention-manifest.json
       - name: Qualify actual public-worker reference-journal interruption custody
         run: python3 -B scripts/qualify_nom_recovery_cuts.py
       - name: Qualify explicit reference-journal process death with the public worker
@@ -532,11 +634,12 @@ jobs:
 
   nom-wire-core:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.13"
@@ -748,3 +851,55 @@ jobs:
           ptlc_go="$(command -v go)"
           python3 -B scripts/qualify_nom_rollback_refusal.py \
             --checkout .research-cache/nom-wire-core-source --go "$ptlc_go"
+      - name: Prepare the pinned signed-original comparison source
+        id: nom_signed_prepare
+        run: |
+          set -eu
+          umask 077
+          mkdir -p qualification/signed-source-evidence
+          ptlc_signed_archive="$RUNNER_TEMP/ptlc-nom-signed-source.zip"
+          curl --disable --fail --silent --show-error --location --max-redirs 2 \
+            --proto '=https' --proto-redir '=https' --max-time 180 --max-filesize 16777216 \
+            https://codeload.github.com/zenon-network/go-zenon/zip/137fc528f10ad1ac37ca6d9c4f90ed4b9ee8e598 \
+            --output "$ptlc_signed_archive"
+          python3 -B scripts/prepare_nom_signed_originals.py --archive "$ptlc_signed_archive" \
+            --destination .research-cache/nom-signed-source > qualification/signed-source-preparation.json
+      - name: Acquire separate signed-source module graph inputs
+        env:
+          GOTOOLCHAIN: local
+        run: |
+          set -eu
+          umask 077
+          ptlc_signed_inputs="$(mktemp -d "$RUNNER_TEMP/ptlc-nom-signed-inputs.XXXXXX")"
+          cp .research-cache/nom-signed-source/go.mod .research-cache/nom-signed-source/go.sum "$ptlc_signed_inputs/"
+          (
+            cd "$ptlc_signed_inputs"
+            go mod download all
+            go mod verify
+          )
+      - name: Compare exact signed NoM originals with the pinned source
+        id: nom_signed_source
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: "off"
+          GOSUMDB: "off"
+        run: |
+          set -eu
+          ptlc_go="$(command -v go)"
+          python3 -B scripts/qualify_nom_signed_originals.py \
+            --checkout .research-cache/nom-signed-source --go "$ptlc_go" \
+            --evidence "$GITHUB_WORKSPACE/qualification/signed-source-evidence"
+      - name: Retain original signed-source qualification output
+        if: always() && steps.nom_signed_source.outcome != 'skipped'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nom-signed-source-linux-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: error
+          retention-days: 90
+          path: |
+            qualification/signed-source-preparation.json
+            qualification/signed-source-evidence/go-version.stdout
+            qualification/signed-source-evidence/go-version.stderr
+            qualification/signed-source-evidence/core.stdout
+            qualification/signed-source-evidence/core.stderr
+            qualification/signed-source-evidence/qualification-result.json

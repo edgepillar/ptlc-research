@@ -1,0 +1,184 @@
+// Offline research probe for existing public synthetic account-block fixtures.
+// This is source-method comparison, not chain authority or recovery admission.
+package verifier
+
+import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"os"
+	"strconv"
+	"testing"
+
+	"github.com/zenon-network/go-zenon/chain/nom"
+)
+
+func TestResearchNoMSignedOriginalByteCustody(t *testing.T) {
+	input, err := os.ReadFile(os.Getenv("PTLC_NOM_SIGNED_ORIGINAL_FIXTURE"))
+	if err != nil {
+		t.Fatal("selected public fixture unavailable")
+	}
+	var corpus struct {
+		Schema  string `json:"schema"`
+		Records map[string]struct {
+			Trace []struct {
+				Label string `json:"label"`
+				Block struct {
+					Wire   string `json:"wire_hex"`
+					SHA256 string `json:"wire_sha256"`
+				} `json:"block"`
+			} `json:"trace"`
+		} `json:"records"`
+	}
+	if json.Unmarshal(input, &corpus) != nil || corpus.Schema != "zenon-nom-supervisor-corpus-v1" {
+		t.Fatal("complete selected public corpus required")
+	}
+	selected, ok := corpus.Records["complete"]
+	if !ok {
+		t.Fatal("selected complete trace unavailable")
+	}
+	digest := func(raw []byte) string { h := sha256.Sum256(raw); return hex.EncodeToString(h[:]) }
+	label := func(err error) string {
+		switch err {
+		case nil:
+			return "PASS"
+		case ErrABHashInvalid:
+			return "ErrABHashInvalid"
+		case ErrABSignatureMissing:
+			return "ErrABSignatureMissing"
+		case ErrABPublicKeyMissing:
+			return "ErrABPublicKeyMissing"
+		case ErrABSignatureInvalid:
+			return "ErrABSignatureInvalid"
+		case ErrABPublicKeyWrongAddress:
+			return "ErrABPublicKeyWrongAddress"
+		default:
+			t.Fatal("unselected source refusal")
+			return "UNSELECTED"
+		}
+	}
+	kinds := []string{"original", "unknown-protobuf-field", "duplicate-protobuf-version",
+		"changed-changes-hash", "changed-base-plasma", "changed-total-plasma",
+		"changed-data-old-hash", "changed-data-old-signature", "missing-signature",
+		"missing-key", "invalid-signature", "malformed-protobuf"}
+	for _, leg := range []string{"long", "short"} {
+		var original []byte
+		found := 0
+		for _, row := range selected.Trace {
+			if row.Label != leg+"-unlock-send" {
+				continue
+			}
+			original, err = hex.DecodeString(row.Block.Wire)
+			if err != nil || digest(original) != row.Block.SHA256 || len(original) == 0 || len(original) > 2048 {
+				t.Fatal("exact public original unavailable")
+			}
+			found++
+		}
+		if found != 1 {
+			t.Fatal("one selected public original required")
+		}
+		for _, kind := range kinds {
+			t.Run(leg+"-"+kind, func(t *testing.T) {
+				b, err := nom.DeserializeAccountBlock(original)
+				if err != nil {
+					t.Fatal("selected public original refused")
+				}
+				wire := bytes.Clone(original)
+				wantHash, wantSignature, wantProducer := "PASS", "PASS", "PASS"
+				switch kind {
+				case "original":
+				case "unknown-protobuf-field":
+					wire = append(wire, 0xa0, 0x06, 0x01)
+				case "duplicate-protobuf-version":
+					wire = append(wire, 0x08, 0x01)
+				case "malformed-protobuf":
+					wire = []byte{0}
+				default:
+					switch kind {
+					case "changed-changes-hash":
+						b.ChangesHash[0] ^= 1
+					case "changed-base-plasma":
+						b.BasePlasma++
+					case "changed-total-plasma":
+						b.TotalPlasma++
+					case "changed-data-old-hash":
+						b.Data[len(b.Data)-1] ^= 1
+						wantHash = "ErrABHashInvalid"
+					case "changed-data-old-signature":
+						b.Data[len(b.Data)-1] ^= 1
+						b.Hash = b.ComputeHash()
+						wantSignature = "ErrABSignatureInvalid"
+					case "missing-signature":
+						b.Signature = nil
+						wantSignature = "ErrABSignatureMissing"
+					case "missing-key":
+						b.PublicKey = nil
+						wantSignature, wantProducer = "ErrABPublicKeyMissing", "ErrABPublicKeyWrongAddress"
+					case "invalid-signature":
+						b.Signature[0] ^= 1
+						wantSignature = "ErrABSignatureInvalid"
+					default:
+						t.Fatal("unselected mutation")
+					}
+					wire, err = b.Serialize()
+					if err != nil {
+						t.Fatal("selected mutation serialization failed")
+					}
+				}
+				r := map[string]interface{}{
+					"schema": "ptlc-nom-public-signed-original-comparison-v1", "id": leg + "-" + kind,
+					"leg": leg, "kind": kind, "wire_hex": hex.EncodeToString(wire), "wire_sha256": digest(wire),
+					"original_wire_hex": hex.EncodeToString(original), "decoded": false,
+					"hash_hex": "", "computed_hash_hex": "", "changes_hash_hex": "", "base_plasma": "", "total_plasma": "",
+					"public_key_hex": "", "signature_hex": "", "reencoded_wire_hex": "", "block": nil, "checks": nil,
+				}
+				decoded, err := nom.DeserializeAccountBlock(wire)
+				if kind == "malformed-protobuf" {
+					if err == nil {
+						t.Fatal("malformed protobuf accepted")
+					}
+				} else {
+					if err != nil {
+						t.Fatal("selected original comparison refused")
+					}
+					check := &accountBlockTransactionVerifier{transaction: &nom.AccountBlockTransaction{Block: decoded}}
+					checks := map[string]string{"hash": label(check.hash()), "signature": label(check.signature()), "producer": label(check.producer())}
+					if checks["hash"] != wantHash || checks["signature"] != wantSignature || checks["producer"] != wantProducer {
+						t.Fatal("selected transaction-only boundary differs")
+					}
+					if wantHash == "PASS" && wantSignature == "PASS" && wantProducer == "PASS" && check.all() != nil {
+						t.Fatal("complete transaction-only helpers differ")
+					}
+					normalized, err := decoded.Serialize()
+					if err != nil {
+						t.Fatal("selected typed reencoding refused")
+					}
+					r["decoded"], r["checks"] = true, checks
+					r["hash_hex"], r["computed_hash_hex"] = hex.EncodeToString(decoded.Hash.Bytes()), hex.EncodeToString(decoded.ComputeHash().Bytes())
+					r["changes_hash_hex"], r["base_plasma"], r["total_plasma"] = hex.EncodeToString(decoded.ChangesHash.Bytes()), strconv.FormatUint(decoded.BasePlasma, 10), strconv.FormatUint(decoded.TotalPlasma, 10)
+					r["public_key_hex"], r["signature_hex"], r["reencoded_wire_hex"] = hex.EncodeToString(decoded.PublicKey), hex.EncodeToString(decoded.Signature), hex.EncodeToString(normalized)
+					children := []string{}
+					for _, child := range decoded.DescendantBlocks {
+						children = append(children, hex.EncodeToString(child.Hash.Bytes()))
+					}
+					r["block"] = map[string]interface{}{
+						"version": strconv.FormatUint(decoded.Version, 10), "chain_id": strconv.FormatUint(decoded.ChainIdentifier, 10),
+						"block_type": strconv.FormatUint(decoded.BlockType, 10), "previous_hash_hex": hex.EncodeToString(decoded.PreviousHash.Bytes()),
+						"height": strconv.FormatUint(decoded.Height, 10), "momentum_hash_hex": hex.EncodeToString(decoded.MomentumAcknowledged.Hash.Bytes()),
+						"momentum_height": strconv.FormatUint(decoded.MomentumAcknowledged.Height, 10), "address_hex": hex.EncodeToString(decoded.Address.Bytes()),
+						"to_address_hex": hex.EncodeToString(decoded.ToAddress.Bytes()), "amount": decoded.Amount.String(),
+						"token_standard_hex": hex.EncodeToString(decoded.TokenStandard.Bytes()), "from_block_hash_hex": hex.EncodeToString(decoded.FromBlockHash.Bytes()),
+						"data_hex": hex.EncodeToString(decoded.Data), "fused_plasma": strconv.FormatUint(decoded.FusedPlasma, 10),
+						"difficulty": strconv.FormatUint(decoded.Difficulty, 10), "nonce_hex": hex.EncodeToString(decoded.Nonce.Data[:]), "descendant_hashes_hex": children,
+					}
+				}
+				output, err := json.Marshal(r)
+				if err != nil {
+					t.Fatal("selected public projection failed")
+				}
+				t.Logf("PTLC_NOM_SIGNED_ORIGINAL_RECORD=%s", output)
+			})
+		}
+	}
+}
