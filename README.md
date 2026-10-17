@@ -94,6 +94,11 @@ from the earlier 620-file NoM subject. Eleven earlier review inputs remain
 unchanged. See [local packaging validation](docs/NOM_RECOVERY_DELTA_REVIEW_VALIDATION.md);
 the new independent report remains UNFILLED and grants no operational permission.
 
+The [pinned dev rebase comparison](docs/NOM_DEV_REBASE_COMPARISON.md) selects the
+later c25 source separately. It compares removed-parent child aliases and exact
+admitted patches without weakening the historical fixtures. Its pure reader
+grants no observation, custody or recovery permission.
+
 The [public NoM wire corpus](docs/NOM_WIRE_CONFORMANCE.md) separately compares
 typed contract ABI, account hash inputs and original-byte counterexamples with
 the exact unchanged core source. It leaves the synthetic journals intact and
