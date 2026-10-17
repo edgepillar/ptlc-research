@@ -1674,3 +1674,11 @@ replay refuse, while coherent old restore remains an explicit unsafe control.
 The source lookup and observer remain disclosed qualification allowlists.
 Independent assessment and the seven service gates are unfilled; application
 and core remain **NO-GO**.
+
+The separate [signed-wire process-cut profile](docs/NOM_SIGNED_PROCESS_CUTS.md)
+uses six actual self-exits after complete fsync or a fully reaped public reply.
+It retains missing completion and original bytes across reopen without granting
+another recovery attempt. Its explicit artifact has 191 selected originals and
+reports; a data reader checks the finite event sequence without invoking the
+journal's state-transition implementation. This is author qualification, not
+external kill, physical power-loss, nonrollback or independent security proof.
