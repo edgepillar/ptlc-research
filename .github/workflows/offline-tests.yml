@@ -308,6 +308,43 @@ jobs:
             qualification/signed-recovery-evidence/worker/call-019.receipt.json
             qualification/signed-recovery-evidence/qualification-result.json
             qualification/signed-recovery-evidence/retention-manifest.json
+      - name: Qualify six signed-wire process exits with the public worker
+        id: nom_signed_process_cuts
+        run: |
+          set -eu
+          umask 077
+          ptlc_process_worker="$GITHUB_WORKSPACE/qualification/target/debug/examples/verify_nom_swap"
+          ptlc_process_pin="$(PTLC_PROCESS_WORKER="$ptlc_process_worker" python3 -B -c 'import hashlib, os; from pathlib import Path; print(hashlib.sha256(Path(os.environ["PTLC_PROCESS_WORKER"]).read_bytes()).hexdigest())')"
+          mkdir -p qualification/signed-process-cut-evidence
+          python3 -B scripts/qualify_nom_signed_process_cuts.py \
+            --executable "$ptlc_process_worker" --expect-executable-sha256 "$ptlc_process_pin" \
+            --subject-commit "${{ github.event.pull_request.head.sha || github.sha }}" \
+            --evidence "$GITHUB_WORKSPACE/qualification/signed-process-cut-evidence"
+      - name: Select explicit process-cut original artifact paths
+        if: always() && steps.nom_signed_process_cuts.outcome != 'skipped'
+        id: nom_signed_process_originals
+        run: |
+          python3 -B - <<'PY'
+          import os
+          from pathlib import Path
+          from scripts.nom_signed_process_evidence import selected_artifact_names
+          root=Path.cwd()
+          prefix=Path('qualification/signed-process-cut-evidence')
+          selected=selected_artifact_names(root/prefix,root)
+          with Path(os.environ['GITHUB_OUTPUT']).open('a',encoding='ascii') as stream:
+              stream.write('files<<PTLC_EXPLICIT_PROCESS_ORIGINALS\n')
+              for name in selected:stream.write((prefix/name).as_posix()+'\n')
+              stream.write('PTLC_EXPLICIT_PROCESS_ORIGINALS\n')
+          print('PASS: selected explicit process-cut originals',len(selected))
+          PY
+      - name: Retain exact signed-wire process-cut original streams
+        if: always() && steps.nom_signed_process_originals.outcome == 'success'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nom-signed-process-cuts-linux-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: error
+          retention-days: 90
+          path: ${{ steps.nom_signed_process_originals.outputs.files }}
       - name: Qualify actual public-worker reference-journal interruption custody
         run: python3 -B scripts/qualify_nom_recovery_cuts.py
       - name: Qualify explicit reference-journal process death with the public worker
