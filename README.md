@@ -5,6 +5,13 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+New offline observation/recovery candidates should select
+[`SnapshotNomRecovery`](offline_session/nom_recovery_snapshot.py). It fixes a
+reproduced observation-alias defect while leaving the pinned historical writer
+and old evidence unchanged. It does not authenticate historical records or a
+chain observer. See the [author review and development order](docs/NOM_AUTHOR_REVIEW.md);
+this review is not independent assessment, and application/core remain **NO-GO**.
+
 The separate [full projection capsule](docs/NOM_CAPSULE.md) stores exact journal
 and HOLD bytes under a create-only private owner. A read-only consumer compares
 two bounded snapshots and supplies HOLD with UNKNOWN work and absent output
