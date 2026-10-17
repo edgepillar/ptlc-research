@@ -1657,3 +1657,20 @@ hosted platform and main acceptance require separate fresh original evidence.
 No service, current authentication, nonrollback authority or original work entry
 is admitted.
 Application/core **NO-GO**; recovery **NONE**.
+
+## Exact signed-wire NoM recovery candidate
+
+The [signed-wire recovery candidate](docs/NOM_SIGNED_RECOVERY.md) binds the exact
+public account original, its SHA-256 and its separately verified node identifier.
+A 24-record comparison against the complete pinned 443-file node source preserves
+protobuf aliases and hash-excluded metadata as different raw originals. It does
+not turn transaction-only verification into account admission or chain truth.
+
+The actual journal keeps the recovered public long completion separate from the
+signed long account original. Missing wire stays missing across reopen; no signer
+or normalized replacement fills it. UNKNOWN work is charged before recovery and
+original-only output is recorded before disclosure. Same-size edits and torn
+replay refuse, while coherent old restore remains an explicit unsafe control.
+The source lookup and observer remain disclosed qualification allowlists.
+Independent assessment and the seven service gates are unfilled; application
+and core remain **NO-GO**.
