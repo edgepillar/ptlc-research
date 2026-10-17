@@ -1682,3 +1682,10 @@ another recovery attempt. Its explicit artifact has 191 selected originals and
 reports; a data reader checks the finite event sequence without invoking the
 journal's state-transition implementation. This is author qualification, not
 external kill, physical power-loss, nonrollback or independent security proof.
+
+The additive [fixture I/O fault profile](docs/NOM_SIGNED_IO_FAULTS.md) exercises
+30 selected write/fsync exception cases against that unchanged writer. Its data
+reader checks complete and torn originals without invoking journal transitions.
+The 93-file explicit selection preserves failure without repair or retry. This
+profile uses a disclosed mathematical fixture oracle, launches no native worker
+and supplies no independent review, physical durability or application permission.
