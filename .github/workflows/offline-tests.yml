@@ -551,6 +551,71 @@ jobs:
             --build-directory "$ptlc_nom_build" --evidence "$ptlc_nom_evidence" \
             --cargo-home "${CARGO_HOME:-$HOME/.cargo}" --platform x86_64-unknown-linux-gnu \
             --cargo "$ptlc_nom_cargo" --rustc "$ptlc_nom_rustc" --c-compiler "$ptlc_nom_cc"
+      - name: Qualify fixture-only signed-wire I/O fault boundaries
+        id: io-faults
+        shell: bash
+        run: |
+          set -eu
+          umask 077
+          python3 -B - <<'PY'
+          import json
+          import os
+          import shutil
+          floor, reservation = 10 * 1024**3, 32 * 1024**2
+          if shutil.disk_usage(os.environ['RUNNER_TEMP']).free < floor + reservation:
+              raise SystemExit('REFUSED: finite I/O profile free-space admission')
+          print(json.dumps(dict(scope='NEW ISOLATED HOSTED I/O PROFILE ONLY',
+              free_space_floor=floor, expected_reservation=reservation,
+              evidence_limit=8*1024**2, os_filesystem_quota='NOT CLAIMED')))
+          PY
+          ptlc_io_root="$(mktemp -d "$RUNNER_TEMP/ptlc-io-faults.XXXXXX")"
+          mkdir "$ptlc_io_root/evidence"
+          printf 'PTLC_IO_PROFILE_ROOT=%s\n' "$ptlc_io_root" >> "$GITHUB_ENV"
+          python3 -B scripts/qualify_nom_signed_io_faults.py --evidence "$ptlc_io_root/evidence" \
+            --subject-commit '${{ github.event.pull_request.head.sha || github.sha }}'
+      - name: Check explicit I/O fault original selection
+        id: io-selection
+        if: always() && env.PTLC_IO_PROFILE_ROOT != ''
+        shell: bash
+        run: |
+          set -eu
+          if [ '${{ steps.io-faults.outcome }}' = 'success' ]; then
+            python3 -B scripts/qualify_nom_signed_io_faults.py --evidence "$PTLC_IO_PROFILE_ROOT/evidence" \
+              --artifact-files > "$PTLC_IO_PROFILE_ROOT/selected-files"
+          else
+            python3 -B scripts/qualify_nom_signed_io_faults.py --evidence "$PTLC_IO_PROFILE_ROOT/evidence" \
+              --artifact-files --allow-incomplete-for-retention > "$PTLC_IO_PROFILE_ROOT/selected-files"
+          fi
+          {
+            printf 'files<<PTLC_IO_SELECTED_FILES\n'
+            while IFS= read -r member; do
+              printf '%s/evidence/%s\n' "$PTLC_IO_PROFILE_ROOT" "$member"
+            done < "$PTLC_IO_PROFILE_ROOT/selected-files"
+            printf 'PTLC_IO_SELECTED_FILES\n'
+          } >> "$GITHUB_OUTPUT"
+          python3 -B - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from scripts.qualify_nom_signed_io_faults import selected_artifact_names
+          directory = Path(os.environ['PTLC_IO_PROFILE_ROOT'])/'evidence'
+          names = selected_artifact_names(directory, allow_incomplete=True)
+          print(json.dumps(dict(selected_original_files=len(names),
+              selection='EXPLICIT_RELATIVE_NAMES_ONLY', publication_scope='FIXTURE_ONLY',
+              application='NO-GO', core='NO-GO', independent_assessment='UNFILLED')))
+          PY
+      - name: Preserve this attempt's checked I/O fault originals
+        if: always() && steps.io-selection.outcome == 'success'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nom-signed-io-faults-linux-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.io-selection.outputs.files }}
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+          archive: true
 
   go-compatibility:
     runs-on: ubuntu-latest
