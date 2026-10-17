@@ -196,6 +196,16 @@ jobs:
         run: cargo +1.90.0 build --locked --offline --manifest-path qualification/Cargo.toml --examples
       - name: Qualify fixed-recipient NoM original recovery with the public worker
         run: python3 -B scripts/qualify_nom_recovery.py
+      - name: Qualify observation snapshots with the actual public worker
+        run: |
+          set -eu
+          umask 077
+          ptlc_snapshot_worker="$GITHUB_WORKSPACE/qualification/target/debug/examples/verify_nom_swap"
+          ptlc_snapshot_pin="$(PTLC_SNAPSHOT_WORKER="$ptlc_snapshot_worker" python3 -B -c 'import hashlib, os; from pathlib import Path; print(hashlib.sha256(Path(os.environ["PTLC_SNAPSHOT_WORKER"]).read_bytes()).hexdigest())')"
+          ptlc_snapshot_evidence="$(mktemp -d "$RUNNER_TEMP/ptlc-nom-snapshot.XXXXXX")"
+          python3 -B scripts/qualify_nom_recovery_snapshot.py \
+            --executable "$ptlc_snapshot_worker" --expect-executable-sha256 "$ptlc_snapshot_pin" \
+            --evidence "$ptlc_snapshot_evidence"
       - name: Qualify actual public-worker reference-journal interruption custody
         run: python3 -B scripts/qualify_nom_recovery_cuts.py
       - name: Qualify explicit reference-journal process death with the public worker
