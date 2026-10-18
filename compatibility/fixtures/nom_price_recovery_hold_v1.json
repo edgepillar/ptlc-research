@@ -1,0 +1,280 @@
+{
+  "cases": [
+    {
+      "canonical_accepts": true,
+      "custody": {
+        "long": "both",
+        "short": "both"
+      },
+      "expected_hold_reasons": {
+        "long": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY"
+        ],
+        "short": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY"
+        ]
+      },
+      "id": "minimum-full",
+      "price_case": "minimum"
+    },
+    {
+      "canonical_accepts": true,
+      "custody": {
+        "long": "both",
+        "short": "both"
+      },
+      "expected_hold_reasons": {
+        "long": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY"
+        ],
+        "short": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY"
+        ]
+      },
+      "id": "work-only-rise-full",
+      "price_case": "work-only-rise"
+    },
+    {
+      "canonical_accepts": false,
+      "custody": {
+        "long": "both",
+        "short": "both"
+      },
+      "expected_hold_reasons": {
+        "long": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "REFERENCE_CANONICAL_PRICE_COMPONENT_REFUSES"
+        ],
+        "short": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "REFERENCE_CANONICAL_PRICE_COMPONENT_REFUSES"
+        ]
+      },
+      "id": "fusion-one-above-full",
+      "price_case": "fusion-one-above"
+    },
+    {
+      "canonical_accepts": false,
+      "custody": {
+        "long": "both",
+        "short": "both"
+      },
+      "expected_hold_reasons": {
+        "long": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "REFERENCE_CANONICAL_PRICE_COMPONENT_REFUSES"
+        ],
+        "short": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "REFERENCE_CANONICAL_PRICE_COMPONENT_REFUSES"
+        ]
+      },
+      "id": "fusion-rise-full",
+      "price_case": "fusion-rise"
+    },
+    {
+      "canonical_accepts": false,
+      "custody": {
+        "long": "both",
+        "short": "both"
+      },
+      "expected_hold_reasons": {
+        "long": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "REFERENCE_CANONICAL_PRICE_COMPONENT_REFUSES"
+        ],
+        "short": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "REFERENCE_CANONICAL_PRICE_COMPONENT_REFUSES"
+        ]
+      },
+      "id": "wide-work-price-full",
+      "price_case": "wide-work-price"
+    },
+    {
+      "canonical_accepts": true,
+      "custody": {
+        "long": "both",
+        "short": "both"
+      },
+      "expected_hold_reasons": {
+        "long": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY"
+        ],
+        "short": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY"
+        ]
+      },
+      "id": "before-first-v2-full",
+      "price_case": "before-first-v2"
+    },
+    {
+      "canonical_accepts": false,
+      "custody": {
+        "long": "both",
+        "short": "both"
+      },
+      "expected_hold_reasons": {
+        "long": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "REFERENCE_CANONICAL_PRICE_COMPONENT_REFUSES",
+          "DIAGNOSTIC_METADATA_IS_NOT_AN_ORIGINAL"
+        ],
+        "short": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "REFERENCE_CANONICAL_PRICE_COMPONENT_REFUSES",
+          "DIAGNOSTIC_METADATA_IS_NOT_AN_ORIGINAL"
+        ]
+      },
+      "id": "untrusted-zero-base-full",
+      "price_case": "untrusted-zero-base"
+    },
+    {
+      "canonical_accepts": true,
+      "custody": {
+        "long": "both",
+        "short": "both"
+      },
+      "expected_hold_reasons": {
+        "long": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "DIAGNOSTIC_METADATA_IS_NOT_AN_ORIGINAL"
+        ],
+        "short": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "DIAGNOSTIC_METADATA_IS_NOT_AN_ORIGINAL"
+        ]
+      },
+      "id": "untrusted-max-base-full",
+      "price_case": "untrusted-max-base"
+    },
+    {
+      "canonical_accepts": true,
+      "custody": {
+        "long": "node-only",
+        "short": "both"
+      },
+      "expected_hold_reasons": {
+        "long": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "ORIGINAL_WIRE_UNAVAILABLE"
+        ],
+        "short": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY"
+        ]
+      },
+      "id": "minimum-long-wire-absent",
+      "price_case": "minimum"
+    },
+    {
+      "canonical_accepts": true,
+      "custody": {
+        "long": "both",
+        "short": "wire-only"
+      },
+      "expected_hold_reasons": {
+        "long": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY"
+        ],
+        "short": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "ORIGINAL_NODE_BINDING_UNAVAILABLE"
+        ]
+      },
+      "id": "minimum-short-binding-absent",
+      "price_case": "minimum"
+    },
+    {
+      "canonical_accepts": false,
+      "custody": {
+        "long": "neither",
+        "short": "neither"
+      },
+      "expected_hold_reasons": {
+        "long": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "ORIGINAL_WIRE_UNAVAILABLE",
+          "ORIGINAL_NODE_BINDING_UNAVAILABLE",
+          "REFERENCE_CANONICAL_PRICE_COMPONENT_REFUSES"
+        ],
+        "short": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "ORIGINAL_WIRE_UNAVAILABLE",
+          "ORIGINAL_NODE_BINDING_UNAVAILABLE",
+          "REFERENCE_CANONICAL_PRICE_COMPONENT_REFUSES"
+        ]
+      },
+      "id": "rise-both-absent",
+      "price_case": "fusion-rise"
+    },
+    {
+      "canonical_accepts": true,
+      "custody": {
+        "long": "node-only",
+        "short": "wire-only"
+      },
+      "expected_hold_reasons": {
+        "long": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "ORIGINAL_WIRE_UNAVAILABLE"
+        ],
+        "short": [
+          "UNAUTHENTICATED_SOURCE",
+          "UNCOMPOSED_ACCOUNT_ADMISSION",
+          "UNVERIFIED_DURABLE_CUSTODY",
+          "ORIGINAL_NODE_BINDING_UNAVAILABLE"
+        ]
+      },
+      "id": "work-rise-cross-missing",
+      "price_case": "work-only-rise"
+    }
+  ],
+  "schema": "ptlc-nom-price-recovery-hold-vectors-v1",
+  "scope": "PUBLIC SYNTHETIC DATA ONLY; NOT ORIGINAL CUSTODY EVIDENCE"
+}

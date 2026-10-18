@@ -1712,3 +1712,11 @@ reader checks complete and torn originals without invoking journal transitions.
 The 93-file explicit selection preserves failure without repair or retry. This
 profile uses a disclosed mathematical fixture oracle, launches no native worker
 and supplies no independent review, physical durability or application permission.
+
+### Reference price and original-custody HOLD interface
+
+The [finite refusal/HOLD model](docs/NOM_PRICE_RECOVERY_HOLD.md) compares supplied
+public synthetic originals with selected price values. Absent wire bytes and
+node bindings remain absent. Matching prices still provide no signing, retry,
+work replenishment, release, journal write or admission authority. All independent
+requirements and application/core NO-GO remain explicit.
