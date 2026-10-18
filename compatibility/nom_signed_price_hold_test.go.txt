@@ -1,0 +1,132 @@
+// Original offline source comparison. No chain authority or transaction handoff.
+package dp_test
+
+import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"math"
+	"os"
+	"strconv"
+	"testing"
+
+	"github.com/zenon-network/go-zenon/chain"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/chain/store"
+	"github.com/zenon-network/go-zenon/common/types"
+	"github.com/zenon-network/go-zenon/dp"
+	"github.com/zenon-network/go-zenon/vm"
+	"github.com/zenon-network/go-zenon/vm/embedded/definition"
+)
+
+type researchPriceCache struct{ store.Cache }
+
+func (*researchPriceCache) IsSporkActive(s *types.ImplementedSpork) (bool, error) {
+	switch s {
+	case types.PtlcSpork, types.DynamicPlasmaSpork:
+		return true, nil
+	case types.AcceleratorSpork, types.BridgeAndLiquiditySpork, types.HtlcSpork:
+		return false, nil
+	default:
+		panic("unselected source flag")
+	}
+}
+
+type researchPriceChain struct {
+	chain.Chain
+	ack types.HashHeight
+}
+
+func (c *researchPriceChain) GetCacheStore(ack types.HashHeight) store.Cache {
+	if ack != c.ack {
+		panic("unselected acknowledged momentum")
+	}
+	return &researchPriceCache{}
+}
+
+func TestResearchNoMSignedPriceHold(t *testing.T) {
+	input, err := os.ReadFile(os.Getenv("PTLC_NOM_RPC_PTLC_FIXTURE"))
+	if err != nil {
+		t.Fatal("selected public originals unavailable")
+	}
+	var records map[string]struct {
+		Wire string `json:"wire_hex"`
+		SHA  string `json:"wire_sha256"`
+		Hash string `json:"hash_hex"`
+	}
+	if json.Unmarshal(input, &records) != nil {
+		t.Fatal("selected public records refused")
+	}
+	for _, leg := range []string{"long", "short"} {
+		original, exists := records[leg+"-original"]
+		raw, err := hex.DecodeString(original.Wire)
+		digest := sha256.Sum256(raw)
+		if !exists || err != nil || len(raw) == 0 || len(raw) > 2048 || hex.EncodeToString(digest[:]) != original.SHA {
+			t.Fatal("exact bounded public original required")
+		}
+		for _, tc := range []struct {
+			id                    string
+			version, fusion, work uint64
+			advertised            uint64
+			mutate                bool
+		}{
+			{"minimum", 2, 1000, 1000, 0, false},
+			{"work-only-rise", 2, 1000, 1103, 0, false},
+			{"fusion-one-above", 2, 1001, 1000, 0, false},
+			{"fusion-rise", 2, 1051, 1103, 0, false},
+			{"wide-work-price", 2, 1051, math.MaxUint64, 0, false},
+			{"before-first-v2", 1, 1051, 1103, 0, false},
+			{"untrusted-zero-base", 2, 1051, 1103, 0, true},
+			{"untrusted-max-base", 2, 1000, 1000, math.MaxUint64, true},
+		} {
+			t.Run(leg+"-"+tc.id, func(t *testing.T) {
+				b, err := nom.DeserializeAccountBlock(raw)
+				if err != nil || b.ComputeHash() != b.Hash || hex.EncodeToString(b.Hash.Bytes()) != original.Hash {
+					t.Fatal("selected public account identifier differs")
+				}
+				baseline, err := b.Serialize()
+				if err != nil || !bytes.Equal(baseline, raw) {
+					t.Fatal("selected fixture needs its original encoding")
+				}
+				if tc.mutate {
+					// Diagnostic copy only. Never replace the retained original.
+					b.BasePlasma = tc.advertised
+				}
+				selectedWire, err := b.Serialize()
+				if err != nil {
+					t.Fatal("diagnostic encoding unavailable")
+				}
+				canonical, err := vm.CanonicalBasePlasma(&researchPriceChain{ack: b.MomentumAcknowledged}, b)
+				if err != nil || canonical != 73500 {
+					t.Fatal("selected canonical Unlock base differs")
+				}
+				frontier := &nom.Momentum{Version: tc.version, Height: 100, NextFusionPrice: tc.fusion, NextWorkPrice: tc.work}
+				prices := dp.NewDynamicPlasma(frontier, &definition.PlasmaVariables{})
+				advertisedAccepts := prices.ValidPrice(b)
+				priced := *b
+				priced.BasePlasma = canonical
+				canonicalAccepts := prices.ValidPrice(&priced)
+				after, err := b.Serialize()
+				if err != nil || !bytes.Equal(after, selectedWire) || hex.EncodeToString(raw) != original.Wire || b.ComputeHash() != b.Hash {
+					t.Fatal("price comparison changed selected bytes or identifier")
+				}
+				r := map[string]interface{}{
+					"schema": "ptlc-nom-signed-price-hold-source-v1", "id": leg + "-" + tc.id,
+					"original_wire_sha256": original.SHA, "original_node_hash_hex": original.Hash,
+					"version": strconv.FormatUint(tc.version, 10), "fusion_price": strconv.FormatUint(tc.fusion, 10),
+					"work_price": strconv.FormatUint(tc.work, 10), "fused_plasma": strconv.FormatUint(b.FusedPlasma, 10),
+					"difficulty": strconv.FormatUint(b.Difficulty, 10), "advertised_base": strconv.FormatUint(b.BasePlasma, 10),
+					"canonical_base": strconv.FormatUint(canonical, 10), "advertised_accepts": advertisedAccepts,
+					"canonical_accepts": canonicalAccepts, "diagnostic_metadata_copy": tc.mutate,
+					"original_bytes_preserved": true, "recovery_action": "NONE",
+				}
+				encoded, err := json.Marshal(r)
+				if err != nil {
+					t.Fatal("selected price projection refused")
+				}
+				t.Logf("PTLC_NOM_SIGNED_PRICE_HOLD_RECORD=%s", encoded)
+			})
+		}
+	}
+}

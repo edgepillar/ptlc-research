@@ -5,6 +5,13 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+The [signed-original price checkpoint](docs/NOM_SIGNED_PRICE_HOLD.md) separately
+reviews go-zenon `85c3979`. It compares the two retained public Unlock originals
+with canonical source cost and changing prices, preserving original bytes and
+refusing any fee rewrite or recovery permission. Its 16 records and local native
+execution remain distinct from hosted tests, complete admission and independent
+assessment. The checkpoint also identifies the next bounded recovery obligations.
+
 The additive [unsigned RPC quote corpus](docs/NOM_RPC_QUOTES.md) selects the
 complete go-zenon `b5f93c2` source and compares the new `requiredFusedPlasma`
 field as a total fused-only payment target. Its 30 selected records include

@@ -1,0 +1,37 @@
+{
+  "application": "NO-GO",
+  "complete_admission": "UNFILLED",
+  "core": "NO-GO",
+  "core_commit": "85c39796fa5ab6fb5ca16e61af34b6616f0ceafe",
+  "core_repository": "https://github.com/zenon-network/go-zenon",
+  "core_tree": "cdeb5b6276c13447197c829c5855faa72afd86b9",
+  "declared_go_outcomes": 17,
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/fixtures/nom_signed_originals_v1.json": "aef86fe911de1f7505fafbf216f33a9e10d8c32304ba91fa81e147035b03b0d9",
+    "compatibility/fixtures/nom_signed_price_hold_v1.json": "28be12f3eeb746a4560f73c5f53518a54724da1c276f11175a81dd779413b81b",
+    "compatibility/nom_signed_price_hold_test.go.txt": "2d1a03f673fc45dd554becbc59789ed906bf3f97d90a759bacf75e5d8b21f27a",
+    "qualification/nom_rpc_quote_generic.py": "eb0ce1e87702e2fd622f95b791f780fede0c1648e585741687c1186c800e520f",
+    "qualification/nom_signed_price_hold.py": "362eb1cb175aca4adefdc0f4f5ad02af5fbb6e99430b5d55ea52b16b37ca02b0",
+    "scripts/qualify_nom_signed_originals.py": "0f82a6208b42882ab87390bcd4faee7d69a9423e2ba0a51c6229cd20898d0b50",
+    "tests/test_nom_signed_price_hold.py": "8d0ec4ead7b5354f13d397332a38d4b0898b16d1e76514cc563bab47101a950d"
+  },
+  "journal_source_upgrade": "NOT_SELECTED",
+  "reader_scope": "FINITE TRANSCRIPT VALUES ONLY; NO NATIVE ORIGIN AUTHENTICATION",
+  "recovery_action": "NONE",
+  "schema": "ptlc-nom-signed-price-hold-selection-v1",
+  "selected_source_sha256": {
+    "dp/dp.go": "1dc76fd5f65722bd79f26e4aac98cc3a06913195fa323aba4b1cfae7e43655b6",
+    "pillar/content_selector.go": "67fb052291fe4df24cacd993fbac81c7a73f64ef6deb000417a498b1e6c3308b",
+    "verifier/momentum.go": "0ca81c3d53ae381dcc45d03bdbd5c1c2282a223c2dd8688a4fc7aad8ea94f2c3",
+    "vm/embedded/implementation/plasma.go": "f55bae04ba57600dc62fa598c813ab0bef9fd261196cf4d0ca7c1e51825c1465",
+    "vm/embedded/tests/dp_principal_test.go": "1fe823a926d7016c4b331f8a4bff54ded4200ed68ad53d356e9aed410e9a8d4c",
+    "vm/plasma.go": "258573270e79a4fdc2aaf720a29787ba7d6d004f89cc35ce3224d5e52ada6f88"
+  },
+  "source_archive_bytes": 1705302,
+  "source_archive_sha256": "54336f7c1f75f84d0f513d3b22da135bebf62d8da84b776e961b0c3f52f8e1c9",
+  "source_files": 444,
+  "source_index_sha256": "6168b36ee6487272bf128862f141093db4d47c411a5d551fb132de5d9ab8890a",
+  "source_license_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+  "source_records": 16
+}
