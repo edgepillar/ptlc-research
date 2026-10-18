@@ -1006,3 +1006,72 @@ jobs:
             qualification/signed-source-evidence/core.stdout
             qualification/signed-source-evidence/core.stderr
             qualification/signed-source-evidence/qualification-result.json
+      - name: Prepare the pinned current-dev RPC quote source
+        id: nom_rpc_prepare
+        run: |
+          set -eu
+          umask 077
+          python3 -B - <<'PY'
+          import os, shutil
+          from pathlib import Path
+          root = Path(os.environ["RUNNER_TEMP"])
+          if shutil.disk_usage(root).free < 10 * 1024**3 + 2 * 1024**3:
+              raise RuntimeError("RPC source storage admission refused")
+          PY
+          ptlc_rpc_archive="$RUNNER_TEMP/ptlc-nom-rpc-source.zip"
+          test ! -e "$ptlc_rpc_archive"
+          (
+            ulimit -f 8192
+            curl --disable --fail --silent --show-error --location --max-redirs 2 \
+              --proto '=https' --proto-redir '=https' --max-time 180 --max-filesize 8388608 \
+              https://api.github.com/repos/zenon-network/go-zenon/zipball/b5f93c20c15b0622bc8ed1a175b613d6917be3b2 \
+              --output "$ptlc_rpc_archive"
+          )
+          python3 -B scripts/prepare_nom_rpc_quotes.py --archive "$ptlc_rpc_archive" \
+            --destination .research-cache/nom-rpc-source
+      - name: Compare current-dev original helpers and unsigned RPC quotes
+        id: nom_rpc_source
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: "off"
+          GOSUMDB: "off"
+        run: |
+          set -eu
+          umask 077
+          git fetch --no-tags --depth=1 origin '${{ github.event.pull_request.head.sha || github.sha }}'
+          mkdir -m 700 qualification/rpc-source-evidence
+          ptlc_rpc_go="$(command -v go)"
+          ptlc_rpc_go_sha="$(sha256sum "$ptlc_rpc_go" | cut -d ' ' -f 1)"
+          python3 -B scripts/qualify_nom_rpc_quotes.py \
+            --checkout .research-cache/nom-rpc-source --go "$ptlc_rpc_go" \
+            --expect-go-sha256 "$ptlc_rpc_go_sha" \
+            --evidence "$GITHUB_WORKSPACE/qualification/rpc-source-evidence" \
+            --subject-commit '${{ github.event.pull_request.head.sha || github.sha }}'
+      - name: Select explicit current-dev RPC source originals
+        id: rpc_selection
+        if: always() && steps.nom_rpc_source.outcome != 'skipped'
+        run: |
+          set -eu
+          ptlc_rpc_paths="$(python3 -B scripts/qualify_nom_rpc_quotes.py \
+            --evidence "$GITHUB_WORKSPACE/qualification/rpc-source-evidence" \
+            --subject-commit '${{ github.event.pull_request.head.sha || github.sha }}' \
+            --artifact-files --allow-incomplete-for-retention)"
+          {
+            printf 'files<<PTLC_RPC_ORIGINALS\n'
+            while IFS= read -r ptlc_rpc_name; do
+              printf 'qualification/rpc-source-evidence/%s\n' "$ptlc_rpc_name"
+            done <<< "$ptlc_rpc_paths"
+            printf 'PTLC_RPC_ORIGINALS\n'
+          } >> "$GITHUB_OUTPUT"
+      - name: Retain exact current-dev RPC quote source originals
+        if: always() && steps.rpc_selection.outcome == 'success'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nom-rpc-quotes-linux-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.rpc_selection.outputs.files }}
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+          archive: true
