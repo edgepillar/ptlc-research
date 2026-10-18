@@ -1,0 +1,75 @@
+// Original offline source probe. The pinned upstream test helper supplies only
+// synthetic stores; no node, signer, wallet, peer or network is selected.
+package embedded
+
+import (
+	"encoding/hex"
+	"encoding/json"
+	"strconv"
+	"testing"
+)
+
+func TestResearchNoMRpcQuoteCorpus(t *testing.T) {
+	for _, tc := range []struct {
+		id                           string
+		active                       bool
+		version, fusion, work, units uint64
+		data                         []byte
+	}{
+		{"dynamic-floor", true, 2, 1000, 1000, 12, nil},
+		{"dynamic-fused-only", true, 2, 1050, 1100, 12, nil},
+		{"dynamic-one-byte", true, 2, 1050, 1100, 12, []byte{1}},
+		{"dynamic-partial-fusion", true, 2, 1050, 1100, 9, nil},
+		{"dynamic-no-fusion", true, 2, 1050, 1100, 0, nil},
+		{"before-first-v2", true, 1, 0, 0, 12, nil},
+		{"before-first-v2-partial", true, 1, 0, 0, 9, nil},
+		{"before-enforcement", false, 1, 0, 0, 12, nil},
+		{"before-enforcement-partial", false, 1, 0, 0, 9, nil},
+		{"dynamic-ceil-work", true, 2, 1051, 1103, 9, []byte{1}},
+		{"dynamic-no-fusion-ceil-work", true, 2, 1051, 1103, 0, []byte{1}},
+		{"before-first-v2-nonzero-prices", true, 1, 1051, 1103, 9, []byte{1}},
+		{"before-enforcement-v2", false, 2, 1051, 1103, 9, []byte{1}},
+	} {
+		t.Run(tc.id, func(t *testing.T) {
+			result, _ := requiredPoWQuote(t, tc.active, tc.version, tc.fusion, tc.work, tc.units, tc.data)
+			raw, err := json.Marshal(result)
+			if err != nil {
+				t.Fatal("selected typed RPC result failed to serialize")
+			}
+			record := map[string]interface{}{
+				"schema": "ptlc-nom-unsigned-rpc-quote-source-record-v1",
+				"id":     tc.id, "kind": "source-rpc",
+				"input": map[string]interface{}{
+					"dynamic_spork_enforced": tc.active,
+					"frontier_version":       strconv.FormatUint(tc.version, 10),
+					"next_fusion_price":      strconv.FormatUint(tc.fusion, 10),
+					"next_work_price":        strconv.FormatUint(tc.work, 10),
+					"fusion_units":           strconv.FormatUint(tc.units, 10),
+					"data_hex":               hex.EncodeToString(tc.data),
+				},
+				"typed_result_json_hex": hex.EncodeToString(raw),
+			}
+			encoded, err := json.Marshal(record)
+			if err != nil {
+				t.Fatal("selected public projection failed to serialize")
+			}
+			t.Logf("PTLC_NOM_RPC_QUOTE_RECORD=%s", encoded)
+		})
+	}
+	t.Run("typed-zero-json", func(t *testing.T) {
+		raw, err := json.Marshal(new(GetRequiredResult))
+		if err != nil {
+			t.Fatal("selected zero result failed to serialize")
+		}
+		record := map[string]interface{}{
+			"schema": "ptlc-nom-unsigned-rpc-quote-source-record-v1",
+			"id":     "typed-zero-json", "kind": "typed-zero", "input": nil,
+			"typed_result_json_hex": hex.EncodeToString(raw),
+		}
+		encoded, err := json.Marshal(record)
+		if err != nil {
+			t.Fatal("selected zero projection failed to serialize")
+		}
+		t.Logf("PTLC_NOM_RPC_QUOTE_RECORD=%s", encoded)
+	})
+}

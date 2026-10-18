@@ -5,6 +5,15 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+The additive [unsigned RPC quote corpus](docs/NOM_RPC_QUOTES.md) selects the
+complete go-zenon `b5f93c2` source and compares the new `requiredFusedPlasma`
+field as a total fused-only payment target. Its 30 selected records include
+both existing public PTLC Unlock inputs, with source cost 73500, and separate
+ordinary-address/typed-zero controls. These are synthetic-store source calls,
+not captured network responses, original-block admission or fee updates. Old
+source profiles and journal contexts remain unchanged; application/core stay
+**NO-GO** and independent assessment remains unfilled.
+
 New offline observation/recovery candidates should select
 [`SnapshotNomRecovery`](offline_session/nom_recovery_snapshot.py). It fixes a
 reproduced observation-alias defect while leaving the pinned historical writer
