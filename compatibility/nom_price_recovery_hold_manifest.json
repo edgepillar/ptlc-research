@@ -1,0 +1,19 @@
+{
+  "application": "NO-GO",
+  "core": "NO-GO",
+  "core_commit": "85c39796fa5ab6fb5ca16e61af34b6616f0ceafe",
+  "core_tree": "cdeb5b6276c13447197c829c5855faa72afd86b9",
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/fixtures/nom_price_recovery_hold_v1.json": "eaf9506e352f052b315e01c2dfcd2ab526ec53d4eb03ac70d4e8f0dbc3122405",
+    "compatibility/fixtures/nom_signed_originals_v1.json": "aef86fe911de1f7505fafbf216f33a9e10d8c32304ba91fa81e147035b03b0d9",
+    "compatibility/nom_signed_price_hold_manifest.json": "7dbe27418f095e2cd81338eb2637cc3f5a815b9729eaa7138adebdf081de12d6",
+    "qualification/nom_price_recovery_hold.py": "60d5981ef4d549e17526a123ce384d045b8c236b31213fde365843b5b56214c7",
+    "qualification/nom_signed_price_hold.py": "362eb1cb175aca4adefdc0f4f5ad02af5fbb6e99430b5d55ea52b16b37ca02b0",
+    "tests/test_nom_price_recovery_hold.py": "58b8068beb9a656f0e2f1fb3301c77eb9062a70a7864cf21849dece110688095"
+  },
+  "journal_source_upgrade": "NOT_SELECTED",
+  "schema": "ptlc-nom-price-recovery-hold-selection-v1",
+  "selection": "PUBLIC_SYNTHETIC_TWO_ORIGINALS_ONLY",
+  "source_execution": "NOT_PERFORMED_BY_THIS_MODEL"
+}
