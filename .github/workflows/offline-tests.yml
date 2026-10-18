@@ -568,6 +568,7 @@ jobs:
               free_space_floor=floor, expected_reservation=reservation,
               evidence_limit=8*1024**2, os_filesystem_quota='NOT CLAIMED')))
           PY
+          git fetch --no-tags --depth=1 origin '${{ github.event.pull_request.head.sha || github.sha }}'
           ptlc_io_root="$(mktemp -d "$RUNNER_TEMP/ptlc-io-faults.XXXXXX")"
           mkdir "$ptlc_io_root/evidence"
           printf 'PTLC_IO_PROFILE_ROOT=%s\n' "$ptlc_io_root" >> "$GITHUB_ENV"

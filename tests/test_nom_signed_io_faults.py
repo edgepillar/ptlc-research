@@ -216,6 +216,55 @@ print('PASS: both optimized entries refused before input or evidence access')
     def test_predecessor_commit_cannot_claim_new_profile_source(self):
         with self.assertRaises(ValueError): cli.verify_subject(evidence.BASE, ROOT)
 
+    def test_workflow_fetches_subject_missing_from_shallow_merge_checkout(self):
+        origin = self.case_root/'origin'; origin.mkdir(mode=0o700)
+        environment = {key: value for key, value in os.environ.items() if not key.startswith('GIT_')}
+        environment.update(GIT_CONFIG_NOSYSTEM='1', GIT_CONFIG_GLOBAL=os.devnull,
+            GIT_AUTHOR_NAME='PTLC Research Contributors', GIT_AUTHOR_EMAIL='fixture.invalid',
+            GIT_COMMITTER_NAME='PTLC Research Contributors', GIT_COMMITTER_EMAIL='fixture.invalid',
+            GIT_AUTHOR_DATE='2000-01-01T00:00:00+00:00', GIT_COMMITTER_DATE='2000-01-01T00:00:00+00:00',
+            GIT_ALLOW_PROTOCOL='file', GIT_TERMINAL_PROMPT='0')
+        def git(directory, *arguments):
+            result = subprocess.run(['git', '-c', 'core.hooksPath=/dev/null', '-c', 'commit.gpgsign=false',
+                *arguments], cwd=directory, env=environment, stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE, timeout=30, check=False)
+            self.assertEqual(result.returncode, 0, result.stderr.decode('utf-8'))
+            return result.stdout.decode('ascii').strip()
+        git(origin, 'init', '-q')
+        names = list(evidence.profile_inputs(ROOT)) + [evidence.MANIFEST]
+        originals = {name: (ROOT/name).read_bytes() for name in names}
+        for name, raw in originals.items():
+            path = origin/name; path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+            path.write_bytes(raw)
+        git(origin, 'add', '--all')
+        git(origin, 'commit', '-q', '-m', 'Synthetic base')
+        base = git(origin, 'rev-parse', 'HEAD')
+        git(origin, 'commit', '-q', '--allow-empty', '-m', 'Synthetic selected subject')
+        subject = git(origin, 'rev-parse', 'HEAD')
+        merge = git(origin, 'commit-tree', git(origin, 'rev-parse', 'HEAD^{tree}'),
+            '-p', base, '-p', subject, '-m', 'Synthetic shallow merge')
+        git(origin, 'update-ref', 'refs/heads/selected-merge', merge)
+        shallow = self.case_root/'shallow'; shallow.mkdir(mode=0o700)
+        git(shallow, 'init', '-q')
+        git(shallow, 'remote', 'add', 'origin', origin.as_uri())
+        git(shallow, 'fetch', '--no-tags', '--depth=1', 'origin', merge)
+        git(shallow, 'checkout', '-q', '--detach', 'FETCH_HEAD')
+        self.assertEqual(git(shallow, 'rev-parse', '--is-shallow-repository'), 'true')
+        with self.assertRaises(ValueError): cli.verify_subject(subject, shallow)
+        workflow = (ROOT/'.github/workflows/offline-tests.yml').read_text('ascii')
+        block = workflow.split('      - name: Qualify fixture-only signed-wire I/O fault boundaries\n', 1)[1]
+        block = block.split('\n      - name:', 1)[0]
+        fetches = [line.strip() for line in block.splitlines() if line.lstrip().startswith('git fetch ')]
+        self.assertEqual(len(fetches), 1)
+        selected = "'${{ github.event.pull_request.head.sha || github.sha }}'"
+        self.assertEqual(fetches[0].count(selected), 1)
+        result = subprocess.run(['bash', '--noprofile', '--norc', '-e', '-o', 'pipefail', '-c',
+            fetches[0].replace(selected, subject)], cwd=shallow, env=environment,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30, check=False)
+        self.assertEqual(result.returncode, 0, result.stderr.decode('utf-8'))
+        cli.verify_subject(subject, shallow)
+        self.assertEqual({name: (shallow/name).read_bytes() for name in names}, originals)
+
     def test_changed_selected_source_refuses_before_fixture_import_or_evidence_creation(self):
         root = self.case_root/'source'; root.mkdir(mode=0o700)
         names = list(evidence.profile_inputs(ROOT)) + [evidence.MANIFEST]
