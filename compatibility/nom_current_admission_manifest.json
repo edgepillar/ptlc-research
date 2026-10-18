@@ -1,0 +1,42 @@
+{
+  "application": "NO-GO",
+  "combined_admission": "UNFILLED",
+  "core": "NO-GO",
+  "core_commit": "85c39796fa5ab6fb5ca16e61af34b6616f0ceafe",
+  "core_tree": "cdeb5b6276c13447197c829c5855faa72afd86b9",
+  "expected_profile_outcomes": {
+    "account-authorization": 127,
+    "account-context": 85,
+    "account-pool": 3,
+    "batched-rollback": 7,
+    "bilateral-graph": 5,
+    "content-cap": 6,
+    "momentum-admission": 15,
+    "multi-rollback": 8,
+    "pool-dependencies": 4,
+    "pool-forks": 6,
+    "pr138-corpus": 1,
+    "rollback-refusal": 15,
+    "supervisor-plasma": 3,
+    "vm-path": 33,
+    "vm-verifier": 25,
+    "wire-corpus": 45
+  },
+  "historical_value_source": "c25a596436432a544325a4b2ebb0257012d04fa1",
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/fixtures/nom_current_admission_vm_reference_v1.json": "3e3f8a9c5dc09ba7fd992ad4ff6ad2b4a8ba55e5a5b58d068cb1277b1e15c14e",
+    "compatibility/nom_current_admission_source_v1.json": "6168b36ee6487272bf128862f141093db4d47c411a5d551fb132de5d9ab8890a",
+    "qualification/nom_current_admission.py": "06398a328df82f1429b6b1358e6ca7ed58be3f685725b0cf3fd5c41ebae99dac",
+    "tests/test_nom_current_admission.py": "dfa10550fa84a7b8e157936f71435098dd538ed9e5af6fa283ec6b2600ef763c"
+  },
+  "journal_source_upgrade": "NOT_SELECTED",
+  "pr138_outcomes": 1,
+  "project_probe_files": 16,
+  "reference_scope": "PUBLIC_SYNTHETIC_REFERENCE_VALUES; NOT EXECUTION EVIDENCE",
+  "schema": "ptlc-nom-current-admission-selection-v1",
+  "selected_stateful_outcomes": 342,
+  "source_files": 444,
+  "source_index_sha256": "6168b36ee6487272bf128862f141093db4d47c411a5d551fb132de5d9ab8890a",
+  "wire_outcomes": 45
+}

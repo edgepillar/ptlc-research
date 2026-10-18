@@ -1720,3 +1720,11 @@ public synthetic originals with selected price values. Absent wire bytes and
 node bindings remain absent. Matching prices still provide no signing, retry,
 work replenishment, release, journal write or admission authority. All independent
 requirements and application/core NO-GO remain explicit.
+
+The separate [current-source admission component comparison](docs/NOM_CURRENT_ADMISSION.md)
+selects 444 upstream files and sixteen unchanged project producers at `85c3979`.
+Its bounded reader checks the complete selected account/VM, pool and momentum
+streams, while preserving the explicit C25 pool-value oracle and historical
+source selections. Reference fixtures and pass labels do not authenticate an
+execution. Combined admission, source authentication, independent assessment and
+the application/core NO-GO boundary remain explicit.
