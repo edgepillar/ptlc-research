@@ -1734,3 +1734,10 @@ the two public synthetic originals through selected content and momentum
 state components. Its bounded corpus keeps exact originals, metadata copies
 and unsigned diagnostics distinct. It grants no recovery action or inclusion
 guarantee; independent assessment and the service gates remain unfilled.
+
+The [finite disclosure and timeout study](docs/NOM_DISCLOSURE_TIMEOUT.md) adds
+20 hypothetical boundary and failure traces after the price/account-order
+comparison. It separates send-confirming expiry time from later contract
+processing, preserves possible disclosure, missing original references and
+charged UNKNOWN work, and keeps every result at HOLD. Receive-order branches
+do not establish core reachability, a safe wait duration or recovery authority.

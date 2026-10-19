@@ -1,0 +1,171 @@
+{
+  "schema": "ptlc-nom-disclosure-timeout-corpus-v1",
+  "scope": "HYPOTHETICAL_FINITE_TRACES; NO_CORE_REACHABILITY_OR_SAFE_WAIT_CLAIM",
+  "cases": [
+    {
+      "id": "before-disclosure-control",
+      "initial_unknown_work": 0,
+      "events": [{"kind": "elapsed", "at": 90}],
+      "expected_findings": [],
+      "expected_unknown_work": 0,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "OPEN"
+    },
+    {
+      "id": "disclosure-is-not-admission",
+      "events": [{"kind": "possible-short-disclosure", "at": 90}],
+      "expected_findings": [],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "OPEN"
+    },
+    {
+      "id": "fusion-price-refusal-after-disclosure",
+      "events": [{"kind": "possible-short-disclosure", "at": 90}, {"kind": "price-refusal", "at": 91, "leg": "long"}],
+      "expected_findings": ["DISCLOSED_WITH_PRICE_REFUSAL_LONG"],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "OPEN"
+    },
+    {
+      "id": "account-order-refusal-after-disclosure",
+      "events": [{"kind": "possible-short-disclosure", "at": 90}, {"kind": "account-order-refusal", "at": 91, "leg": "long"}],
+      "expected_findings": ["DISCLOSED_WITH_ORDER_REFUSAL_LONG"],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "OPEN"
+    },
+    {
+      "id": "missing-long-wire-reference",
+      "missing_references": {"long": ["wire_sha256"]},
+      "events": [{"kind": "possible-short-disclosure", "at": 90}],
+      "expected_findings": ["DISCLOSED_WITH_MISSING_REFERENCE_LONG"],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "OPEN"
+    },
+    {
+      "id": "missing-long-node-reference",
+      "missing_references": {"long": ["node_hash_hex"]},
+      "events": [{"kind": "possible-short-disclosure", "at": 90}],
+      "expected_findings": ["DISCLOSED_WITH_MISSING_REFERENCE_LONG"],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "OPEN"
+    },
+    {
+      "id": "both-original-references-absent",
+      "missing_references": {"long": ["wire_sha256", "node_hash_hex"], "short": ["wire_sha256", "node_hash_hex"]},
+      "events": [{"kind": "possible-short-disclosure", "at": 90}],
+      "expected_findings": ["DISCLOSED_WITH_MISSING_REFERENCE_LONG", "DISCLOSED_WITH_MISSING_REFERENCE_SHORT"],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "OPEN"
+    },
+    {
+      "id": "long-custodian-unavailable",
+      "events": [{"kind": "possible-short-disclosure", "at": 90}, {"kind": "custodian-unavailable", "at": 91, "leg": "long"}],
+      "expected_findings": ["DISCLOSED_WITH_UNAVAILABLE_CUSTODIAN_LONG"],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "OPEN"
+    },
+    {
+      "id": "long-observer-unavailable",
+      "events": [{"kind": "possible-short-disclosure", "at": 90}, {"kind": "observer-unavailable", "at": 91, "leg": "long"}],
+      "expected_findings": ["DISCLOSED_WITH_UNAVAILABLE_OBSERVER_LONG"],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "OPEN"
+    },
+    {
+      "id": "counterparty-unavailable",
+      "events": [{"kind": "possible-short-disclosure", "at": 90}, {"kind": "counterparty-unavailable", "at": 91}],
+      "expected_findings": ["DISCLOSED_WITH_UNAVAILABLE_COUNTERPARTY"],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "OPEN"
+    },
+    {
+      "id": "unlock-send-at-exact-expiry",
+      "events": [{"kind": "possible-short-disclosure", "at": 90}, {"kind": "declared-send-confirmed", "at": 100, "leg": "short", "send_timestamp": 100}, {"kind": "model-unlock-receive", "at": 101, "leg": "short"}],
+      "expected_findings": [],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "OPEN"
+    },
+    {
+      "id": "timely-send-late-contract-receive",
+      "events": [{"kind": "possible-short-disclosure", "at": 90}, {"kind": "declared-send-confirmed", "at": 99, "leg": "short", "send_timestamp": 99}, {"kind": "model-unlock-receive", "at": 101, "leg": "short"}],
+      "expected_findings": ["TIMELY_SEND_CAN_HAVE_LATE_MODEL_RECEIVE"],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "UNLOCKED"
+    },
+    {
+      "id": "large-gap-without-inclusion-bound",
+      "long_expiry": 1000000,
+      "events": [{"kind": "possible-short-disclosure", "at": 90}, {"kind": "elapsed", "at": 1000000}],
+      "expected_findings": ["ELAPSED_TIME_DOES_NOT_REFUND_UNKNOWN_WORK", "NO_TIMELY_LONG_SEND_ESTABLISHED_AFTER_DISCLOSURE"],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "OPEN"
+    },
+    {
+      "id": "short-model-unlock-without-timely-long-send",
+      "events": [{"kind": "possible-short-disclosure", "at": 90}, {"kind": "declared-send-confirmed", "at": 99, "leg": "short", "send_timestamp": 99}, {"kind": "model-unlock-receive", "at": 101, "leg": "short"}, {"kind": "elapsed", "at": 140}],
+      "expected_findings": ["TIMELY_SEND_CAN_HAVE_LATE_MODEL_RECEIVE", "ELAPSED_TIME_DOES_NOT_REFUND_UNKNOWN_WORK", "NO_TIMELY_LONG_SEND_ESTABLISHED_AFTER_DISCLOSURE"],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "UNLOCKED"
+    },
+    {
+      "id": "later-price-does-not-retroactively-reprice-send",
+      "events": [{"kind": "possible-short-disclosure", "at": 90}, {"kind": "declared-send-confirmed", "at": 139, "leg": "long", "send_timestamp": 139}, {"kind": "price-refusal", "at": 140, "leg": "long"}, {"kind": "model-unlock-receive", "at": 141, "leg": "long"}],
+      "expected_findings": ["DISCLOSED_WITH_PRICE_REFUSAL_LONG", "TIMELY_SEND_CAN_HAVE_LATE_MODEL_RECEIVE"],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "UNLOCKED",
+      "expected_short_entry": "OPEN"
+    },
+    {
+      "id": "reorg-cannot-remove-possible-disclosure",
+      "events": [{"kind": "possible-short-disclosure", "at": 90}, {"kind": "declared-send-confirmed", "at": 99, "leg": "short", "send_timestamp": 99}, {"kind": "model-unlock-receive", "at": 101, "leg": "short"}, {"kind": "reorg", "at": 102, "leg": "short"}],
+      "expected_findings": ["TIMELY_SEND_CAN_HAVE_LATE_MODEL_RECEIVE", "REORG_CANNOT_UNDISCLOSE_OR_REFUND_UNKNOWN_WORK"],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "OPEN"
+    },
+    {
+      "id": "conditional-reclaim-receive-first",
+      "events": [{"kind": "possible-short-disclosure", "at": 90}, {"kind": "declared-send-confirmed", "at": 99, "leg": "short", "send_timestamp": 99}, {"kind": "model-reclaim-receive", "at": 101, "leg": "short", "send_timestamp": 100}, {"kind": "model-unlock-receive", "at": 102, "leg": "short"}],
+      "expected_findings": ["CONDITIONAL_TIMELY_UNLOCK_LOSES_TO_RECLAIM_ORDER"],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "RECLAIMED"
+    },
+    {
+      "id": "conditional-unlock-receive-first",
+      "events": [{"kind": "possible-short-disclosure", "at": 90}, {"kind": "declared-send-confirmed", "at": 99, "leg": "short", "send_timestamp": 99}, {"kind": "model-unlock-receive", "at": 101, "leg": "short"}, {"kind": "model-reclaim-receive", "at": 102, "leg": "short", "send_timestamp": 100}],
+      "expected_findings": ["TIMELY_SEND_CAN_HAVE_LATE_MODEL_RECEIVE", "CONDITIONAL_RECLAIM_LOSES_TO_UNLOCK_ORDER"],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "UNLOCKED"
+    },
+    {
+      "id": "late-reclaim-receive-with-early-send",
+      "events": [{"kind": "possible-short-disclosure", "at": 90}, {"kind": "model-reclaim-receive", "at": 110, "leg": "short", "send_timestamp": 99}],
+      "expected_findings": [],
+      "expected_unknown_work": 1,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "OPEN"
+    },
+    {
+      "id": "unknown-work-survives-timeout-and-reorg",
+      "events": [{"kind": "possible-short-disclosure", "at": 90}, {"kind": "charge-unknown-work", "at": 91}, {"kind": "elapsed", "at": 140}, {"kind": "reorg", "at": 141, "leg": "long"}],
+      "expected_findings": ["UNKNOWN_WORK_LIMIT_EXHAUSTED_AFTER_DISCLOSURE", "ELAPSED_TIME_DOES_NOT_REFUND_UNKNOWN_WORK", "NO_TIMELY_LONG_SEND_ESTABLISHED_AFTER_DISCLOSURE", "REORG_CANNOT_UNDISCLOSE_OR_REFUND_UNKNOWN_WORK"],
+      "expected_unknown_work": 2,
+      "expected_long_entry": "OPEN",
+      "expected_short_entry": "OPEN"
+    }
+  ]
+}
