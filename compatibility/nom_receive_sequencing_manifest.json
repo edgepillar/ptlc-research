@@ -1,0 +1,24 @@
+{
+  "application": "NO-GO",
+  "core": "NO-GO",
+  "core_commit": "85c39796fa5ab6fb5ca16e61af34b6616f0ceafe",
+  "core_tree": "cdeb5b6276c13447197c829c5855faa72afd86b9",
+  "expected_cases": [
+    "reclaim-first",
+    "unlock-first"
+  ],
+  "expected_go_outcomes": 3,
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/nom_current_admission_source_v1.json": "6168b36ee6487272bf128862f141093db4d47c411a5d551fb132de5d9ab8890a",
+    "compatibility/nom_receive_sequencing_test.go.txt": "22b1b13333de918d0c402e81b72f8382fca0a7e9bd2476807df3f2c7829bc7ff",
+    "licenses/GPL-3.0-go-zenon.txt": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "qualification/nom_receive_sequencing.py": "587a1d82900f246e932ac77a75937ad6a8c2b035cdb33914abe3bd25c490f9ee",
+    "tests/test_nom_receive_sequencing.py": "b37b8557ad10b7b786828d53c87ca6dbed63ab0443b1ed284a846c0fc03e23ac"
+  },
+  "probe_license": "GPL-3.0-only",
+  "project_probe_files": 1,
+  "schema": "ptlc-nom-receive-sequencing-selection-v1",
+  "source_index_sha256": "6168b36ee6487272bf128862f141093db4d47c411a5d551fb132de5d9ab8890a",
+  "upstream_files": 444
+}
