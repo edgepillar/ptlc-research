@@ -1,0 +1,229 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Adapted from the go-zenon mock harness at commit 85c39796fa5ab6fb5ca16e61af34b6616f0ceafe.
+// See docs/NOM_RECEIVE_SEQUENCING_NOTICE.md for source and license attribution.
+
+package mock
+
+import (
+	"encoding/json"
+	"fmt"
+	"math/big"
+	"testing"
+
+	g "github.com/zenon-network/go-zenon/chain/genesis/mock"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/common"
+	"github.com/zenon-network/go-zenon/common/types"
+	"github.com/zenon-network/go-zenon/verifier"
+	"github.com/zenon-network/go-zenon/vm/constants"
+	"github.com/zenon-network/go-zenon/vm/embedded/definition"
+)
+
+// This probe uses public genesis fixtures in an in-process mock. It does not
+// establish canonicality, availability, finality or a safe disclosure margin.
+func TestResearchNoMReceiveCommit(t *testing.T) {
+	for _, headKind := range []string{"unlock", "reclaim"} {
+		t.Run(headKind+"-first", func(t *testing.T) {
+			z := NewMockZenon(t)
+			defer z.StopPanic()
+			activatePtlcSpork(t, z)
+			engine := z.(*mockZenon)
+			frontier := func() *nom.Momentum {
+				value, err := z.Chain().GetFrontierMomentumStore().GetFrontierMomentum()
+				common.FailIfErr(t, err)
+				return value
+			}
+			entryExists := func(id types.Hash) bool {
+				_, err := definition.GetPtlcInfo(z.Chain().GetFrontierAccountStore(types.PtlcContract).Storage(), id)
+				if err != nil && err != constants.ErrDataNonExistent {
+					t.Fatal(err)
+				}
+				return err == nil
+			}
+			expiration := frontier().Timestamp.Unix() + 45
+			create := z.InsertSendBlock(&nom.AccountBlock{
+				Address: g.User1.Address, ToAddress: types.PtlcContract,
+				Data: definition.ABIPtlc.PackMethodPanic(definition.CreatePtlcMethodName,
+					expiration, definition.PointTypeED25519, g.User2.Public, g.User2.Address),
+				TokenStandard: types.ZnnTokenStandard, Amount: big.NewInt(10 * g.Zexp),
+			}, nil, SkipVmChanges)
+			z.InsertNewMomentum()
+			z.InsertNewMomentum()
+			if !entryExists(create.Hash) {
+				t.Fatal("the fixed-recipient entry is missing")
+			}
+			held := types.PtlcContract
+			engine.failInsertFor = &held
+			t.Cleanup(func() { engine.failInsertFor = nil })
+			unlock := func() *nom.AccountBlock {
+				proof := g.User2.Sign(definition.GetPtlcUnlockMessage(z.Chain().ChainIdentifier(),
+					definition.PointTypeED25519, create.Hash, g.User2.Address))
+				return z.InsertSendBlock(&nom.AccountBlock{
+					Address: g.User2.Address, ToAddress: types.PtlcContract,
+					Data: definition.ABIPtlc.PackMethodPanic(definition.UnlockPtlcMethodName, create.Hash, proof),
+				}, nil, SkipVmChanges)
+			}
+			reclaim := func() *nom.AccountBlock {
+				return z.InsertSendBlock(&nom.AccountBlock{
+					Address: g.User1.Address, ToAddress: types.PtlcContract,
+					Data: definition.ABIPtlc.PackMethodPanic(definition.ReclaimPtlcMethodName, create.Hash),
+				}, nil, SkipVmChanges)
+			}
+			var head, later *nom.AccountBlock
+			if headKind == "unlock" {
+				head = unlock()
+				z.InsertNewMomentum()
+				if frontier().Timestamp.Unix() >= expiration {
+					t.Fatal("the selected unlock was not confirmed before expiry")
+				}
+			}
+			for frontier().Timestamp.Unix() < expiration {
+				z.InsertNewMomentum()
+			}
+			if headKind == "unlock" {
+				later = reclaim()
+			} else {
+				head = reclaim()
+			}
+			z.InsertNewMomentum()
+			if headKind == "reclaim" {
+				later = unlock()
+				z.InsertNewMomentum()
+			}
+			if !entryExists(create.Hash) {
+				t.Fatal("a held receive consumed the entry")
+			}
+			confirmation := func(block *nom.AccountBlock) uint64 {
+				height, err := z.Chain().GetFrontierMomentumStore().GetBlockConfirmationHeight(block.Hash)
+				common.FailIfErr(t, err)
+				return height
+			}
+			headHeight, laterHeight := confirmation(head), confirmation(later)
+			if headHeight == 0 || laterHeight <= headHeight {
+				t.Fatal("the declared confirmation order is not present")
+			}
+			headMomentum, err := z.Chain().GetFrontierMomentumStore().GetMomentumByHeight(headHeight)
+			common.FailIfErr(t, err)
+			laterMomentum, err := z.Chain().GetFrontierMomentumStore().GetMomentumByHeight(laterHeight)
+			common.FailIfErr(t, err)
+			headTime, laterTime := headMomentum.Timestamp.Unix(), laterMomentum.Timestamp.Unix()
+			processingTime := frontier().Timestamp.Unix()
+			if laterTime < expiration || processingTime < laterTime ||
+				(headKind == "unlock" && headTime >= expiration) ||
+				(headKind == "reclaim" && headTime < expiration) {
+				t.Fatal("the selected send confirmations do not cross the declared expiry boundary")
+			}
+			before, err := z.Chain().GetFrontierAccountStore(types.PtlcContract).Frontier()
+			common.FailIfErr(t, err)
+			insert := z.Chain().AcquireInsert("research finite receive sequencing")
+			displaced, laterErr := engine.supervisor.GenerateAutoReceive(later)
+			insert.Unlock()
+			common.ExpectError(t, laterErr, verifier.ErrABSequencerNotNext)
+			if displaced != nil {
+				t.Fatal("the later send produced an execution before the queue head")
+			}
+			insert = z.Chain().AcquireInsert("research finite queue head")
+			execution, err := engine.supervisor.GenerateAutoReceive(head)
+			insert.Unlock()
+			common.FailIfErr(t, err)
+			if execution == nil || execution.ReturnedError != nil {
+				t.Fatal("the selected valid queue head did not execute")
+			}
+			receive := execution.Transaction.Block
+			want := g.User2.Address
+			if headKind == "reclaim" {
+				want = g.User1.Address
+			}
+			if receive.FromBlockHash != head.Hash || receive.MomentumAcknowledged.Height != headHeight ||
+				receive.MomentumAcknowledged.Hash != headMomentum.Hash ||
+				len(receive.DescendantBlocks) != 1 || receive.DescendantBlocks[0].ToAddress != want ||
+				receive.DescendantBlocks[0].TokenStandard != types.ZnnTokenStandard ||
+				receive.DescendantBlocks[0].Amount.Cmp(big.NewInt(10*g.Zexp)) != 0 {
+				t.Fatal("the generated head receive differs from the fixed selected operation")
+			}
+			after, err := z.Chain().GetFrontierAccountStore(types.PtlcContract).Frontier()
+			common.FailIfErr(t, err)
+			if after.Hash != before.Hash || after.Height != before.Height || !entryExists(create.Hash) {
+				t.Fatal("generation committed a contract receive")
+			}
+			// Commit only the already checked head, then confirm it while later
+			// contract insertion remains held by the explicit mock intervention.
+			engine.failInsertFor = nil
+			headInsertErr := engine.CreateAccountBlock(execution.Transaction)
+			engine.failInsertFor = &held
+			common.FailIfErr(t, headInsertErr)
+			z.InsertNewMomentum()
+			committedHead, err := z.Chain().GetFrontierAccountStore(types.PtlcContract).Frontier()
+			common.FailIfErr(t, err)
+			if committedHead.Hash != receive.Hash || committedHead.FromBlockHash != head.Hash ||
+				len(committedHead.DescendantBlocks) != 1 ||
+				committedHead.DescendantBlocks[0].Hash != receive.DescendantBlocks[0].Hash || entryExists(create.Hash) {
+				t.Fatal("the committed head differs from the selected generated receive")
+			}
+			headReceiveConfirmation := confirmation(receive)
+			if headReceiveConfirmation <= laterHeight {
+				t.Fatal("the selected head receive was not confirmed after both held sends")
+			}
+			z.ExpectBalance(types.PtlcContract, types.ZnnTokenStandard, 0)
+			insert = z.Chain().AcquireInsert("research finite post-head receive")
+			laterExecution, err := engine.supervisor.GenerateAutoReceive(later)
+			insert.Unlock()
+			common.FailIfErr(t, err)
+			if laterExecution == nil {
+				t.Fatal("the later queue element did not produce an execution record")
+			}
+			common.ExpectError(t, laterExecution.ReturnedError, constants.ErrDataNonExistent)
+			laterReceive := laterExecution.Transaction.Block
+			if laterReceive.FromBlockHash != later.Hash ||
+				laterReceive.MomentumAcknowledged != laterMomentum.Identifier() ||
+				laterReceive.PreviousHash != receive.Hash || laterReceive.Height != receive.Height+1 ||
+				len(laterReceive.DescendantBlocks) != 0 || len(laterReceive.Data) != 8 ||
+				string(laterReceive.Data) == string(common.Uint64ToBytes(0)) || entryExists(create.Hash) {
+				t.Fatal("the later method error produced a payout or a different receive context")
+			}
+			stillHead, err := z.Chain().GetFrontierAccountStore(types.PtlcContract).Frontier()
+			common.FailIfErr(t, err)
+			if stillHead.Hash != receive.Hash {
+				t.Fatal("generating the later error receipt committed it")
+			}
+			engine.failInsertFor = nil
+			laterInsertErr := engine.CreateAccountBlock(laterExecution.Transaction)
+			engine.failInsertFor = &held
+			common.FailIfErr(t, laterInsertErr)
+			z.InsertNewMomentum()
+			committedLater, err := z.Chain().GetFrontierAccountStore(types.PtlcContract).Frontier()
+			common.FailIfErr(t, err)
+			if committedLater.Hash != laterReceive.Hash || committedLater.FromBlockHash != later.Hash ||
+				len(committedLater.DescendantBlocks) != 0 || entryExists(create.Hash) {
+				t.Fatal("the committed later error receipt differs from the generated receipt")
+			}
+			laterReceiveConfirmation := confirmation(laterReceive)
+			if laterReceiveConfirmation <= headReceiveConfirmation {
+				t.Fatal("the declared receive confirmation order is absent")
+			}
+			z.ExpectBalance(types.PtlcContract, types.ZnnTokenStandard, 0)
+			record := map[string]interface{}{
+				"schema": "ptlc-nom-receive-commit-source-v1", "case": headKind + "-first",
+				"selected_head": headKind, "later_send_refusal": "ErrABSequencerNotNext",
+				"head_confirmation_height": headHeight, "later_confirmation_height": laterHeight,
+				"expiration": expiration, "head_confirmation_time": headTime,
+				"later_confirmation_time": laterTime, "processing_time": processingTime,
+				"head_receive_acknowledges_confirmation": true, "fixed_recipient_or_owner_payout": true,
+				"contract_entry_unchanged_after_generation": true, "generation_commits": 0,
+				"contract_receives_committed": 2, "head_committed_payouts": 1, "later_committed_payouts": 0,
+				"head_receive_confirmation_height":  headReceiveConfirmation,
+				"later_receive_confirmation_height": laterReceiveConfirmation,
+				"later_method_error":                "ErrDataNonExistent", "later_error_generation_commits": 0,
+				"head_commit_matches_generated": true, "later_commit_matches_generated": true,
+				"contract_entry_absent_after_commits": true, "contract_token_balance_after_commits": 0,
+				"recipient_balance_credit": "NOT_ASSESSED", "queue_liveness": "NOT_ASSESSED",
+				"source_execution": "IN_PROCESS_MOCK_ONLY", "canonicality": "UNFILLED",
+				"swap_atomicity": "NOT_ASSESSED", "safe_disclosure_margin": "NOT_SELECTED",
+				"recovery_action": "NONE", "application": "NO-GO", "core": "NO-GO",
+			}
+			raw, err := json.Marshal(record)
+			common.FailIfErr(t, err)
+			fmt.Printf("PTLC_NOM_RECEIVE_COMMIT_RECORD=%s\n", raw)
+		})
+	}
+}
