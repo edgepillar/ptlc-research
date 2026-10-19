@@ -1,0 +1,281 @@
+// Independently written offline component probe. Declared state is not chain authority.
+package dp_test
+
+import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"math"
+	"os"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/zenon-network/go-zenon/chain"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/chain/store"
+	"github.com/zenon-network/go-zenon/common/types"
+	"github.com/zenon-network/go-zenon/dp"
+	"github.com/zenon-network/go-zenon/pillar"
+	"github.com/zenon-network/go-zenon/verifier"
+	"github.com/zenon-network/go-zenon/vm"
+	"github.com/zenon-network/go-zenon/vm/embedded/definition"
+)
+
+type researchOrderCache struct{ store.Cache }
+
+func (*researchOrderCache) IsSporkActive(s *types.ImplementedSpork) (bool, error) {
+	switch s {
+	case types.PtlcSpork, types.DynamicPlasmaSpork:
+		return true, nil
+	case types.AcceleratorSpork, types.BridgeAndLiquiditySpork, types.HtlcSpork:
+		return false, nil
+	default:
+		panic("unselected flag")
+	}
+}
+
+type researchOrderStore struct {
+	store.Momentum
+	parent        *nom.Momentum
+	config        *definition.PlasmaVariables
+	chainID       uint64
+	frontiers     map[types.Address]*nom.AccountBlock
+	frontierCalls int
+}
+
+func (s *researchOrderStore) ChainIdentifier() uint64 { return s.chainID }
+func (s *researchOrderStore) IsSporkActive(spork *types.ImplementedSpork) (bool, error) {
+	if spork != types.DynamicPlasmaSpork {
+		panic("unselected momentum flag")
+	}
+	return true, nil
+}
+func (s *researchOrderStore) GetPlasmaVariables() (*definition.PlasmaVariables, error) {
+	return s.config, nil
+}
+func (s *researchOrderStore) GetFrontierMomentum() (*nom.Momentum, error) {
+	return s.parent, nil
+}
+func (s *researchOrderStore) GetMomentumByHash(hash types.Hash) (*nom.Momentum, error) {
+	if hash != s.parent.Hash {
+		panic("unselected parent hash")
+	}
+	return s.parent, nil
+}
+func (s *researchOrderStore) GetFrontierAccountBlock(address types.Address) (*nom.AccountBlock, error) {
+	s.frontierCalls++
+	value, exists := s.frontiers[address]
+	if !exists {
+		panic("unselected account address")
+	}
+	return value, nil
+}
+
+type researchOrderChain struct {
+	chain.Chain
+	state *researchOrderStore
+	acks  map[types.HashHeight]bool
+}
+
+func (c *researchOrderChain) GetMomentumStore(previous types.HashHeight) store.Momentum {
+	if previous != c.state.parent.Identifier() {
+		panic("unselected momentum context")
+	}
+	return c.state
+}
+func (c *researchOrderChain) GetCacheStore(ack types.HashHeight) store.Cache {
+	if !c.acks[ack] {
+		panic("unselected account acknowledgement")
+	}
+	return &researchOrderCache{}
+}
+
+func researchOrderWire(t *testing.T, b *nom.AccountBlock) []byte {
+	t.Helper()
+	raw, err := b.Serialize()
+	if err != nil {
+		t.Fatal("component input serialization refused")
+	}
+	return raw
+}
+
+func TestResearchNoMPriceOrder(t *testing.T) {
+	input, err := os.ReadFile(os.Getenv("PTLC_NOM_PRICE_ORDER_ORIGINALS"))
+	if err != nil {
+		t.Fatal("public synthetic originals unavailable")
+	}
+	var records map[string]struct {
+		Wire string `json:"wire_hex"`
+		SHA  string `json:"wire_sha256"`
+		Hash string `json:"hash_hex"`
+	}
+	if json.Unmarshal(input, &records) != nil {
+		t.Fatal("public original fixture refused")
+	}
+	decode := func(leg string) (*nom.AccountBlock, []byte) {
+		row, exists := records[leg+"-original"]
+		raw, err := hex.DecodeString(row.Wire)
+		pin := sha256.Sum256(raw)
+		if !exists || err != nil || len(raw) == 0 || len(raw) > 2048 || hex.EncodeToString(pin[:]) != row.SHA {
+			t.Fatal("exact bounded original required")
+		}
+		block, err := nom.DeserializeAccountBlock(raw)
+		if err != nil || block.ComputeHash() != block.Hash || hex.EncodeToString(block.Hash.Bytes()) != row.Hash || !bytes.Equal(raw, researchOrderWire(t, block)) {
+			t.Fatal("original content or node hash differs")
+		}
+		if block.Version != 1 || block.Height != 2 || block.BasePlasma != 73500 || block.FusedPlasma != 73500 || block.Difficulty != 0 {
+			t.Fatal("selected original assumptions differ")
+		}
+		return block, raw
+	}
+	for _, leg := range []string{"long", "short"} {
+		for _, id := range []string{"minimum", "work-rise", "fusion-rise", "missing-frontier", "changed-frontier", "untrusted-zero-base", "untrusted-max-base", "blocked-descendant", "reverse-order", "ordered-descendant"} {
+			t.Run(leg+"-"+id, func(t *testing.T) {
+				original, originalRaw := decode(leg)
+				otherLeg := "long"
+				if leg == otherLeg {
+					otherLeg = "short"
+				}
+				other, _ := decode(otherLeg)
+				config := &definition.PlasmaVariables{MaxBasePlasmaInMomentum: 1000000000, FusedPlasmaTarget: 100000, PowPlasmaTarget: 100000, MaxPriceChangePercent: 10, PriceChangeDenominator: 20}
+				fusion, work := uint64(1000), uint64(1000)
+				if id == "work-rise" {
+					work = 1103
+				}
+				if id == "fusion-rise" || id == "untrusted-zero-base" || id == "blocked-descendant" {
+					fusion, work = 1051, 1103
+				}
+				stamp := time.Unix(1700000000, 0)
+				parent := &nom.Momentum{Version: 2, ChainIdentifier: original.ChainIdentifier, Height: 100, TimestampUnix: uint64(stamp.Unix()), Timestamp: &stamp, NextFusionPrice: fusion, NextWorkPrice: work}
+				parent.Hash = parent.ComputeHash()
+				state := &researchOrderStore{parent: parent, config: config, chainID: original.ChainIdentifier, frontiers: map[types.Address]*nom.AccountBlock{
+					original.Address: {Hash: original.PreviousHash, Height: original.Height - 1},
+					other.Address:    {Hash: other.PreviousHash, Height: other.Height - 1},
+				}}
+				c := &researchOrderChain{state: state, acks: map[types.HashHeight]bool{original.MomentumAcknowledged: true, other.MomentumAcknowledged: true}}
+				if id == "missing-frontier" {
+					state.frontiers[original.Address] = nil
+				}
+				if id == "changed-frontier" {
+					state.frontiers[original.Address].Hash = types.NewHash([]byte("declared changed frontier"))
+				}
+				candidate := original.Copy()
+				if id == "untrusted-zero-base" {
+					candidate.BasePlasma = 0
+				}
+				if id == "untrusted-max-base" {
+					candidate.BasePlasma = math.MaxUint64
+				}
+				blocks := []*nom.AccountBlock{candidate}
+				primaryRole := "exact-original"
+				if id == "untrusted-zero-base" || id == "untrusted-max-base" {
+					primaryRole = "diagnostic-metadata-copy"
+				}
+				labels := map[*nom.AccountBlock]string{candidate: primaryRole}
+				if id == "blocked-descendant" || id == "reverse-order" || id == "ordered-descendant" {
+					// Unsigned diagnostics are not valid replacements or newly authorized transactions.
+					child := original.Copy()
+					child.Height, child.PreviousHash, child.FusedPlasma = original.Height+1, original.Hash, 147000
+					child.Signature, child.PublicKey = nil, nil
+					child.Hash = child.ComputeHash()
+					labels[child] = "unsigned-child"
+					blocks = append(blocks, child)
+					if id == "reverse-order" {
+						blocks = []*nom.AccountBlock{child, candidate}
+					}
+					if id == "blocked-descendant" {
+						premium := other.Copy()
+						premium.FusedPlasma, premium.Signature, premium.PublicKey = 147000, nil, nil
+						premium.Hash = premium.ComputeHash()
+						labels[premium] = "unsigned-unrelated-premium"
+						blocks = append(blocks, premium)
+					}
+				}
+				before := make(map[*nom.AccountBlock][]byte)
+				for _, b := range blocks {
+					before[b] = researchOrderWire(t, b)
+				}
+				prices := dp.NewDynamicPlasma(parent, config)
+				selectorInput := append([]*nom.AccountBlock(nil), blocks...)
+				selected := pillar.NewMomentumContentSelector(prices).Content(selectorInput)
+				selectedLabels := []string{}
+				for _, b := range selected {
+					selectedLabels = append(selectedLabels, labels[b])
+				}
+				wantSelection := primaryRole
+				switch id {
+				case "fusion-rise", "untrusted-max-base":
+					wantSelection = ""
+				case "blocked-descendant":
+					wantSelection = "unsigned-unrelated-premium"
+				case "reverse-order", "ordered-descendant":
+					wantSelection = "exact-original,unsigned-child"
+				}
+				if strings.Join(selectedLabels, ",") != wantSelection {
+					t.Fatalf("selected component differs: %v", selectedLabels)
+				}
+				// These source functions prepare only the declared next-price fields.
+				// They are not an independent price-update oracle or a signed momentum.
+				total := types.NewBasePlasma(0, 0)
+				for _, b := range blocks {
+					canonical, err := vm.CanonicalBasePlasma(c, b)
+					if err != nil || canonical != 73500 {
+						t.Fatal("canonical Unlock component differs")
+					}
+					priced := *b
+					priced.BasePlasma = canonical
+					total.Add(prices.ComputeBasePlasma(&priced))
+				}
+				later := stamp.Add(time.Second)
+				m := &nom.Momentum{Version: 2, ChainIdentifier: original.ChainIdentifier, Height: parent.Height + 1, PreviousHash: parent.Hash, TimestampUnix: uint64(later.Unix()), Timestamp: &later, NextFusionPrice: prices.NextFusionPrice(total.Fusion), NextWorkPrice: prices.NextWorkPrice(total.Pow)}
+				for _, b := range blocks {
+					header := b.Header()
+					m.Content = append(m.Content, &header)
+				}
+				canonicalCalls := 0
+				checker := verifier.NewMomentumVerifier(c, nil, func(ch chain.Chain, b *nom.AccountBlock) (uint64, error) {
+					canonicalCalls++
+					return vm.CanonicalBasePlasma(ch, b)
+				})
+				err := checker.Momentum(&nom.DetailedMomentum{Momentum: m, AccountBlocks: blocks})
+				gate := "PASS_DECLARED_COMPONENT"
+				if err != nil {
+					switch {
+					case err.Error() == "block price is too small":
+						gate = "REFUSE_PRICE"
+					case strings.HasPrefix(err.Error(), "gap in previous Expected "):
+						gate = "REFUSE_ACCOUNT_ORDER"
+					default:
+						t.Fatalf("unselected momentum refusal: %v", err)
+					}
+				}
+				wantGate, wantCalls, wantFrontiers := "PASS_DECLARED_COMPONENT", len(blocks), 1
+				switch id {
+				case "fusion-rise", "untrusted-zero-base", "blocked-descendant":
+					wantGate, wantCalls, wantFrontiers = "REFUSE_PRICE", 1, 0
+				case "missing-frontier", "changed-frontier", "reverse-order":
+					wantGate = "REFUSE_ACCOUNT_ORDER"
+				}
+				if gate != wantGate || canonicalCalls != wantCalls || state.frontierCalls != wantFrontiers {
+					t.Fatalf("selected gate differs: %s %d %d", gate, canonicalCalls, state.frontierCalls)
+				}
+				for _, b := range blocks {
+					if !bytes.Equal(before[b], researchOrderWire(t, b)) {
+						t.Fatal("component mutated caller bytes")
+					}
+				}
+				if !bytes.Equal(originalRaw, researchOrderWire(t, original)) || original.ComputeHash() != original.Hash {
+					t.Fatal("original bytes or identifier changed")
+				}
+				r := map[string]interface{}{"schema": "ptlc-nom-price-order-source-v1", "id": leg + "-" + id, "original_wire_sha256": records[leg+"-original"].SHA, "original_node_hash_hex": records[leg+"-original"].Hash, "fusion_price": fusion, "work_price": work, "selected": selectedLabels, "momentum_gate": gate, "canonical_calls": canonicalCalls, "account_frontier_calls": state.frontierCalls, "original_bytes_preserved": true, "caller_bytes_preserved": true, "state_provider": "DECLARED_TEST_DOUBLE", "account_admission": "NOT_RUN", "momentum_transaction_signature": "NOT_RUN", "recovery_action": "NONE"}
+				encoded, err := json.Marshal(r)
+				if err != nil {
+					t.Fatal("component projection refused")
+				}
+				t.Logf("PTLC_NOM_PRICE_ORDER_RECORD=%s", encoded)
+			})
+		}
+	}
+}
