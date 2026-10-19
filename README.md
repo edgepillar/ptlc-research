@@ -5,12 +5,12 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
-The [offline regression scheduler](docs/OFFLINE_TEST_SHARDS.md) keeps complete
-serial Python 3.11 profiles and partitions each slower Python 3.13 profile into
-four complete module groups. It preserves every test and assertion, records exact
-case outcomes and runs shared post-regression comparisons once per profile.
-Fresh hosted results are required to measure the timing improvement; source
-qualification, original evidence and independent acceptance remain separate.
+The [offline regression scheduler](docs/OFFLINE_TEST_SHARDS.md) partitions each
+Linux/macOS Python 3.11/3.13 profile into four complete module groups. It preserves
+every test and assertion, records exact case outcomes and runs shared
+post-regression comparisons once per profile. At most eight offline jobs run
+simultaneously. Fresh hosted results are required to measure the timing change;
+source qualification, original evidence and independent acceptance remain separate.
 
 The [signed-original price checkpoint](docs/NOM_SIGNED_PRICE_HOLD.md) separately
 reviews go-zenon `85c3979`. It compares the two retained public Unlock originals

@@ -117,15 +117,21 @@ jobs:
       max-parallel: 8
       matrix:
         include:
-          - {os: ubuntu-latest, python-version: "3.11", shard: all}
-          - {os: macos-latest, python-version: "3.11", shard: all}
+          - {os: ubuntu-latest, python-version: "3.11", shard: "0"}
+          - {os: macos-latest, python-version: "3.11", shard: "0"}
           - {os: ubuntu-latest, python-version: "3.13", shard: "0"}
-          - {os: ubuntu-latest, python-version: "3.13", shard: "1"}
-          - {os: ubuntu-latest, python-version: "3.13", shard: "2"}
-          - {os: ubuntu-latest, python-version: "3.13", shard: "3"}
           - {os: macos-latest, python-version: "3.13", shard: "0"}
+          - {os: ubuntu-latest, python-version: "3.11", shard: "1"}
+          - {os: macos-latest, python-version: "3.11", shard: "1"}
+          - {os: ubuntu-latest, python-version: "3.13", shard: "1"}
           - {os: macos-latest, python-version: "3.13", shard: "1"}
+          - {os: ubuntu-latest, python-version: "3.11", shard: "2"}
+          - {os: macos-latest, python-version: "3.11", shard: "2"}
+          - {os: ubuntu-latest, python-version: "3.13", shard: "2"}
           - {os: macos-latest, python-version: "3.13", shard: "2"}
+          - {os: ubuntu-latest, python-version: "3.11", shard: "3"}
+          - {os: macos-latest, python-version: "3.11", shard: "3"}
+          - {os: ubuntu-latest, python-version: "3.13", shard: "3"}
           - {os: macos-latest, python-version: "3.13", shard: "3"}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
