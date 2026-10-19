@@ -1,0 +1,27 @@
+{
+  "application": "NO-GO",
+  "core": "NO-GO",
+  "core_commit": "85c39796fa5ab6fb5ca16e61af34b6616f0ceafe",
+  "core_tree": "cdeb5b6276c13447197c829c5855faa72afd86b9",
+  "event_output_fragments": "SAME_TEST_LINE_REASSEMBLY",
+  "expected_cases": [
+    "reclaim-first",
+    "unlock-first"
+  ],
+  "expected_go_outcomes": 3,
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/nom_current_admission_source_v1.json": "6168b36ee6487272bf128862f141093db4d47c411a5d551fb132de5d9ab8890a",
+    "compatibility/nom_receive_commit_test.go.txt": "8a0d58bc899dc11892c358914f7ada6ad45aeb783f3532d8fbe16a550f2bf0d3",
+    "docs/NOM_RECEIVE_COMMIT_NOTICE.md": "e1edbc4329dd0752b3915f738ae7a317649e488537b64826e95faeba382ffbab",
+    "licenses/GPL-3.0-go-zenon.txt": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "qualification/nom_receive_commit.py": "d2a4fadeda19ceddf113a4d9652e3e1436ff1faaca439308893c9bacee2fb564",
+    "tests/test_nom_receive_commit.py": "e27d3ebfcc9f391d9bb1ef56bce081156ba40f734e545fc22c25f02882b0101e"
+  },
+  "max_output_line_bytes": 8192,
+  "probe_license": "GPL-3.0-only",
+  "project_probe_files": 1,
+  "schema": "ptlc-nom-receive-commit-selection-v1",
+  "source_index_sha256": "6168b36ee6487272bf128862f141093db4d47c411a5d551fb132de5d9ab8890a",
+  "upstream_files": 444
+}

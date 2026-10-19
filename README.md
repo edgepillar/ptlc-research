@@ -1749,3 +1749,10 @@ confirmation-based timing without inserting a generated receive. Its strict
 reader separates value comparison from source content, actual execution and
 independent review. The adapted Go probe has an explicit GPL-3.0-only notice;
 all application/core NO-GO and recovery HOLD boundaries remain in place.
+
+The [finite contract receive commit study](docs/NOM_RECEIVE_COMMIT.md) extends
+those two mock cases through insertion and confirmation. It checks one head
+payout and a later committed method-error receive with no additional payout.
+Its reader reassembles bounded Go output lines under the exact test label.
+Recipient balance credit, queue liveness, bilateral atomicity and independent
+assessment remain outside these observations; application/core remain **NO-GO**.
