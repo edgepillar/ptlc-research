@@ -1,7 +1,8 @@
 # Complete offline regression with bounded CI module shards
 
-This changes test scheduling and outcome reporting. It changes no protocol,
-cryptography, journal, fixture, original allowance or acceptance requirement.
+This extends complete module scheduling to the Python 3.11 CI profiles. It
+preserves every test, verifier, fixture, source pin and native evidence gate.
+Only the workflow matrix and scheduling documentation change.
 Application/core remain **NO-GO** and independent assessment remains **UNFILLED**.
 
 ## Measured baseline and scheduling choice
@@ -26,18 +27,38 @@ one module keep their normal order and process. The runner does not cache a
 validation result, share writable fixture owners or replace a test's verifier.
 Each selected case executes through the normal unittest machinery.
 
+## Completed Python 3.11 scheduling evidence
+
+In the completed [predecessor run 39176682345, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/39176682345),
+each serial Python 3.11 regression covered 3866 tests. The selected test-step wall
+times were 5311 seconds on Ubuntu and 5534 seconds on macOS. The original
+nineteen-job archive was separately accepted with four complete profiles and
+seven original artifact families. These values exclude setup outside that step;
+they are neither CPU measurements nor a controlled comparison across Python
+versions or hosts. No speedup is established for this new scheduling subject.
+
+The follow-up matrix applies the existing four-module-group plan to both Python
+versions. It adds no result cache, test filter, relaxed assertion or verifier
+substitution. New hosted timing and complete case coverage must be measured on
+the exact new subject before claiming an improvement.
+
 ## CI coverage and avoiding duplicate work
 
-The two Python 3.11 profiles retain their complete serial unittest command, one
-on Ubuntu and one on macOS. The two Python 3.13 profiles each use four separate
-CI jobs. Their declared case counters must combine to exactly the complete
-inventory for that platform/version, with no missing or additional executions.
-This retains complete serial runs while partitioning the slower profiles.
+Each of the four Ubuntu/macOS and Python 3.11/3.13 profiles uses four separate
+CI jobs. All sixteen actual regression streams must combine into four complete
+case counters, one per platform/version, with no missing, additional or duplicated
+execution. The serial `--shard all` command remains available for local diagnosis;
+historical serial results keep their original scopes and are not relabeled as
+new executions.
 
-The workflow still declares eight job definitions; matrix expansion now produces
-19 jobs instead of 13. Offline jobs use at most eight simultaneous matrix slots.
-Actual wall time depends on runner capacity, queueing and the selected source.
-Only a fresh completed run can establish a timing improvement.
+The workflow still declares eight job definitions; matrix expansion produces
+25 jobs instead of 19. Offline jobs retain the existing maximum of eight
+simultaneous matrix slots. Rows interleave the four profiles within each shard
+number so one Python version is not a separate first wave. Actual wall time
+depends on runner capacity, queueing and the selected source. All 25 jobs, four
+complete profiles, sixteen original regression streams and seven original native
+artifact families remain required. Only a fresh completed run can establish a
+timing improvement.
 
 The extra post-regression comparisons execute once per platform/version, in
 the `all` or `0` job. They are not repeated in the other three shards. Every
