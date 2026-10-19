@@ -1741,3 +1741,11 @@ comparison. It separates send-confirming expiry time from later contract
 processing, preserves possible disclosure, missing original references and
 charged UNKNOWN work, and keeps every result at HOLD. Receive-order branches
 do not establish core reachability, a safe wait duration or recovery authority.
+
+The [finite contract receive sequencing study](docs/NOM_RECEIVE_SEQUENCING.md)
+adds two source-pinned in-process mock cases. It checks that a later confirmed
+send cannot bypass the selected Unlock or Reclaim queue head, and checks
+confirmation-based timing without inserting a generated receive. Its strict
+reader separates value comparison from source content, actual execution and
+independent review. The adapted Go probe has an explicit GPL-3.0-only notice;
+all application/core NO-GO and recovery HOLD boundaries remain in place.
