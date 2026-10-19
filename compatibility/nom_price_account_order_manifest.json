@@ -1,0 +1,27 @@
+{
+  "application": "NO-GO",
+  "combined_admission": "UNFILLED",
+  "core": "NO-GO",
+  "core_commit": "85c39796fa5ab6fb5ca16e61af34b6616f0ceafe",
+  "core_tree": "cdeb5b6276c13447197c829c5855faa72afd86b9",
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/fixtures/nom_price_account_order_v1.json": "f2af4982fc3702cf3b1ecd4bdf0da4e1dda6c8e116551e83747bf851f82cbd46",
+    "compatibility/fixtures/nom_signed_originals_v1.json": "aef86fe911de1f7505fafbf216f33a9e10d8c32304ba91fa81e147035b03b0d9",
+    "compatibility/nom_current_admission_manifest.json": "bb758dca7b35b36fb31a75f3aff139067ef76db0245e608cf4055f7f0a60f85e",
+    "compatibility/nom_current_admission_source_v1.json": "6168b36ee6487272bf128862f141093db4d47c411a5d551fb132de5d9ab8890a",
+    "compatibility/nom_price_account_order_test.go.txt": "1b3dcc9db8810cf1cf050dc697a59dbb8879886f9811156bb720ddc511dbd6d0",
+    "qualification/nom_current_admission.py": "06398a328df82f1429b6b1358e6ca7ed58be3f685725b0cf3fd5c41ebae99dac",
+    "qualification/nom_price_account_order.py": "9b19367b6634be13290cc817f8a0b01af93ba58c8e9ee619ef440634e7aa51f3",
+    "tests/test_nom_price_account_order.py": "8f637b3743c5a531fe9ff92373bcd97e28ba925f7dbf5715420b47bf7b75eeff"
+  },
+  "journal_source_upgrade": "NOT_SELECTED",
+  "probe_destination": "dp/zz_research_nom_price_order_test.go",
+  "project_probe_files": 1,
+  "reference_scope": "PUBLIC_SYNTHETIC_FINITE_VALUES; NOT_EXECUTION_EVIDENCE",
+  "schema": "ptlc-nom-price-account-order-selection-v1",
+  "selected_go_outcomes": 21,
+  "selected_records": 20,
+  "state_provider": "DECLARED_TEST_DOUBLE",
+  "upstream_files": 444
+}

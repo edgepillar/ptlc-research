@@ -1728,3 +1728,9 @@ streams, while preserving the explicit C25 pool-value oracle and historical
 source selections. Reference fixtures and pass labels do not authenticate an
 execution. Combined admission, source authentication, independent assessment and
 the application/core NO-GO boundary remain explicit.
+
+The [price and account-order study](docs/NOM_PRICE_ACCOUNT_ORDER.md) compares
+the two public synthetic originals through selected content and momentum
+state components. Its bounded corpus keeps exact originals, metadata copies
+and unsigned diagnostics distinct. It grants no recovery action or inclusion
+guarantee; independent assessment and the service gates remain unfilled.
