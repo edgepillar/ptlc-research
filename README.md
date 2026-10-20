@@ -5,6 +5,14 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+The separate [point-type credit profile](docs/NOM_RECEIVE_POINT_TYPES.md) adds
+six finite mock cases across ED25519, BIP340 and compressed secp256k1 points.
+It preserves explicit user receive, exact balance and duplicate-credit checks.
+The raw scalar witness has no operation-message binding and is not treated as
+an interchangeable adaptor-signature construction. The earlier ED25519 profile
+remains unchanged; source execution and original-output reconciliation require
+separate evidence. Application/core remain **NO-GO**.
+
 The [offline regression scheduler](docs/OFFLINE_TEST_SHARDS.md) partitions each
 Linux/macOS Python 3.11/3.13 profile into four complete module groups. It preserves
 every test and assertion, records exact case outcomes and runs shared
