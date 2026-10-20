@@ -672,6 +672,7 @@ jobs:
         working-directory: ${{ matrix.module }}
         env:
           GOTOOLCHAIN: local
+          GODEBUG: "http2client=0"
         run: |
           ptlc_module_copy="$(mktemp -d "$RUNNER_TEMP/ptlc-go-inputs.XXXXXX")"
           cp go.mod go.sum "$ptlc_module_copy/"
@@ -752,6 +753,7 @@ jobs:
         working-directory: compatibility/pr138-go
         env:
           GOTOOLCHAIN: local
+          GODEBUG: "http2client=0"
         run: |
           go mod download all
           go mod verify
@@ -793,6 +795,7 @@ jobs:
       - name: Acquire and verify core dependencies using separate module inputs
         env:
           GOTOOLCHAIN: local
+          GODEBUG: "http2client=0"
         run: |
           umask 077
           ptlc_core_inputs="$(mktemp -d "$RUNNER_TEMP/ptlc-nom-core-inputs.XXXXXX")"
@@ -999,6 +1002,7 @@ jobs:
       - name: Acquire separate signed-source module graph inputs
         env:
           GOTOOLCHAIN: local
+          GODEBUG: "http2client=0"
         run: |
           set -eu
           umask 077
