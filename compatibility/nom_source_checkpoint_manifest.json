@@ -189,11 +189,11 @@
     "tests/test_nom_capsule_continuity.py": "27ef3b2d15a39af74f5c671fb9b5c1b5da3c9f578627f449d16ba61fae11cade",
     "compatibility/fixtures/nom_capsule_continuity_v1.json": "b476be41005edb24788e48b0fff781e0ba6918ed9f9e7973545e2db6a4add521",
     "compatibility/nom_capsule_continuity_manifest.json": "88a9a327f0c2e26a091dacdbd32c453b38e67289c59bbb0c7c678ef9469b6b1e",
-    "offline_session/nom_capsule_query.py": "8f784abb626c915a4e604d943bf89837421f38e8f72a873f30f895c3af3f7e55",
+    "offline_session/nom_capsule_query.py": "3b2440cfbd8dfd28f58d2241f40da1803b83cde66f1df44cd340c3fad465a22c",
     "scripts/qualify_nom_capsule_query.py": "5714698285349b52738e5272a469b149b9f1d9175c928348e49104dbd430d619",
     "tests/test_nom_capsule_query.py": "8e5c07767d20bbd79c19b54cdcda54fc0f1af55352d01e801a90670ff718c23b",
     "compatibility/fixtures/nom_capsule_query_v1.json": "3a8d3fe878479daf8842723c0d70093298d4b5c088a64a6096d3401608196156",
-    "compatibility/nom_capsule_query_manifest.json": "fb391ded521b37cce2199c17e87104ff879dd3aeb3c663c1f80c7124e969c317"
+    "compatibility/nom_capsule_query_manifest.json": "0c484c8ef40bbfa559ff327151144de5037f6cb878d90ec509c1249c11f94d86"
   },
   "boundary": {
     "application": "NO-GO",
