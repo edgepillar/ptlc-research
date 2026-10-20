@@ -1,8 +1,9 @@
 # Complete offline regression with bounded CI module shards
 
-This extends complete module scheduling to the Python 3.11 CI profiles. It
-preserves every test, verifier, fixture, source pin and native evidence gate.
-Only the workflow matrix and scheduling documentation change.
+The workflow schedules complete module groups for all four CI profiles. Its
+include list now orders the same sixteen jobs using two retained timing samples.
+Every test, verifier, fixture, source pin and native evidence gate is preserved.
+Only the workflow matrix order and scheduling documentation change.
 Application/core remain **NO-GO** and independent assessment remains **UNFILLED**.
 
 ## Measured baseline and scheduling choice
@@ -53,8 +54,11 @@ new executions.
 
 The workflow still declares eight job definitions; matrix expansion produces
 25 jobs instead of 19. Offline jobs retain the existing maximum of eight
-simultaneous matrix slots. Rows interleave the four profiles within each shard
-number so one Python version is not a separate first wave. Actual wall time
+simultaneous matrix slots. The include list places larger observed jobs first,
+using the larger whole-job wall time for each combination in the two selected
+attempts below. These static weights change only job creation order. GitHub's
+[matrix documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations)
+does not guarantee runner start order or a timing improvement. Actual wall time
 depends on runner capacity, queueing and the selected source. All 25 jobs, four
 complete profiles, sixteen original regression streams and seven original native
 artifact families remain required. Only a fresh completed run can establish a
@@ -65,6 +69,38 @@ the `all` or `0` job. They are not repeated in the other three shards. Every
 shard still checks artifact hygiene. Other native job definitions, source
 profiles and original artifact families remain unchanged. No additional copy
 of a full source tree or compiler cache is required by the shard runner.
+
+## Ordering model and its limits
+
+The selected samples are the completed
+[main attempt 39327752895/2](https://github.com/edgepillar/ptlc-research/actions/runs/39327752895/attempts/2)
+at `5ed6b08e278a33805dde12f8f1813fc935cb375b` and
+[PR attempt 39350748946/1](https://github.com/edgepillar/ptlc-research/actions/runs/39350748946/attempts/1)
+at `20a9c0740547a8df12d0b66a93301e46b01366fd`. Their complete profiles contain
+3977 and 4023 cases respectively. This is a scheduling heuristic across different
+subjects and hosts, not a controlled performance comparison.
+
+In a simulation with eight identical, continuously available slots, each job
+uses its original whole-job elapsed time from the selected attempt:
+
+| Timing sample | Previous include order | Proposed include order |
+| --- | ---: | ---: |
+| Main attempt 39327752895/2 | 4227 seconds | 3773 seconds |
+| PR attempt 39350748946/1 | 4412 seconds | 3992 seconds |
+
+These are simulated matrix completion times, not observed runs of the new
+workflow. Ordering from only the older sample would instead model 4465 seconds
+on the newer sample, so a single observed ranking is not treated as stable.
+The selected order uses the maximum of the two observations for each job.
+Two samples do not establish that this heuristic will improve future runs.
+
+The model excludes runner availability, scheduling guarantees, interactions with
+the other workflow jobs and future source effects. The longest non-matrix jobs
+took 4316 and 2279 seconds in those attempts. In particular, the older attempt's
+non-matrix job already exceeds both simulated matrix times, so a shorter matrix
+alone would not reduce that model's whole-workflow bound. No future speedup,
+runner-minute saving or storage reduction is claimed from this permutation.
+No test selection, timeout, assertion, concurrency limit or artifact gate changes.
 
 ## Actual outcome protocol
 
