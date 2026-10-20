@@ -4,7 +4,7 @@
   "research_baseline_commit": "a05ef5dae6198278ff5493663a15f810dce93a45",
   "input_sha256": {
     "compatibility/fixtures/nom_capsule_query_v1.json": "3a8d3fe878479daf8842723c0d70093298d4b5c088a64a6096d3401608196156",
-    "offline_session/nom_capsule_query.py": "8f784abb626c915a4e604d943bf89837421f38e8f72a873f30f895c3af3f7e55",
+    "offline_session/nom_capsule_query.py": "3b2440cfbd8dfd28f58d2241f40da1803b83cde66f1df44cd340c3fad465a22c",
     "scripts/qualify_nom_capsule_query.py": "5714698285349b52738e5272a469b149b9f1d9175c928348e49104dbd430d619",
     "tests/test_nom_capsule_query.py": "8e5c07767d20bbd79c19b54cdcda54fc0f1af55352d01e801a90670ff718c23b"
   },

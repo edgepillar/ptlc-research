@@ -4,6 +4,7 @@ Missing originals stay missing. This pure construction supplies no current
 source, restore checkpoint, worker admission, network operation or capability.
 """
 from dataclasses import dataclass
+import hashlib
 
 from . import enrollment_contract as codec, nom_authority_contract as authority
 from . import nom_capsule as capsule, nom_partial_custody as partial
@@ -29,19 +30,22 @@ def _require(condition):
 
 def _fields(retained, query):
     _require(type(retained) is capsule.CapsuleView and type(query) is authority.NoMReadQuery)
-    selected = retained.partial_hold.selection(); read = query.as_dict()
+    # Reuse one complete validation within this call, without a retained cache.
+    wire = retained._wire
+    value, _, held = capsule._decode(wire)
+    selected = held.selection(); read = query.as_dict()
     _require(selected["original_long_hex"] is not None
         and selected["recovered_long_signature_hex"] is not None
         and selected["terms"] == read["terms"]
         and read["originals_hex"] == dict(long=selected["original_long_hex"], short=selected["remote_short_hex"])
         and selected["disclosure_possible"] is True and read["consumer_selection"]["disclosure_possible"] is True)
-    projection = retained.projection()
+    projection = value["selected_projection"]
     work_scope = recovery.digest(b"ptlc-nom-capsule-read-work-scope-v1", dict(
         verification_context_digest_hex=selected["verification_context_digest_hex"],
         short_original_digest_hex=partial.short_digest(bytes.fromhex(selected["remote_short_hex"]))))
-    return dict(schema=PROFILE, capsule_sha256=retained.digest_hex,
+    return dict(schema=PROFILE, capsule_sha256=hashlib.sha256(wire).hexdigest(),
         journal_sha256=projection["journal_sha256"], journal_head_hex=projection["journal_head_hex"],
-        journal_sequence=projection["journal_sequence"], projection_selection_digest_hex=retained.partial_hold.selection_digest_hex,
+        journal_sequence=projection["journal_sequence"], projection_selection_digest_hex=held.selection_digest_hex,
         verification_context_digest_hex=selected["verification_context_digest_hex"], work_scope_digest_hex=work_scope,
         charged_work=selected["charged_work"], query_hex=query.canonical_bytes.hex())
 
