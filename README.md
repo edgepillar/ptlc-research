@@ -1756,3 +1756,11 @@ payout and a later committed method-error receive with no additional payout.
 Its reader reassembles bounded Go output lines under the exact test label.
 Recipient balance credit, queue liveness, bilateral atomicity and independent
 assessment remain outside these observations; application/core remain **NO-GO**.
+
+The [finite explicit receive credit study](docs/NOM_RECEIVE_CREDIT.md) follows
+the selected payout into one confirmed user receive. It checks the exact
+synthetic balance increase, the other user's unchanged balance and duplicate
+receive refusal in both ED25519 mock cases. These finite observations grant no
+recovery action or signer integration. Independent review, canonicality,
+finality, liveness and bilateral atomicity remain separate requirements;
+application/core remain **NO-GO**.
