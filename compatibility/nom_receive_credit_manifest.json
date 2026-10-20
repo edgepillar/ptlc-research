@@ -1,0 +1,31 @@
+{
+  "application": "NO-GO",
+  "core": "NO-GO",
+  "core_commit": "85c39796fa5ab6fb5ca16e61af34b6616f0ceafe",
+  "core_tree": "cdeb5b6276c13447197c829c5855faa72afd86b9",
+  "credit_amount_units": "1000000000",
+  "credit_balance_encoding": "CANONICAL_UINT256_DECIMAL",
+  "duplicate_credit_commits_per_case": 0,
+  "event_output_fragments": "SAME_TEST_LINE_REASSEMBLY",
+  "expected_cases": [
+    "reclaim-first",
+    "unlock-first"
+  ],
+  "expected_go_outcomes": 3,
+  "explicit_user_receives_per_case": 1,
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/nom_current_admission_source_v1.json": "6168b36ee6487272bf128862f141093db4d47c411a5d551fb132de5d9ab8890a",
+    "compatibility/nom_receive_credit_test.go.txt": "d76b578aae9abca0fea2b787603e8cf5037974a3e88309cfbd02b592d396e90a",
+    "docs/NOM_RECEIVE_CREDIT_NOTICE.md": "da9750a13272b59106297db123e93e2e1f8be9ee3c2bd038d06557550f9720a4",
+    "licenses/GPL-3.0-go-zenon.txt": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "qualification/nom_receive_credit.py": "9efce98315428cb71febecb95be65d5f569bb1306b58e437c5a4cba3f7d3a0c0",
+    "tests/test_nom_receive_credit.py": "53173f77844b692d1fc77b2517a07181ccee0a2fcacd911aede0ee90ebfebff2"
+  },
+  "max_output_line_bytes": 8192,
+  "probe_license": "GPL-3.0-only",
+  "project_probe_files": 1,
+  "schema": "ptlc-nom-receive-credit-selection-v1",
+  "source_index_sha256": "6168b36ee6487272bf128862f141093db4d47c411a5d551fb132de5d9ab8890a",
+  "upstream_files": 444
+}
