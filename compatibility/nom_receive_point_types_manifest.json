@@ -1,0 +1,56 @@
+{
+  "adaptor_signature_completion": "NOT_ASSESSED",
+  "application": "NO-GO",
+  "core": "NO-GO",
+  "core_commit": "85c39796fa5ab6fb5ca16e61af34b6616f0ceafe",
+  "core_tree": "cdeb5b6276c13447197c829c5855faa72afd86b9",
+  "credit_amount_units": "1000000000",
+  "credit_balance_encoding": "CANONICAL_UINT256_DECIMAL",
+  "duplicate_credit_commits_per_case": 0,
+  "event_output_fragments": "SAME_TEST_LINE_REASSEMBLY",
+  "expected_cases": [
+    "bip340-reclaim-first",
+    "bip340-unlock-first",
+    "ed25519-reclaim-first",
+    "ed25519-unlock-first",
+    "secp256k1-point-reclaim-first",
+    "secp256k1-point-unlock-first"
+  ],
+  "expected_go_outcomes": 7,
+  "explicit_user_receives_per_case": 1,
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/nom_current_admission_source_v1.json": "6168b36ee6487272bf128862f141093db4d47c411a5d551fb132de5d9ab8890a",
+    "compatibility/nom_receive_credit_manifest.json": "d5ce97bec76e3e86095c2d8b86a6442b0674645651db8c55b60b7b9e388c3907",
+    "compatibility/nom_receive_point_types_test.go.txt": "5842eaee51cf04fe3a20238d7b4d0fda8cf8a05aa231a50c5ccd0abd5b073587",
+    "docs/NOM_RECEIVE_POINT_TYPES_NOTICE.md": "cf13c1a7f138610ff6796be905bf60dd9b13d9e2e01db4390599823f03ea4bd3",
+    "licenses/GPL-3.0-go-zenon.txt": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "qualification/nom_receive_credit.py": "9efce98315428cb71febecb95be65d5f569bb1306b58e437c5a4cba3f7d3a0c0",
+    "qualification/nom_receive_point_types.py": "611f5287be4e70d6cae0ab11a58fd81bbddee74634996bd72922140127e61e48",
+    "tests/test_nom_receive_point_types.py": "de63eb7d68beae8d343b601ca10f58efdfb644c72ba3b3ebef0ac681ec981eaa"
+  },
+  "max_output_line_bytes": 8192,
+  "point_modes": {
+    "bip340": [
+      1,
+      "BIP340_SIGNATURE",
+      "OPERATION_MESSAGE"
+    ],
+    "ed25519": [
+      0,
+      "ED25519_SIGNATURE",
+      "OPERATION_MESSAGE"
+    ],
+    "secp256k1-point": [
+      2,
+      "SECP256K1_SCALAR",
+      "NO_OPERATION_MESSAGE_BINDING"
+    ]
+  },
+  "probe_license": "GPL-3.0-only",
+  "project_probe_files": 1,
+  "raw_scalar_witness": "NO_OPERATION_MESSAGE_BINDING; FIXED_NONZERO_DESTINATION_REQUIRED",
+  "schema": "ptlc-nom-receive-point-types-selection-v1",
+  "source_index_sha256": "6168b36ee6487272bf128862f141093db4d47c411a5d551fb132de5d9ab8890a",
+  "upstream_files": 444
+}
