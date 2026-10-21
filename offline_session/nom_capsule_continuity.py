@@ -26,11 +26,16 @@ def _require(condition):
 
 def _compare(retained, candidate):
     _require(type(retained) is capsule.CapsuleView and type(candidate) is capsule.CapsuleView)
-    old, new = retained.partial_hold.selection(), candidate.partial_hold.selection()
+    # Reuse each complete validation only within this comparison call.
+    old_wire = retained._wire
+    old_value, before, old_held = capsule._decode(old_wire)
+    old = old_held.selection()
+    new_wire = candidate._wire
+    new_value, after, new_held = capsule._decode(new_wire)
+    new = new_held.selection()
     _require(old["terms"] == new["terms"] and old["pair"] == new["pair"]
         and old["verification_context_digest_hex"] == new["verification_context_digest_hex"]
         and old["remote_short_hex"] == new["remote_short_hex"])
-    before, after = retained.journal_bytes, candidate.journal_bytes
     # Complete canonical event hashes and equal counters cannot replace these
     # exact retained bytes. Both journals have already been replayed separately.
     _require(after.startswith(before))
@@ -39,12 +44,12 @@ def _compare(retained, candidate):
     for field in ("recovered_long_signature_hex", "original_long_hex"):
         _require(old[field] is None or new[field] == old[field])
     if before == after:
-        relation = "EXACT_REPLAY" if retained.canonical_bytes == candidate.canonical_bytes else "SAME_JOURNAL"
+        relation = "EXACT_REPLAY" if old_wire == new_wire else "SAME_JOURNAL"
     else:
         relation = "STRICT_EXTENSION"
-    prior, following = retained.projection(), candidate.projection()
+    prior, following = old_value["selected_projection"], new_value["selected_projection"]
     return dict(profile=PROFILE, state="HOLD", recovery_action="NONE", journal_relation=relation,
-        retained_capsule_sha256=retained.digest_hex, candidate_capsule_sha256=candidate.digest_hex,
+        retained_capsule_sha256=hashlib.sha256(old_wire).hexdigest(), candidate_capsule_sha256=hashlib.sha256(new_wire).hexdigest(),
         retained_journal_sha256=prior["journal_sha256"], candidate_journal_sha256=following["journal_sha256"],
         retained_journal_head_hex=prior["journal_head_hex"], candidate_journal_head_hex=following["journal_head_hex"],
         retained_journal_sequence=prior["journal_sequence"], candidate_journal_sequence=following["journal_sequence"],
