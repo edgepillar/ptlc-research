@@ -1,0 +1,190 @@
+// Independently written MIT probe. Selected GPL node source is obtained separately.
+// These isolated method branches do not establish complete account admission.
+package verifier
+
+import (
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"testing"
+
+	"github.com/zenon-network/go-zenon/chain"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/chain/store"
+	"github.com/zenon-network/go-zenon/common/types"
+)
+
+type researchDevReceiveState struct {
+	enabled bool
+	err     error
+	calls   int
+}
+
+func (s *researchDevReceiveState) query(spork *types.ImplementedSpork) (bool, error) {
+	if spork != types.DynamicPlasmaSpork {
+		panic("unselected receive-data spork")
+	}
+	s.calls++
+	return s.enabled, s.err
+}
+
+type researchDevReceiveMomentum struct {
+	store.Momentum
+	state *researchDevReceiveState
+}
+
+func (s *researchDevReceiveMomentum) IsSporkActive(spork *types.ImplementedSpork) (bool, error) {
+	return s.state.query(spork)
+}
+
+type researchDevReceiveCache struct {
+	store.Cache
+	state *researchDevReceiveState
+}
+
+func (s *researchDevReceiveCache) IsSporkActive(spork *types.ImplementedSpork) (bool, error) {
+	return s.state.query(spork)
+}
+
+// The embedded nil interface makes any unselected chain method fail the probe.
+type researchDevReceiveChain struct {
+	chain.Chain
+	cache   store.Cache
+	queries []types.HashHeight
+}
+
+func (c *researchDevReceiveChain) GetCacheStore(ack types.HashHeight) store.Cache {
+	c.queries = append(c.queries, ack)
+	return c.cache
+}
+
+func TestResearchNoMDevReceiveData(t *testing.T) {
+	type scenario struct {
+		id                                    string
+		kind                                  string
+		empty, momentum, momentumOn, cacheOn  bool
+		lookupError, nilChain, missingCache   bool
+		changedAck                            bool
+		want                                  string
+		momentumCalls, cacheCalls, cacheReads int
+	}
+	cases := []scenario{
+		{id: "send_nonempty", kind: "send", nilChain: true, want: "PASS"},
+		{id: "embedded_nonempty", kind: "embedded", nilChain: true, want: "PASS"},
+		{id: "user_empty", empty: true, nilChain: true, want: "PASS"},
+		{id: "momentum_inactive_over_active_cache", momentum: true, cacheOn: true, want: "PASS", momentumCalls: 1},
+		{id: "momentum_active_over_inactive_cache", momentum: true, momentumOn: true, want: "DATA_REFUSED", momentumCalls: 1},
+		{id: "momentum_lookup_error", momentum: true, lookupError: true, want: "LOOKUP_ERROR", momentumCalls: 1},
+		{id: "momentum_active_without_chain", momentum: true, momentumOn: true, nilChain: true, want: "DATA_REFUSED", momentumCalls: 1},
+		{id: "cache_inactive", want: "PASS", cacheCalls: 1, cacheReads: 1},
+		{id: "cache_active", cacheOn: true, want: "DATA_REFUSED", cacheCalls: 1, cacheReads: 1},
+		{id: "cache_lookup_error", lookupError: true, want: "LOOKUP_ERROR", cacheCalls: 1, cacheReads: 1},
+		{id: "nil_chain", nilChain: true, want: "ACKNOWLEDGEMENT_MISSING"},
+		{id: "missing_cache", missingCache: true, want: "CACHE_MISSING", cacheReads: 1},
+		{id: "momentum_inactive_without_cache", momentum: true, missingCache: true, want: "PASS", momentumCalls: 1},
+		{id: "cache_changed_acknowledgement", cacheOn: true, changedAck: true, want: "DATA_REFUSED", cacheCalls: 1, cacheReads: 1},
+	}
+	if len(cases) != 14 {
+		t.Fatal("complete selected receive-data scenarios required")
+	}
+	seen := make(map[string]bool)
+	records := make(map[string]interface{})
+	for _, selected := range cases {
+		selected := selected
+		if selected.id == "" || seen[selected.id] {
+			t.Fatal("scenario identities must be unique")
+		}
+		seen[selected.id] = true
+		t.Run(selected.id, func(t *testing.T) {
+			lookupError := errors.New("synthetic receive-data spork lookup refusal")
+			momentumState := &researchDevReceiveState{enabled: selected.momentumOn}
+			cacheState := &researchDevReceiveState{enabled: selected.cacheOn}
+			if selected.lookupError {
+				momentumState.err, cacheState.err = lookupError, lookupError
+			}
+			ack := types.HashHeight{Hash: types.Hash{0x11, 0x22, 0x33}, Height: 7}
+			if selected.changedAck {
+				ack = types.HashHeight{Hash: types.Hash{0x44, 0x55, 0x66}, Height: 19}
+			}
+			block := &nom.AccountBlock{BlockType: nom.BlockTypeUserReceive,
+				Address: types.Address{0x00, 0x31, 0x42}, MomentumAcknowledged: ack,
+				Data: []byte{0x51, 0x62}}
+			if selected.empty {
+				block.Data = nil
+			}
+			if selected.kind == "send" {
+				block.BlockType = nom.BlockTypeUserSend
+			} else if selected.kind == "embedded" {
+				block.BlockType, block.Address = nom.BlockTypeContractReceive, types.PtlcContract
+			}
+			if types.IsEmbeddedAddress(block.Address) != (selected.kind == "embedded") {
+				t.Fatal("synthetic address branch differs")
+			}
+			mock := &researchDevReceiveChain{}
+			if !selected.missingCache {
+				mock.cache = &researchDevReceiveCache{state: cacheState}
+			}
+			verifier := &accountBlockVerifier{block: block}
+			if !selected.nilChain {
+				verifier.chain = mock
+			}
+			if selected.momentum {
+				verifier.momentumStore = &researchDevReceiveMomentum{state: momentumState}
+			}
+			err := verifier.receiveData()
+			switch selected.want {
+			case "PASS":
+				if err != nil {
+					t.Fatal("selected method unexpectedly refused")
+				}
+			case "DATA_REFUSED":
+				if !errors.Is(err, ErrABDataMustBeEmpty) {
+					t.Fatal("nonempty receive data was not refused")
+				}
+			case "LOOKUP_ERROR":
+				if !errors.Is(err, lookupError) {
+					t.Fatal("spork lookup error was not preserved")
+				}
+			case "ACKNOWLEDGEMENT_MISSING":
+				if !errors.Is(err, ErrABMAMissing) {
+					t.Fatal("missing chain context was not refused")
+				}
+			case "CACHE_MISSING":
+				want := InternalError(fmt.Errorf("no cache store at momentum %s", ack.Hash))
+				if err == nil || err.Error() != want.Error() {
+					t.Fatal("missing selected cache was not refused")
+				}
+			default:
+				t.Fatal("unselected expected branch")
+			}
+			if momentumState.calls != selected.momentumCalls || cacheState.calls != selected.cacheCalls || len(mock.queries) != selected.cacheReads {
+				t.Fatal("selected spork lookup path differs")
+			}
+			for _, query := range mock.queries {
+				if query != ack {
+					t.Fatal("cache lookup did not select the block acknowledgement")
+				}
+			}
+			records[selected.id] = map[string]interface{}{
+				"outcome": selected.want, "momentum_spork_calls": momentumState.calls,
+				"cache_spork_calls": cacheState.calls, "cache_reads": len(mock.queries),
+				"data_bytes": len(block.Data), "ack_hash_hex": hex.EncodeToString(ack.Hash[:]),
+				"ack_height": ack.Height,
+			}
+		})
+	}
+	if len(records) != len(cases) {
+		t.Fatal("one or more selected receive-data outcomes are absent")
+	}
+	raw, err := json.Marshal(map[string]interface{}{
+		"schema":               "zenon-nom-dev-receive-data-result-v1",
+		"selected_core_commit": "5e65a0bdb83700aa1d15b17456a17352b7d04ea9",
+		"scope":                "ISOLATED_METHOD_BRANCHES_ONLY", "records": records,
+		"application": "NO-GO", "core": "NO-GO", "independent_assessment": "UNFILLED",
+	})
+	if err != nil {
+		t.Fatal("selected receive-data report unavailable")
+	}
+	fmt.Println(string(raw))
+}

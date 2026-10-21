@@ -1,0 +1,27 @@
+{
+  "application": "NO-GO",
+  "combined_admission": "UNFILLED",
+  "core": "NO-GO",
+  "core_commit": "5e65a0bdb83700aa1d15b17456a17352b7d04ea9",
+  "core_tree": "3668425af59cfe9b88d8b8818b4467ce3f527d73",
+  "finite_method_cases": 14,
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/fixtures/nom_dev_receive_data_v1.json": "6913ac43b54e61d08a84b5cfdf6bff47604fdb8d852504b05ce6d31d0fe418fc",
+    "compatibility/nom_dev_admission_manifest.json": "2b4715b8be83eb3aefe295867ed7747cd126a03f9c2a93dcdfb8bd356bd5d4f9",
+    "compatibility/nom_dev_admission_source_v1.json": "2f031704a76b772f66736dadd5d9a7c0d5e3e2e07d97a2b2364cf072fe63b298",
+    "compatibility/nom_dev_receive_data_test.go.txt": "f631e888a67d09e4a2dd153be27f72a0213122c4062468c0cedea1a99158ad5e",
+    "qualification/nom_dev_receive_data.py": "dbc5da06480045eaec9e5a575f4792dfd002fd8bba6f0b9f45297c61266001aa",
+    "tests/test_nom_dev_receive_data.py": "19bc01b007ffb46f5b8e93d8312f222bf3b6071c783ab59811fb2b49aeb3ebc5"
+  },
+  "journal_source_upgrade": "NOT_SELECTED",
+  "parent_and_subtest_outcomes": 15,
+  "prior_selection_sha256": "2b4715b8be83eb3aefe295867ed7747cd126a03f9c2a93dcdfb8bd356bd5d4f9",
+  "producer_destination": "verifier/research_nom_dev_receive_data_test.go",
+  "producer_sha256": "f631e888a67d09e4a2dd153be27f72a0213122c4062468c0cedea1a99158ad5e",
+  "project_probe_files": 1,
+  "schema": "ptlc-nom-dev-receive-data-selection-v1",
+  "source_files": 474,
+  "source_index_sha256": "2f031704a76b772f66736dadd5d9a7c0d5e3e2e07d97a2b2364cf072fe63b298",
+  "source_view_files": 475
+}

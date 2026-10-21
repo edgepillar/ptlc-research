@@ -5,6 +5,13 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+The separate [receive-data corpus](docs/NOM_DEV_RECEIVE_DATA.md) compares fourteen
+isolated verifier-method branches on the pinned dev source. It binds one physical
+producer, complete fragmented Go output and exact acknowledgement/call counts.
+Author execution, synthetic reader controls and hosted native execution remain
+separate. Complete admission stays unfilled, the journal source is unchanged and
+application/core stay **NO-GO**.
+
 The separate [dev admission corpus](docs/NOM_DEV_ADMISSION.md) selects the complete
 go-zenon `5e65a0b` source and three explicit sequencer API variants. Its sixteen
 finite component comparisons preserve the earlier values and source subjects.
