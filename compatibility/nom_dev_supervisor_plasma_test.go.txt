@@ -1,0 +1,636 @@
+// Independently written MIT overlay; unchanged GPL source is separately obtained.
+package vm
+
+import (
+	"bytes"
+	"crypto/ed25519"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"math/big"
+	"os"
+	"strconv"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/zenon-network/go-zenon/chain"
+	"github.com/zenon-network/go-zenon/chain/account"
+	"github.com/zenon-network/go-zenon/chain/account/mailbox"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/chain/store"
+	"github.com/zenon-network/go-zenon/common/db"
+	"github.com/zenon-network/go-zenon/common/types"
+	"github.com/zenon-network/go-zenon/consensus"
+	"github.com/zenon-network/go-zenon/consensus/api"
+	"github.com/zenon-network/go-zenon/verifier"
+	"github.com/zenon-network/go-zenon/vm/constants"
+	"github.com/zenon-network/go-zenon/vm/embedded/definition"
+)
+
+type researchSupervisorLedger struct {
+	store.Momentum
+	current       *nom.Momentum
+	momenta       map[uint64]*nom.Momentum
+	blocks        map[types.Hash]*nom.AccountBlock
+	confirmations map[types.Hash]uint64
+	accounts      map[types.Address]store.Account
+	mailbox       store.AccountMailbox
+}
+
+func (s *researchSupervisorLedger) ChainIdentifier() uint64      { return s.current.ChainIdentifier }
+func (s *researchSupervisorLedger) Identifier() types.HashHeight { return s.current.Identifier() }
+func (s *researchSupervisorLedger) GetFrontierMomentum() (*nom.Momentum, error) {
+	return s.current, nil
+}
+func (s *researchSupervisorLedger) GetMomentumByHeight(h uint64) (*nom.Momentum, error) {
+	return s.momenta[h], nil
+}
+func (s *researchSupervisorLedger) GetAccountBlockByHash(h types.Hash) (*nom.AccountBlock, error) {
+	if b := s.blocks[h]; b != nil {
+		return b.Copy(), nil
+	}
+	return nil, nil
+}
+func (s *researchSupervisorLedger) GetBlockConfirmationHeight(h types.Hash) (uint64, error) {
+	return s.confirmations[h], nil
+}
+func (s *researchSupervisorLedger) GetAccountStore(a types.Address) store.Account {
+	if s.accounts[a] == nil {
+		panic("unselected global account")
+	}
+	return s.accounts[a]
+}
+func (s *researchSupervisorLedger) GetAccountMailbox(a types.Address) store.AccountMailbox {
+	if a != types.PtlcContract {
+		panic("unselected mailbox")
+	}
+	return s.mailbox
+}
+
+type researchSupervisorChain struct {
+	chain.Chain
+	ledger   *researchSupervisorLedger
+	depleted bool
+}
+
+func (s *researchSupervisorChain) ChainIdentifier() uint64                  { return 69 }
+func (s *researchSupervisorChain) GetFrontierMomentumStore() store.Momentum { return s.ledger }
+func (s *researchSupervisorChain) GetMomentumStore(h types.HashHeight) store.Momentum {
+	if h == s.ledger.current.Identifier() {
+		return s.ledger
+	}
+	return nil
+}
+func (s *researchSupervisorChain) GetFrontierAccountStore(a types.Address) store.Account {
+	return s.ledger.GetAccountStore(a).Snapshot()
+}
+func (s *researchSupervisorChain) GetAccountStore(a types.Address, h types.HashHeight) store.Account {
+	if b := s.ledger.accounts[a]; b != nil && b.Identifier() == h {
+		return b.Snapshot()
+	}
+	return nil
+}
+func (s *researchSupervisorChain) GetCacheStore(h types.HashHeight) store.Cache {
+	if m := s.ledger.momenta[h.Height]; m != nil && m.Identifier() == h {
+		return &researchSupervisorCache{chain: s, id: h}
+	}
+	return nil
+}
+
+type researchSupervisorCache struct {
+	store.Cache
+	chain *researchSupervisorChain
+	id    types.HashHeight
+}
+
+func (s *researchSupervisorCache) Identifier() types.HashHeight { return s.id }
+func (*researchSupervisorCache) IsSporkActive(s *types.ImplementedSpork) (bool, error) {
+	return s == types.PtlcSpork, nil
+}
+func (s *researchSupervisorCache) GetStakeBeneficialAmount(a types.Address) (*big.Int, error) {
+	if s.chain.ledger.accounts[a] == nil {
+		panic("unselected fusion account")
+	}
+	if s.chain.depleted {
+		return big.NewInt(0), nil
+	}
+	return big.NewInt(20000000000), nil
+}
+func (s *researchSupervisorCache) GetChainPlasma(a types.Address) (*big.Int, error) {
+	if s.chain.ledger.accounts[a] == nil {
+		panic("unselected committed Plasma account")
+	}
+	return big.NewInt(0), nil
+}
+
+type researchSupervisorConsensus struct {
+	consensus.Consensus
+	ledger *researchSupervisorLedger
+}
+type researchSupervisorPillar struct{ api.PillarReader }
+
+func (s *researchSupervisorConsensus) FixedPillarReader(h types.HashHeight) api.PillarReader {
+	if h != s.ledger.current.Identifier() {
+		panic("unselected pillar view")
+	}
+	return &researchSupervisorPillar{}
+}
+
+func TestResearchNoMSupervisorPlasma(t *testing.T) {
+	read := func(name string, value interface{}) {
+		b, e := os.ReadFile(os.Getenv(name))
+		if e != nil || json.Unmarshal(b, value) != nil {
+			t.Fatal("public input unavailable")
+		}
+	}
+	var input struct {
+		Schema     string
+		Cases      []string
+		Terms      map[string]interface{}
+		PublicKeys map[string]string `json:"public_keys"`
+		Fundings   map[string]struct {
+			Hash  string `json:"hash_hex"`
+			Block map[string]interface{}
+		} `json:"fundings"`
+	}
+	var completed, old, rawGraph map[string]interface{}
+	read("PTLC_NOM_SUPERVISOR_INPUT", &input)
+	read("PTLC_NOM_SUPERVISOR_COMPLETIONS", &completed)
+	read("PTLC_NOM_SUPERVISOR_OLD", &old)
+	read("PTLC_NOM_SUPERVISOR_RAW", &rawGraph)
+	if input.Schema != "zenon-nom-supervisor-inputs-v1" || len(input.Cases) != 2 || len(input.Fundings) != 2 {
+		t.Fatal("complete separate subject required")
+	}
+
+	raw := func(s string) []byte {
+		b, err := hex.DecodeString(s)
+		if err != nil {
+			t.Fatal("invalid public hex")
+		}
+		return b
+	}
+	hx := func(h types.Hash) string { return hex.EncodeToString(h[:]) }
+	num := func(n uint64) string { return strconv.FormatUint(n, 10) }
+	hh := func(h types.HashHeight) map[string]string {
+		return map[string]string{"hash_hex": hx(h.Hash), "height": num(h.Height)}
+	}
+	hash := func(s string) types.Hash {
+		var h types.Hash
+		b := raw(s)
+		if len(b) != 32 {
+			t.Fatal("invalid public hash")
+		}
+		copy(h[:], b)
+		return h
+	}
+	addr := func(s string) types.Address {
+		var a types.Address
+		b := raw(s)
+		if len(b) != 20 {
+			t.Fatal("invalid public address")
+		}
+		copy(a[:], b)
+		return a
+	}
+	decimal := func(s interface{}) *big.Int {
+		n, ok := new(big.Int).SetString(s.(string), 10)
+		if !ok {
+			t.Fatal("invalid public amount")
+		}
+		return n
+	}
+	digest := func(b []byte) string { h := sha256.Sum256(b); return hex.EncodeToString(h[:]) }
+	wire := func(b *nom.AccountBlock) []byte {
+		v, e := b.Serialize()
+		if e != nil || len(v) > 8192 {
+			t.Fatal("invalid public wire")
+		}
+		return v
+	}
+	var encode func(*nom.AccountBlock) map[string]interface{}
+	encode = func(b *nom.AccountBlock) map[string]interface{} {
+		amount := "0"
+		if b.Amount != nil {
+			amount = b.Amount.String()
+		}
+		children := []interface{}{}
+		hashes := []string{}
+		for _, c := range b.DescendantBlocks {
+			children = append(children, encode(c))
+			hashes = append(hashes, hx(c.Hash))
+		}
+		w := wire(b)
+		round, e := nom.DeserializeAccountBlock(w)
+		if e != nil || !bytes.Equal(w, wire(round)) {
+			t.Fatal("wire round trip differs")
+		}
+		return map[string]interface{}{"hash_hex": hx(b.Hash), "computed_hash_hex": hx(b.ComputeHash()), "wire_hex": hex.EncodeToString(w), "wire_sha256": digest(w), "roundtrip_wire_hex": hex.EncodeToString(wire(round)),
+			"public_key_hex": hex.EncodeToString(b.PublicKey), "signature_hex": hex.EncodeToString(b.Signature), "children": children, "changes_hash_hex": hx(b.ChangesHash),
+			"semantic_previous": hh(b.Previous()), "block": map[string]interface{}{"version": num(b.Version), "chain_id": num(b.ChainIdentifier), "block_type": num(b.BlockType),
+				"address_hex": hex.EncodeToString(b.Address[:]), "to_address_hex": hex.EncodeToString(b.ToAddress[:]), "height": num(b.Height), "previous_hash_hex": hx(b.PreviousHash),
+				"momentum_hash_hex": hx(b.MomentumAcknowledged.Hash), "momentum_height": num(b.MomentumAcknowledged.Height), "amount": amount, "token_standard_hex": hex.EncodeToString(b.TokenStandard[:]),
+				"from_block_hash_hex": hx(b.FromBlockHash), "descendant_hashes_hex": hashes, "data_hex": hex.EncodeToString(b.Data), "fused_plasma": num(b.FusedPlasma), "difficulty": num(b.Difficulty), "nonce_hex": hex.EncodeToString(b.Nonce.Data[:])}}
+	}
+	label := func(err error) string {
+		if err == nil {
+			return "PASS"
+		}
+		for n, e := range map[string]error{
+			"ErrNotEnoughTotalPlasma": constants.ErrNotEnoughTotalPlasma, "ErrNotEnoughPlasma": constants.ErrNotEnoughPlasma,
+			"ErrInsufficientBalance": constants.ErrInsufficientBalance, "ErrABSignatureMissing": verifier.ErrABSignatureMissing,
+			"ErrABSignatureInvalid": verifier.ErrABSignatureInvalid, "ErrABPrevHasCementedOnTop": verifier.ErrABPrevHasCementedOnTop,
+			"ErrABFromBlockAlreadyReceived": verifier.ErrABFromBlockAlreadyReceived, "ErrABFromBlockReceiverMismatch": verifier.ErrABFromBlockReceiverMismatch,
+		} {
+			if err == e {
+				return n
+			}
+		}
+		if strings.HasPrefix(err.Error(), "auto-received block has different changes-hash expected ") {
+			return "ErrEmbeddedChangesHash"
+		}
+		t.Fatalf("unselected supervisor result: %v", err)
+		return "UNSELECTED"
+	}
+	for _, kind := range input.Cases {
+		t.Run(kind, func(t *testing.T) {
+			ledger := &researchSupervisorLedger{momenta: map[uint64]*nom.Momentum{}, blocks: map[types.Hash]*nom.AccountBlock{}, confirmations: map[types.Hash]uint64{}, accounts: map[types.Address]store.Account{}, mailbox: mailbox.NewAccountMailbox(types.PtlcContract, db.NewMemDB())}
+			advance := func(index uint64, at int64) {
+				now := time.Unix(at, 0)
+				h := types.NewHash([]byte("public-nom-supervisor-v1:momentum-" + num(index)))
+				ledger.current = &nom.Momentum{ChainIdentifier: 69, Height: 10109300 + index, Hash: h, Timestamp: &now}
+				ledger.momenta[ledger.current.Height] = ledger.current
+			}
+			advance(0, 100)
+			// The older public raw original retains its exact acknowledgement and bytes.
+			oldTime := time.Unix(100, 0)
+			ledger.momenta[10109250] = &nom.Momentum{ChainIdentifier: 69, Height: 10109250, Hash: types.NewHash([]byte("public-nom-bilateral-v1:momentum-0")), Timestamp: &oldTime}
+			chainView := &researchSupervisorChain{ledger: ledger}
+			supervisor := NewSupervisor(chainView, &researchSupervisorConsensus{ledger: ledger})
+			roots := map[types.Address]db.DB{}
+			roles := map[string]types.Address{"alice": addr(input.Terms["alice_address_hex"].(string)), "bob": addr(input.Terms["bob_address_hex"].(string)), "contract": types.PtlcContract}
+			keys := map[types.Address]ed25519.PrivateKey{}
+			for i, role := range []string{"alice", "bob"} {
+				key := ed25519.NewKeyFromSeed(bytes.Repeat([]byte{byte(0x41 + i)}, 32))
+				pub := key.Public().(ed25519.PublicKey)
+				if types.PubKeyToAddress(pub) != roles[role] || hex.EncodeToString(pub) != input.PublicKeys[role] {
+					t.Fatal("public toy selection differs")
+				}
+				keys[roles[role]] = key
+			}
+			for _, a := range roles {
+				roots[a] = db.NewMemDB()
+				ledger.accounts[a] = account.NewAccountStore(a, roots[a])
+			}
+			tokens := map[string]types.ZenonTokenStandard{}
+			funds := map[string]*nom.AccountBlock{}
+			for _, leg := range []string{"long", "short"} {
+				b := input.Fundings[leg].Block
+				var token types.ZenonTokenStandard
+				copy(token[:], raw(b["token_standard_hex"].(string)))
+				tokens[leg] = token
+				fund := &nom.AccountBlock{Version: 1, ChainIdentifier: 69, BlockType: nom.BlockTypeUserSend, Address: addr(b["address_hex"].(string)), ToAddress: types.PtlcContract, Height: 1, MomentumAcknowledged: ledger.current.Identifier(), Amount: decimal(b["amount"]), TokenStandard: token, Data: raw(b["data_hex"].(string)), FusedPlasma: 52500}
+				if fund.ComputeHash() != hash(input.Fundings[leg].Hash) {
+					t.Fatal("new funding commitment differs")
+				}
+				funds[leg] = fund
+				if ledger.accounts[fund.Address].SetBalance(token, new(big.Int).Mul(fund.Amount, big.NewInt(2))) != nil {
+					t.Fatal("public budget setup failed")
+				}
+			}
+			patch := func(c store.Account) []byte {
+				p, e := c.Changes()
+				if e != nil {
+					t.Fatal("actual memory patch unavailable")
+				}
+				return p.Dump()
+			}
+			frontier := func(c store.Account) map[string]interface{} {
+				b, e := c.Frontier()
+				if e != nil {
+					t.Fatal("actual frontier unavailable")
+				}
+				w := ""
+				if b != nil {
+					w = hex.EncodeToString(wire(b))
+				}
+				return map[string]interface{}{"identifier": hh(c.Identifier()), "wire_hex": w}
+			}
+			balances := func() map[string]interface{} {
+				v := map[string]interface{}{}
+				for role, a := range roles {
+					by := map[string]string{}
+					for leg, token := range tokens {
+						n, e := ledger.accounts[a].GetBalance(token)
+						if e != nil {
+							t.Fatal("actual balance unavailable")
+						}
+						by[leg] = n.String()
+					}
+					v[role] = by
+				}
+				return v
+			}
+			used := func(a types.Address) uint64 {
+				n, e := ledger.accounts[a].GetChainPlasma()
+				if e != nil || !n.IsUint64() {
+					t.Fatal("actual used Plasma unavailable")
+				}
+				return n.Uint64()
+			}
+			available := func(a types.Address) uint64 {
+				n, e := AvailablePlasma(chainView.GetCacheStore(ledger.current.Identifier()), ledger.accounts[a])
+				if e != nil {
+					t.Fatal("actual available Plasma unavailable")
+				}
+				return n
+			}
+			head := func(a types.Address) interface{} {
+				h, err := ledger.accounts[a].SequencerFront(ledger.mailbox)
+				if err != nil {
+					t.Fatal("selected memory sequencer lookup failed", err)
+				}
+				if h == nil {
+					return nil
+				}
+				return map[string]interface{}{"address_hex": hex.EncodeToString(h.Address[:]), "identifier": hh(h.HashHeight)}
+			}
+			signatures := 0
+			signer := func(a types.Address) SignFunc {
+				return func(data []byte) ([]byte, *types.Address, []byte, error) {
+					key := keys[a]
+					if key == nil || len(data) != 32 {
+						panic("unselected public toy signature")
+					}
+					signatures++
+					return ed25519.Sign(key, data), &a, key.Public().(ed25519.PublicKey), nil
+				}
+			}
+			publicSign := func(b *nom.AccountBlock) {
+				key := keys[b.Address]
+				if key == nil {
+					panic("unselected public control")
+				}
+				b.Hash = b.ComputeHash()
+				b.PublicKey = key.Public().(ed25519.PublicKey)
+				b.Signature = ed25519.Sign(key, b.Hash[:])
+			}
+			controls := []interface{}{}
+			trace := []interface{}{}
+			control := func(name string, original *nom.AccountBlock, want string, depleted bool) {
+				a := original.Address
+				before := patch(ledger.accounts[a])
+				beforeBalances := balances()
+				selectedWire := append([]byte(nil), wire(original)...)
+				beforeFront := frontier(ledger.accounts[a])
+				beforeMarker := ledger.accounts[a].IsReceived(original.FromBlockHash)
+				beforeHead := interface{}(nil)
+				if a == types.PtlcContract {
+					beforeHead = head(a)
+				}
+				count := signatures
+				chainView.depleted = depleted
+				transaction, err := supervisor.ApplyBlock(original.Copy())
+				chainView.depleted = false
+				if label(err) != want || signatures != count || !bytes.Equal(before, patch(ledger.accounts[a])) || !bytes.Equal(selectedWire, wire(original)) {
+					t.Fatal("control changed original, base or outcome", name, label(err))
+				}
+				delta, changeHash := "", ""
+				if transaction != nil {
+					delta = hex.EncodeToString(transaction.Changes.Dump())
+					changeHash = hx(db.PatchHash(transaction.Changes))
+				}
+				afterHead := interface{}(nil)
+				if a == types.PtlcContract {
+					afterHead = head(a)
+				}
+				controls = append(controls, map[string]interface{}{"id": name, "block": encode(original), "returned_error": label(err), "transaction_present": transaction != nil, "returned_delta_hex": delta, "returned_patch_hash_hex": changeHash,
+					"before_patch_hex": hex.EncodeToString(before), "after_patch_hex": hex.EncodeToString(patch(ledger.accounts[a])), "before_balances": beforeBalances, "after_balances": balances(), "frontier": beforeFront,
+					"before_received_marker": beforeMarker, "after_received_marker": ledger.accounts[a].IsReceived(original.FromBlockHash), "before_mailbox_head": beforeHead, "after_mailbox_head": afterHead, "fusion_depleted": depleted, "original_wire_hex": hex.EncodeToString(selectedWire)})
+			}
+			execute := func(name string, template *nom.AccountBlock, embedded bool, want error) *nom.AccountBlock {
+				a := template.Address
+				if embedded {
+					a = types.PtlcContract
+				}
+				base := ledger.accounts[a]
+				before := patch(base)
+				beforeFront := frontier(base)
+				beforeBalances := balances()
+				beforeUsed := used(a)
+				beforeAvailable := uint64(0)
+				if !embedded {
+					beforeAvailable = available(a)
+				}
+				beforeHead := interface{}(nil)
+				if embedded {
+					beforeHead = head(a)
+				}
+				beforeMarker := base.IsReceived(template.FromBlockHash)
+				count := signatures
+				var tx *nom.AccountBlockTransaction
+				var err, methodErr error
+				if embedded {
+					execution, e := supervisor.GenerateAutoReceive(template.Copy())
+					err = e
+					if execution != nil {
+						tx = execution.Transaction
+						methodErr = execution.ReturnedError
+					}
+				} else {
+					selected := template.Copy()
+					selected.Version = 0
+					selected.ChainIdentifier = 0
+					selected.Height = 0
+					selected.PreviousHash = types.ZeroHash
+					selected.MomentumAcknowledged = types.ZeroHashHeight
+					selected.FusedPlasma = 0
+					selected.Hash = types.ZeroHash
+					selected.Signature = nil
+					selected.PublicKey = nil
+					tx, err = supervisor.GenerateFromTemplate(selected, signer(a))
+				}
+				if err != nil || tx == nil || methodErr != want || !bytes.Equal(before, patch(base)) {
+					t.Fatal("source generation changed base or failed", name, err, methodErr)
+				}
+				out := tx.Block
+				delta := append([]byte(nil), tx.Changes.Dump()...)
+				originalWire := append([]byte(nil), wire(out)...)
+				generationSignatures := signatures - count
+				if (embedded && generationSignatures != 0) || (!embedded && generationSignatures != 1) {
+					t.Fatal("unexpected signature use")
+				}
+				if out.ChangesHash != db.PatchHash(tx.Changes) {
+					t.Fatal("generated patch commitment differs")
+				}
+				canonical, e := CanonicalBasePlasma(chainView, out)
+				if e != nil {
+					t.Fatal("canonical Plasma unavailable")
+				}
+				if !embedded && (canonical != out.BasePlasma || out.FusedPlasma != canonical || out.TotalPlasma != canonical) {
+					t.Fatal("generated Plasma differs")
+				}
+				if name == "long-funding" {
+					oldRecords := rawGraph["records"].(map[string]interface{})["complete"].(map[string]interface{})["trace"].([]interface{})
+					oldBlock := oldRecords[0].(map[string]interface{})["block"].(map[string]interface{})
+					rawOriginal, e := nom.DeserializeAccountBlock(raw(oldBlock["wire_hex"].(string)))
+					if e != nil {
+						t.Fatal("old public original unavailable")
+					}
+					control("raw-original-without-plasma", rawOriginal, "ErrNotEnoughTotalPlasma", false)
+					control("depleted-fusion-original", out, "ErrNotEnoughPlasma", true)
+					unsigned := out.Copy()
+					unsigned.Signature = nil
+					control("unsigned-original", unsigned, "ErrABSignatureMissing", false)
+					bad := out.Copy()
+					bad.Signature[0] ^= 1
+					control("bad-outer-signature", bad, "ErrABSignatureInvalid", false)
+					tooMuch := out.Copy()
+					tooMuch.Amount = big.NewInt(201)
+					publicSign(tooMuch)
+					control("insufficient-token-budget", tooMuch, "ErrInsufficientBalance", false)
+					unbound := out.Copy()
+					unbound.ChangesHash[0] ^= 1
+					control("user-advertised-changes-unbound", unbound, "PASS", false)
+				}
+				if name == "short-create" {
+					changed := out.Copy()
+					changed.ChangesHash[0] ^= 1
+					control("contract-advertised-changes-refuse", changed, "ErrEmbeddedChangesHash", false)
+				}
+				applied, e := supervisor.ApplyBlock(out.Copy())
+				if e != nil || applied == nil || signatures != count+generationSignatures || !bytes.Equal(originalWire, wire(applied.Block)) || !bytes.Equal(delta, applied.Changes.Dump()) || !bytes.Equal(before, patch(base)) || !bytes.Equal(originalWire, wire(out)) {
+					t.Fatal("exact apply reproduction differs", name, e)
+				}
+				v := verifier.NewAccountBlockVerifier(chainView, nil)
+				got := map[string]string{"structural": label(v.AccountBlock(out)), "transaction": label(v.AccountBlockTransaction(tx))}
+				if got["structural"] != "PASS" || got["transaction"] != "PASS" {
+					t.Fatal("generated authorization differs")
+				}
+				if base.Apply(tx.Changes) != nil {
+					t.Fatal("one memory patch adoption failed")
+				}
+				afterCommit := patch(base)
+				if db.SetFrontier(roots[a], out.Identifier(), originalWire) != nil {
+					t.Fatal("selected frontier adoption failed")
+				}
+				ledger.blocks[out.Hash] = out.Copy()
+				ledger.confirmations[out.Hash] = ledger.current.Height
+				for _, child := range out.DescendantBlocks {
+					if child.Hash != child.ComputeHash() {
+						t.Fatal("child hash differs")
+					}
+					ledger.blocks[child.Hash] = child.Copy()
+					ledger.confirmations[child.Hash] = ledger.current.Height
+				}
+				after := patch(base)
+				afterHead := interface{}(nil)
+				if embedded {
+					afterHead = head(a)
+				}
+				method := "NONE"
+				if methodErr == constants.ErrInvalidPointSignature {
+					method = "ErrInvalidPointSignature"
+				} else if methodErr != nil {
+					t.Fatal("unselected method outcome")
+				}
+				afterAvailable := uint64(0)
+				if !embedded {
+					afterAvailable = available(a)
+				}
+				trace = append(trace, map[string]interface{}{"label": name, "block": encode(out), "method_error": method, "checks": got, "before_frontier": beforeFront, "after_frontier": frontier(base),
+					"before_patch_hex": hex.EncodeToString(before), "after_commit_patch_hex": hex.EncodeToString(afterCommit), "after_adopt_patch_hex": hex.EncodeToString(after), "before_patch_sha256": digest(before), "after_commit_patch_sha256": digest(afterCommit), "after_adopt_patch_sha256": digest(after),
+					"delta_patch_hex": hex.EncodeToString(delta), "delta_patch_sha256": digest(delta), "applied_wire_hex": hex.EncodeToString(wire(applied.Block)), "applied_delta_hex": hex.EncodeToString(applied.Changes.Dump()), "generation_signatures": generationSignatures, "apply_signatures": 0,
+					"before_balances": beforeBalances, "after_balances": balances(), "before_received_marker": beforeMarker, "after_received_marker": base.IsReceived(out.FromBlockHash), "before_mailbox_head": beforeHead, "after_mailbox_head": afterHead, "confirmation_height": num(ledger.confirmations[out.FromBlockHash]),
+					"plasma": map[string]interface{}{"canonical_base": num(canonical), "base": num(out.BasePlasma), "total": num(out.TotalPlasma), "before_used": num(beforeUsed), "after_used": num(used(a)), "available_before": num(beforeAvailable), "available_after": num(afterAvailable), "fusion_amount": "20000000000", "committed": "0", "dynamic": false}})
+				return out
+			}
+			contractReceive := func(name string, send *nom.AccountBlock, want error) *nom.AccountBlock {
+				ledger.mailbox.SequencerPushBack(send.Header())
+				return execute(name, send, true, want)
+			}
+			newUser := func(a types.Address, typ uint64) *nom.AccountBlock {
+				prev := ledger.accounts[a].Identifier()
+				return &nom.AccountBlock{Version: 1, ChainIdentifier: 69, BlockType: typ, Address: a, Height: prev.Height + 1, PreviousHash: prev.Hash, MomentumAcknowledged: ledger.current.Identifier(), Amount: big.NewInt(0)}
+			}
+			unlock := func(name, leg string, witness []byte, want error) *nom.AccountBlock {
+				role := input.Terms[leg].(map[string]interface{})["recipient"].(string)
+				b := newUser(roles[role], nom.BlockTypeUserSend)
+				b.ToAddress = types.PtlcContract
+				b.Data = definition.ABIPtlc.PackMethodPanic("Unlock", funds[leg].Hash, witness)
+				send := execute(name+"-send", b, false, nil)
+				return contractReceive(name+"-receive", send, want)
+			}
+			for _, leg := range []string{"long", "short"} {
+				funds[leg] = execute(leg+"-funding", funds[leg], false, nil)
+				if funds[leg].Hash != hash(input.Fundings[leg].Hash) {
+					t.Fatal("source-generated funding differs")
+				}
+			}
+			for _, leg := range []string{"long", "short"} {
+				parent := contractReceive(leg+"-create", funds[leg], nil)
+				if len(parent.DescendantBlocks) != 0 {
+					t.Fatal("Create paid")
+				}
+				entry, e := definition.GetPtlcInfo(ledger.accounts[types.PtlcContract].Storage(), funds[leg].Hash)
+				role := input.Terms[leg].(map[string]interface{})["recipient"].(string)
+				if e != nil || entry.Destination != roles[role] {
+					t.Fatal("new fixed entry differs")
+				}
+			}
+			advance(1, 700)
+			if kind == "old-inner-before-valid" {
+				refused := unlock("refused-short", "short", raw(old["short_signature_hex"].(string)), constants.ErrInvalidPointSignature)
+				if len(refused.DescendantBlocks) != 0 {
+					t.Fatal("refused witness paid")
+				}
+				for _, leg := range []string{"long", "short"} {
+					if _, e := definition.GetPtlcInfo(ledger.accounts[types.PtlcContract].Storage(), funds[leg].Hash); e != nil {
+						t.Fatal("refused witness removed entry")
+					}
+				}
+			} else if kind != "complete" {
+				t.Fatal("unselected graph")
+			}
+			short := unlock("short-unlock", "short", raw(completed["short_signature_hex"].(string)), nil)
+			if len(short.DescendantBlocks) != 1 || short.DescendantBlocks[0].ToAddress != roles["alice"] {
+				t.Fatal("short fixed payout differs")
+			}
+			wrong := newUser(roles["bob"], nom.BlockTypeUserReceive)
+			wrong.FromBlockHash = short.DescendantBlocks[0].Hash
+			wrong.FusedPlasma = 21000
+			publicSign(wrong)
+			control("short-wrong-receiver", wrong, "ErrABFromBlockReceiverMismatch", false)
+			receive := func(leg string, parent *nom.AccountBlock) {
+				child := parent.DescendantBlocks[0]
+				b := newUser(child.ToAddress, nom.BlockTypeUserReceive)
+				b.FromBlockHash = child.Hash
+				original := execute(leg+"-receipt", b, false, nil)
+				control(leg+"-exact-replay", original, "ErrABPrevHasCementedOnTop", false)
+				successor := newUser(b.Address, nom.BlockTypeUserReceive)
+				successor.FromBlockHash = child.Hash
+				successor.FusedPlasma = 21000
+				publicSign(successor)
+				control(leg+"-new-receipt-same-payout", successor, "ErrABFromBlockAlreadyReceived", false)
+			}
+			receive("short", short)
+			advance(2, 800)
+			long := unlock("long-unlock", "long", raw(completed["long_signature_hex"].(string)), nil)
+			if len(long.DescendantBlocks) != 1 || long.DescendantBlocks[0].ToAddress != roles["bob"] {
+				t.Fatal("long fixed payout differs")
+			}
+			receive("long", long)
+			for _, leg := range []string{"long", "short"} {
+				if _, e := definition.GetPtlcInfo(ledger.accounts[types.PtlcContract].Storage(), funds[leg].Hash); e != constants.ErrDataNonExistent {
+					t.Fatal("completed entry remains")
+				}
+			}
+			result := map[string]interface{}{"schema": "zenon-nom-supervisor-record-v1", "id": kind, "trace": trace, "controls": controls, "final_balances": balances(), "entries_present": false}
+			b, e := json.Marshal(result)
+			if e != nil || len(b) > 1048576 {
+				t.Fatal("invalid public supervisor record")
+			}
+			t.Log("PTLC_RESEARCH_SUPERVISOR_RECORD " + string(b))
+		})
+	}
+}

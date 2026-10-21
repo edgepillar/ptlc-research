@@ -5,6 +5,12 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+The separate [dev admission corpus](docs/NOM_DEV_ADMISSION.md) selects the complete
+go-zenon `5e65a0b` source and three explicit sequencer API variants. Its sixteen
+finite component comparisons preserve the earlier values and source subjects.
+Author native execution, synthetic framing tests and hosted CI remain separate;
+the journal context and application/core **NO-GO** boundary remain unchanged.
+
 The separate [point-type credit profile](docs/NOM_RECEIVE_POINT_TYPES.md) adds
 six finite mock cases across ED25519, BIP340 and compressed secp256k1 points.
 It preserves explicit user receive, exact balance and duplicate-credit checks.
