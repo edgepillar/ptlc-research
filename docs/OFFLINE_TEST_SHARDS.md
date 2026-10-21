@@ -55,8 +55,8 @@ new executions.
 The workflow still declares eight job definitions; matrix expansion produces
 25 jobs instead of 19. Offline jobs retain the existing maximum of eight
 simultaneous matrix slots. The include list places larger observed jobs first,
-using the larger whole-job wall time for each combination in the two selected
-attempts below. These static weights change only job creation order. GitHub's
+using the larger whole-job wall time for each combination in the current
+same-source timing pair below. These static weights change only job creation order. GitHub's
 [matrix documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations)
 does not guarantee runner start order or a timing improvement. Actual wall time
 depends on runner capacity, queueing and the selected source. All 25 jobs, four
@@ -70,7 +70,7 @@ shard still checks artifact hygiene. Other native job definitions, source
 profiles and original artifact families remain unchanged. No additional copy
 of a full source tree or compiler cache is required by the shard runner.
 
-## Ordering model and its limits
+## Historical ordering model and its limits
 
 The selected samples are the completed
 [main attempt 39327752895/2](https://github.com/edgepillar/ptlc-research/actions/runs/39327752895/attempts/2)
@@ -101,6 +101,40 @@ non-matrix job already exceeds both simulated matrix times, so a shorter matrix
 alone would not reduce that model's whole-workflow bound. No future speedup,
 runner-minute saving or storage reduction is claimed from this permutation.
 No test selection, timeout, assertion, concurrency limit or artifact gate changes.
+
+## Current same-source ordering refresh
+
+The current order uses two separately accepted attempts at the identical
+[`9564b1f` source](https://github.com/edgepillar/ptlc-research/tree/9564b1f297b65c3a15d2834f6f143468fd042581):
+[PR run 39539404914/1](https://github.com/edgepillar/ptlc-research/actions/runs/39539404914/attempts/1)
+and [main run 39543559956/1](https://github.com/edgepillar/ptlc-research/actions/runs/39543559956/attempts/1).
+Each passed all 25 jobs; original archives bound four complete 4,079-case profiles,
+sixteen regression streams and seven artifact families. The source and test bodies
+match between these timing samples. Their original archives and failures from
+other attempts remain separate.
+
+Sort the same sixteen include entries by the larger observed whole-job duration
+in this pair, with the job name as a deterministic tie-break. The eight-slot limit,
+module partitions, commands, assertions, timeouts, source pins and artifact gates
+are unchanged. The former samples and model above remain historical evidence;
+they no longer determine the current include order.
+
+| Same-source timing sample | Previous include order | Refreshed include order |
+| --- | ---: | ---: |
+| PR attempt 39539404914/1 | 1984 seconds | 1748 seconds |
+| Main attempt 39543559956/1 | 2015 seconds | 1823 seconds |
+
+These are **simulations with eight identical available slots**, using fixed
+historical whole-job durations. They are not observed executions of the new
+order or a controlled speedup. The longest other jobs took 1409 and 1022 seconds
+respectively; those durations also do not predict future workflow time.
+
+GitHub documents matrix job creation and the concurrency bound, while runner
+start order and availability remain external scheduling conditions. Fresh PR and
+separate main-push acceptance must still establish exact source and complete case
+coverage. This permutation adds no source-tree or compiler-cache copy, removes no
+test execution and claims no runner-minute saving or physical disk reclaim.
+Application/core remain NO-GO; independent assessment and AS1-AS7 remain UNFILLED.
 
 ## Actual outcome protocol
 
