@@ -5,6 +5,13 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+The separate [ABI layer corpus](docs/NOM_DEV_ABI_BOUNDARY.md) compares 26 finite
+scenarios across decoding, length checks, dispatch and static method validation
+on the pinned dev source. Original and normalized data stay distinct; a layer
+pass does not establish complete admission or witness validity. Author native
+execution, synthetic reader controls and hosted execution remain separate.
+The journal source is unchanged and application/core remain **NO-GO**.
+
 The separate [receive-data corpus](docs/NOM_DEV_RECEIVE_DATA.md) compares fourteen
 isolated verifier-method branches on the pinned dev source. It binds one physical
 producer, complete fragmented Go output and exact acknowledgement/call counts.
