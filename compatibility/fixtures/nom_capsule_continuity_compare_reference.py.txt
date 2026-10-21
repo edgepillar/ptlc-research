@@ -1,0 +1,35 @@
+def _compare(retained, candidate):
+    _require(type(retained) is capsule.CapsuleView and type(candidate) is capsule.CapsuleView)
+    old, new = retained.partial_hold.selection(), candidate.partial_hold.selection()
+    _require(old["terms"] == new["terms"] and old["pair"] == new["pair"]
+        and old["verification_context_digest_hex"] == new["verification_context_digest_hex"]
+        and old["remote_short_hex"] == new["remote_short_hex"])
+    before, after = retained.journal_bytes, candidate.journal_bytes
+    # Complete canonical event hashes and equal counters cannot replace these
+    # exact retained bytes. Both journals have already been replayed separately.
+    _require(after.startswith(before))
+    _require(new["charged_work"][:len(old["charged_work"])] == old["charged_work"]
+        and old["disclosure_possible"] is True and new["disclosure_possible"] is True)
+    for field in ("recovered_long_signature_hex", "original_long_hex"):
+        _require(old[field] is None or new[field] == old[field])
+    if before == after:
+        relation = "EXACT_REPLAY" if retained.canonical_bytes == candidate.canonical_bytes else "SAME_JOURNAL"
+    else:
+        relation = "STRICT_EXTENSION"
+    prior, following = retained.projection(), candidate.projection()
+    return dict(profile=PROFILE, state="HOLD", recovery_action="NONE", journal_relation=relation,
+        retained_capsule_sha256=retained.digest_hex, candidate_capsule_sha256=candidate.digest_hex,
+        retained_journal_sha256=prior["journal_sha256"], candidate_journal_sha256=following["journal_sha256"],
+        retained_journal_head_hex=prior["journal_head_hex"], candidate_journal_head_hex=following["journal_head_hex"],
+        retained_journal_sequence=prior["journal_sequence"], candidate_journal_sequence=following["journal_sequence"],
+        verification_context_digest_hex=old["verification_context_digest_hex"],
+        retained_charged_work=len(old["charged_work"]), candidate_charged_work=len(new["charged_work"]),
+        disclosure_possible=True, signature_mathematics="NOT_PERFORMED",
+        worker_execution="UNKNOWN FOR EVERY PERSISTED CHARGED ORDINAL",
+        retain_original_capsules="BOTH REQUIRED; COMPARISON IMPLEMENTS NO DURABLE STORE",
+        source_authentication="NOT_PERFORMED", source_currentness="UNFILLED",
+        consumer_restore_fence="UNFILLED", atomic_work_admission="UNFILLED",
+        independent_retained_checkpoint="CALLER PREMISE; NOT PROVISIONED OR AUTHENTICATED",
+        coherent_old_pair="CAN MATCH; NO CURRENTNESS OR NONROLLBACK GUARANTEE",
+        automatic_retry=False, replenish_work=False, replacement_original_allowed=False,
+        application="NO-GO", core="NO-GO")
