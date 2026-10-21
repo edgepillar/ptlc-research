@@ -1,0 +1,142 @@
+{
+  "core_commit": "5e65a0bdb83700aa1d15b17456a17352b7d04ea9",
+  "core_tree": "3668425af59cfe9b88d8b8818b4467ce3f527d73",
+  "expected": {
+    "application": "NO-GO",
+    "core": "NO-GO",
+    "independent_assessment": "UNFILLED",
+    "records": {
+      "cache_active": {
+        "ack_hash_hex": "1122330000000000000000000000000000000000000000000000000000000000",
+        "ack_height": 7,
+        "cache_reads": 1,
+        "cache_spork_calls": 1,
+        "data_bytes": 2,
+        "momentum_spork_calls": 0,
+        "outcome": "DATA_REFUSED"
+      },
+      "cache_changed_acknowledgement": {
+        "ack_hash_hex": "4455660000000000000000000000000000000000000000000000000000000000",
+        "ack_height": 19,
+        "cache_reads": 1,
+        "cache_spork_calls": 1,
+        "data_bytes": 2,
+        "momentum_spork_calls": 0,
+        "outcome": "DATA_REFUSED"
+      },
+      "cache_inactive": {
+        "ack_hash_hex": "1122330000000000000000000000000000000000000000000000000000000000",
+        "ack_height": 7,
+        "cache_reads": 1,
+        "cache_spork_calls": 1,
+        "data_bytes": 2,
+        "momentum_spork_calls": 0,
+        "outcome": "PASS"
+      },
+      "cache_lookup_error": {
+        "ack_hash_hex": "1122330000000000000000000000000000000000000000000000000000000000",
+        "ack_height": 7,
+        "cache_reads": 1,
+        "cache_spork_calls": 1,
+        "data_bytes": 2,
+        "momentum_spork_calls": 0,
+        "outcome": "LOOKUP_ERROR"
+      },
+      "embedded_nonempty": {
+        "ack_hash_hex": "1122330000000000000000000000000000000000000000000000000000000000",
+        "ack_height": 7,
+        "cache_reads": 0,
+        "cache_spork_calls": 0,
+        "data_bytes": 2,
+        "momentum_spork_calls": 0,
+        "outcome": "PASS"
+      },
+      "missing_cache": {
+        "ack_hash_hex": "1122330000000000000000000000000000000000000000000000000000000000",
+        "ack_height": 7,
+        "cache_reads": 1,
+        "cache_spork_calls": 0,
+        "data_bytes": 2,
+        "momentum_spork_calls": 0,
+        "outcome": "CACHE_MISSING"
+      },
+      "momentum_active_over_inactive_cache": {
+        "ack_hash_hex": "1122330000000000000000000000000000000000000000000000000000000000",
+        "ack_height": 7,
+        "cache_reads": 0,
+        "cache_spork_calls": 0,
+        "data_bytes": 2,
+        "momentum_spork_calls": 1,
+        "outcome": "DATA_REFUSED"
+      },
+      "momentum_active_without_chain": {
+        "ack_hash_hex": "1122330000000000000000000000000000000000000000000000000000000000",
+        "ack_height": 7,
+        "cache_reads": 0,
+        "cache_spork_calls": 0,
+        "data_bytes": 2,
+        "momentum_spork_calls": 1,
+        "outcome": "DATA_REFUSED"
+      },
+      "momentum_inactive_over_active_cache": {
+        "ack_hash_hex": "1122330000000000000000000000000000000000000000000000000000000000",
+        "ack_height": 7,
+        "cache_reads": 0,
+        "cache_spork_calls": 0,
+        "data_bytes": 2,
+        "momentum_spork_calls": 1,
+        "outcome": "PASS"
+      },
+      "momentum_inactive_without_cache": {
+        "ack_hash_hex": "1122330000000000000000000000000000000000000000000000000000000000",
+        "ack_height": 7,
+        "cache_reads": 0,
+        "cache_spork_calls": 0,
+        "data_bytes": 2,
+        "momentum_spork_calls": 1,
+        "outcome": "PASS"
+      },
+      "momentum_lookup_error": {
+        "ack_hash_hex": "1122330000000000000000000000000000000000000000000000000000000000",
+        "ack_height": 7,
+        "cache_reads": 0,
+        "cache_spork_calls": 0,
+        "data_bytes": 2,
+        "momentum_spork_calls": 1,
+        "outcome": "LOOKUP_ERROR"
+      },
+      "nil_chain": {
+        "ack_hash_hex": "1122330000000000000000000000000000000000000000000000000000000000",
+        "ack_height": 7,
+        "cache_reads": 0,
+        "cache_spork_calls": 0,
+        "data_bytes": 2,
+        "momentum_spork_calls": 0,
+        "outcome": "ACKNOWLEDGEMENT_MISSING"
+      },
+      "send_nonempty": {
+        "ack_hash_hex": "1122330000000000000000000000000000000000000000000000000000000000",
+        "ack_height": 7,
+        "cache_reads": 0,
+        "cache_spork_calls": 0,
+        "data_bytes": 2,
+        "momentum_spork_calls": 0,
+        "outcome": "PASS"
+      },
+      "user_empty": {
+        "ack_hash_hex": "1122330000000000000000000000000000000000000000000000000000000000",
+        "ack_height": 7,
+        "cache_reads": 0,
+        "cache_spork_calls": 0,
+        "data_bytes": 0,
+        "momentum_spork_calls": 0,
+        "outcome": "PASS"
+      }
+    },
+    "schema": "zenon-nom-dev-receive-data-result-v1",
+    "scope": "ISOLATED_METHOD_BRANCHES_ONLY",
+    "selected_core_commit": "5e65a0bdb83700aa1d15b17456a17352b7d04ea9"
+  },
+  "schema": "ptlc-nom-dev-receive-data-values-v1",
+  "scope": "FINITE DECLARED METHOD VALUES; NOT EXECUTION EVIDENCE"
+}
