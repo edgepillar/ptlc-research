@@ -21,7 +21,7 @@
   },
   "input_sha256": {
     "compatibility/fixtures/nom_checkpoint_discovery_v1.json": "1a327b5a8800ae968425440526ba5c024bd53fe1dba1eeeb2aedca07c9067ff7",
-    "offline_session/nom_checkpoint_discovery.py": "6ee8f5db3e3a9f92db58e067cc06e6926de4d0681a520beb9ae3e432d70e9a09",
+    "offline_session/nom_checkpoint_discovery.py": "fe048aae9e9da6e18442162bf8876c4217913fa572d4c333cba2110365e00b40",
     "scripts/qualify_nom_checkpoint_discovery.py": "98c20775a98a1cd9cd1528d46a0abba9081d1dba4d47f2687902786970d02ad4",
     "tests/test_nom_checkpoint_discovery.py": "486b7f0f1c73a4e397aee0141fa6e868aaa169db37047592f19038899e61f569"
   },
