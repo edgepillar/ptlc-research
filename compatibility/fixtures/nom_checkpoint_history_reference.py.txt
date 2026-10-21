@@ -1,0 +1,19 @@
+def _history(candidate):
+    _require(type(candidate) is protocol.ReferenceCheckpoint)
+    candidate.as_dict()
+    nodes, seen = [], set()
+    current = candidate
+    while current is not None:
+        _require(type(current) is protocol.ReferenceCheckpoint and id(current) not in seen)
+        _require(len(nodes) < MAX_CHECKPOINTS)
+        seen.add(id(current))
+        snapshot = current.as_dict()
+        # A source-context hash commits to its complete actual declaration/read
+        # view; it cannot construct an absent original or opening from this hash.
+        context = current._context.as_dict()
+        nodes.append(dict(checkpoint_digest_hex=protocol._hash(protocol.SNAPSHOT_DOMAIN, snapshot),
+            checkpoint=snapshot, source_context_digest_hex=_hash(CONTEXT_DOMAIN, context)))
+        current = current._prior
+    nodes.reverse()
+    _require(len(nodes) == nodes[-1]["checkpoint"]["sequence"])
+    return nodes

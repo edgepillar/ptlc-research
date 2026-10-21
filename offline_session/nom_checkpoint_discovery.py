@@ -46,7 +46,6 @@ def _decode(wire):
 
 def _history(candidate):
     _require(type(candidate) is protocol.ReferenceCheckpoint)
-    candidate.as_dict()
     nodes, seen = [], set()
     current = candidate
     while current is not None:
