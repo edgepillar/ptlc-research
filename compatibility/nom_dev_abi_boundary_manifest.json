@@ -1,0 +1,31 @@
+{
+  "application": "NO-GO",
+  "combined_admission": "UNFILLED",
+  "core": "NO-GO",
+  "core_commit": "5e65a0bdb83700aa1d15b17456a17352b7d04ea9",
+  "core_tree": "3668425af59cfe9b88d8b8818b4467ce3f527d73",
+  "finite_layer_cases": 26,
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/fixtures/nom_dev_abi_boundary_v1.json": "3d01a210c2615864972433fce7e369e18777423adbf82024fad6d680942d199d",
+    "compatibility/nom_dev_abi_boundary_test.go.txt": "6836919a207049c5a1df0a234fecae5ceec196b3ca509b5381fc2f0510451d06",
+    "compatibility/nom_dev_admission_manifest.json": "2b4715b8be83eb3aefe295867ed7747cd126a03f9c2a93dcdfb8bd356bd5d4f9",
+    "compatibility/nom_dev_admission_source_v1.json": "2f031704a76b772f66736dadd5d9a7c0d5e3e2e07d97a2b2364cf072fe63b298",
+    "offline_session/nom_wire.py": "d79dd83b98b6a31c3b5b15deb26ea4b671d2ed96dab03bf02381b9648492b839",
+    "offline_session/pr138.py": "5fde0d8409885faa0fe7ad2f2507ee422ce964cee50800e04296f8fcc5b79c9d",
+    "qualification/nom_current_admission.py": "06398a328df82f1429b6b1358e6ca7ed58be3f685725b0cf3fd5c41ebae99dac",
+    "qualification/nom_dev_abi_boundary.py": "118a41fabd1bbd4a9862c3950ed483f05cc88417ff1b5a5c53b629fb6eef589a",
+    "qualification/nom_rpc_quote_source.py": "7c2c5a52e2e76bae8957e8dd64e59f5916cb546921af6de3d0936b63da9c3148",
+    "tests/test_nom_dev_abi_boundary.py": "1a39ca5d518e7e7a27ee1a1c2d91db43c849b858adf5e9d32c22b35253d284f1"
+  },
+  "journal_source_upgrade": "NOT_SELECTED",
+  "parent_and_subtest_outcomes": 27,
+  "prior_selection_sha256": "2b4715b8be83eb3aefe295867ed7747cd126a03f9c2a93dcdfb8bd356bd5d4f9",
+  "producer_destination": "vm/embedded/research_nom_dev_abi_boundary_test.go",
+  "producer_sha256": "6836919a207049c5a1df0a234fecae5ceec196b3ca509b5381fc2f0510451d06",
+  "project_probe_files": 1,
+  "schema": "ptlc-nom-dev-abi-boundary-selection-v1",
+  "source_files": 474,
+  "source_index_sha256": "2f031704a76b772f66736dadd5d9a7c0d5e3e2e07d97a2b2364cf072fe63b298",
+  "source_view_files": 475
+}
