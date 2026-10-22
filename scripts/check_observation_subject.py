@@ -97,15 +97,23 @@ def _git(root, *arguments):
     return result.stdout
 
 
-def _blob(root, object_id):
+def _sized_blob(root, object_id, size):
+    """Read a blob whose size was selected from local immutable Git metadata."""
     _hex(object_id, 40)
-    size = int(_git(root, "cat-file", "-s", object_id))
-    if not 0 <= size <= MAX_BLOB_BYTES:
+    if type(size) is not int or not 0 <= size <= MAX_BLOB_BYTES:
         raise SubjectError("source blob exceeds bound")
     raw = _git(root, "cat-file", "blob", object_id)
     if len(raw) != size:
         raise SubjectError("source blob size mismatch")
+    identity = hashlib.sha1(b"blob " + str(size).encode("ascii") + b"\0" + raw).hexdigest()
+    if identity != object_id:
+        raise SubjectError("source blob identity mismatch")
     return raw
+
+
+def _blob(root, object_id):
+    _hex(object_id, 40)
+    return _sized_blob(root, object_id, int(_git(root, "cat-file", "-s", object_id)))
 
 
 def _regular(path, bound):
@@ -139,20 +147,29 @@ def _inventory(root, commit):
         raise SubjectError("commit object required")
     tree = _git(root, "rev-parse", "--verify", commit + "^{tree}").decode("ascii").strip()
     _hex(tree, 40)
-    entries = [entry for entry in _git(root, "ls-tree", "-r", "-z", commit).split(b"\0") if entry]
+    entries = [entry for entry in _git(root, "ls-tree", "-r", "-l", "-z", commit).split(b"\0") if entry]
     if not 0 < len(entries) <= MAX_FILES:
         raise SubjectError("source file count exceeds bound")
     records, bodies, total = [], {}, 0
     for entry in entries:
-        header, name = entry.split(b"\t", 1)
         try:
-            mode, kind, object_id = header.decode("ascii").split()
+            header, name = entry.split(b"\t", 1)
+            mode, kind, object_id, size_text = header.decode("ascii").split()
             name = _path(name.decode("ascii"))
         except UnicodeError:
             raise SubjectError("ASCII source path required") from None
+        except ValueError:
+            raise SubjectError("malformed source tree metadata") from None
         if mode not in {"100644", "100755"} or kind != "blob" or name in bodies:
             raise SubjectError("regular unique source files required")
-        raw = _blob(root, object_id)
+        if re.fullmatch(r"0|[1-9][0-9]*", size_text) is None:
+            raise SubjectError("canonical source size required")
+        if len(size_text) > len(str(MAX_BLOB_BYTES)):
+            raise SubjectError("source blob exceeds bound")
+        size = int(size_text)
+        if total + size > MAX_SOURCE_BYTES:
+            raise SubjectError("source snapshot exceeds bound")
+        raw = _sized_blob(root, object_id, size)
         try:
             text = raw.decode("ascii")
         except UnicodeError:

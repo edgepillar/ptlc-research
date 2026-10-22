@@ -125,6 +125,14 @@ class ObservationSubjectTests(unittest.TestCase):
         self.assertEqual(subject.encoded(subject.generate(self.root, self.pins)), self.raw)
         self.assertEqual((self.expected["file_count"], self.expected["baseline"]["file_count"]), (4, 2))
         self.assertEqual(self.expected["delta"], {"added": 2, "changed": 1, "unchanged": 1, "removed_paths": []})
+        with patch.object(subject, "_git", wraps=subject._git) as inspected:
+            _, records, _ = subject._inventory(self.root, self.current)
+        calls = [call.args[1:] for call in inspected.call_args_list]
+        self.assertEqual(sum(args[:2] == ("cat-file", "blob") for args in calls), len(records))
+        self.assertFalse(any(args[:2] == ("cat-file", "-s") for args in calls))
+        self.assertEqual(len(calls), 3 + len(records))
+        self.assertEqual(records, [{key: value for key, value in row.items()
+                                   if key != "baseline_status"} for row in self.expected["files"]])
 
     def test_working_source_changes_do_not_redefine_pinned_objects(self):
         path = self.root / "docs/a.txt"
@@ -166,6 +174,18 @@ class ObservationSubjectTests(unittest.TestCase):
             with self.subTest(key=key):
                 self.reject(value)
 
+        original_git = subject._git
+        name = "docs/extra.txt"
+        row = next(row for row in self.expected["files"] if row["path"] == name)
+
+        def changed_body(root, *args):
+            if args == ("cat-file", "blob", row["git_blob"]):
+                return b"X" * len(self.current_files[name][1])
+            return original_git(root, *args)
+
+        with patch.object(subject, "_git", side_effect=changed_body), self.assertRaises(subject.SubjectError):
+            subject._inventory(self.root, self.current)
+
     def test_delta_count_type_aliases_and_removed_paths_are_rejected(self):
         for key, replacement in (("added", 1), ("changed", True), ("unchanged", 2),
                                  ("removed_paths", ["docs/a.txt"])):
@@ -193,6 +213,48 @@ class ObservationSubjectTests(unittest.TestCase):
             handle.truncate(subject.MAX_ARCHIVE_BYTES + 1)
         with self.assertRaises(subject.SubjectError):
             subject.verify_archive(archive, self.expected)
+
+        original_git = subject._git
+        tree = original_git(self.root, "ls-tree", "-r", "-l", "-z", self.current)
+        first, rest = tree.split(b"\0", 1)
+        header, first_name = first.split(b"\t", 1)
+        mode, kind, object_id, size = header.split()
+        invalid = (b"-1", b"01", b"+1", b"1.0", b"true", b"0",
+                   str(subject.MAX_BLOB_BYTES + 1).encode("ascii"), b"9" * 5000)
+        for replacement in invalid:
+            changed = b" ".join((mode, kind, object_id, replacement)) + b"\t" + first_name
+
+            def changed_tree(root, *args):
+                if args == ("ls-tree", "-r", "-l", "-z", self.current):
+                    return changed + b"\0" + rest
+                return original_git(root, *args)
+
+            with self.subTest(size=replacement), patch.object(subject, "_git", side_effect=changed_tree):
+                with self.assertRaises(subject.SubjectError):
+                    subject._inventory(self.root, self.current)
+        for header in (b"missing", b" ".join((mode, kind, object_id)),
+                       b" ".join((mode, kind, object_id, size, b"extra")),
+                       b" ".join((mode, kind, b"0" * 39, size))):
+            def malformed_tree(root, *args):
+                if args == ("ls-tree", "-r", "-l", "-z", self.current):
+                    return header + b"\t" + first_name + b"\0" + rest
+                return original_git(root, *args)
+
+            with self.subTest(header=header), patch.object(subject, "_git", side_effect=malformed_tree):
+                with self.assertRaises(subject.SubjectError):
+                    subject._inventory(self.root, self.current)
+        empty = self.commit({"empty.txt": ("100644", b"")})
+        _, empty_files, empty_bodies = subject._inventory(self.root, empty)
+        self.assertEqual(empty_files[0]["bytes"], 0)
+        self.assertEqual(empty_bodies, {"empty.txt": b""})
+        aliases = self.commit({"first.txt": ("100644", b"XY"),
+                               "second.txt": ("100644", b"XY")})
+        _, alias_files, _ = subject._inventory(self.root, aliases)
+        self.assertEqual(alias_files[0]["git_blob"], alias_files[1]["git_blob"])
+        with patch.object(subject, "MAX_SOURCE_BYTES", 3), self.assertRaises(subject.SubjectError):
+            subject._inventory(self.root, aliases)
+        with patch.object(subject, "MAX_SOURCE_BYTES", 1), self.assertRaises(subject.SubjectError):
+            subject._inventory(self.root, self.current)
 
     def test_unsafe_and_noncanonical_manifest_paths_are_rejected(self):
         for name in ("../synthetic", "/synthetic", "docs//a.txt", "./synthetic", "a\\b", "a:b", ".git/config"):
