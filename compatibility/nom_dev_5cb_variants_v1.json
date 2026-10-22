@@ -1,0 +1,119 @@
+{
+  "core_commit": "5cb5aac3bb21d012111d87466f946cbdccd344f6",
+  "schema": "ptlc-nom-dev-5cb-producer-variants-v1",
+  "variants": {
+    "compatibility/nom_dev_abi_boundary_test.go.txt": {
+      "edits": [
+        {
+          "after": "\"selected_core_commit\": \"5cb5aac3bb21d012111d87466f946cbdccd344f6\"",
+          "after_position": 12268,
+          "before": "\"selected_core_commit\": \"5e65a0bdb83700aa1d15b17456a17352b7d04ea9\""
+        }
+      ],
+      "kind": "abi_boundary",
+      "original_sha256": "6836919a207049c5a1df0a234fecae5ceec196b3ca509b5381fc2f0510451d06",
+      "scope": "EXPLICIT SOURCE-SPECIFIC PRODUCER VARIANT; EARLIER FILE UNCHANGED",
+      "selected": "compatibility/nom_dev_5cb_abi_boundary_test.go.txt",
+      "selected_sha256": "ab65467918478e9a075cb52d50c3394a96dba57283e11cdf846739f780fa8458"
+    },
+    "compatibility/nom_dev_account_context_test.go.txt": {
+      "edits": [
+        {
+          "after": "\t\t\tselectedSequencerSize, sequencerErr := ledger.mailbox.SequencerSize()\n\t\t\tif sequencerErr != nil {\n\t\t\t\tt.Fatal(\"selected memory sequencer size lookup failed\", sequencerErr)\n\t\t\t}\n\t\t\tfor i := uint64(1); i <= selectedSequencerSize; i++ {",
+          "after_position": 14220,
+          "before": "\t\t\tfor i := uint64(1); i <= ledger.mailbox.SequencerSize(); i++ {"
+        }
+      ],
+      "kind": "account_context",
+      "original_sha256": "5b3c9c270179d532b0ab80c2276452d24bac2d5d555201348113a074a40cbf3d",
+      "scope": "EXPLICIT SOURCE-SPECIFIC PRODUCER VARIANT; EARLIER FILE UNCHANGED",
+      "selected": "compatibility/nom_dev_5cb_account_context_test.go.txt",
+      "selected_sha256": "a03ab3d79c9324f0449f3d2e9d2817e9bc1365897b8e2a4784469becf8e8660d"
+    },
+    "compatibility/nom_dev_receive_data_test.go.txt": {
+      "edits": [
+        {
+          "after": "\"selected_core_commit\": \"5cb5aac3bb21d012111d87466f946cbdccd344f6\"",
+          "after_position": 6762,
+          "before": "\"selected_core_commit\": \"5e65a0bdb83700aa1d15b17456a17352b7d04ea9\""
+        }
+      ],
+      "kind": "receive_data",
+      "original_sha256": "f631e888a67d09e4a2dd153be27f72a0213122c4062468c0cedea1a99158ad5e",
+      "scope": "EXPLICIT SOURCE-SPECIFIC PRODUCER VARIANT; EARLIER FILE UNCHANGED",
+      "selected": "compatibility/nom_dev_5cb_receive_data_test.go.txt",
+      "selected_sha256": "0ec4062b2668b6926aa075b799022336df1fcef11dfd0cba7d87e67e48914f31"
+    },
+    "compatibility/nom_dev_send_caller_test.go.txt": {
+      "edits": [
+        {
+          "after": "        // This selected source queries DP again after static method validation.\n        if reads==1 && dpReads>0 { dpReads++ }\n        cases=append(cases,scenario{id:id,method:method,data:clone(data),after:clone(after),",
+          "after_position": 4222,
+          "before": "        cases=append(cases,scenario{id:id,method:method,data:clone(data),after:clone(after),"
+        },
+        {
+          "after": "\"selected_core_commit\":\"5cb5aac3bb21d012111d87466f946cbdccd344f6\"",
+          "after_position": 10536,
+          "before": "\"selected_core_commit\":\"5e65a0bdb83700aa1d15b17456a17352b7d04ea9\""
+        }
+      ],
+      "kind": "send_caller",
+      "original_sha256": "0d6de69859f26cf76901d3fdc0c4a4ff0afd6fa4ff767c66cce33feafaa1d993",
+      "scope": "EXPLICIT SOURCE-SPECIFIC PRODUCER VARIANT; EARLIER FILE UNCHANGED",
+      "selected": "compatibility/nom_dev_5cb_send_caller_test.go.txt",
+      "selected_sha256": "4a50e02c85f58f3d90f4fcda188539b478fb8daa1dcd86486ffa73b3d0013a88"
+    },
+    "compatibility/nom_momentum_admission_test.go.txt": {
+      "edits": [
+        {
+          "after": "\t\t\t\tselectedSequencerSize, sequencerErr := mail.SequencerSize()\n\t\t\t\tif sequencerErr != nil {\n\t\t\t\t\tt.Fatal(\"selected memory sequencer size lookup failed\", sequencerErr)\n\t\t\t\t}\n\t\t\t\tstate[role] = map[string]interface{}{\"account_dump_hex\": hx(dump(ms.GetAccountStore(a))), \"mailbox_dump_hex\": hx(dump(mail)), \"pending_hashes\": hashes, \"sequencer_size\": num(selectedSequencerSize)}",
+          "after_position": 10777,
+          "before": "\t\t\t\tstate[role] = map[string]interface{}{\"account_dump_hex\": hx(dump(ms.GetAccountStore(a))), \"mailbox_dump_hex\": hx(dump(mail)), \"pending_hashes\": hashes, \"sequencer_size\": num(mail.SequencerSize())}"
+        }
+      ],
+      "kind": "momentum_admission",
+      "original_sha256": "3b652301a48fbfc514c88798fc512c12e77deca3eeed7585ccf839e0f2c5f54e",
+      "scope": "EXPLICIT SOURCE-SPECIFIC PRODUCER VARIANT; EARLIER FILE UNCHANGED",
+      "selected": "compatibility/nom_dev_5cb_momentum_admission_test.go.txt",
+      "selected_sha256": "f028098c6952d94ee38adace3a3d10fc08810393daf430dd43fe69cf48ef1959"
+    },
+    "compatibility/nom_pool_dependencies_test.go.txt": {
+      "edits": [
+        {
+          "after": "\t\t\t\tselectedSequencerSize, sequencerErr := ledger.mailbox.SequencerSize()\n\t\t\t\tif sequencerErr != nil {\n\t\t\t\t\tt.Fatal(\"selected memory sequencer size lookup failed\", sequencerErr)\n\t\t\t\t}\n\t\t\t\tresult[\"ledger\"] = map[string]interface{}{\"momentum\": hh(ledger.current.Identifier()), \"send_wire_hex\": bw, \"confirmation_height\": num(confirmation), \"mailbox_dump_hex\": hx(dump(mailRoot)), \"mailbox_pending_hashes\": hashes, \"mailbox_sequencer_size\": num(selectedSequencerSize), \"known_send_count\": num(uint64(len(ledger.blocks))), \"known_confirmation_count\": num(uint64(len(ledger.confirmations)))}\n",
+          "after_position": 6166,
+          "before": "\t\t\t\tresult[\"ledger\"] = map[string]interface{}{\"momentum\": hh(ledger.current.Identifier()), \"send_wire_hex\": bw, \"confirmation_height\": num(confirmation), \"mailbox_dump_hex\": hx(dump(mailRoot)), \"mailbox_pending_hashes\": hashes, \"mailbox_sequencer_size\": num(ledger.mailbox.SequencerSize()), \"known_send_count\": num(uint64(len(ledger.blocks))), \"known_confirmation_count\": num(uint64(len(ledger.confirmations)))}\n"
+        }
+      ],
+      "kind": "pool_dependencies",
+      "original_sha256": "6bac909a76ab93cd1fb4c4da25ca01f04352eda1cfb7d10717834026a4bdce48",
+      "scope": "EXPLICIT SOURCE-SPECIFIC PRODUCER VARIANT; EARLIER FILE UNCHANGED",
+      "selected": "compatibility/nom_dev_5cb_pool_dependencies_test.go.txt",
+      "selected_sha256": "3f49e53b9534068a5fe6051ee3d1ddadd5a9491ec53d90d114886362a895ccc5"
+    },
+    "compatibility/nom_vm_path_verifier_test.go.txt": {
+      "edits": [
+        {
+          "after": "func (s *researchVMReceiptLedger) ChainIdentifier() uint64 { return s.momentum.ChainIdentifier }\n\nfunc (s *researchVMReceiptLedger) GetFrontierMomentum() (*nom.Momentum, error) {",
+          "after_position": 587,
+          "before": "func (s *researchVMReceiptLedger) GetFrontierMomentum() (*nom.Momentum, error) {"
+        },
+        {
+          "after": "ledger := &researchVMReceiptLedger{momentum: &nom.Momentum{ChainIdentifier: parent.ChainIdentifier, Hash: parent.MomentumAcknowledged.Hash, Height: parent.MomentumAcknowledged.Height}",
+          "after_position": 4938,
+          "before": "ledger := &researchVMReceiptLedger{momentum: &nom.Momentum{Hash: parent.MomentumAcknowledged.Hash, Height: parent.MomentumAcknowledged.Height}"
+        },
+        {
+          "after": "\t\t\t\t\tledger.frontier = ReceiverMismatchEnforcementHeight - 1\n\t\t\t\t\twant = ErrABFromBlockReceiverMismatch\n",
+          "after_position": 7897,
+          "before": "\t\t\t\t\tledger.frontier = ReceiverMismatchEnforcementHeight - 1\n"
+        }
+      ],
+      "kind": "vm_receipt_verifier",
+      "original_sha256": "3ad4beeb3c59e396a5d31e9d3189853c3e10c5b1e44a523badccbfb71693083a",
+      "scope": "EXPLICIT SOURCE-SPECIFIC PRODUCER VARIANT; EARLIER FILE UNCHANGED",
+      "selected": "compatibility/nom_dev_5cb_vm_receipt_verifier_test.go.txt",
+      "selected_sha256": "248b48e68b4a42237cf1ecbd1a7949f4239092906912c5191e26b4597cc30e4a"
+    }
+  }
+}

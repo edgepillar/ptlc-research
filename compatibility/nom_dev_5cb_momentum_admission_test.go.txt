@@ -1,0 +1,421 @@
+// Independently written MIT overlay; unchanged GPL source is separately obtained.
+package vm
+
+import (
+	"bytes"
+	"crypto/ed25519"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"math/big"
+	"strconv"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/zenon-network/go-zenon/chain"
+	"github.com/zenon-network/go-zenon/chain/momentum"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/chain/store"
+	"github.com/zenon-network/go-zenon/common/db"
+	"github.com/zenon-network/go-zenon/common/types"
+	"github.com/zenon-network/go-zenon/consensus"
+)
+
+type researchAdmissionGenesis struct{ store.Genesis }
+
+func (*researchAdmissionGenesis) ChainIdentifier() uint64 { return 69 }
+
+type researchAdmissionChain struct {
+	chain.Chain
+	manager db.Manager
+	genesis store.Genesis
+	pool    chain.AccountPool
+	views   int
+}
+
+func (*researchAdmissionChain) ChainIdentifier() uint64 { return 69 }
+func (c *researchAdmissionChain) GetFrontierMomentumStore() store.Momentum {
+	return momentum.NewStore(c.genesis, c.manager.Frontier())
+}
+func (c *researchAdmissionChain) GetMomentumStore(h types.HashHeight) store.Momentum {
+	c.views++
+	view := c.manager.Get(h)
+	if view == nil {
+		return nil
+	}
+	return momentum.NewStore(c.genesis, view)
+}
+func (c *researchAdmissionChain) GetStableAccountDB(a types.Address) db.DB {
+	return c.GetFrontierMomentumStore().GetAccountDB(a)
+}
+func (c *researchAdmissionChain) GetFrontierAccountStore(a types.Address) store.Account {
+	return c.pool.GetFrontierAccountStore(a)
+}
+func (c *researchAdmissionChain) GetAccountStore(a types.Address, h types.HashHeight) store.Account {
+	return c.pool.GetAccountStore(a, h)
+}
+func (c *researchAdmissionChain) GetPatch(a types.Address, h types.HashHeight) db.Patch {
+	return c.pool.GetPatch(a, h)
+}
+func (c *researchAdmissionChain) GetCacheStore(h types.HashHeight) store.Cache {
+	if c.manager.Get(h) == nil {
+		return nil
+	}
+	return &researchAdmissionCache{id: h}
+}
+
+type researchAdmissionCache struct {
+	store.Cache
+	id types.HashHeight
+}
+
+func (c *researchAdmissionCache) Identifier() types.HashHeight { return c.id }
+func (*researchAdmissionCache) IsSporkActive(*types.ImplementedSpork) (bool, error) {
+	return false, nil
+}
+func (*researchAdmissionCache) GetStakeBeneficialAmount(types.Address) (*big.Int, error) {
+	return big.NewInt(20000000000), nil
+}
+func (*researchAdmissionCache) GetChainPlasma(types.Address) (*big.Int, error) {
+	return big.NewInt(0), nil
+}
+
+type researchAdmissionConsensus struct {
+	consensus.Consensus
+	calls    int
+	response string
+}
+
+func (c *researchAdmissionConsensus) VerifyMomentumProducer(m *nom.Momentum) (bool, error) {
+	if m.Height != 10109301 && m.Height != 10109302 {
+		panic("unselected producer query")
+	}
+	c.calls++
+	switch c.response {
+	case "accept":
+		return true, nil
+	case "reject":
+		return false, nil
+	case "error":
+		return false, fmt.Errorf("selected synthetic producer error")
+	default:
+		panic("unselected producer response")
+	}
+}
+
+func TestResearchNoMMomentumAdmission(t *testing.T) {
+	t.Run("ordered-send-then-receive", func(t *testing.T) {
+		hx := func(b []byte) string { return hex.EncodeToString(b) }
+		num := func(n uint64) string { return strconv.FormatUint(n, 10) }
+		dump := func(s interface{}) []byte {
+			v, ok := s.(interface {
+				NewIterator([]byte) db.StorageIterator
+				Has([]byte) (bool, error)
+			})
+			if !ok {
+				t.Fatal("complete logical iterator required")
+			}
+			it := v.NewIterator(nil)
+			defer it.Release()
+			p := db.NewPatch()
+			for it.Next() {
+				if it.Value() == nil {
+					has, e := v.Has(it.Key())
+					if e != nil || has {
+						t.Fatal("ambiguous deleted key")
+					}
+					continue
+				}
+				p.Put(append([]byte(nil), it.Key()...), append([]byte(nil), it.Value()...))
+			}
+			if it.Error() != nil {
+				t.Fatal("incomplete logical view")
+			}
+			return p.Dump()
+		}
+		awire := func(b *nom.AccountBlock) []byte {
+			v, e := b.Serialize()
+			if e != nil {
+				t.Fatal("account wire unavailable")
+			}
+			return v
+		}
+		mwire := func(m *nom.Momentum) []byte {
+			v, e := m.Serialize()
+			if e != nil {
+				t.Fatal("momentum wire unavailable")
+			}
+			return v
+		}
+		clone := func(m *nom.Momentum) *nom.Momentum {
+			v, e := nom.DeserializeMomentum(mwire(m))
+			if e != nil {
+				t.Fatal("momentum round trip unavailable")
+			}
+			return v
+		}
+		keys := map[string]ed25519.PrivateKey{}
+		addresses := map[string]types.Address{}
+		for i, role := range []string{"sender", "recipient", "producer"} {
+			seed := byte(0x61 + i)
+			if role == "producer" {
+				seed = 0x64
+			}
+			keys[role] = ed25519.NewKeyFromSeed(bytes.Repeat([]byte{seed}, 32))
+			addresses[role] = types.PubKeyToAddress(keys[role].Public().(ed25519.PublicKey))
+		}
+		now := time.Unix(100, 0)
+		base := &nom.Momentum{Version: 1, ChainIdentifier: 69, Height: 10109300, Hash: types.NewHash([]byte("public-nom-momentum-admission-v1:base")), TimestampUnix: 100, Timestamp: &now}
+		root := db.NewMemDB()
+		if db.SetFrontier(root, base.Identifier(), mwire(base)) != nil {
+			t.Fatal("synthetic anchor unavailable")
+		}
+		c := &researchAdmissionChain{genesis: &researchAdmissionGenesis{}, manager: db.NewMemDBManager(root.Snapshot())}
+		defer c.manager.Stop()
+		c.pool = chain.NewAccountPool(c)
+		con := &researchAdmissionConsensus{response: "accept"}
+		s := NewSupervisor(c, con)
+		accountSigns, momentumSigns := 0, 0
+		signer := func(role string, m bool) SignFunc {
+			return func(data []byte) ([]byte, *types.Address, []byte, error) {
+				if m {
+					momentumSigns++
+				} else {
+					accountSigns++
+				}
+				a := addresses[role]
+				return ed25519.Sign(keys[role], data), &a, keys[role].Public().(ed25519.PublicKey), nil
+			}
+		}
+		blocks := map[string]*nom.AccountBlock{}
+		candidates := map[string]interface{}{}
+		patches := map[string]string{}
+		encodeBlock := func(b *nom.AccountBlock) map[string]interface{} {
+			w := awire(b)
+			digest := sha256.Sum256(w)
+			round, e := nom.DeserializeAccountBlock(w)
+			if e != nil || !bytes.Equal(w, awire(round)) {
+				t.Fatal("exact account roundtrip differs")
+			}
+			return map[string]interface{}{"wire_hex": hx(w), "wire_sha256": hx(digest[:]), "semantic_previous": map[string]string{"hash_hex": hx(b.PreviousHash[:]), "height": num(b.Previous().Height)}, "public_key_hex": hx(b.PublicKey), "signature_hex": hx(b.Signature), "hash_hex": hx(b.Hash[:]), "computed_hash_hex": hx(b.ComputeHash().Bytes()), "changes_hash_hex": hx(b.ChangesHash[:]), "children": []interface{}{}, "roundtrip_wire_hex": hx(awire(round)),
+				"block": map[string]interface{}{"version": num(b.Version), "chain_id": num(b.ChainIdentifier), "block_type": num(b.BlockType), "address_hex": hx(b.Address[:]), "to_address_hex": hx(b.ToAddress[:]), "height": num(b.Height), "previous_hash_hex": hx(b.PreviousHash[:]), "momentum_hash_hex": hx(b.MomentumAcknowledged.Hash[:]), "momentum_height": num(b.MomentumAcknowledged.Height), "amount": b.Amount.String(), "token_standard_hex": hx(b.TokenStandard[:]), "from_block_hash_hex": hx(b.FromBlockHash[:]), "descendant_hashes_hex": []string{}, "data_hex": hx(b.Data), "fused_plasma": num(b.FusedPlasma), "difficulty": num(b.Difficulty), "nonce_hex": hx(b.Nonce.Data[:])}}
+		}
+		encodeMomentum := func(m *nom.Momentum) map[string]interface{} {
+			content := []interface{}{}
+			for _, h := range m.Content {
+				content = append(content, map[string]string{"address_hex": hx(h.Address[:]), "height": num(h.Height), "hash_hex": hx(h.Hash[:])})
+			}
+			return map[string]interface{}{"hash_hex": hx(m.Hash[:]), "wire_hex": hx(mwire(m)), "roundtrip_wire_hex": hx(mwire(clone(m))), "public_key_hex": hx(m.PublicKey), "signature_hex": hx(m.Signature), "momentum": map[string]interface{}{"version": num(m.Version), "chain_id": num(m.ChainIdentifier), "previous_hash_hex": hx(m.PreviousHash[:]), "height": num(m.Height), "timestamp": num(m.TimestampUnix), "data_hex": hx(m.Data), "content": content, "changes_hash_hex": hx(m.ChangesHash[:]), "next_fusion_price": num(m.NextFusionPrice), "next_work_price": num(m.NextWorkPrice)}}
+		}
+		admit := func(label, role string, receive bool) {
+			a := addresses[role]
+			previous := c.pool.GetFrontierAccountStore(a).Identifier()
+			used, e := c.pool.GetAccountStore(a, previous).GetChainPlasma()
+			if e != nil {
+				t.Fatal("Plasma unavailable")
+			}
+			b := &nom.AccountBlock{BlockType: nom.BlockTypeUserSend, Address: a, ToAddress: addresses["recipient"], Amount: big.NewInt(0), TokenStandard: types.ZeroTokenStandard}
+			if receive {
+				b.BlockType = nom.BlockTypeUserReceive
+				b.ToAddress = types.ZeroAddress
+				b.FromBlockHash = blocks["send-first"].Hash
+			}
+			g, e := s.GenerateFromTemplate(b, signer(role, false))
+			if e != nil || g == nil {
+				t.Fatal("selected account generation unavailable")
+			}
+			delta := append([]byte(nil), g.Changes.Dump()...)
+			w := awire(g.Block)
+			original := g.Block.Copy()
+			before := accountSigns
+			aTx, e := s.ApplyBlock(original.Copy())
+			if e != nil || aTx == nil || accountSigns != before || !bytes.Equal(w, awire(aTx.Block)) || !bytes.Equal(delta, aTx.Changes.Dump()) {
+				t.Fatal("exact account apply differs")
+			}
+			cost, e := CanonicalBasePlasma(c, original)
+			if e != nil {
+				t.Fatal("canonical cost unavailable")
+			}
+			available, e := AvailablePlasma(c.GetCacheStore(original.MomentumAcknowledged), c.pool.GetAccountStore(a, previous))
+			if e != nil {
+				t.Fatal("budget unavailable")
+			}
+			candidates[label] = map[string]interface{}{"block": encodeBlock(original), "delta_patch_hex": hx(delta), "applied_delta_hex": hx(aTx.Changes.Dump()), "applied_wire_hex": hx(w), "generation_signatures": 1, "apply_signatures": 0, "base_plasma": num(original.BasePlasma), "total_plasma": num(original.TotalPlasma), "canonical_base": num(cost), "available_before": num(available), "used_before": used.String()}
+			locker := &sync.Mutex{}
+			locker.Lock()
+			e = c.pool.AddAccountBlockTransaction(locker, aTx)
+			locker.Unlock()
+			if e != nil || aTx.Changes != nil {
+				t.Fatal("normal pool admission unavailable")
+			}
+			blocks[label] = original
+			patches[label] = hx(c.pool.GetPatch(a, original.Identifier()).Dump())
+		}
+		checkpoint := func() map[string]interface{} {
+			ms := c.GetFrontierMomentumStore()
+			state := map[string]interface{}{"global_dump_hex": hx(dump(ms)), "momentum": encodeMomentum(func() *nom.Momentum {
+				m, e := ms.GetFrontierMomentum()
+				if e != nil {
+					t.Fatal("frontier unavailable")
+				}
+				return m
+			}())}
+			for _, role := range []string{"sender", "recipient"} {
+				a := addresses[role]
+				mail := ms.GetAccountMailbox(a)
+				pending, e := mail.GetUnreceivedAccountBlockHashes(100)
+				if e != nil {
+					t.Fatal("mailbox unavailable")
+				}
+				hashes := []string{}
+				for _, h := range pending {
+					hashes = append(hashes, hx(h[:]))
+				}
+				selectedSequencerSize, sequencerErr := mail.SequencerSize()
+				if sequencerErr != nil {
+					t.Fatal("selected memory sequencer size lookup failed", sequencerErr)
+				}
+				state[role] = map[string]interface{}{"account_dump_hex": hx(dump(ms.GetAccountStore(a))), "mailbox_dump_hex": hx(dump(mail)), "pending_hashes": hashes, "sequencer_size": num(selectedSequencerSize)}
+			}
+			for _, label := range []string{"send-first", "send-second", "receive-first"} {
+				wire := ""
+				height := uint64(0)
+				if b := blocks[label]; b != nil {
+					found, e := ms.GetAccountBlockByHash(b.Hash)
+					if e != nil {
+						t.Fatal("global lookup unavailable")
+					}
+					height, e = ms.GetBlockConfirmationHeight(b.Hash)
+					if e != nil {
+						t.Fatal("confirmation unavailable")
+					}
+					if found != nil {
+						wire = hx(awire(found))
+					}
+				}
+				state[label] = map[string]string{"wire_hex": wire, "confirmation_height": num(height)}
+			}
+			return state
+		}
+		checkpoints := map[string]interface{}{"initial": checkpoint()}
+		admit("send-first", "sender", false)
+		admit("send-second", "sender", false)
+		stages := map[string]interface{}{}
+		refusals := map[string]interface{}{}
+		promote := func(label string, names []string, controls bool) {
+			previous := c.GetFrontierMomentumStore().Identifier()
+			content := nom.MomentumContent{}
+			details := []*nom.AccountBlock{}
+			for _, n := range names {
+				b := blocks[n]
+				h := b.Header()
+				content = append(content, &h)
+				details = append(details, b.Copy())
+			}
+			timestamp := time.Unix(100+int64(previous.Height-10109300)+1, 0)
+			m := &nom.Momentum{Version: 1, ChainIdentifier: 69, Height: previous.Height + 1, PreviousHash: previous.Hash, TimestampUnix: uint64(timestamp.Unix()), Timestamp: &timestamp, Content: content}
+			stableBefore := dump(c.manager.Frontier())
+			calls := con.calls
+			signs := momentumSigns
+			g, e := s.GenerateMomentum(&nom.DetailedMomentum{Momentum: m, AccountBlocks: details}, signer("producer", true))
+			if e != nil || g == nil || con.calls != calls+1 || momentumSigns != signs+1 || !bytes.Equal(stableBefore, dump(c.manager.Frontier())) {
+				t.Fatal("isolated momentum generation differs")
+			}
+			generated := clone(g.Momentum)
+			delta := append([]byte(nil), g.Changes.Dump()...)
+			calls = con.calls
+			signs = momentumSigns
+			aTx, e := s.ApplyMomentum(&nom.DetailedMomentum{Momentum: clone(generated), AccountBlocks: details})
+			if e != nil || aTx == nil || con.calls != calls+1 || momentumSigns != signs || !bytes.Equal(delta, aTx.Changes.Dump()) || !bytes.Equal(mwire(generated), mwire(aTx.Momentum)) || !bytes.Equal(stableBefore, dump(c.manager.Frontier())) {
+				t.Fatal("isolated exact momentum apply differs")
+			}
+			if controls {
+				for _, kind := range []string{"reversed-content", "duplicate-content", "duplicate-prefetch", "nil-prefetch", "wrong-header-address", "missing-prefetch", "wrong-chain", "non-increasing-time", "changes-hash", "outer-hash", "outer-signature", "producer-rejected", "producer-error"} {
+					t.Run(kind, func(t *testing.T) {
+						candidate := clone(generated)
+						selected := []*nom.AccountBlock{details[0].Copy(), details[1].Copy()}
+						expectedCalls := 0
+						con.response = "accept"
+						beforeSigns, beforeProducer, beforeViews := momentumSigns, con.calls, c.views
+						switch kind {
+						case "reversed-content":
+							candidate.Content[0], candidate.Content[1] = candidate.Content[1], candidate.Content[0]
+						case "duplicate-content":
+							candidate.Content[1] = candidate.Content[0]
+						case "duplicate-prefetch":
+							selected[1] = selected[0]
+						case "nil-prefetch":
+							selected[1] = nil
+						case "wrong-header-address":
+							candidate.Content[0].Address = addresses["recipient"]
+						case "missing-prefetch":
+							selected = selected[:1]
+						case "wrong-chain":
+							candidate.ChainIdentifier = 70
+						case "non-increasing-time":
+							candidate.TimestampUnix = 100
+							candidate.Timestamp = &now
+						case "changes-hash":
+							candidate.ChangesHash = types.ZeroHash
+						case "outer-hash":
+							candidate.Hash = types.ZeroHash
+						case "outer-signature":
+							candidate.Signature[0] ^= 1
+						case "producer-rejected":
+							con.response = "reject"
+							expectedCalls = 1
+						case "producer-error":
+							con.response = "error"
+							expectedCalls = 1
+						}
+						result, e := s.ApplyMomentum(&nom.DetailedMomentum{Momentum: candidate, AccountBlocks: selected})
+						if e == nil || result != nil || momentumSigns != beforeSigns || con.calls != beforeProducer+expectedCalls || !bytes.Equal(stableBefore, dump(c.manager.Frontier())) {
+							t.Fatal("refusal did not preserve exact stable base")
+						}
+						prefetched := []interface{}{}
+						for _, b := range selected {
+							if b == nil {
+								prefetched = append(prefetched, nil)
+							} else {
+								prefetched = append(prefetched, hx(awire(b)))
+							}
+						}
+						refusals[kind] = map[string]interface{}{"result": "REFUSED", "error": e.Error(), "transaction_present": result != nil, "momentum_signatures": momentumSigns - beforeSigns, "producer_calls": con.calls - beforeProducer, "snapshot_calls": c.views - beforeViews, "stable_dump_hex": hx(dump(c.manager.Frontier())), "candidate": encodeMomentum(candidate), "producer_response": con.response, "prefetched_wires": prefetched}
+						con.response = "accept"
+					})
+				}
+			}
+			patchBefore := hx(aTx.Changes.Dump())
+			if c.manager.Add(aTx) != nil || aTx.Changes != nil {
+				t.Fatal("normal local manager insertion unavailable")
+			}
+			retained := c.manager.GetPatch(generated.Identifier())
+			ms := c.GetFrontierMomentumStore()
+			prefetched, e := ms.PrefetchMomentum(generated)
+			if e != nil || len(prefetched.AccountBlocks) != len(details) {
+				t.Fatal("actual content prefetch differs")
+			}
+			wires := []string{}
+			for i, b := range prefetched.AccountBlocks {
+				if b == nil || !bytes.Equal(awire(b), awire(details[i])) {
+					t.Fatal("exact prefetch differs")
+				}
+				wires = append(wires, hx(awire(b)))
+			}
+			c.pool.(interface{ InsertMomentum(*nom.DetailedMomentum) }).InsertMomentum(prefetched)
+			stages[label] = map[string]interface{}{"momentum": encodeMomentum(generated), "delta_patch_hex": hx(delta), "exact_apply_patch_hex": patchBefore, "manager_patch_hex": hx(retained.Dump()), "manager_stole_changes": aTx.Changes == nil, "generation_signatures": 1, "apply_signatures": 0, "generation_producer_calls": 1, "apply_producer_calls": 1, "stable_before_hex": hx(stableBefore), "prefetched_wires": wires}
+			checkpoints[label] = checkpoint()
+		}
+		promote("after-sends", []string{"send-first", "send-second"}, true)
+		admit("receive-first", "recipient", true)
+		promote("after-receive", []string{"receive-first"}, false)
+		record := map[string]interface{}{"schema": "zenon-nom-momentum-admission-record-v1", "id": "ordered-send-then-receive", "candidates": candidates, "pool_patches": patches, "stages": stages, "checkpoints": checkpoints, "refusals": refusals, "account_signatures": accountSigns, "momentum_signatures": momentumSigns, "producer_calls": con.calls, "snapshot_calls": c.views}
+		encoded, e := json.Marshal(record)
+		if e != nil {
+			t.Fatal("public record unavailable")
+		}
+		t.Log("PTLC_RESEARCH_MOMENTUM_ADMISSION_RECORD " + string(encoded))
+	})
+}

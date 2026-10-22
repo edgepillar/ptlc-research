@@ -1,0 +1,265 @@
+// Independently written MIT probe; GPL source is obtained and retained separately.
+// Reuses only memory-view helpers from the separately selected supervisor probe.
+package vm
+
+import (
+    "bytes"
+    "crypto/sha256"
+    "encoding/hex"
+    "encoding/json"
+    "errors"
+    "os"
+    "strconv"
+    "testing"
+    "time"
+
+    "github.com/zenon-network/go-zenon/chain/account"
+    "github.com/zenon-network/go-zenon/chain/account/mailbox"
+    "github.com/zenon-network/go-zenon/chain/nom"
+    "github.com/zenon-network/go-zenon/chain/store"
+    "github.com/zenon-network/go-zenon/common/db"
+    "github.com/zenon-network/go-zenon/common/types"
+    "github.com/zenon-network/go-zenon/verifier"
+    "github.com/zenon-network/go-zenon/vm/constants"
+)
+
+type researchKeylessChain struct {
+    *researchSupervisorChain
+    dynamic bool
+    sporkReads []string
+}
+
+type researchKeylessCache struct {
+    store.Cache
+    owner *researchKeylessChain
+}
+
+func (s *researchKeylessChain) GetCacheStore(h types.HashHeight) store.Cache {
+    selected := s.researchSupervisorChain.GetCacheStore(h)
+    if selected == nil { return nil }
+    return &researchKeylessCache{Cache:selected, owner:s}
+}
+
+func (s *researchKeylessCache) IsSporkActive(spork *types.ImplementedSpork) (bool,error) {
+    if spork == types.DynamicPlasmaSpork {
+        s.owner.sporkReads=append(s.owner.sporkReads,"DYNAMIC_PLASMA")
+        return s.owner.dynamic,nil
+    }
+    s.owner.sporkReads=append(s.owner.sporkReads,"OTHER_SELECTED_SPORK")
+    return s.Cache.IsSporkActive(spork)
+}
+
+// Both observed entries delegate to the actual verifier created by NewSupervisor.
+// No verifier outcome, context, patch, key or signature is replaced by this wrapper.
+type researchKeylessVerifier struct {
+    verifier.Verifier
+    trace []string
+    packed *nom.AccountBlockTransaction
+}
+
+func (s *researchKeylessVerifier) AccountBlock(block *nom.AccountBlock) error {
+    s.trace=append(s.trace,"ACCOUNT_PRECHECK_ENTER")
+    err:=s.Verifier.AccountBlock(block)
+    if err==nil { s.trace=append(s.trace,"ACCOUNT_PRECHECK_PASS")
+    } else { s.trace=append(s.trace,"ACCOUNT_PRECHECK_REFUSE") }
+    return err
+}
+
+func (s *researchKeylessVerifier) AccountBlockTransaction(tx *nom.AccountBlockTransaction) error {
+    s.trace=append(s.trace,"PACK_TRANSACTION_VERIFIER_ENTER")
+    s.packed=tx
+    err:=s.Verifier.AccountBlockTransaction(tx)
+    if err==nil { s.trace=append(s.trace,"TRANSACTION_VERIFIER_PASS")
+    } else { s.trace=append(s.trace,"TRANSACTION_VERIFIER_REFUSE") }
+    return err
+}
+
+func TestResearchNoMKeylessOriginalSupervisor(t *testing.T) {
+    type original struct {
+        Wire string `json:"original_wire_hex"`
+        WireSHA string `json:"original_wire_sha256"`
+        Hash string `json:"original_hash_hex"`
+        PublicKey string `json:"public_key_hex"`
+        Signature string `json:"signature_hex"`
+        Patch string `json:"before_account_patch_hex"`
+        PatchSHA string `json:"before_account_patch_sha256"`
+        Frontier struct { Wire string `json:"wire_hex"` } `json:"before_frontier"`
+        Momentum struct {
+            Hash string `json:"hash_hex"`
+            Height string `json:"height"`
+            Timestamp string `json:"timestamp"`
+        } `json:"acknowledged_momentum"`
+    }
+    var input struct {
+        Schema string `json:"schema"`
+        Core string `json:"selected_core"`
+        Originals map[string]original `json:"originals"`
+        Cases []string `json:"declared_case_ids"`
+    }
+    data,err:=os.ReadFile(os.Getenv("PTLC_NOM_KEYLESS_ORIGINAL_INPUT"))
+    if err!=nil || json.Unmarshal(data,&input)!=nil || input.Schema!="private-nom-5cb-keyless-original-inputs-v1" || input.Core!="5cb5aac3bb21d012111d87466f946cbdccd344f6" || len(input.Originals)!=2 || len(input.Cases)!=24 {
+        t.Fatal("complete declared original inputs required")
+    }
+    raw:=func(text string) []byte {
+        value,e:=hex.DecodeString(text)
+        if e!=nil { t.Fatal("invalid declared hex") }
+        return value
+    }
+    digest:=func(value []byte) string { h:=sha256.Sum256(value);return hex.EncodeToString(h[:]) }
+    wire:=func(block *nom.AccountBlock) []byte {
+        value,e:=block.Serialize()
+        if e!=nil || len(value)>8192 { t.Fatal("selected serialization unavailable") }
+        return value
+    }
+    decode:=func(value []byte) *nom.AccountBlock {
+        block,e:=nom.DeserializeAccountBlock(value)
+        if e!=nil || block==nil { t.Fatal("declared original could not be decoded") }
+        return block
+    }
+    patch:=func(selected store.Account) []byte {
+        value,e:=selected.Changes()
+        if e!=nil { t.Fatal("declared memory patch unavailable") }
+        return value.Dump()
+    }
+    label:=func(e error) string {
+        switch {
+        case e==nil:return "PASS"
+        case errors.Is(e,constants.ErrABDataTrailingBytes):return "TRAILING_DATA"
+        case errors.Is(e,verifier.ErrABHashInvalid):return "ErrABHashInvalid"
+        case errors.Is(e,verifier.ErrABSignatureMissing):return "ErrABSignatureMissing"
+        case errors.Is(e,verifier.ErrABSignatureInvalid):return "ErrABSignatureInvalid"
+        default:t.Fatalf("unselected original result: %v",e);return "UNSELECTED"
+        }
+    }
+    variants:=[]string{"canonical","protobuf_repeated_version","trailing_abi_byte",
+        "changed_witness_byte","missing_outer_signature","corrupt_outer_signature"}
+    records:=map[string]interface{}{}
+    for _,leg:=range []string{"long","short"} {
+        selected,ok:=input.Originals[leg]
+        if !ok { t.Fatal("both immutable originals required") }
+        immutableWire:=raw(selected.Wire)
+        immutable:=decode(immutableWire)
+        if len(immutableWire)!=584 || digest(immutableWire)!=selected.WireSHA ||
+            !bytes.Equal(wire(immutable),immutableWire) || hex.EncodeToString(immutable.Hash[:])!=selected.Hash ||
+            hex.EncodeToString(immutable.PublicKey)!=selected.PublicKey || hex.EncodeToString(immutable.Signature)!=selected.Signature {
+            t.Fatal("existing public original changed")
+        }
+        for _,dynamic:=range []bool{false,true} {
+            for _,variant:=range variants {
+                id:=leg+"-dp-"+strconv.FormatBool(dynamic)+"-"+variant
+                t.Run(id,func(t *testing.T) {
+                    sourceWire:=append([]byte(nil),immutableWire...)
+                    if variant=="protobuf_repeated_version" { sourceWire=append(sourceWire,0x08,0x01) }
+                    block:=decode(sourceWire)
+                    switch variant {
+                    case "trailing_abi_byte":block.Data=append(append([]byte(nil),block.Data...),0)
+                    case "changed_witness_byte":
+                        block.Data=append([]byte(nil),block.Data...)
+                        if len(block.Data)==0 { t.Fatal("missing declared witness bytes") }
+                        block.Data[len(block.Data)-1]^=1
+                    case "missing_outer_signature":block.Signature=nil
+                    case "corrupt_outer_signature":
+                        block.Signature=append([]byte(nil),block.Signature...)
+                        if len(block.Signature)!=64 { t.Fatal("declared outer signature unavailable") }
+                        block.Signature[0]^=1
+                    }
+                    entryWire:=wire(block)
+                    entryData:=append([]byte(nil),block.Data...)
+                    entrySignature:=append([]byte(nil),block.Signature...)
+                    base:=account.NewAccountStore(block.Address,db.NewMemDB())
+                    state,e:=db.NewPatchFromDump(raw(selected.Patch))
+                    if e!=nil || base.Apply(state)!=nil || digest(patch(base))!=selected.PatchSHA ||
+                        !bytes.Equal(patch(base),raw(selected.Patch)) {
+                        t.Fatal("exact declared predecessor snapshot required")
+                    }
+                    predecessor:=decode(raw(selected.Frontier.Wire))
+                    if predecessor.Identifier()!=block.Previous() || base.Identifier()!=block.Previous() {
+                        t.Fatal("original predecessor selection differs")
+                    }
+                    height,e:=strconv.ParseUint(selected.Momentum.Height,10,64)
+                    timestamp,te:=strconv.ParseInt(selected.Momentum.Timestamp,10,64)
+                    if e!=nil || te!=nil { t.Fatal("declared momentum unavailable") }
+                    at:=time.Unix(timestamp,0)
+                    current:=&nom.Momentum{ChainIdentifier:69,Hash:block.MomentumAcknowledged.Hash,Height:height,Timestamp:&at}
+                    if current.Identifier()!=block.MomentumAcknowledged || hex.EncodeToString(current.Hash[:])!=selected.Momentum.Hash {
+                        t.Fatal("original acknowledgement selection differs")
+                    }
+                    ledger:=&researchSupervisorLedger{current:current,
+                        momenta:map[uint64]*nom.Momentum{height:current},
+                        blocks:map[types.Hash]*nom.AccountBlock{predecessor.Hash:predecessor},
+                        confirmations:map[types.Hash]uint64{},
+                        accounts:map[types.Address]store.Account{block.Address:base,
+                            types.PtlcContract:account.NewAccountStore(types.PtlcContract,db.NewMemDB())},
+                        mailbox:mailbox.NewAccountMailbox(types.PtlcContract,db.NewMemDB())}
+                    view:=&researchKeylessChain{researchSupervisorChain:&researchSupervisorChain{ledger:ledger},dynamic:dynamic}
+                    supervisor:=NewSupervisor(view,&researchSupervisorConsensus{ledger:ledger})
+                    observed:=&researchKeylessVerifier{Verifier:supervisor.verifier}
+                    supervisor.verifier=observed
+                    before:=append([]byte(nil),patch(base)...)
+                    contractBefore:=append([]byte(nil),patch(ledger.accounts[types.PtlcContract])...)
+                    tx,applyErr:=supervisor.ApplyBlock(block)
+                    result:=label(applyErr)
+                    want:="PASS"
+                    switch variant {
+                    case "trailing_abi_byte":if dynamic { want="TRAILING_DATA" }
+                    case "changed_witness_byte":want="ErrABHashInvalid"
+                    case "missing_outer_signature":want="ErrABSignatureMissing"
+                    case "corrupt_outer_signature":want="ErrABSignatureInvalid"
+                    }
+                    if result!=want || (tx!=nil)!=(result=="PASS") {
+                        t.Fatal("declared source inference differs; retain original evidence",id,result,want)
+                    }
+                    if !bytes.Equal(before,patch(base)) ||
+                        !bytes.Equal(contractBefore,patch(ledger.accounts[types.PtlcContract])) ||
+                        !bytes.Equal(wire(immutable),immutableWire) ||
+                        !bytes.Equal(block.Signature,entrySignature) ||
+                        !bytes.Equal(block.PublicKey,immutable.PublicKey) || block.Hash!=immutable.Hash {
+                        t.Fatal("base state or immutable original changed")
+                    }
+                    packedDelta:=""
+                    packedHashMatches:=false
+                    packedDataSHA:=""
+                    if observed.packed!=nil {
+                        packedDelta=hex.EncodeToString(observed.packed.Changes.Dump())
+                        packedHashMatches=observed.packed.Block.Hash==observed.packed.Block.ComputeHash()
+                        packedDataSHA=digest(observed.packed.Block.Data)
+                    }
+                    outputWire:=""
+                    if tx!=nil { outputWire=hex.EncodeToString(wire(tx.Block)) }
+                    records[id]=map[string]interface{}{
+                        "leg":leg,"variant":variant,"declared_dynamic_plasma":dynamic,
+                        "original_wire_sha256":selected.WireSHA,"original_hash_hex":selected.Hash,
+                        "raw_decode_input_sha256":digest(sourceWire),"raw_decode_input_bytes":len(sourceWire),
+                        "entry_wire_sha256":digest(entryWire),"entry_data_sha256":digest(entryData),
+                        "post_call_wire_sha256":digest(wire(block)),"post_call_data_sha256":digest(block.Data),
+                        "original_signature_sha256":digest(immutable.Signature),
+                        "entry_signature_sha256":digest(entrySignature),
+                        "post_call_signature_sha256":digest(block.Signature),
+                        "selected_signature_preserved":true,
+                        "public_key_preserved":bytes.Equal(block.PublicKey,immutable.PublicKey),
+                        "advertised_hash_preserved":block.Hash==immutable.Hash,
+                        "returned_error":result,"transaction_present":tx!=nil,
+                        "verifier_trace":observed.trace,"spork_reads":view.sporkReads,
+                        "pack_entered":observed.packed!=nil,"packed_delta_hex":packedDelta,
+                        "packed_hash_matches":packedHashMatches,"packed_data_sha256":packedDataSHA,
+                        "returned_wire_hex":outputWire,"base_patch_sha256":digest(before),
+                        "base_unchanged":true,"immutable_original_unchanged":true,
+                        "application_signer_calls":0,"application_admission":"NOT_ESTABLISHED",
+                    }
+                })
+            }
+        }
+    }
+    if len(records)!=24 { t.Fatal("complete source comparison scope required") }
+    for _,id:=range input.Cases { if records[id]==nil { t.Fatal("missing declared comparison") } }
+    report,e:=json.Marshal(map[string]interface{}{
+        "schema":"private-nom-5cb-keyless-original-supervisor-result-v1",
+        "selected_core_commit":input.Core,"records":records,"new_keys":0,"new_signatures":0,
+        "scope":"SELECTED SUPERVISOR ENTRY WITH DECLARED SYNTHETIC MEMORY VIEWS",
+        "application":"NO-GO","core":"NO-GO","independent_assessment":"UNFILLED",
+        "pool_admission":"NOT_CALLED","chain_insertion":"NOT_CALLED",
+        "journal_source_upgrade":"NOT_SELECTED","transaction_broadcast":"NOT_PERFORMED",
+    })
+    if e!=nil { t.Fatal("source comparison report unavailable") }
+    t.Log(string(report))
+}

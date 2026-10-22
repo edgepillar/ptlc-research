@@ -1,0 +1,441 @@
+// Independently written MIT overlay; separately obtained GPL source is unchanged.
+package verifier
+
+import (
+	"bytes"
+	"crypto/ed25519"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"os"
+	"strconv"
+	"testing"
+
+	"github.com/zenon-network/go-zenon/chain"
+	"github.com/zenon-network/go-zenon/chain/account"
+	"github.com/zenon-network/go-zenon/chain/account/mailbox"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/chain/store"
+	"github.com/zenon-network/go-zenon/common/db"
+	"github.com/zenon-network/go-zenon/common/types"
+)
+
+// Unselected methods intentionally panic. No node, account pool or VM is started.
+type researchAccountContextLedger struct {
+	store.Momentum
+	known        *nom.Momentum
+	frontier     types.HashHeight
+	send         *nom.AccountBlock
+	confirmation uint64
+	account      store.Account
+	mailbox      store.AccountMailbox
+}
+
+func (s *researchAccountContextLedger) ChainIdentifier() uint64      { return s.known.ChainIdentifier }
+func (s *researchAccountContextLedger) Identifier() types.HashHeight { return s.frontier }
+func (s *researchAccountContextLedger) GetFrontierMomentum() (*nom.Momentum, error) {
+	return s.known, nil
+}
+func (s *researchAccountContextLedger) GetMomentumByHeight(h uint64) (*nom.Momentum, error) {
+	if h == s.known.Height {
+		return s.known, nil
+	}
+	return nil, nil
+}
+func (s *researchAccountContextLedger) GetAccountBlockByHash(h types.Hash) (*nom.AccountBlock, error) {
+	if s.send != nil && h == s.send.Hash {
+		return s.send.Copy(), nil
+	}
+	return nil, nil
+}
+func (s *researchAccountContextLedger) GetBlockConfirmationHeight(h types.Hash) (uint64, error) {
+	if s.send != nil && h == s.send.Hash {
+		return s.confirmation, nil
+	}
+	return 0, nil
+}
+func (s *researchAccountContextLedger) GetAccountStore(a types.Address) store.Account {
+	if a != *s.account.Address() {
+		panic("unselected global account")
+	}
+	return s.account
+}
+func (s *researchAccountContextLedger) GetAccountMailbox(a types.Address) store.AccountMailbox {
+	if a != s.mailbox.Address() {
+		panic("unselected mailbox")
+	}
+	return s.mailbox
+}
+
+type researchAccountContextChain struct {
+	chain.Chain
+	ledger          *researchAccountContextLedger
+	missingMomentum bool
+	queries         []map[string]string
+}
+
+func (s *researchAccountContextChain) GetFrontierMomentumStore() store.Momentum { return s.ledger }
+func (s *researchAccountContextChain) GetMomentumStore(h types.HashHeight) store.Momentum {
+	if s.missingMomentum || h != s.ledger.known.Identifier() {
+		return nil
+	}
+	return s.ledger
+}
+func (s *researchAccountContextChain) GetAccountStore(a types.Address, h types.HashHeight) store.Account {
+	s.queries = append(s.queries, map[string]string{"address_hex": hex.EncodeToString(a[:]), "hash_hex": hex.EncodeToString(h.Hash[:]), "height": strconv.FormatUint(h.Height, 10)})
+	if a == *s.ledger.account.Address() && h == s.ledger.account.Identifier() {
+		return s.ledger.account
+	}
+	return nil
+}
+
+func TestResearchNoMAccountContext(t *testing.T) {
+	read := func(name string, value interface{}) {
+		b, err := os.ReadFile(os.Getenv(name))
+		if err != nil || json.Unmarshal(b, value) != nil {
+			t.Fatal("selected fresh input unavailable")
+		}
+	}
+	var plan struct {
+		Schema  string
+		Vectors []struct {
+			ID, Leg, Role, Kind string
+			Structural          string `json:"expect_structural"`
+			Transaction         string `json:"expect_transaction"`
+		}
+	}
+	var input struct {
+		Schema  string
+		Records map[string]struct {
+			Original string `json:"original_wire_hex"`
+			Wire     string `json:"wire_hex"`
+		}
+		Patches map[string]map[string]string
+	}
+	read("PTLC_NOM_CONTEXT_PLAN", &plan)
+	read("PTLC_NOM_CONTEXT_SOURCE", &input)
+	if plan.Schema != "zenon-nom-account-context-plan-v1" || len(plan.Vectors) != 84 || input.Schema != "zenon-nom-account-context-input-v1" || len(input.Records) != 126 || len(input.Patches) != 2 {
+		t.Fatal("complete selected source subject required")
+	}
+	raw := func(s string) []byte {
+		b, err := hex.DecodeString(s)
+		if err != nil {
+			t.Fatal("invalid public bytes")
+		}
+		return b
+	}
+	encode := func(b *nom.AccountBlock) []byte {
+		wire, err := b.Serialize()
+		if err != nil || len(wire) > 8192 {
+			t.Fatal("invalid selected typed bytes")
+		}
+		return wire
+	}
+	decode := func(s string) *nom.AccountBlock {
+		b, err := nom.DeserializeAccountBlock(raw(s))
+		if err != nil {
+			t.Fatal("selected source bytes refused")
+		}
+		return b
+	}
+	num := func(n uint64) string { return strconv.FormatUint(n, 10) }
+	hx := func(h types.Hash) string { return hex.EncodeToString(h[:]) }
+	hh := func(h types.HashHeight) map[string]string {
+		return map[string]string{"hash_hex": hx(h.Hash), "height": num(h.Height)}
+	}
+	digest := func(b []byte) string { h := sha256.Sum256(b); return hex.EncodeToString(h[:]) }
+	label := func(err error) string {
+		if err == nil {
+			return "PASS"
+		}
+		for name, e := range map[string]error{"ErrABPreviousMissing": ErrABPreviousMissing, "ErrABPrevHasCementedOnTop": ErrABPrevHasCementedOnTop,
+			"ErrABPrevHeightExists": ErrABPrevHeightExists, "ErrABMAGap": ErrABMAGap, "ErrABMAMissing": ErrABMAMissing,
+			"ErrABSignatureMissing": ErrABSignatureMissing, "ErrABSignatureInvalid": ErrABSignatureInvalid, "ErrABHashInvalid": ErrABHashInvalid,
+			"ErrABFromBlockReceiverMismatch": ErrABFromBlockReceiverMismatch, "ErrABFromBlockAlreadyReceived": ErrABFromBlockAlreadyReceived,
+			"ErrABFromBlockMissing": ErrABFromBlockMissing, "ErrABSequencerNothing": ErrABSequencerNothing, "ErrABSequencerNotNext": ErrABSequencerNotNext,
+			"ErrABMAInvalidForAutoGenerated": ErrABMAInvalidForAutoGenerated, "ErrABMAMustBeTheSame": ErrABMAMustBeTheSame,
+			"ErrABDescendantVerify": ErrABDescendantVerify, "ErrABPublicKeyMustBeZero": ErrABPublicKeyMustBeZero, "ErrABTypeInvalidExternal": ErrABTypeInvalidExternal} {
+			if errors.Is(err, e) {
+				return name
+			}
+		}
+		t.Fatal("unselected source error")
+		return "UNSELECTED"
+	}
+	seen := map[string]bool{}
+	for _, v := range plan.Vectors {
+		if seen[v.ID] || v.ID == "" {
+			t.Fatal("ambiguous control")
+		}
+		seen[v.ID] = true
+		t.Run(v.ID, func(t *testing.T) {
+			selected := func(role, kind string) *nom.AccountBlock {
+				r, ok := input.Records[v.Leg+"-"+role+"-"+kind]
+				if !ok {
+					t.Fatal("missing fresh public authorization role")
+				}
+				return decode(r.Wire)
+			}
+			kind := "empty-authorization"
+			if v.Role == "funding" || v.Role == "unlock-send" || v.Role == "recipient-receive" {
+				kind = "unsigned"
+			}
+			original := selected(v.Role, kind)
+			originalWire := encode(original)
+			b := original.Copy()
+			// Deliberately public constants: no external seed or signing interface.
+			seed := bytes.Repeat([]byte{0x41}, 32)
+			if v.Leg == "short" {
+				seed = bytes.Repeat([]byte{0x42}, 32)
+			}
+			key := ed25519.NewKeyFromSeed(seed)
+			pub := key.Public().(ed25519.PublicKey)
+			sign := func(block *nom.AccountBlock) {
+				block.PublicKey = append([]byte(nil), pub...)
+				block.Hash = block.ComputeHash()
+				block.Signature = ed25519.Sign(key, block.Hash[:])
+			}
+			if v.Kind == "relocated" {
+				b = selected(v.Role, "relocated-authorized")
+			}
+			root := db.NewMemDB()
+			state := account.NewAccountStore(b.Address, root)
+			known := &nom.Momentum{ChainIdentifier: b.ChainIdentifier, Hash: b.MomentumAcknowledged.Hash, Height: b.MomentumAcknowledged.Height}
+			ledger := &researchAccountContextLedger{known: known, frontier: types.HashHeight{Hash: types.NewHash([]byte("public-context-frontier")), Height: ReceiverMismatchEnforcementHeight}, account: state}
+			chainView := &researchAccountContextChain{ledger: ledger}
+			adopt := func(block *nom.AccountBlock) {
+				if block.Address != *state.Address() || db.SetFrontier(root, block.Identifier(), encode(block)) != nil {
+					t.Fatal("explicit synthetic frontier adoption failed")
+				}
+			}
+			patchSelection := "NONE"
+			fixturePatch := []byte{}
+			if v.Role == "recipient-receive" && v.Kind != "relocated" && v.Kind != "wrong-recipient-at-enforcement" && v.Kind != "wrong-recipient-before-enforcement" && v.Kind != "wrong-recipient-high-ack-low-frontier" {
+				patchSelection = "before_hex"
+				if v.Kind == "post-vm-original" || v.Kind == "post-vm-successor" {
+					patchSelection = "after_hex"
+				}
+				fixturePatch = raw(input.Patches[v.Leg][patchSelection])
+				p, err := db.NewPatchFromDump(fixturePatch)
+				if err != nil || state.Apply(p) != nil {
+					t.Fatal("actual VM patch unavailable")
+				}
+			}
+			if v.Role == "create-receive" {
+				ledger.send = selected("funding", "unsigned")
+			}
+			if v.Role == "unlock-receive" {
+				ledger.send = selected("unlock-send", "unsigned")
+				adopt(selected("create-receive", "empty-authorization"))
+			}
+			if v.Role == "recipient-receive" {
+				ledger.send = selected("unlock-payout-0", "empty-authorization")
+			}
+			ledger.confirmation = b.MomentumAcknowledged.Height
+			mail := mailbox.NewAccountMailbox(b.Address, db.NewMemDB())
+			ledger.mailbox = mail
+			if ledger.send != nil && types.IsEmbeddedAddress(b.Address) {
+				mail.SequencerPushBack(ledger.send.Header())
+			}
+			if v.Role == "funding" && v.Kind != "original" && v.Kind != "relocated" {
+				b.Address = types.PubKeyToAddress(pub)
+				state = account.NewAccountStore(b.Address, root)
+				ledger.account = state
+				first := b.Copy()
+				first.Height = 1
+				first.PreviousHash = types.ZeroHash
+				first.PublicKey = nil
+				first.Signature = nil
+				if v.Kind == "next-ack-regression" {
+					first.MomentumAcknowledged.Height++
+				}
+				sign(first)
+				b = first.Copy()
+				if v.Kind != "reset-start" {
+					adopt(first)
+					b.Height = 2
+					b.PreviousHash = first.Hash
+					b.MomentumAcknowledged = original.MomentumAcknowledged
+					sign(b)
+				}
+				switch v.Kind {
+				case "next-wrong-previous", "next-cemented-competitor":
+					b.PreviousHash[0] ^= 1
+					sign(b)
+				case "next-missing-ack", "next-unsigned-missing-ack":
+					b.MomentumAcknowledged.Height++
+					sign(b)
+				case "next-wrong-ack-hash":
+					b.MomentumAcknowledged.Hash[0] ^= 1
+					sign(b)
+				case "next-bad-signature":
+					b.Signature[0] ^= 1
+				case "next-old-hash":
+					b.Data = append(b.Data, 0x7f)
+				}
+				if v.Kind == "next-unsigned" || v.Kind == "next-unsigned-missing-ack" {
+					b.Signature = nil
+				}
+				if v.Kind == "next-cemented-ancestor" || v.Kind == "next-cemented-competitor" {
+					second := first.Copy()
+					second.Height = 2
+					second.PreviousHash = first.Hash
+					sign(second)
+					adopt(second)
+					third := second.Copy()
+					third.Height = 3
+					third.PreviousHash = second.Hash
+					sign(third)
+					adopt(third)
+				}
+			}
+			switch v.Kind {
+			case "post-vm-successor":
+				frontier, err := state.Frontier()
+				if err != nil || frontier == nil {
+					t.Fatal("actual received frontier missing")
+				}
+				b.Height = frontier.Height + 1
+				b.PreviousHash = frontier.Hash
+				b.Hash = b.ComputeHash()
+			case "missing-payout":
+				ledger.send = nil
+			case "unconfirmed-payout", "wrong-confirmation":
+				ledger.confirmation++
+			case "wrong-recipient-at-enforcement", "wrong-recipient-before-enforcement", "wrong-recipient-high-ack-low-frontier":
+				b.Address = selected("funding", "unsigned").Address
+				b.Hash = b.ComputeHash()
+				state = account.NewAccountStore(b.Address, root)
+				ledger.account = state
+				if v.Kind != "wrong-recipient-at-enforcement" {
+					ledger.frontier.Height--
+				}
+				if v.Kind == "wrong-recipient-high-ack-low-frontier" {
+					b.MomentumAcknowledged.Height = ReceiverMismatchEnforcementHeight
+					known.Height = b.MomentumAcknowledged.Height
+					b.Hash = b.ComputeHash()
+				}
+			case "missing-momentum-store":
+				chainView.missingMomentum = true
+			case "empty-mailbox":
+				ledger.mailbox = mailbox.NewAccountMailbox(b.Address, db.NewMemDB())
+			case "wrong-mailbox-head":
+				ledger.mailbox = mailbox.NewAccountMailbox(b.Address, db.NewMemDB())
+				header := ledger.send.Header()
+				header.Hash[0] ^= 1
+				ledger.mailbox.SequencerPushBack(header)
+			case "received-marker":
+				if state.MarkAsReceived(b.FromBlockHash) != nil {
+					t.Fatal("synthetic marker setup failed")
+				}
+			case "header-predecessor-store":
+				adopt(selected("unlock-payout-0", "empty-authorization"))
+			case "child-wrong-ack":
+				b.DescendantBlocks[0].MomentumAcknowledged.Hash[0] ^= 1
+				b.DescendantBlocks[0].Hash = b.DescendantBlocks[0].ComputeHash()
+				b.Hash = b.ComputeHash()
+			case "child-wrong-version":
+				b.DescendantBlocks[0].Version = 2
+				b.DescendantBlocks[0].Hash = b.DescendantBlocks[0].ComputeHash()
+				b.Hash = b.ComputeHash()
+			case "child-wrong-hash":
+				b.DescendantBlocks[0].Hash[0] ^= 1
+				b.Hash = b.ComputeHash()
+			case "missing-confirmation":
+				ledger.confirmation = 0
+			case "nonempty-key":
+				b.PublicKey = pub
+			case "rehashed":
+				b.Data = []byte{0x7f}
+				b.Hash = b.ComputeHash()
+			case "nonempty-signature":
+				b.Signature = bytes.Repeat([]byte{0x51}, 64)
+			}
+			wire := encode(b)
+			decoded := decode(hex.EncodeToString(wire))
+			verifier := NewAccountBlockVerifier(chainView, nil)
+			// This test-only wrapper records a source panic; it never converts it to admission.
+			observe := func(call func() error) (result string) {
+				defer func() {
+					if recover() != nil {
+						result = "SOURCE_PANIC"
+					}
+				}()
+				return label(call())
+			}
+			structural := observe(func() error { return verifier.AccountBlock(decoded) })
+			structuralQueries := chainView.queries
+			chainView.queries = nil
+			transaction := observe(func() error { return verifier.AccountBlockTransaction(&nom.AccountBlockTransaction{Block: decoded}) })
+			transactionQueries := chainView.queries
+			if structural != v.Structural || transaction != v.Transaction {
+				t.Fatalf("selected account entry points differ: %s / %s", structural, transaction)
+			}
+			patch, err := state.Changes()
+			if err != nil {
+				t.Fatal("actual memory account state unavailable")
+			}
+			frontier, err := state.Frontier()
+			if err != nil {
+				t.Fatal("actual account frontier unavailable")
+			}
+			frontierWire := []byte{}
+			if frontier != nil {
+				frontierWire = encode(frontier)
+			}
+			sendWire := []byte{}
+			if ledger.send != nil {
+				sendWire = encode(ledger.send)
+			}
+			mailHeaders := []map[string]string{}
+			selectedSequencerSize, sequencerErr := ledger.mailbox.SequencerSize()
+			if sequencerErr != nil {
+				t.Fatal("selected memory sequencer size lookup failed", sequencerErr)
+			}
+			for i := uint64(1); i <= selectedSequencerSize; i++ {
+				h, err := ledger.mailbox.SequencerByHeight(i)
+				if err != nil {
+					t.Fatal("selected memory sequencer lookup failed", err)
+				}
+				mailHeaders = append(mailHeaders, map[string]string{"address_hex": hex.EncodeToString(h.Address[:]), "hash_hex": hx(h.Hash), "height": num(h.Height)})
+			}
+			if structuralQueries == nil {
+				structuralQueries = []map[string]string{}
+			}
+			if transactionQueries == nil {
+				transactionQueries = []map[string]string{}
+			}
+			fields := func(block *nom.AccountBlock) map[string]interface{} {
+				descendants := []string{}
+				for _, child := range block.DescendantBlocks {
+					descendants = append(descendants, hx(child.Hash))
+				}
+				return map[string]interface{}{"version": num(block.Version), "chain_id": num(block.ChainIdentifier), "block_type": num(block.BlockType),
+					"previous_hash_hex": hx(block.PreviousHash), "height": num(block.Height), "momentum_hash_hex": hx(block.MomentumAcknowledged.Hash), "momentum_height": num(block.MomentumAcknowledged.Height),
+					"address_hex": hex.EncodeToString(block.Address[:]), "to_address_hex": hex.EncodeToString(block.ToAddress[:]), "amount": block.Amount.String(), "token_standard_hex": hex.EncodeToString(block.TokenStandard[:]),
+					"from_block_hash_hex": hx(block.FromBlockHash), "descendant_hashes_hex": descendants, "data_hex": hex.EncodeToString(block.Data), "fused_plasma": num(block.FusedPlasma), "difficulty": num(block.Difficulty), "nonce_hex": hex.EncodeToString(block.Nonce.Data[:])}
+			}
+			children := []map[string]interface{}{}
+			for _, child := range decoded.DescendantBlocks {
+				children = append(children, map[string]interface{}{"block": fields(child), "hash_hex": hx(child.Hash), "computed_hash_hex": hx(child.ComputeHash()), "wire_hex": hex.EncodeToString(encode(child))})
+			}
+			context := map[string]interface{}{"account_address_hex": hex.EncodeToString(state.Address().Bytes()), "account_frontier": hh(state.Identifier()), "account_frontier_wire_hex": hex.EncodeToString(frontierWire),
+				"account_state_patch_hex": hex.EncodeToString(patch.Dump()), "account_state_patch_sha256": digest(patch.Dump()), "vm_patch_selection": patchSelection, "vm_patch_sha256": digest(fixturePatch),
+				"known_momentum": hh(known.Identifier()), "frontier_momentum": hh(ledger.frontier), "confirmation_height": num(ledger.confirmation), "send_wire_hex": hex.EncodeToString(sendWire),
+				"received_marker": state.IsReceived(decoded.FromBlockHash), "mailbox_headers": mailHeaders, "missing_momentum_store": chainView.missingMomentum,
+				"structural_account_queries": structuralQueries, "transaction_account_queries": transactionQueries}
+			record := map[string]interface{}{"schema": "zenon-nom-account-context-record-v1", "id": v.ID, "leg": v.Leg, "role": v.Role, "kind": v.Kind,
+				"source_hash_hex": hx(original.Hash), "original_wire_hex": hex.EncodeToString(originalWire), "wire_hex": hex.EncodeToString(wire), "wire_sha256": digest(wire),
+				"block": fields(decoded), "roundtrip_wire_hex": hex.EncodeToString(encode(decoded)), "hash_hex": hx(decoded.Hash), "computed_hash_hex": hx(decoded.ComputeHash()), "address_hex": hex.EncodeToString(decoded.Address[:]), "height": num(decoded.Height),
+				"header_previous": hh(types.HashHeight{Hash: decoded.PreviousHash, Height: decoded.Height - 1}), "semantic_previous": hh(decoded.Previous()), "acknowledged": hh(decoded.MomentumAcknowledged),
+				"public_key_hex": hex.EncodeToString(decoded.PublicKey), "signature_hex": hex.EncodeToString(decoded.Signature), "children": children, "context": context,
+				"checks": map[string]string{"structural": structural, "transaction": transaction}}
+			out, err := json.Marshal(record)
+			if err != nil {
+				t.Fatal("public projection unavailable")
+			}
+			t.Log("PTLC_RESEARCH_ACCOUNT_CONTEXT_RECORD " + string(out))
+		})
+	}
+}
