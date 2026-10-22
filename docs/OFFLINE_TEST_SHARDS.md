@@ -102,9 +102,9 @@ alone would not reduce that model's whole-workflow bound. No future speedup,
 runner-minute saving or storage reduction is claimed from this permutation.
 No test selection, timeout, assertion, concurrency limit or artifact gate changes.
 
-## Current same-source ordering refresh
+## Previous same-source ordering refresh
 
-The current order uses two separately accepted attempts at the identical
+The previous order used two separately accepted attempts at the identical
 [`9564b1f` source](https://github.com/edgepillar/ptlc-research/tree/9564b1f297b65c3a15d2834f6f143468fd042581):
 [PR run 39539404914/1](https://github.com/edgepillar/ptlc-research/actions/runs/39539404914/attempts/1)
 and [main run 39543559956/1](https://github.com/edgepillar/ptlc-research/actions/runs/39543559956/attempts/1).
@@ -135,6 +135,46 @@ separate main-push acceptance must still establish exact source and complete cas
 coverage. This permutation adds no source-tree or compiler-cache copy, removes no
 test execution and claims no runner-minute saving or physical disk reclaim.
 Application/core remain NO-GO; independent assessment and AS1-AS7 remain UNFILLED.
+
+## Current ABI-source ordering refresh
+
+The current include order uses the separately accepted
+[PR attempt 39679784309/1](https://github.com/edgepillar/ptlc-research/actions/runs/39679784309/attempts/1)
+and [main attempt 39688222624/1](https://github.com/edgepillar/ptlc-research/actions/runs/39688222624/attempts/1)
+at the identical [`062585f` source](https://github.com/edgepillar/ptlc-research/tree/062585f2ca6587fc7b8b894b587c74ff3e270a38).
+Both passed all 25 jobs. Their original archives bound four complete 4,158-case
+profiles, sixteen actual regression streams and seven original artifact families.
+The module weights, test bodies and module assignments match between the pair.
+The earlier orders above remain historical evidence.
+
+The same sixteen include entries are sorted by the larger observed whole-job
+duration in this pair, with the job name as a deterministic tie-break. The module
+weights and partitions stay unchanged: a separate median-normalized weight
+proposal projected a 2.25% and 2.87% case-clock maximum increase for the two macOS
+Python 3.11 samples. That proposal is not selected by this ordering refresh.
+Case clocks exclude class setup and are not complete job timings.
+
+| Same-source timing sample | Previous include order | Refreshed include order |
+| --- | ---: | ---: |
+| PR attempt 39679784309/1 | 2058 seconds | 1916 seconds |
+| Main attempt 39688222624/1 | 2025 seconds | 1935 seconds |
+
+These are simulations using eight identical, continuously available slots and
+fixed original whole-job durations. The longest other jobs took
+1787 and 1898 seconds respectively.
+The model excludes runner availability, queueing, actual start order, other-job
+interactions and future source effects. It is not an observed execution of the
+new order or a controlled speedup. GitHub's
+[matrix documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations)
+describes job creation and the concurrency bound; those mechanisms do not qualify
+future runner availability or this model's assumptions.
+
+The eight-slot limit, all sixteen combinations, assertions, timeouts, source pins,
+commands and artifact gates remain unchanged. Fresh PR acceptance and a separate
+main-push acceptance remain required, including all four complete case counters.
+This permutation introduces no source-tree or compiler-cache copy and makes no
+runner-minute saving or physical disk reclaim claim. Application/core remain
+NO-GO; independent assessment and AS1-AS7 remain UNFILLED.
 
 ## Actual outcome protocol
 
