@@ -1,0 +1,293 @@
+// Independently written MIT overlay; unchanged GPL source is separately obtained.
+package vm
+
+import (
+	"bytes"
+	"crypto/ed25519"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"math/big"
+	"strconv"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/zenon-network/go-zenon/chain"
+	"github.com/zenon-network/go-zenon/chain/account"
+	"github.com/zenon-network/go-zenon/chain/account/mailbox"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/chain/store"
+	"github.com/zenon-network/go-zenon/common/db"
+	"github.com/zenon-network/go-zenon/common/types"
+)
+
+func TestResearchNoMPoolDependencies(t *testing.T) {
+	hx := func(b []byte) string { return hex.EncodeToString(b) }
+	num := func(n uint64) string { return strconv.FormatUint(n, 10) }
+	digest := func(b []byte) string { h := sha256.Sum256(b); return hx(h[:]) }
+	hh := func(h types.HashHeight) map[string]string {
+		return map[string]string{"hash_hex": hx(h.Hash[:]), "height": num(h.Height)}
+	}
+	wire := func(b *nom.AccountBlock) []byte {
+		v, e := b.Serialize()
+		if e != nil || len(v) > 8192 {
+			t.Fatal("selected wire unavailable")
+		}
+		return v
+	}
+	dump := func(s interface{}) []byte {
+		v, ok := s.(interface {
+			NewIterator([]byte) db.StorageIterator
+			Has([]byte) (bool, error)
+		})
+		if !ok {
+			t.Fatal("actual logical iterator required")
+		}
+		it := v.NewIterator(nil)
+		defer it.Release()
+		p := db.NewPatch()
+		for it.Next() {
+			value := it.Value()
+			if value == nil {
+				has, e := v.Has(it.Key())
+				if e != nil || has {
+					t.Fatal("tombstone presence differs")
+				}
+				continue
+			}
+			p.Put(append([]byte(nil), it.Key()...), append([]byte(nil), value...))
+		}
+		if it.Error() != nil {
+			t.Fatal("complete logical view unavailable")
+		}
+		return p.Dump()
+	}
+	encode := func(b *nom.AccountBlock) map[string]interface{} {
+		w := wire(b)
+		round, e := nom.DeserializeAccountBlock(w)
+		if e != nil || !bytes.Equal(w, wire(round)) {
+			t.Fatal("exact round trip differs")
+		}
+		return map[string]interface{}{"hash_hex": hx(b.Hash[:]), "computed_hash_hex": hx(b.ComputeHash().Bytes()), "wire_hex": hx(w), "wire_sha256": digest(w), "roundtrip_wire_hex": hx(wire(round)),
+			"public_key_hex": hx(b.PublicKey), "signature_hex": hx(b.Signature), "children": []interface{}{}, "changes_hash_hex": hx(b.ChangesHash[:]), "semantic_previous": hh(b.Previous()),
+			"block": map[string]interface{}{"version": num(b.Version), "chain_id": num(b.ChainIdentifier), "block_type": num(b.BlockType), "address_hex": hx(b.Address[:]), "to_address_hex": hx(b.ToAddress[:]), "height": num(b.Height), "previous_hash_hex": hx(b.PreviousHash[:]), "momentum_hash_hex": hx(b.MomentumAcknowledged.Hash[:]), "momentum_height": num(b.MomentumAcknowledged.Height), "amount": b.Amount.String(), "token_standard_hex": hx(b.TokenStandard[:]), "from_block_hash_hex": hx(b.FromBlockHash[:]), "descendant_hashes_hex": []string{}, "data_hex": hx(b.Data), "fused_plasma": num(b.FusedPlasma), "difficulty": num(b.Difficulty), "nonce_hex": hx(b.Nonce.Data[:])}}
+	}
+	for _, kind := range []string{"included-send", "included-send-without-suffix", "empty-inclusion-control"} {
+		t.Run(kind, func(t *testing.T) {
+			roles := []string{"sender", "recipient", "unrelated"}
+			keys := map[string]ed25519.PrivateKey{}
+			addresses := map[string]types.Address{}
+			roots := map[types.Address]db.DB{}
+			ledger := &researchSupervisorLedger{momenta: map[uint64]*nom.Momentum{}, blocks: map[types.Hash]*nom.AccountBlock{}, confirmations: map[types.Hash]uint64{}, accounts: map[types.Address]store.Account{}}
+			for i, role := range roles {
+				keys[role] = ed25519.NewKeyFromSeed(bytes.Repeat([]byte{byte(0x61 + i)}, 32))
+				addresses[role] = types.PubKeyToAddress(keys[role].Public().(ed25519.PublicKey))
+				a := addresses[role]
+				roots[a] = db.NewMemDB()
+				ledger.accounts[a] = account.NewAccountStore(a, roots[a])
+			}
+			for i := uint64(0); i < 2; i++ {
+				now := time.Unix(100+int64(i), 0)
+				m := &nom.Momentum{ChainIdentifier: 69, Height: 10109300 + i, Hash: types.NewHash([]byte("public-nom-pool-dependencies-v1:momentum-" + num(i))), Timestamp: &now}
+				ledger.momenta[m.Height] = m
+			}
+			m0, m1 := ledger.momenta[10109300], ledger.momenta[10109301]
+			delete(ledger.momenta, m1.Height)
+			ledger.current = m0
+			mailRoot := db.NewMemDB()
+			ledger.mailbox = mailbox.NewAccountMailbox(addresses["recipient"], mailRoot)
+			pool := chain.NewAccountPool(&researchPoolStable{roots: roots})
+			view := &researchPoolChain{researchSupervisorChain: &researchSupervisorChain{ledger: ledger}, pool: pool}
+			supervisor := NewSupervisor(view, &researchSupervisorConsensus{ledger: ledger})
+			calls := 0
+			originals := map[string]*nom.AccountBlock{}
+			candidates := map[string]interface{}{}
+			trace := []interface{}{}
+			checkpoint := func(readPool bool) map[string]interface{} {
+				result := map[string]interface{}{}
+				for _, role := range roles {
+					a := addresses[role]
+					item := map[string]interface{}{"stable_frontier": hh(ledger.accounts[a].Identifier()), "stable_state_dump_hex": hx(dump(ledger.accounts[a]))}
+					if readPool {
+						pending := pool.GetUncommittedAccountBlocksByAddress(a)
+						wires := []string{}
+						for _, b := range pending {
+							wires = append(wires, hx(wire(b)))
+						}
+						s := pool.GetFrontierAccountStore(a)
+						item["frontier"] = hh(s.Identifier())
+						item["state_dump_hex"] = hx(dump(s))
+						item["pending_wires"] = wires
+					}
+					result[role] = item
+				}
+				sendHash := types.ZeroHash
+				if originals["stable-send"] != nil {
+					sendHash = originals["stable-send"].Hash
+				}
+				b, e := ledger.GetAccountBlockByHash(sendHash)
+				if e != nil {
+					t.Fatal("selected global lookup unavailable")
+				}
+				confirmation, e := ledger.GetBlockConfirmationHeight(sendHash)
+				if e != nil {
+					t.Fatal("selected confirmation unavailable")
+				}
+				bw := ""
+				if b != nil {
+					bw = hx(wire(b))
+				}
+				pending, e := ledger.mailbox.GetUnreceivedAccountBlockHashes(10)
+				if e != nil {
+					t.Fatal("selected mailbox unavailable")
+				}
+				hashes := []string{}
+				for _, h := range pending {
+					hashes = append(hashes, hx(h[:]))
+				}
+				selectedSequencerSize, sequencerErr := ledger.mailbox.SequencerSize()
+				if sequencerErr != nil {
+					t.Fatal("selected memory sequencer size lookup failed", sequencerErr)
+				}
+				result["ledger"] = map[string]interface{}{"momentum": hh(ledger.current.Identifier()), "send_wire_hex": bw, "confirmation_height": num(confirmation), "mailbox_dump_hex": hx(dump(mailRoot)), "mailbox_pending_hashes": hashes, "mailbox_sequencer_size": num(selectedSequencerSize), "known_send_count": num(uint64(len(ledger.blocks))), "known_confirmation_count": num(uint64(len(ledger.confirmations)))}
+				return result
+			}
+			checks := map[string]interface{}{"initial": checkpoint(true)}
+			admit := func(label, role string, receive bool) {
+				a := addresses[role]
+				previous := pool.GetFrontierAccountStore(a).Identifier()
+				used, e := pool.GetFrontierAccountStore(a).GetChainPlasma()
+				if e != nil {
+					t.Fatal("selected predecessor plasma unavailable")
+				}
+				signer := func(data []byte) ([]byte, *types.Address, []byte, error) {
+					calls++
+					return ed25519.Sign(keys[role], data), &a, keys[role].Public().(ed25519.PublicKey), nil
+				}
+				b := &nom.AccountBlock{BlockType: nom.BlockTypeUserSend, Address: a, ToAddress: addresses["recipient"], Amount: big.NewInt(0), FusedPlasma: 21000}
+				if receive {
+					b.BlockType = nom.BlockTypeUserReceive
+					b.ToAddress = types.ZeroAddress
+					b.FromBlockHash = originals["stable-send"].Hash
+				}
+				count := calls
+				tx, err := supervisor.GenerateFromTemplate(b, signer)
+				if err != nil || tx == nil || calls != count+1 || previous != pool.GetFrontierAccountStore(a).Identifier() {
+					t.Fatal("selected source generation failed or changed memory")
+				}
+				original := tx.Block.Copy()
+				delta := append([]byte(nil), tx.Changes.Dump()...)
+				originalWire := wire(original)
+				applied, err := supervisor.ApplyBlock(original.Copy())
+				base, baseErr := CanonicalBasePlasma(view, original)
+				if err != nil || baseErr != nil || applied == nil || calls != count+1 || !bytes.Equal(originalWire, wire(applied.Block)) || !bytes.Equal(delta, applied.Changes.Dump()) || previous != pool.GetFrontierAccountStore(a).Identifier() {
+					t.Fatal("exact source application differs")
+				}
+				available, e := AvailablePlasma(view.GetCacheStore(ledger.current.Identifier()), pool.GetAccountStore(a, previous))
+				if e != nil {
+					t.Fatal("selected available plasma unavailable")
+				}
+				originals[label] = original
+				candidates[label] = map[string]interface{}{"block": encode(original), "delta_patch_hex": hx(delta), "applied_wire_hex": hx(wire(applied.Block)), "applied_delta_hex": hx(applied.Changes.Dump()), "generation_signatures": 1, "apply_signatures": 0, "base_plasma": num(original.BasePlasma), "total_plasma": num(original.TotalPlasma), "canonical_base": num(base), "available_before": num(available), "used_before": used.String()}
+				locker := &sync.Mutex{}
+				locker.Lock()
+				err = pool.AddAccountBlockTransaction(locker, applied)
+				locker.Unlock()
+				if err != nil {
+					t.Fatal("normal selected admission failed")
+				}
+				p := pool.GetPatch(a, original.Identifier())
+				if p == nil {
+					t.Fatal("admitted source patch unavailable")
+				}
+				trace = append(trace, map[string]interface{}{"label": label, "result": "PASS", "changes_stolen": applied.Changes == nil, "retained_patch_hex": hx(p.Dump()), "frontier_before": hh(previous), "frontier_after": hh(pool.GetFrontierAccountStore(a).Identifier())})
+			}
+			admit("recipient-prefix", "recipient", false)
+			admit("unrelated-prefix", "unrelated", false)
+			admit("unrelated-second", "unrelated", false)
+			admit("stable-send", "sender", false)
+			checks["before-promotion"] = checkpoint(true)
+			// Caller-selected stable promotion is explicitly synthetic. This does
+			// not execute a momentum VM, authenticate a producer, or commit a chain.
+			send := originals["stable-send"]
+			stablePatch := append([]byte(nil), pool.GetPatch(send.Address, send.Identifier()).Dump()...)
+			promoted := db.NewMemDB()
+			pp, e := db.NewPatchFromDump(stablePatch)
+			if e != nil || promoted.Apply(pp) != nil {
+				t.Fatal("selected stable promotion failed")
+			}
+			roots[send.Address] = promoted
+			ledger.accounts[send.Address] = account.NewAccountStore(send.Address, promoted)
+			ledger.blocks[send.Hash] = send.Copy()
+			ledger.confirmations[send.Hash] = m1.Height
+			ledger.current = m1
+			ledger.momenta[m1.Height] = m1
+			if ledger.mailbox.MarkAsUnreceived(send.Hash) != nil {
+				t.Fatal("selected mailbox promotion failed")
+			}
+			callbacks, ok := pool.(interface {
+				InsertMomentum(*nom.DetailedMomentum)
+				DeleteMomentum(*nom.DetailedMomentum)
+			})
+			if !ok {
+				t.Fatal("actual public event callbacks required")
+			}
+			callbacks.InsertMomentum(&nom.DetailedMomentum{Momentum: m1, AccountBlocks: []*nom.AccountBlock{send.Copy()}})
+			checks["after-promotion"] = checkpoint(true)
+			admit("sender-pending", "sender", false)
+			admit("dependent-receive", "recipient", true)
+			if kind != "included-send-without-suffix" {
+				admit("recipient-suffix", "recipient", false)
+			}
+			admit("unrelated-stale", "unrelated", false)
+			checks["before-rollback"] = checkpoint(true)
+			// Reconstitute all selected stable, lookup, confirmation and mailbox
+			// inputs before the callback. No candidate is regenerated afterwards.
+			roots[send.Address] = db.NewMemDB()
+			ledger.accounts[send.Address] = account.NewAccountStore(send.Address, roots[send.Address])
+			ledger.blocks = map[types.Hash]*nom.AccountBlock{}
+			ledger.confirmations = map[types.Hash]uint64{}
+			mailRoot = db.NewMemDB()
+			ledger.mailbox = mailbox.NewAccountMailbox(addresses["recipient"], mailRoot)
+			ledger.current = m0
+			delete(ledger.momenta, m1.Height)
+			checks["reconstituted-before-callback"] = checkpoint(false)
+			included := []*nom.AccountBlock{send.Copy()}
+			callbackWires := []string{hx(wire(send))}
+			if kind == "empty-inclusion-control" {
+				included = []*nom.AccountBlock{}
+				callbackWires = []string{}
+			}
+			callbacks.DeleteMomentum(&nom.DetailedMomentum{Momentum: m1, AccountBlocks: included})
+			checks["after-callback"] = checkpoint(true)
+			queries := []interface{}{}
+			for _, label := range []string{"stable-send", "sender-pending", "recipient-prefix", "dependent-receive", "recipient-suffix", "unrelated-prefix", "unrelated-second", "unrelated-stale"} {
+				b := originals[label]
+				if b == nil {
+					continue
+				}
+				s := pool.GetAccountStore(b.Address, b.Identifier())
+				p := pool.GetPatch(b.Address, b.Identifier())
+				q := map[string]interface{}{"label": label, "present": s != nil, "patch_present": p != nil, "patch_hex": "", "frontier": nil, "state_dump_hex": ""}
+				if s != nil {
+					q["frontier"] = hh(s.Identifier())
+					q["state_dump_hex"] = hx(dump(s))
+				}
+				if p != nil {
+					q["patch_hex"] = hx(p.Dump())
+				}
+				queries = append(queries, q)
+			}
+			if calls != len(candidates) {
+				t.Fatal("callback or readback unexpectedly signed")
+			}
+			record := map[string]interface{}{"schema": "zenon-nom-pool-dependencies-record-v1", "id": kind, "candidates": candidates, "trace": trace, "checkpoints": checks, "promotion_patch_hex": hx(stablePatch), "rollback": map[string]interface{}{"momentum": hh(m1.Identifier()), "included_wires": callbackWires}, "views": queries, "signing_calls": calls, "fusion_amount": "20000000000", "dynamic_plasma": false, "post_callback_action": "READBACK ONLY; NO REPLAY, GENERATION OR RECOVERY"}
+			out, e := json.Marshal(record)
+			if e != nil {
+				t.Fatal("selected record encoding failed")
+			}
+			t.Logf("PTLC_RESEARCH_POOL_DEPENDENCY_RECORD %s", out)
+		})
+	}
+}

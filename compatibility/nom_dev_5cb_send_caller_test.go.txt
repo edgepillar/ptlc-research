@@ -1,0 +1,186 @@
+// Independently written MIT probe; selected GPL node source stays separate.
+// Declared synthetic context and fixture output supply no execution authority.
+// Direct applySend is not ApplyBlock, packBlock, account admission or recovery.
+package vm
+
+import (
+    "bytes"
+    "crypto/sha256"
+    "encoding/hex"
+    "encoding/json"
+    "errors"
+    "fmt"
+    "math/big"
+    "testing"
+
+    "github.com/zenon-network/go-zenon/chain/nom"
+    "github.com/zenon-network/go-zenon/common/types"
+    "github.com/zenon-network/go-zenon/vm/constants"
+    "github.com/zenon-network/go-zenon/vm/embedded/definition"
+    "github.com/zenon-network/go-zenon/vm/vm_context"
+)
+
+type researchSendCallerContext struct {
+    vm_context.AccountVmContext
+    dp, ptlc bool
+    balance *big.Int
+    reads, debits, dpReads, ptlcReads int
+    balanceOrder []string
+}
+func (c *researchSendCallerContext) IsAcceleratorSporkEnforced() bool { return false }
+func (c *researchSendCallerContext) IsBridgeAndLiquiditySporkEnforced() bool { return false }
+func (c *researchSendCallerContext) IsHtlcSporkEnforced() bool { return false }
+func (c *researchSendCallerContext) IsDynamicPlasmaSporkEnforced() bool {
+    c.dpReads++
+    return c.dp
+}
+func (c *researchSendCallerContext) IsPtlcSporkEnforced() bool {
+    c.ptlcReads++
+    return c.ptlc
+}
+func (c *researchSendCallerContext) GetBalance(token types.ZenonTokenStandard) (*big.Int,error) {
+    if token != types.ZnnTokenStandard { panic("unselected balance token") }
+    c.reads++
+    c.balanceOrder=append(c.balanceOrder,"READ")
+    return new(big.Int).Set(c.balance),nil
+}
+func (c *researchSendCallerContext) SubBalance(token *types.ZenonTokenStandard,amount *big.Int) {
+    if token==nil || *token!=types.ZnnTokenStandard || amount.Sign()<0 || c.balance.Cmp(amount)<0 {
+        panic("unselected debit")
+    }
+    c.debits++
+    c.balanceOrder=append(c.balanceOrder,"DEBIT")
+    c.balance.Sub(c.balance,amount)
+}
+var _ vm_context.AccountVmContext = (*researchSendCallerContext)(nil)
+
+func TestResearchNoMDevSendCaller(t *testing.T) {
+    decode:=func(value string) []byte {
+        data,err:=hex.DecodeString(value)
+        if err!=nil { t.Fatal("synthetic wire fixture invalid") }
+        return data
+    }
+	canonical := map[string][]byte{
+		"Create":      decode("22cec8ee000000000000000000000000000000000000000000000000000000006553f10a000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000031420000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"),
+		"Reclaim":     decode("7e003c8d1122330000000000000000000000000000000000000000000000000000000000"),
+		"Unlock":      decode("d33791d311223300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+		"ProxyUnlock": decode("8bffc216112233000000000000000000000000000000000000000000000000000000000000000000000000000000000000314200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+	}
+    clone:=func(data []byte) []byte { return append([]byte(nil),data...) }
+    syntheticUser:=types.Address{0x00,0x31,0x42}
+    if types.IsEmbeddedAddress(syntheticUser) { t.Fatal("synthetic user class differs") }
+    type scenario struct {
+        id,method string
+        data,after []byte
+        destination types.Address
+        dp,ptlc bool
+        amount,balance int64
+        result string
+        reads,debits,dpReads,ptlcReads int
+    }
+    cases:=make([]scenario,0,23)
+    add:=func(id,method string,data,after []byte,dp bool,result string,reads,debits,dpReads,ptlcReads int) {
+        amount:=int64(0)
+        if method=="Create" { amount=7 }
+        // This selected source queries DP again after static method validation.
+        if reads==1 && dpReads>0 { dpReads++ }
+        cases=append(cases,scenario{id:id,method:method,data:clone(data),after:clone(after),
+            destination:types.PtlcContract,dp:dp,ptlc:true,amount:amount,balance:100,
+            result:result,reads:reads,debits:debits,dpReads:dpReads,ptlcReads:ptlcReads})
+    }
+    for _,method:=range []string{"Create","Reclaim","Unlock","ProxyUnlock"} {
+        wire:=canonical[method]
+        add(method+"_canonical",method,wire,wire,true,"APPLIED",1,1,3,2)
+        trailing:=append(clone(wire),0)
+        add(method+"_trailing_dp_off",method,trailing,wire,false,"APPLIED",1,1,2,1)
+        add(method+"_trailing_dp_on",method,trailing,trailing,true,"TRAILING_DATA",0,0,3,2)
+    }
+    proxyAlias:=clone(canonical["ProxyUnlock"])
+    proxyAlias[36]=1
+    add("proxy_equal_length_alias","ProxyUnlock",proxyAlias,canonical["ProxyUnlock"],true,"APPLIED",1,1,3,2)
+    createAlias:=clone(canonical["Create"])
+    createAlias[36]=1
+    add("create_equal_length_alias","Create",createAlias,canonical["Create"],true,"APPLIED",1,1,3,2)
+    add("create_alias_before_insufficient_funds","Create",createAlias,canonical["Create"],false,"INSUFFICIENT_FUNDS",1,0,2,1)
+    cases[len(cases)-1].balance=3
+    add("create_canonical_insufficient_funds","Create",canonical["Create"],canonical["Create"],true,"INSUFFICIENT_FUNDS",1,0,3,2)
+    cases[len(cases)-1].balance=3
+    shortWitness,err:=definition.ABIPtlc.PackMethod("Unlock",types.Hash{0x11,0x22,0x33},make([]byte,31))
+    if err!=nil { t.Fatal("synthetic short witness encoding failed") }
+    add("unlock_width_before_balance","Unlock",shortWitness,shortWitness,true,"WITNESS_REFUSED",0,0,3,2)
+    add("ptlc_absent_before_balance","Reclaim",canonical["Reclaim"],canonical["Reclaim"],true,"CONTRACT_MISSING",0,0,1,1)
+    cases[len(cases)-1].ptlc=false
+    nonembedded:=append(clone(canonical["Create"]),0)
+    add("nonembedded_skips_abi","Create",nonembedded,nonembedded,true,"APPLIED",1,1,0,0)
+    cases[len(cases)-1].destination=syntheticUser
+    unknown:=types.PtlcContract
+    unknown[len(unknown)-2],unknown[len(unknown)-1]=0xfe,0x21
+    if !types.IsEmbeddedAddress(unknown) { t.Fatal("unknown contract class differs") }
+    add("unknown_contract_before_balance","Reclaim",canonical["Reclaim"],canonical["Reclaim"],true,"CONTRACT_MISSING",0,0,1,1)
+    cases[len(cases)-1].destination=unknown
+    selector:=clone(canonical["Unlock"])
+    copy(selector[:4],[]byte{0xde,0xad,0xbe,0xef})
+    add("unknown_selector_before_balance","Unlock",selector,selector,true,"METHOD_MISSING",0,0,1,1)
+    truncated:=clone(canonical["Unlock"][:35])
+    add("truncated_before_balance","Unlock",truncated,truncated,true,"UNPACK_REFUSED",0,0,3,2)
+    empty:=[]byte{}
+    add("empty_selector_before_balance","Unlock",empty,empty,true,"METHOD_MISSING",0,0,1,1)
+    if len(cases)!=23 { t.Fatal("complete caller selection required") }
+    records:=make(map[string]interface{})
+    for _,selected:=range cases {
+        selected:=selected
+        t.Run(selected.id,func(t *testing.T) {
+            if _,found:=records[selected.id];found { t.Fatal("caller case repeated") }
+            context:=&researchSendCallerContext{dp:selected.dp,ptlc:selected.ptlc,balance:big.NewInt(selected.balance)}
+            block:=&nom.AccountBlock{BlockType:nom.BlockTypeUserSend,Address:syntheticUser,
+                ToAddress:selected.destination,TokenStandard:types.ZnnTokenStandard,
+                Amount:big.NewInt(selected.amount),Data:clone(selected.data)}
+            result:="APPLIED"
+            if err:=NewVM(context,nil).applySend(block);err!=nil {
+                switch {
+                case errors.Is(err,constants.ErrABDataTrailingBytes):result="TRAILING_DATA"
+                case errors.Is(err,constants.ErrInsufficientBalance):result="INSUFFICIENT_FUNDS"
+                case errors.Is(err,constants.ErrInvalidPointSignature):result="WITNESS_REFUSED"
+                case errors.Is(err,constants.ErrContractDoesntExist):result="CONTRACT_MISSING"
+                case errors.Is(err,constants.ErrContractMethodNotFound):result="METHOD_MISSING"
+                case errors.Is(err,constants.ErrUnpackError):result="UNPACK_REFUSED"
+                default:t.Fatal("unselected caller result")
+                }
+            }
+            expectedBalance:=selected.balance
+            if selected.debits==1 { expectedBalance-=selected.amount }
+            order:=[]string{}
+            if selected.reads==1 { order=append(order,"READ") }
+            if selected.debits==1 { order=append(order,"DEBIT") }
+            if result!=selected.result || !bytes.Equal(block.Data,selected.after) ||
+                context.balance.Cmp(big.NewInt(expectedBalance))!=0 ||
+                context.reads!=selected.reads || context.debits!=selected.debits ||
+                context.dpReads!=selected.dpReads || context.ptlcReads!=selected.ptlcReads ||
+                len(context.balanceOrder)!=len(order) {
+                t.Fatal("caller result, normalization, declared spork reads or balance trace differs")
+            }
+            for index,value:=range order {
+                if context.balanceOrder[index]!=value { t.Fatal("balance ordering differs") }
+            }
+            before,after:=sha256.Sum256(selected.data),sha256.Sum256(block.Data)
+            records[selected.id]=map[string]interface{}{
+                "method":selected.method,"result":result,"dp_flag":selected.dp,"ptlc_flag":selected.ptlc,
+                "input_sha256":hex.EncodeToString(before[:]),"output_sha256":hex.EncodeToString(after[:]),
+                "data_changed":!bytes.Equal(selected.data,block.Data),"data_bytes":len(selected.data),
+                "balance_before":selected.balance,"balance_after":expectedBalance,"amount":selected.amount,
+                "balance_reads":context.reads,"balance_debits":context.debits,"balance_order":order,
+                "dp_reads":context.dpReads,"ptlc_reads":context.ptlcReads,
+            }
+        })
+    }
+    if len(records)!=len(cases) { t.Fatal("caller records incomplete") }
+    report,err:=json.Marshal(map[string]interface{}{
+        "schema":"zenon-nom-dev-send-caller-result-v1","scope":"DIRECT_APPLY_SEND_WITH_DECLARED_CONTEXT_ONLY",
+        "selected_core_commit":"5cb5aac3bb21d012111d87466f946cbdccd344f6","records":records,
+        "account_admission":"NOT_CALLED","pack_block":"NOT_CALLED","receive_block":"NOT_CALLED",
+        "journal_source_upgrade":"NOT_SELECTED","application":"NO-GO","core":"NO-GO",
+        "independent_assessment":"UNFILLED",
+    })
+    if err!=nil { t.Fatal("caller report unavailable") }
+    fmt.Println(string(report))
+}

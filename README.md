@@ -5,6 +5,14 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+The additive [5cb source corpus](docs/NOM_DEV_5CB.md) selects all 482 upstream
+files and twenty finite test profiles. It preserves the historical corpora,
+records explicit receiver-rule and query-count changes, and adds 24 Supervisor
+comparisons using the two existing public synthetic originals without new keys
+or signatures. Reproduction plans, source/value readers, local native execution
+and hosted CI are separate evidence. The journal source is unchanged;
+application/core remain **NO-GO** and independent assessment remains unfilled.
+
 The separate [direct send-caller corpus](docs/NOM_DEV_SEND_CALLER.md) compares 23
 finite `applySend` scenarios with declared flags and synthetic balances. It
 records normalization, early refusal and balance access order while keeping
