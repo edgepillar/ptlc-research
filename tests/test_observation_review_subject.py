@@ -128,9 +128,9 @@ class ObservationSubjectTests(unittest.TestCase):
         with patch.object(subject, "_git", wraps=subject._git) as inspected:
             _, records, _ = subject._inventory(self.root, self.current)
         calls = [call.args[1:] for call in inspected.call_args_list]
-        self.assertEqual(sum(args[:2] == ("cat-file", "blob") for args in calls), len(records))
+        self.assertEqual(sum(args[:2] == ("cat-file", "--batch") for args in calls), 1)
         self.assertFalse(any(args[:2] == ("cat-file", "-s") for args in calls))
-        self.assertEqual(len(calls), 3 + len(records))
+        self.assertEqual(len(calls), 4)
         self.assertEqual(records, [{key: value for key, value in row.items()
                                    if key != "baseline_status"} for row in self.expected["files"]])
 
@@ -178,13 +178,46 @@ class ObservationSubjectTests(unittest.TestCase):
         name = "docs/extra.txt"
         row = next(row for row in self.expected["files"] if row["path"] == name)
 
-        def changed_body(root, *args):
-            if args == ("cat-file", "blob", row["git_blob"]):
-                return b"X" * len(self.current_files[name][1])
-            return original_git(root, *args)
+        def changed_body(root, *args, **kwargs):
+            if args == ("cat-file", "--batch"):
+                output = original_git(root, *args, **kwargs)
+                body = self.current_files[name][1]
+                header = (row["git_blob"] + " blob " + str(len(body)) + "\n").encode("ascii")
+                frame = header + body + b"\n"
+                self.assertEqual(output.count(frame), 1)
+                return output.replace(frame, header + b"X" * len(body) + b"\n", 1)
+            return original_git(root, *args, **kwargs)
 
         with patch.object(subject, "_git", side_effect=changed_body), self.assertRaises(subject.SubjectError):
             subject._inventory(self.root, self.current)
+
+        requests = b"".join(row["git_blob"].encode("ascii") + b"\n" for row in self.expected["files"])
+        original_batch = original_git(self.root, "cat-file", "--batch", input_data=requests)
+        first = self.expected["files"][0]
+        header = (first["git_blob"] + " blob " + str(first["bytes"]) + "\n").encode("ascii")
+        end = len(header) + first["bytes"] + 1
+        second = self.expected["files"][1]
+        second_header = (second["git_blob"] + " blob " + str(second["bytes"]) + "\n").encode("ascii")
+        second_end = end + len(second_header) + second["bytes"] + 1
+        self.assertTrue(original_batch.startswith(header))
+        changed_batches = {
+            "truncated": original_batch[:-1],
+            "extra-frame-byte": original_batch + b"\n",
+            "wrong-kind": original_batch.replace(b" blob ", b" tree ", 1),
+            "wrong-object": b"0" * 40 + original_batch[40:],
+            "wrong-size": original_batch.replace(header, (first["git_blob"] + " blob 0\n").encode("ascii"), 1),
+            "missing-body-separator": original_batch[:end - 1] + b"X" + original_batch[end:],
+            "reordered-frames": original_batch[end:second_end] + original_batch[:end] + original_batch[second_end:],
+        }
+        for label, changed in changed_batches.items():
+            def changed_batch(root, *args, **kwargs):
+                if args == ("cat-file", "--batch"):
+                    self.assertEqual(kwargs, {"input_data": requests})
+                    return changed
+                return original_git(root, *args, **kwargs)
+            with self.subTest(batch=label), patch.object(subject, "_git", side_effect=changed_batch):
+                with self.assertRaises(subject.SubjectError):
+                    subject._inventory(self.root, self.current)
 
     def test_delta_count_type_aliases_and_removed_paths_are_rejected(self):
         for key, replacement in (("added", 1), ("changed", True), ("unchanged", 2),
@@ -224,10 +257,10 @@ class ObservationSubjectTests(unittest.TestCase):
         for replacement in invalid:
             changed = b" ".join((mode, kind, object_id, replacement)) + b"\t" + first_name
 
-            def changed_tree(root, *args):
+            def changed_tree(root, *args, **kwargs):
                 if args == ("ls-tree", "-r", "-l", "-z", self.current):
                     return changed + b"\0" + rest
-                return original_git(root, *args)
+                return original_git(root, *args, **kwargs)
 
             with self.subTest(size=replacement), patch.object(subject, "_git", side_effect=changed_tree):
                 with self.assertRaises(subject.SubjectError):
@@ -235,10 +268,10 @@ class ObservationSubjectTests(unittest.TestCase):
         for header in (b"missing", b" ".join((mode, kind, object_id)),
                        b" ".join((mode, kind, object_id, size, b"extra")),
                        b" ".join((mode, kind, b"0" * 39, size))):
-            def malformed_tree(root, *args):
+            def malformed_tree(root, *args, **kwargs):
                 if args == ("ls-tree", "-r", "-l", "-z", self.current):
                     return header + b"\t" + first_name + b"\0" + rest
-                return original_git(root, *args)
+                return original_git(root, *args, **kwargs)
 
             with self.subTest(header=header), patch.object(subject, "_git", side_effect=malformed_tree):
                 with self.assertRaises(subject.SubjectError):

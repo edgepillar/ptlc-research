@@ -83,13 +83,13 @@ def _hex(value, length):
     return value
 
 
-def _git(root, *arguments):
+def _git(root, *arguments, input_data=None):
     environment = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
     environment.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL=os.devnull,
                        GIT_TERMINAL_PROMPT="0", GIT_OPTIONAL_LOCKS="0")
     try:
         result = subprocess.run(["git", "--no-lazy-fetch", "--no-replace-objects", *arguments],
-            cwd=root, env=environment, capture_output=True, check=False, timeout=10)
+            cwd=root, env=environment, input=input_data, capture_output=True, check=False, timeout=10)
     except (OSError, subprocess.SubprocessError):
         raise SubjectError("local Git inspection unavailable") from None
     if result.returncode != 0:
@@ -141,6 +141,44 @@ def _index(root, name):
     return _blob(root, object_id.decode("ascii"))
 
 
+def _batch_blobs(root, entries):
+    """Read exactly framed immutable blobs in one bounded input selection."""
+    if type(entries) is not list or not 0 < len(entries) <= MAX_FILES:
+        raise SubjectError("source file count exceeds bound")
+    headers, requests, expected_bytes, total = [], [], 0, 0
+    for _, _, object_id, size in entries:
+        _hex(object_id, 40)
+        if type(size) is not int or not 0 <= size <= MAX_BLOB_BYTES:
+            raise SubjectError("source blob exceeds bound")
+        total += size
+        if total > MAX_SOURCE_BYTES:
+            raise SubjectError("source snapshot exceeds bound")
+        header = (object_id + " blob " + str(size) + "\n").encode("ascii")
+        headers.append(header)
+        requests.append(object_id.encode("ascii") + b"\n")
+        expected_bytes += len(header) + size + 1
+    output = _git(root, "cat-file", "--batch", input_data=b"".join(requests))
+    if len(output) != expected_bytes:
+        raise SubjectError("source batch framing mismatch")
+    bodies, offset = [], 0
+    for (_, _, object_id, size), header in zip(entries, headers):
+        if not output.startswith(header, offset):
+            raise SubjectError("source batch identity or size mismatch")
+        start = offset + len(header)
+        end = start + size
+        if output[end:end + 1] != b"\n":
+            raise SubjectError("source batch framing mismatch")
+        body = output[start:end]
+        identity = hashlib.sha1(b"blob " + str(size).encode("ascii") + b"\0" + body).hexdigest()
+        if identity != object_id:
+            raise SubjectError("source blob identity mismatch")
+        bodies.append(body)
+        offset = end + 1
+    if offset != len(output):
+        raise SubjectError("source batch framing mismatch")
+    return bodies
+
+
 def _inventory(root, commit):
     _hex(commit, 40)
     if _git(root, "cat-file", "-t", commit).strip() != b"commit":
@@ -150,7 +188,7 @@ def _inventory(root, commit):
     entries = [entry for entry in _git(root, "ls-tree", "-r", "-l", "-z", commit).split(b"\0") if entry]
     if not 0 < len(entries) <= MAX_FILES:
         raise SubjectError("source file count exceeds bound")
-    records, bodies, total = [], {}, 0
+    selected, seen, total = [], set(), 0
     for entry in entries:
         try:
             header, name = entry.split(b"\t", 1)
@@ -160,27 +198,31 @@ def _inventory(root, commit):
             raise SubjectError("ASCII source path required") from None
         except ValueError:
             raise SubjectError("malformed source tree metadata") from None
-        if mode not in {"100644", "100755"} or kind != "blob" or name in bodies:
+        if mode not in {"100644", "100755"} or kind != "blob" or name in seen:
             raise SubjectError("regular unique source files required")
+        _hex(object_id, 40)
         if re.fullmatch(r"0|[1-9][0-9]*", size_text) is None:
             raise SubjectError("canonical source size required")
         if len(size_text) > len(str(MAX_BLOB_BYTES)):
             raise SubjectError("source blob exceeds bound")
         size = int(size_text)
-        if total + size > MAX_SOURCE_BYTES:
+        if size > MAX_BLOB_BYTES:
+            raise SubjectError("source blob exceeds bound")
+        total += size
+        if total > MAX_SOURCE_BYTES:
             raise SubjectError("source snapshot exceeds bound")
-        raw = _sized_blob(root, object_id, size)
+        selected.append((name, mode, object_id, size))
+        seen.add(name)
+    records, bodies = [], {}
+    for (name, mode, object_id, size), raw in zip(selected, _batch_blobs(root, selected)):
         try:
             text = raw.decode("ascii")
         except UnicodeError:
             raise SubjectError("ASCII source required") from None
         if any(pattern.search(text) for _, pattern in PATTERNS):
             raise SubjectError("source fails limited disclosure check")
-        total += len(raw)
-        if total > MAX_SOURCE_BYTES:
-            raise SubjectError("source snapshot exceeds bound")
         records.append({"path": name, "mode": mode, "git_blob": object_id,
-                        "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()})
+                        "bytes": size, "sha256": hashlib.sha256(raw).hexdigest()})
         bodies[name] = raw
     return tree, sorted(records, key=lambda row: row["path"]), bodies
 
