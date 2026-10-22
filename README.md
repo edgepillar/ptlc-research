@@ -5,6 +5,13 @@ the historical bilateral Bitcoin-to-Zenon atomic-swap construction.
 
 Independent research, not an official Zenon implementation or activation proposal.
 
+The separate [direct send-caller corpus](docs/NOM_DEV_SEND_CALLER.md) compares 23
+finite `applySend` scenarios with declared flags and synthetic balances. It
+records normalization, early refusal and balance access order while keeping
+full account admission, witness validity and journal authority unfilled.
+Author native execution, synthetic reader tests and hosted execution remain
+separate; application/core remain **NO-GO**.
+
 The separate [ABI layer corpus](docs/NOM_DEV_ABI_BOUNDARY.md) compares 26 finite
 scenarios across decoding, length checks, dispatch and static method validation
 on the pinned dev source. Original and normalized data stay distinct; a layer
