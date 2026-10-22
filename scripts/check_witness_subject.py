@@ -3,7 +3,7 @@
 
 Complete source identity does not establish provenance, executable identity,
 dependency availability, independent assessment or application authority.
-The unchanged observation checker supplies the bounded local Git and tar reads.
+The shared observation checker supplies the bounded local Git and tar reads.
 """
 
 from dataclasses import dataclass
