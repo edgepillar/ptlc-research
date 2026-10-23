@@ -173,7 +173,7 @@ jobs:
             python3 -B scripts/run_offline_shard.py --shard "${{ matrix.shard }}"
           fi
       - name: Check artifact hygiene
-        run: python3 scripts/check_artifacts.py
+        run: python3 scripts/check_artifacts_batch.py
       - name: Compare missing NoM original custody without reconstruction
         if: matrix.shard == 'all' || matrix.shard == '0'
         run: python3 -B scripts/qualify_nom_partial_custody.py
