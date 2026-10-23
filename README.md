@@ -13,6 +13,12 @@ or signatures. Reproduction plans, source/value readers, local native execution
 and hosted CI are separate evidence. The journal source is unchanged;
 application/core remain **NO-GO** and independent assessment remains unfilled.
 
+The [one-workspace native runner](docs/NOM_DEV_5CB_NATIVE.md) selects the same
+twenty profiles with one source view and one fresh compiler cache. Its CI
+construction reuses the existing pinned toolchain and byte-matched dependency
+inputs. Original streams, complete execution and hosted acceptance remain
+separate requirements; application/core remain **NO-GO**.
+
 The separate [direct send-caller corpus](docs/NOM_DEV_SEND_CALLER.md) compares 23
 finite `applySend` scenarios with declared flags and synthetic balances. It
 records normalization, early refusal and balance access order while keeping
