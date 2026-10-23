@@ -469,7 +469,7 @@ Requirements: Python 3.11 or later with SQLite, a POSIX host supporting advisory
 
 ```sh
 REQUIRE_OPENSSL=1 python3 -m unittest discover -s tests -v
-python3 scripts/check_artifacts.py
+python3 scripts/check_artifacts_batch.py
 python3 -B scripts/check_observation_subject.py --expect-commit f81e376e96e339647bb065739b4461235f865d2c
 python3 scripts/model_swap.py --help
 python3 scripts/model_recovery_admission.py --help
@@ -477,6 +477,13 @@ python3 scripts/model_recovery_reserve.py --help
 python3 scripts/model_public_observation.py --help
 python3 scripts/model_observation_authority.py --help
 ```
+
+The artifact checker separately inspects index blobs and current working files.
+Index objects are read in two batches with type, size, framing and digest checks.
+Git lazy fetching and object replacement are disabled. Index selection is limited
+to 65,536 regular entries, 16 MiB per blob and 128 MiB of selected content. Both
+SHA-1 and SHA-256 Git repositories are supported.
+Historical RPC validation retains its pinned `check_artifacts.py` input.
 
 The required mode must fail if independent OpenSSL verification cannot run. Any optional run that skips that verifier is incomplete evidence. The CI definition uses required mode; preparing that definition does not establish that hosted CI has run.
 
