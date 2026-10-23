@@ -768,7 +768,7 @@ jobs:
 
   nom-wire-core:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 70
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -1102,6 +1102,98 @@ jobs:
         with:
           name: nom-rpc-quotes-linux-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ steps.rpc_selection.outputs.files }}
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+          archive: true
+# Append to the existing nom-wire-core job after its historical profiles.
+# Select a 70-minute job deadline while keeping the existing steps unchanged.
+# The pinned Go installation and earlier verified full-graph inputs are reused
+# within this job. Native compilation uses one new cache and count-one tests.
+      - name: Admit one finite 5cb workspace using the verified dependency input
+        id: nom_5cb_workspace
+        shell: bash
+        run: |
+          set -eu
+          umask 077
+          python3 -B - <<'PY'
+          import json, os, shutil
+          from pathlib import Path
+          from qualification import nom_dev_5cb as selected
+          unused, index = selected.inputs()
+          wire = json.loads(Path('compatibility/nom_wire_manifest.json').read_bytes())
+          assert all(index[name]['sha256'] == wire['core_file_sha256'][name]
+                     for name in ('go.mod', 'go.sum'))
+          assert shutil.disk_usage(os.environ['RUNNER_TEMP']).free >= 12 * 1024**3
+          print('PASS: exact dependency pins and finite workspace admission')
+          PY
+          ptlc_5cb_root="$(mktemp -d "$RUNNER_TEMP/ptlc-nom-5cb.XXXXXX")"
+          chmod 700 "$ptlc_5cb_root"
+          mkdir -m 700 "$ptlc_5cb_root/workspace"
+          ptlc_5cb_proxy="$(go env GOMODCACHE)/cache/download"
+          ptlc_5cb_proxy="$(python3 -B -c 'from pathlib import Path; import sys; print(Path(sys.argv[1]).resolve(strict=True))' "$ptlc_5cb_proxy")"
+          test -d "$ptlc_5cb_proxy"
+          printf 'PTLC_NOM_5CB_ROOT=%s\n' "$ptlc_5cb_root" >> "$GITHUB_ENV"
+          printf 'PTLC_NOM_5CB_PROXY=%s\n' "$ptlc_5cb_proxy" >> "$GITHUB_ENV"
+      - name: Prepare the complete pinned 502-file 5cb view once
+        id: nom_5cb_source
+        shell: bash
+        run: |
+          set -eu
+          umask 077
+          ptlc_5cb_archive="$PTLC_NOM_5CB_ROOT/source.zip"
+          test ! -e "$ptlc_5cb_archive"
+          (
+            ulimit -f 8192
+            curl --disable --fail --silent --show-error --location --max-redirs 2 \
+              --proto '=https' --proto-redir '=https' --max-time 180 --max-filesize 1941926 \
+              https://api.github.com/repos/zenon-network/go-zenon/zipball/5cb5aac3bb21d012111d87466f946cbdccd344f6 \
+              --output "$ptlc_5cb_archive"
+          )
+          python3 -B scripts/prepare_nom_5cb.py --archive "$ptlc_5cb_archive" \
+            --destination "$PTLC_NOM_5CB_ROOT/source"
+      - name: Run twenty fresh 5cb profiles with one compiler cache offline
+        id: nom_5cb_native
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: "off"
+          GOSUMDB: "off"
+        shell: bash
+        run: |
+          set -eu
+          umask 077
+          ptlc_5cb_go="$(command -v go)"
+          ptlc_5cb_go_sha="$(sha256sum "$ptlc_5cb_go" | cut -d ' ' -f 1)"
+          ptlc_5cb_cc="$(readlink -f "$(command -v cc)")"
+          python3 -B scripts/qualify_nom_5cb_native.py \
+            --source "$PTLC_NOM_5CB_ROOT/source" \
+            --workspace "$PTLC_NOM_5CB_ROOT/workspace" --go "$ptlc_5cb_go" \
+            --expect-go-sha256 "$ptlc_5cb_go_sha" --cc "$ptlc_5cb_cc" \
+            --offline-proxy "$PTLC_NOM_5CB_PROXY"
+      - name: Select checked 5cb originals and preserve incomplete evidence honestly
+        id: nom_5cb_selection
+        if: always() && steps.nom_5cb_native.outcome != 'skipped'
+        shell: bash
+        run: |
+          set -eu
+          ptlc_5cb_paths="$(python3 -B scripts/check_nom_5cb_evidence.py \
+            --workspace "$PTLC_NOM_5CB_ROOT/workspace" \
+            --allow-incomplete-for-retention --artifact-files)"
+          {
+            printf 'files<<PTLC_5CB_ORIGINALS\n'
+            while IFS= read -r ptlc_5cb_name; do
+              printf '%s/workspace/%s\n' "$PTLC_NOM_5CB_ROOT" "$ptlc_5cb_name"
+            done <<< "$ptlc_5cb_paths"
+            printf 'PTLC_5CB_ORIGINALS\n'
+          } >> "$GITHUB_OUTPUT"
+      - name: Retain explicit 5cb originals without compiler caches or private argv
+        if: always() && steps.nom_5cb_selection.outcome == 'success'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nom-5cb-source-linux-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.nom_5cb_selection.outputs.files }}
           if-no-files-found: error
           retention-days: 90
           compression-level: 6
