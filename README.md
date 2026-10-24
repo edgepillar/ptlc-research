@@ -535,8 +535,10 @@ evidence; completed exact-head hosted results must be reported separately.
 The [NoM wire conformance corpus](docs/NOM_WIRE_CONFORMANCE.md) compares four
 typed ABI methods, hash inputs and normalization counterexamples with the exact
 PR #138 source. See its [validation scope](docs/NOM_WIRE_VALIDATION.md). This
-advances source compatibility while the original journals remain synthetic;
-signed wire retention and authenticated chain observation are still unimplemented.
+advances source compatibility while the original journals remain synthetic. The
+separate [signed-wire custody candidate](docs/NOM_SIGNED_RECOVERY.md) retains exact
+public signed originals. Authenticated chain observation and real recovery
+admission remain unfilled.
 
 The [momentum claim corpus](docs/NOM_MOMENTUM_CONFORMANCE.md) adds source-pinned
 momentum/content/header digests, exact supplied inclusion contexts and a separate
