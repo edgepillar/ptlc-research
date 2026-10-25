@@ -1277,15 +1277,43 @@ jobs:
             go mod verify
           )
           python3 -B - <<'PY'
-          import hashlib, os
+          import base64, hashlib, json, os
           from pathlib import Path
           from qualification import nom_dev_5a2593 as selected
           unused, index = selected.inputs()
           root = Path(os.environ['PTLC_NOM_CURRENT_ROOT'])
-          for directory in ('source', 'inputs'):
-              for name in ('go.mod', 'go.sum'):
-                  assert hashlib.sha256((root / directory / name).read_bytes()).hexdigest() == index[name]['sha256']
-          print('PASS: separate full-graph inputs retain both exact module pins')
+          # Go may populate checksums in the isolated bootstrap copy. The source
+          # and requirement file remain exact; no original checksum may change.
+          def checksum_entries(raw):
+              assert type(raw) is bytes and 0 < len(raw) <= 2 * 1024**2
+              assert raw.isascii() and raw.endswith(b'\n')
+              result = {}
+              for line in raw.splitlines():
+                  fields = line.split(b' ')
+                  assert len(fields) == 3 and all(fields)
+                  assert not any(b'\t' in field or b'\r' in field or b'\0' in field for field in fields)
+                  key = tuple(fields[:2]); digest = fields[2]
+                  assert key not in result and digest.startswith(b'h1:')
+                  decoded = base64.b64decode(digest[3:], validate=True)
+                  assert len(decoded) == 32 and base64.b64encode(decoded) == digest[3:]
+                  result[key] = digest
+              return result
+          source = {name: (root / 'source' / name).read_bytes() for name in ('go.mod', 'go.sum')}
+          bootstrap = {name: (root / 'inputs' / name).read_bytes() for name in source}
+          for name, raw in source.items():
+              assert hashlib.sha256(raw).hexdigest() == index[name]['sha256'], 'source module pin changed'
+          assert bootstrap['go.mod'] == source['go.mod'], 'bootstrap requirements changed'
+          original = checksum_entries(source['go.sum'])
+          expanded = checksum_entries(bootstrap['go.sum'])
+          assert all(expanded.get(key) == value for key, value in original.items()), 'original checksum changed or missing'
+          print(json.dumps(dict(schema='ptlc-nom-5a2593-bootstrap-inputs-v1',
+              source_files_unchanged=True, bootstrap_requirements_unchanged=True,
+              original_checksum_entries=len(original), added_checksum_entries=len(set(expanded) - set(original)),
+              source_go_sum_sha256=index['go.sum']['sha256'],
+              bootstrap_go_sum_sha256=hashlib.sha256(bootstrap['go.sum']).hexdigest(),
+              dependency_authentication='SEPARATE GO COMMANDS; NOT ESTABLISHED BY THIS INPUT CHECK',
+              application='NO-GO', core='NO-GO'), sort_keys=True))
+          print('PASS: immutable source pins and append-only bootstrap checksums')
           PY
           ptlc_current_proxy="$(go env GOMODCACHE)/cache/download"
           ptlc_current_proxy="$(python3 -B -c 'from pathlib import Path; import sys; print(Path(sys.argv[1]).resolve(strict=True))' "$ptlc_current_proxy")"
