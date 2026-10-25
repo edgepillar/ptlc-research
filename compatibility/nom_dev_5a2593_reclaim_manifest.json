@@ -1,0 +1,25 @@
+{
+  "application": "NO-GO",
+  "combined_source_files": 521,
+  "core": "NO-GO",
+  "core_commit": "5a2593ab0d5d56ab15ad7ae7a910323a1565969f",
+  "core_tree": "43c8eeaee196a9206da7669b0250a000fba9b776",
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/fixtures/nom_dev_5a2593_reclaim_inputs_v1.json": "2a555f3151f594f8a24471d880e31f8801a0a9ee3c6cbf7e540f391581e059f1",
+    "compatibility/fixtures/nom_dev_5a2593_reclaim_values_v1.json": "3f3d5766f58a71cbca58bfdd3cdf84b4a61d9931d008053c939386983811a2a4",
+    "compatibility/nom_dev_5a2593_legacy_manifest.json": "7b5b0640e2ebefe816a5cac46e6ffce1727d80a6eff8cc15beb3a3bae625782c",
+    "compatibility/nom_dev_5a2593_reclaim_test.go.txt": "3cb6da3c7c02ee9038235d1ec3544c754829867cc32bdab5eaa20469701f2bbe",
+    "qualification/nom_dev_5a2593_reclaim.py": "82dd9e83119302447a2ff4c55796d20db5b65619da48edf08e69b80edeec365e",
+    "qualification/nom_dev_abi_boundary.py": "118a41fabd1bbd4a9862c3950ed483f05cc88417ff1b5a5c53b629fb6eef589a",
+    "tests/test_nom_dev_5a2593_reclaim.py": "30ed2c21c53869d106e804072389974e3a3186cee752b780256feca79d169ae2"
+  },
+  "journal_source_upgrade": "NOT_SELECTED",
+  "legacy_outcomes": 479,
+  "legacy_profiles": 20,
+  "project_producers": 21,
+  "reclaim_cases": 76,
+  "reclaim_outcomes": 77,
+  "schema": "ptlc-nom-dev-5a2593-reclaim-selection-v1",
+  "upstream_source_files": 500
+}
