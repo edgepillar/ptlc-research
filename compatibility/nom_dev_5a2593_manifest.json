@@ -1,0 +1,195 @@
+{
+  "actual_native_commands": 25,
+  "application": "NO-GO",
+  "combined_source_files": 521,
+  "complete_original_profile_streams": 42,
+  "complete_profiles": 21,
+  "core": "NO-GO",
+  "core_commit": "5a2593ab0d5d56ab15ad7ae7a910323a1565969f",
+  "core_tree": "43c8eeaee196a9206da7669b0250a000fba9b776",
+  "historical_results_reclassified": false,
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/nom_dev_5a2593_legacy_manifest.json": "7b5b0640e2ebefe816a5cac46e6ffce1727d80a6eff8cc15beb3a3bae625782c",
+    "compatibility/nom_dev_5a2593_reclaim_manifest.json": "b4c18098a1ae848fea884d0ef69d7e63cb7753ee089b204eed515ffd653e562c",
+    "qualification/nom_dev_5a2593.py": "541aef3045bb1c0e0d647e86c29ee339de13770d75d29f85c94f16df715bbd1d",
+    "scripts/check_nom_5a2593_evidence.py": "0af01a40b92fd5302029976a0d0807c2948898a5fa6ac0a1e4e7f626bbc57297",
+    "scripts/nom_5a2593_command.py": "cf48d7e06d7b00268496d5341d6fd4e3e2054664af69690d793984efbe2db1c0",
+    "scripts/prepare_nom_5a2593.py": "9a680b653c3e0e051dd5d5c86d56ece9034dac40d1431699863fd834c968a174",
+    "scripts/qualify_nom_5a2593_native.py": "36fb08a37313719dd03b968611404d8fd068c68ee39ca7c3f9cc4b4e5998692e",
+    "tests/test_nom_dev_5a2593.py": "f2f62d8da1c71973268d4996c55e1240ed474641118e49da85a7a0b8b9c3a8cb"
+  },
+  "journal_source_upgrade": "NOT_SELECTED",
+  "legacy_outcomes": 479,
+  "legacy_profiles": 20,
+  "project_producers": 21,
+  "reclaim_cases": 76,
+  "reclaim_outcomes": 77,
+  "schema": "ptlc-nom-dev-5a2593-combined-selection-v1",
+  "selected_parent_and_child_outcomes": 556,
+  "transport_variants": {
+    "scripts/check_nom_5cb_evidence.py": {
+      "edits": [
+        {
+          "after": "5a2593",
+          "before": "5cb",
+          "occurrences": 9
+        },
+        {
+          "after": "nom_dev_5a2593 as reproduction",
+          "before": "nom_dev_5a2593_reproduction as reproduction",
+          "occurrences": 1
+        },
+        {
+          "after": "len(result) == 25",
+          "before": "len(result) == 24",
+          "occurrences": 1
+        },
+        {
+          "after": "upstream_files=500",
+          "before": "upstream_files=482",
+          "occurrences": 1
+        },
+        {
+          "after": "project_producers=21, combined_files=521",
+          "before": "project_producers=20, combined_files=502",
+          "occurrences": 1
+        },
+        {
+          "after": "report['complete_profiles'] == 21",
+          "before": "report['complete_profiles'] == 20",
+          "occurrences": 1
+        },
+        {
+          "after": "report['selected_parent_and_child_outcomes'] == 556",
+          "before": "report['selected_parent_and_child_outcomes'] == 479",
+          "occurrences": 1
+        },
+        {
+          "after": "report['complete_original_profile_streams'] == 42",
+          "before": "report['complete_original_profile_streams'] == 40",
+          "occurrences": 1
+        },
+        {
+          "after": "report['actual_native_commands'] == 25",
+          "before": "report['actual_native_commands'] == 24",
+          "occurrences": 1
+        }
+      ],
+      "original_sha256": "b0d12c627aafbb04ece36622770d4bcd622df8e588d0037f0d016c63982c74e7",
+      "scope": "SOURCE SELECTION, SCHEMA LABELS AND ADDITIVE PROFILE COUNTS ONLY",
+      "selected": "scripts/check_nom_5a2593_evidence.py",
+      "selected_sha256": "0af01a40b92fd5302029976a0d0807c2948898a5fa6ac0a1e4e7f626bbc57297"
+    },
+    "scripts/nom_5cb_command.py": {
+      "edits": [
+        {
+          "after": "5a2593",
+          "before": "5cb",
+          "occurrences": 10
+        },
+        {
+          "after": "'keyless-supervisor', 'reclaim-current',",
+          "before": "'keyless-supervisor',",
+          "occurrences": 1
+        }
+      ],
+      "original_sha256": "22a8d66c57622c83f754a77881d1d817bf4e48b0e25ef83de3d1b8295fbb9cc0",
+      "scope": "SOURCE SELECTION, SCHEMA LABELS AND ADDITIVE PROFILE COUNTS ONLY",
+      "selected": "scripts/nom_5a2593_command.py",
+      "selected_sha256": "cf48d7e06d7b00268496d5341d6fd4e3e2054664af69690d793984efbe2db1c0"
+    },
+    "scripts/prepare_nom_5cb.py": {
+      "edits": [
+        {
+          "after": "5a2593",
+          "before": "5cb",
+          "occurrences": 7
+        },
+        {
+          "after": "5a2593a",
+          "before": "5a25935aac",
+          "occurrences": 1
+        },
+        {
+          "after": "1997424",
+          "before": "1941926",
+          "occurrences": 1
+        },
+        {
+          "after": "13219b44f2f0a0947d23b90b8c2214dccacfe39e1689ff1c7bf18a5948d03b9b",
+          "before": "d4f8e26ce3d8cba37c30e166a11b63423218b6e47451d4c31507b520f5e61f39",
+          "occurrences": 1
+        },
+        {
+          "after": "521",
+          "before": "502",
+          "occurrences": 2
+        },
+        {
+          "after": "original_source_files=500",
+          "before": "original_source_files=482",
+          "occurrences": 1
+        },
+        {
+          "after": "project_producers=21",
+          "before": "project_producers=20",
+          "occurrences": 1
+        }
+      ],
+      "original_sha256": "4dce6b27300a6eaa56d4412ca5336e9d617a574f747c2c33724be145850132bd",
+      "scope": "SOURCE SELECTION, SCHEMA LABELS AND ADDITIVE PROFILE COUNTS ONLY",
+      "selected": "scripts/prepare_nom_5a2593.py",
+      "selected_sha256": "9a680b653c3e0e051dd5d5c86d56ece9034dac40d1431699863fd834c968a174"
+    },
+    "scripts/qualify_nom_5cb_native.py": {
+      "edits": [
+        {
+          "after": "5a2593",
+          "before": "5cb",
+          "occurrences": 8
+        },
+        {
+          "after": "nom_dev_5a2593 as reproduction",
+          "before": "nom_dev_5a2593_reproduction as reproduction",
+          "occurrences": 1
+        },
+        {
+          "after": "== 521 and len(plan['units']) == 21",
+          "before": "== 502 and len(plan['units']) == 20",
+          "occurrences": 1
+        },
+        {
+          "after": "selected_commands=21",
+          "before": "selected_commands=20",
+          "occurrences": 1
+        },
+        {
+          "after": "complete_profiles=21",
+          "before": "complete_profiles=20",
+          "occurrences": 1
+        },
+        {
+          "after": "selected_parent_and_child_outcomes=556",
+          "before": "selected_parent_and_child_outcomes=479",
+          "occurrences": 1
+        },
+        {
+          "after": "complete_original_profile_streams=42",
+          "before": "complete_original_profile_streams=40",
+          "occurrences": 1
+        },
+        {
+          "after": "actual_native_commands=25",
+          "before": "actual_native_commands=24",
+          "occurrences": 1
+        }
+      ],
+      "original_sha256": "39aa50206a89594c884fe1745ce99465a8dc34b2734cccf0d2e81f5b7eb7e4d1",
+      "scope": "SOURCE SELECTION, SCHEMA LABELS AND ADDITIVE PROFILE COUNTS ONLY",
+      "selected": "scripts/qualify_nom_5a2593_native.py",
+      "selected_sha256": "36fb08a37313719dd03b968611404d8fd068c68ee39ca7c3f9cc4b4e5998692e"
+    }
+  },
+  "upstream_source_files": 500
+}

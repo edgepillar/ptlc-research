@@ -1200,3 +1200,140 @@ jobs:
           overwrite: false
           include-hidden-files: false
           archive: true
+
+  nom-current-core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.13"
+      - name: Admit one isolated current-source qualification workspace
+        shell: bash
+        run: |
+          set -eu
+          umask 077
+          python3 -B - <<'PY'
+          import os, shutil
+          from qualification import nom_dev_5a2593 as selected
+          selected.inputs()
+          assert shutil.disk_usage(os.environ['RUNNER_TEMP']).free >= 12 * 1024**3
+          print('PASS: complete current selection and finite workspace admission')
+          PY
+          ptlc_current_root="$(mktemp -d "$RUNNER_TEMP/ptlc-nom-current.XXXXXX")"
+          chmod 700 "$ptlc_current_root"
+          mkdir -m 700 "$ptlc_current_root/workspace" "$ptlc_current_root/toolchain" "$ptlc_current_root/inputs"
+          printf 'PTLC_NOM_CURRENT_ROOT=%s\n' "$ptlc_current_root" >> "$GITHUB_ENV"
+      - name: Install one bounded pinned Go toolchain
+        shell: bash
+        run: |
+          set -eu
+          umask 077
+          test "$(uname -m)" = x86_64
+          ptlc_current_go_archive="$PTLC_NOM_CURRENT_ROOT/go.tar.gz"
+          (
+            ulimit -f 131072
+            curl --disable --fail --silent --show-error --location --max-redirs 2 \
+              --proto '=https' --proto-redir '=https' --max-time 180 --max-filesize 134217728 \
+              https://go.dev/dl/go1.23.12.linux-amd64.tar.gz --output "$ptlc_current_go_archive"
+          )
+          printf '%s  %s\n' d3847fef834e9db11bf64e3fb34db9c04db14e068eeb064f49af747010454f90 "$ptlc_current_go_archive" | sha256sum --check
+          tar -xzf "$ptlc_current_go_archive" -C "$PTLC_NOM_CURRENT_ROOT/toolchain"
+          printf '%s\n' "$PTLC_NOM_CURRENT_ROOT/toolchain/go/bin" >> "$GITHUB_PATH"
+      - name: Prepare the exact current 521-file source view once
+        shell: bash
+        run: |
+          set -eu
+          umask 077
+          ptlc_current_archive="$PTLC_NOM_CURRENT_ROOT/source.zip"
+          test ! -e "$ptlc_current_archive"
+          (
+            ulimit -f 8192
+            curl --disable --fail --silent --show-error --location --max-redirs 2 \
+              --proto '=https' --proto-redir '=https' --max-time 180 --max-filesize 1997424 \
+              https://api.github.com/repos/zenon-network/go-zenon/zipball/5a2593ab0d5d56ab15ad7ae7a910323a1565969f \
+              --output "$ptlc_current_archive"
+          )
+          python3 -B scripts/prepare_nom_5a2593.py --archive "$ptlc_current_archive" \
+            --destination "$PTLC_NOM_CURRENT_ROOT/source"
+      - name: Acquire dependencies from separate unchanged module inputs
+        env:
+          GOTOOLCHAIN: local
+          GOWORK: "off"
+          GOENV: "off"
+          GODEBUG: "http2client=0"
+        shell: bash
+        run: |
+          set -eu
+          umask 077
+          cp "$PTLC_NOM_CURRENT_ROOT/source/go.mod" "$PTLC_NOM_CURRENT_ROOT/source/go.sum" "$PTLC_NOM_CURRENT_ROOT/inputs/"
+          (
+            cd "$PTLC_NOM_CURRENT_ROOT/inputs"
+            go mod download all
+            go mod verify
+          )
+          python3 -B - <<'PY'
+          import hashlib, os
+          from pathlib import Path
+          from qualification import nom_dev_5a2593 as selected
+          unused, index = selected.inputs()
+          root = Path(os.environ['PTLC_NOM_CURRENT_ROOT'])
+          for directory in ('source', 'inputs'):
+              for name in ('go.mod', 'go.sum'):
+                  assert hashlib.sha256((root / directory / name).read_bytes()).hexdigest() == index[name]['sha256']
+          print('PASS: separate full-graph inputs retain both exact module pins')
+          PY
+          ptlc_current_proxy="$(go env GOMODCACHE)/cache/download"
+          ptlc_current_proxy="$(python3 -B -c 'from pathlib import Path; import sys; print(Path(sys.argv[1]).resolve(strict=True))' "$ptlc_current_proxy")"
+          test -d "$ptlc_current_proxy"
+          printf 'PTLC_NOM_CURRENT_PROXY=%s\n' "$ptlc_current_proxy" >> "$GITHUB_ENV"
+      - name: Compare all twenty-one current profiles with one fresh cache offline
+        id: nom_current_native
+        env:
+          GOTOOLCHAIN: local
+          GOPROXY: "off"
+          GOSUMDB: "off"
+        shell: bash
+        run: |
+          set -eu
+          umask 077
+          ptlc_current_go="$(command -v go)"
+          ptlc_current_go_sha="$(sha256sum "$ptlc_current_go" | cut -d ' ' -f 1)"
+          ptlc_current_cc="$(readlink -f "$(command -v cc)")"
+          python3 -B scripts/qualify_nom_5a2593_native.py \
+            --source "$PTLC_NOM_CURRENT_ROOT/source" \
+            --workspace "$PTLC_NOM_CURRENT_ROOT/workspace" --go "$ptlc_current_go" \
+            --expect-go-sha256 "$ptlc_current_go_sha" --cc "$ptlc_current_cc" \
+            --offline-proxy "$PTLC_NOM_CURRENT_PROXY"
+      - name: Select exact current originals including incomplete attempts
+        id: nom_current_selection
+        if: always() && steps.nom_current_native.outcome != 'skipped'
+        shell: bash
+        run: |
+          set -eu
+          ptlc_current_paths="$(python3 -B scripts/check_nom_5a2593_evidence.py \
+            --workspace "$PTLC_NOM_CURRENT_ROOT/workspace" \
+            --allow-incomplete-for-retention --artifact-files)"
+          {
+            printf 'files<<PTLC_CURRENT_ORIGINALS\n'
+            while IFS= read -r ptlc_current_name; do
+              printf '%s/workspace/%s\n' "$PTLC_NOM_CURRENT_ROOT" "$ptlc_current_name"
+            done <<< "$ptlc_current_paths"
+            printf 'PTLC_CURRENT_ORIGINALS\n'
+          } >> "$GITHUB_OUTPUT"
+      - name: Retain explicit current originals with no caches or private argv
+        if: always() && steps.nom_current_selection.outcome == 'success'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nom-5a2593-source-linux-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.nom_current_selection.outputs.files }}
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+          archive: true

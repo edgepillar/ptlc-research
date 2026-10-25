@@ -1,0 +1,34 @@
+{
+  "application": "NO-GO",
+  "core": "NO-GO",
+  "core_commit": "5a2593ab0d5d56ab15ad7ae7a910323a1565969f",
+  "core_tree": "43c8eeaee196a9206da7669b0250a000fba9b776",
+  "frozen_input_sha256": {
+    "qualification/nom_dev_5cb.py": "3ee5b4667b8af10a8693802fbe056a1bc04c4c9ef542159c8b714426b33e4868",
+    "qualification/nom_dev_5cb_reproduction.py": "098bd8952dc14766b5dcfde2f459e8b5563467cddf2fe5c28380a5f90403a189",
+    "qualification/nom_keyless_supervisor.py": "bd55e2ad506fcfd03f0e05a4ee9fadf0d6b772dd6de0e94576a74784343f3a53"
+  },
+  "historical_core": "5cb5aac3bb21d012111d87466f946cbdccd344f6",
+  "historical_value_changes": "NONE_SELECTED; FRESH_EXECUTION_REQUIRED",
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/fixtures/nom_dev_5a2593_keyless_inputs_v1.json": "b4913447c40b7e8f41ed8e754c7b2a992ccbf06c741c59444b1bb9adb7e572bd",
+    "compatibility/fixtures/nom_dev_5a2593_keyless_values_v1.json": "ac1d30c8b98f48efee33f6a7a3df70b1b5d988261f29ff90c2c6b9778201dfe8",
+    "compatibility/nom_dev_5a2593_abi_boundary_test.go.txt": "0677be620eab357a4b3a09f89396cd4acf1a42259b955cd8f8f90eaa56fb075f",
+    "compatibility/nom_dev_5a2593_keyless_supervisor_test.go.txt": "7a3d54161e4efa63cb786b457c9addbd7940ce58a605e8b34231903db4ffeeb6",
+    "compatibility/nom_dev_5a2593_legacy_variants_v1.json": "1d475a15101b98eea249e453a967eddaa272b4a786f4f1ee4e81829fa0436a7e",
+    "compatibility/nom_dev_5a2593_receive_data_test.go.txt": "f3b53318a0ff49de47290d692fdd67527591ef7198699501bc454be880654a25",
+    "compatibility/nom_dev_5a2593_send_caller_test.go.txt": "1f3d9358ca9d199c74416957924e050ab0344f63d4085787964a879f5877e182",
+    "compatibility/nom_dev_5a2593_source_v1.json": "c0ee6bd48163848ab77cb46eddb4f8691c6aa23e1af81863a46f237172559c51",
+    "qualification/nom_dev_5a2593_legacy.py": "f648b6dd73b5f0b0d255da1d51eabb58ce77a1dec03f0b797868996853b12a20",
+    "qualification/nom_dev_5a2593_source.py": "3e14f412de41bcf13ca94bc834212f3cf92309a3653553643cfa59dcf1922162",
+    "tests/test_nom_dev_5a2593_legacy.py": "c9549ad75ae3e88855ed98ba691ef37799480e1fcf4317b70444a8f269031f2f"
+  },
+  "journal_source_upgrade": "NOT_SELECTED",
+  "legacy_outcomes": 479,
+  "legacy_profiles": 20,
+  "reclaim_profile": "SEPARATE_REQUIRED",
+  "schema": "ptlc-nom-dev-5a2593-legacy-selection-v1",
+  "source_files": 500,
+  "source_index_sha256": "c0ee6bd48163848ab77cb46eddb4f8691c6aa23e1af81863a46f237172559c51"
+}

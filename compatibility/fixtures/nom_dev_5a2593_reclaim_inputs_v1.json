@@ -1,0 +1,563 @@
+{
+  "cases": [
+    {
+      "claim_type": 0,
+      "id": "message_base_c0_r0",
+      "kind": "message",
+      "mode": "base",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 0,
+      "id": "message_base_c0_r1",
+      "kind": "message",
+      "mode": "base",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 1,
+      "id": "message_base_c1_r0",
+      "kind": "message",
+      "mode": "base",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 1,
+      "id": "message_base_c1_r1",
+      "kind": "message",
+      "mode": "base",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "message_base_c2_r0",
+      "kind": "message",
+      "mode": "base",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "message_base_c2_r1",
+      "kind": "message",
+      "mode": "base",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "message_chain_zero_c2_r0",
+      "kind": "message",
+      "mode": "chain_zero",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "message_chain_max_c2_r0",
+      "kind": "message",
+      "mode": "chain_max",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "message_chain_endian_c2_r0",
+      "kind": "message",
+      "mode": "chain_endian",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "message_other_creator_c2_r0",
+      "kind": "message",
+      "mode": "other_creator",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "message_open_destination_c2_r0",
+      "kind": "message",
+      "mode": "open_destination",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "message_other_destination_c2_r0",
+      "kind": "message",
+      "mode": "other_destination",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "message_other_token_c2_r0",
+      "kind": "message",
+      "mode": "other_token",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "message_amount_one_c2_r0",
+      "kind": "message",
+      "mode": "amount_one",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "message_amount_max_c2_r0",
+      "kind": "message",
+      "mode": "amount_max",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "message_expiry_endian_c2_r0",
+      "kind": "message",
+      "mode": "expiry_endian",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "message_other_claim_point_c2_r0",
+      "kind": "message",
+      "mode": "other_claim_point",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "message_other_id_c2_r0",
+      "kind": "message",
+      "mode": "other_id",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_create_canonical_c2_r0",
+      "kind": "send",
+      "mode": "create_canonical",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_create_trailing_1_c2_r0",
+      "kind": "send",
+      "mode": "create_trailing_1",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_create_trailing_32_c2_r0",
+      "kind": "send",
+      "mode": "create_trailing_32",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_create_truncated_c2_r0",
+      "kind": "send",
+      "mode": "create_truncated",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_create_unknown_selector_c2_r0",
+      "kind": "send",
+      "mode": "create_unknown_selector",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_reclaim_canonical_c2_r0",
+      "kind": "send",
+      "mode": "reclaim_canonical",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_reclaim_trailing_1_c2_r0",
+      "kind": "send",
+      "mode": "reclaim_trailing_1",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_reclaim_trailing_32_c2_r0",
+      "kind": "send",
+      "mode": "reclaim_trailing_32",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_reclaim_truncated_c2_r0",
+      "kind": "send",
+      "mode": "reclaim_truncated",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_reclaim_unknown_selector_c2_r0",
+      "kind": "send",
+      "mode": "reclaim_unknown_selector",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_create_zero_amount_c2_r0",
+      "kind": "send",
+      "mode": "create_zero_amount",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_create_negative_amount_c2_r0",
+      "kind": "send",
+      "mode": "create_negative_amount",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_create_scalar_reclaim_c2_r0",
+      "kind": "send",
+      "mode": "create_scalar_reclaim",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_create_bad_claim_type_c2_r0",
+      "kind": "send",
+      "mode": "create_bad_claim_type",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_create_short_reclaim_point_c2_r0",
+      "kind": "send",
+      "mode": "create_short_reclaim_point",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_create_multisig_destination_c2_r0",
+      "kind": "send",
+      "mode": "create_multisig_destination",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_reclaim_nonzero_amount_c2_r0",
+      "kind": "send",
+      "mode": "reclaim_nonzero_amount",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "send_reclaim_short_signature_c2_r0",
+      "kind": "send",
+      "mode": "reclaim_short_signature",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_reclaim_before_c2_r0",
+      "kind": "vm",
+      "mode": "reclaim_before",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_reclaim_at_c2_r0",
+      "kind": "vm",
+      "mode": "reclaim_at",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_reclaim_after_c2_r0",
+      "kind": "vm",
+      "mode": "reclaim_after",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_wrong_caller_c2_r0",
+      "kind": "vm",
+      "mode": "wrong_caller",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_wrong_signature_c2_r0",
+      "kind": "vm",
+      "mode": "wrong_signature",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_wrong_chain_c2_r0",
+      "kind": "vm",
+      "mode": "wrong_chain",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_wrong_terms_c2_r0",
+      "kind": "vm",
+      "mode": "wrong_terms",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_wrong_domain_c2_r0",
+      "kind": "vm",
+      "mode": "wrong_domain",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_missing_lock_c2_r0",
+      "kind": "vm",
+      "mode": "missing_lock",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_plain_reclaim_locked_c2_r0",
+      "kind": "vm",
+      "mode": "plain_reclaim_locked",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_short_signature_c2_r0",
+      "kind": "vm",
+      "mode": "short_signature",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_fresh_reclaim_key_c2_r0",
+      "kind": "vm",
+      "mode": "fresh_reclaim_key",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_unlock_before_c2_r0",
+      "kind": "vm",
+      "mode": "unlock_before",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_unlock_at_c2_r0",
+      "kind": "vm",
+      "mode": "unlock_at",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_unlock_wrong_destination_c2_r0",
+      "kind": "vm",
+      "mode": "unlock_wrong_destination",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_reclaim_payout_failure_c2_r0",
+      "kind": "vm",
+      "mode": "reclaim_payout_failure",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_unlock_payout_failure_c2_r0",
+      "kind": "vm",
+      "mode": "unlock_payout_failure",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_same_terms_other_id_c2_r0",
+      "kind": "vm",
+      "mode": "same_terms_other_id",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 0,
+      "id": "vm_unlock_before_c0_r0",
+      "kind": "vm",
+      "mode": "unlock_before",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 1,
+      "id": "vm_unlock_before_c1_r0",
+      "kind": "vm",
+      "mode": "unlock_before",
+      "reclaim_type": 0
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_reclaim_before_c2_r1",
+      "kind": "vm",
+      "mode": "reclaim_before",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_reclaim_at_c2_r1",
+      "kind": "vm",
+      "mode": "reclaim_at",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_reclaim_after_c2_r1",
+      "kind": "vm",
+      "mode": "reclaim_after",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_wrong_caller_c2_r1",
+      "kind": "vm",
+      "mode": "wrong_caller",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_wrong_signature_c2_r1",
+      "kind": "vm",
+      "mode": "wrong_signature",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_wrong_chain_c2_r1",
+      "kind": "vm",
+      "mode": "wrong_chain",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_wrong_terms_c2_r1",
+      "kind": "vm",
+      "mode": "wrong_terms",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_wrong_domain_c2_r1",
+      "kind": "vm",
+      "mode": "wrong_domain",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_missing_lock_c2_r1",
+      "kind": "vm",
+      "mode": "missing_lock",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_plain_reclaim_locked_c2_r1",
+      "kind": "vm",
+      "mode": "plain_reclaim_locked",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_short_signature_c2_r1",
+      "kind": "vm",
+      "mode": "short_signature",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_fresh_reclaim_key_c2_r1",
+      "kind": "vm",
+      "mode": "fresh_reclaim_key",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_unlock_before_c2_r1",
+      "kind": "vm",
+      "mode": "unlock_before",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_unlock_at_c2_r1",
+      "kind": "vm",
+      "mode": "unlock_at",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_unlock_wrong_destination_c2_r1",
+      "kind": "vm",
+      "mode": "unlock_wrong_destination",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_reclaim_payout_failure_c2_r1",
+      "kind": "vm",
+      "mode": "reclaim_payout_failure",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_unlock_payout_failure_c2_r1",
+      "kind": "vm",
+      "mode": "unlock_payout_failure",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 2,
+      "id": "vm_same_terms_other_id_c2_r1",
+      "kind": "vm",
+      "mode": "same_terms_other_id",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 0,
+      "id": "vm_unlock_before_c0_r1",
+      "kind": "vm",
+      "mode": "unlock_before",
+      "reclaim_type": 1
+    },
+    {
+      "claim_type": 1,
+      "id": "vm_unlock_before_c1_r1",
+      "kind": "vm",
+      "mode": "unlock_before",
+      "reclaim_type": 1
+    }
+  ],
+  "core_commit": "5a2593ab0d5d56ab15ad7ae7a910323a1565969f",
+  "core_tree": "43c8eeaee196a9206da7669b0250a000fba9b776",
+  "materials": {
+    "alternate_reclaim_points": {
+      "0": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "1": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+    },
+    "amount": "1000",
+    "chain_id": "69",
+    "claim_points": {
+      "0": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+      "1": "5cbdf0646e5db4eaa398f365f2ea7a0e3d419b7e0330e39ce92bddedcac4f9bc",
+      "2": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+    },
+    "create_time": "900",
+    "creator_hex": "0011111111111111111111111111111111111111",
+    "destination_hex": "0022222222222222222222222222222222222222",
+    "expiration_time": "1000",
+    "other_hex": "0033333333333333333333333333333333333333",
+    "reclaim_points": {
+      "0": "3b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
+      "1": "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+    },
+    "token_hex": "44444444444444444444"
+  },
+  "schema": "ptlc-nom-dev-5a2593-reclaim-inputs-v1",
+  "scope": "PUBLIC SYNTHETIC INPUTS; KNOWN TEST CONSTANTS; NO APPLICATION KEYS"
+}
