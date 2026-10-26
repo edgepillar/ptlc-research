@@ -1,0 +1,436 @@
+{
+  "argument_byte_plasma": "68",
+  "cases": [
+    {
+      "data_length": "-9223372036854775808",
+      "id": "zero_min_int",
+      "tier": "0"
+    },
+    {
+      "data_length": "-1",
+      "id": "zero_negative",
+      "tier": "0"
+    },
+    {
+      "data_length": "0",
+      "id": "zero_empty",
+      "tier": "0"
+    },
+    {
+      "data_length": "1",
+      "id": "zero_one",
+      "tier": "0"
+    },
+    {
+      "data_length": "3",
+      "id": "zero_three",
+      "tier": "0"
+    },
+    {
+      "data_length": "4",
+      "id": "zero_selector",
+      "tier": "0"
+    },
+    {
+      "data_length": "5",
+      "id": "zero_first_argument",
+      "tier": "0"
+    },
+    {
+      "data_length": "31",
+      "id": "zero_thirty_one",
+      "tier": "0"
+    },
+    {
+      "data_length": "32",
+      "id": "zero_thirty_two",
+      "tier": "0"
+    },
+    {
+      "data_length": "35",
+      "id": "zero_thirty_five",
+      "tier": "0"
+    },
+    {
+      "data_length": "36",
+      "id": "zero_word",
+      "tier": "0"
+    },
+    {
+      "data_length": "68",
+      "id": "zero_two_words",
+      "tier": "0"
+    },
+    {
+      "data_length": "16383",
+      "id": "zero_below_cap",
+      "tier": "0"
+    },
+    {
+      "data_length": "16384",
+      "id": "zero_at_cap",
+      "tier": "0"
+    },
+    {
+      "data_length": "16385",
+      "id": "zero_above_cap",
+      "tier": "0"
+    },
+    {
+      "data_length": "2147483647",
+      "id": "zero_large_int",
+      "tier": "0"
+    },
+    {
+      "data_length": "9223372036854775807",
+      "id": "zero_max_int",
+      "tier": "0"
+    },
+    {
+      "data_length": "-9223372036854775808",
+      "id": "base_min_int",
+      "tier": "21000"
+    },
+    {
+      "data_length": "-1",
+      "id": "base_negative",
+      "tier": "21000"
+    },
+    {
+      "data_length": "0",
+      "id": "base_empty",
+      "tier": "21000"
+    },
+    {
+      "data_length": "1",
+      "id": "base_one",
+      "tier": "21000"
+    },
+    {
+      "data_length": "3",
+      "id": "base_three",
+      "tier": "21000"
+    },
+    {
+      "data_length": "4",
+      "id": "base_selector",
+      "tier": "21000"
+    },
+    {
+      "data_length": "5",
+      "id": "base_first_argument",
+      "tier": "21000"
+    },
+    {
+      "data_length": "31",
+      "id": "base_thirty_one",
+      "tier": "21000"
+    },
+    {
+      "data_length": "32",
+      "id": "base_thirty_two",
+      "tier": "21000"
+    },
+    {
+      "data_length": "35",
+      "id": "base_thirty_five",
+      "tier": "21000"
+    },
+    {
+      "data_length": "36",
+      "id": "base_word",
+      "tier": "21000"
+    },
+    {
+      "data_length": "68",
+      "id": "base_two_words",
+      "tier": "21000"
+    },
+    {
+      "data_length": "16383",
+      "id": "base_below_cap",
+      "tier": "21000"
+    },
+    {
+      "data_length": "16384",
+      "id": "base_at_cap",
+      "tier": "21000"
+    },
+    {
+      "data_length": "16385",
+      "id": "base_above_cap",
+      "tier": "21000"
+    },
+    {
+      "data_length": "2147483647",
+      "id": "base_large_int",
+      "tier": "21000"
+    },
+    {
+      "data_length": "9223372036854775807",
+      "id": "base_max_int",
+      "tier": "21000"
+    },
+    {
+      "data_length": "-9223372036854775808",
+      "id": "balance_min_int",
+      "tier": "52500"
+    },
+    {
+      "data_length": "-1",
+      "id": "balance_negative",
+      "tier": "52500"
+    },
+    {
+      "data_length": "0",
+      "id": "balance_empty",
+      "tier": "52500"
+    },
+    {
+      "data_length": "1",
+      "id": "balance_one",
+      "tier": "52500"
+    },
+    {
+      "data_length": "3",
+      "id": "balance_three",
+      "tier": "52500"
+    },
+    {
+      "data_length": "4",
+      "id": "balance_selector",
+      "tier": "52500"
+    },
+    {
+      "data_length": "5",
+      "id": "balance_first_argument",
+      "tier": "52500"
+    },
+    {
+      "data_length": "31",
+      "id": "balance_thirty_one",
+      "tier": "52500"
+    },
+    {
+      "data_length": "32",
+      "id": "balance_thirty_two",
+      "tier": "52500"
+    },
+    {
+      "data_length": "35",
+      "id": "balance_thirty_five",
+      "tier": "52500"
+    },
+    {
+      "data_length": "36",
+      "id": "balance_word",
+      "tier": "52500"
+    },
+    {
+      "data_length": "68",
+      "id": "balance_two_words",
+      "tier": "52500"
+    },
+    {
+      "data_length": "16383",
+      "id": "balance_below_cap",
+      "tier": "52500"
+    },
+    {
+      "data_length": "16384",
+      "id": "balance_at_cap",
+      "tier": "52500"
+    },
+    {
+      "data_length": "16385",
+      "id": "balance_above_cap",
+      "tier": "52500"
+    },
+    {
+      "data_length": "2147483647",
+      "id": "balance_large_int",
+      "tier": "52500"
+    },
+    {
+      "data_length": "9223372036854775807",
+      "id": "balance_max_int",
+      "tier": "52500"
+    },
+    {
+      "data_length": "-9223372036854775808",
+      "id": "withdraw_min_int",
+      "tier": "73500"
+    },
+    {
+      "data_length": "-1",
+      "id": "withdraw_negative",
+      "tier": "73500"
+    },
+    {
+      "data_length": "0",
+      "id": "withdraw_empty",
+      "tier": "73500"
+    },
+    {
+      "data_length": "1",
+      "id": "withdraw_one",
+      "tier": "73500"
+    },
+    {
+      "data_length": "3",
+      "id": "withdraw_three",
+      "tier": "73500"
+    },
+    {
+      "data_length": "4",
+      "id": "withdraw_selector",
+      "tier": "73500"
+    },
+    {
+      "data_length": "5",
+      "id": "withdraw_first_argument",
+      "tier": "73500"
+    },
+    {
+      "data_length": "31",
+      "id": "withdraw_thirty_one",
+      "tier": "73500"
+    },
+    {
+      "data_length": "32",
+      "id": "withdraw_thirty_two",
+      "tier": "73500"
+    },
+    {
+      "data_length": "35",
+      "id": "withdraw_thirty_five",
+      "tier": "73500"
+    },
+    {
+      "data_length": "36",
+      "id": "withdraw_word",
+      "tier": "73500"
+    },
+    {
+      "data_length": "68",
+      "id": "withdraw_two_words",
+      "tier": "73500"
+    },
+    {
+      "data_length": "16383",
+      "id": "withdraw_below_cap",
+      "tier": "73500"
+    },
+    {
+      "data_length": "16384",
+      "id": "withdraw_at_cap",
+      "tier": "73500"
+    },
+    {
+      "data_length": "16385",
+      "id": "withdraw_above_cap",
+      "tier": "73500"
+    },
+    {
+      "data_length": "2147483647",
+      "id": "withdraw_large_int",
+      "tier": "73500"
+    },
+    {
+      "data_length": "9223372036854775807",
+      "id": "withdraw_max_int",
+      "tier": "73500"
+    },
+    {
+      "data_length": "-9223372036854775808",
+      "id": "max_min_int",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "-1",
+      "id": "max_negative",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "0",
+      "id": "max_empty",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "1",
+      "id": "max_one",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "3",
+      "id": "max_three",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "4",
+      "id": "max_selector",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "5",
+      "id": "max_first_argument",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "31",
+      "id": "max_thirty_one",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "32",
+      "id": "max_thirty_two",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "35",
+      "id": "max_thirty_five",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "36",
+      "id": "max_word",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "68",
+      "id": "max_two_words",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "16383",
+      "id": "max_below_cap",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "16384",
+      "id": "max_at_cap",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "16385",
+      "id": "max_above_cap",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "2147483647",
+      "id": "max_large_int",
+      "tier": "18446744073709551615"
+    },
+    {
+      "data_length": "9223372036854775807",
+      "id": "max_max_int",
+      "tier": "18446744073709551615"
+    }
+  ],
+  "core_commit": "661b5ef404487cd41685654bf87530f10adebbe4",
+  "core_tree": "78937597e8e0e5835a8856cb44d592e349451d9f",
+  "data_cap": "16384",
+  "schema": "ptlc-nom-embedded-argument-pricing-inputs-v1",
+  "scope": "HELPER ONLY; ABI, ADMISSION, QUOTE AND RECOVERY NOT ESTABLISHED",
+  "word_bits": "64"
+}

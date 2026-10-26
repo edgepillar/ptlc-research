@@ -1,0 +1,38 @@
+{
+  "abi_selector_bytes": 4,
+  "application": "NO-GO",
+  "argument_byte_plasma": 68,
+  "cases": 85,
+  "core": "NO-GO",
+  "core_commit": "661b5ef404487cd41685654bf87530f10adebbe4",
+  "core_tree": "78937597e8e0e5835a8856cb44d592e349451d9f",
+  "data_cap": 16384,
+  "execution_origin": "NOT_ESTABLISHED_BY_READER",
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/fixtures/nom_embedded_argument_pricing_inputs_v1.json": "ecb0fee7808481a02037c2519d82efe4c7c905ac2353bcd8b3d80d6433d9483d",
+    "compatibility/fixtures/nom_embedded_argument_pricing_values_v1.json": "851b31801e81674ae1adf877eef8190450ec6023271fa7b1bbd5cb15280f5d11",
+    "compatibility/nom_dev_661b5ef_source_v1.json": "a6eec89b1ca82e66cb6bcc855b1efc8b95981ffb7e43b1e3528d3daf8ba956fa",
+    "compatibility/nom_embedded_argument_pricing_test.go.txt": "630db9669817054d493280bdb9423873282f0a832d430df75534a726706fb27c",
+    "qualification/nom_dev_661b5ef_source.py": "e879c15c06259e56cb23d2cb4909e0f27e3fc610c343c4bed3ee237d3ce91ede",
+    "qualification/nom_dev_abi_boundary.py": "118a41fabd1bbd4a9862c3950ed483f05cc88417ff1b5a5c53b629fb6eef589a",
+    "qualification/nom_embedded_argument_pricing.py": "7fc515d2be4bda097a9af6b030fc3941e578db1b313309dbc1429558eb5f56ba",
+    "tests/test_nom_embedded_argument_pricing.py": "b86c4cc8b21ddc5056a7c1ba815beebffa13a9c274ce4bd6ae473f5198812985"
+  },
+  "native_execution": "NOT_PERFORMED_BY_READER",
+  "outcomes": 86,
+  "package": "github.com/zenon-network/go-zenon/vm",
+  "parent": "TestResearchNoMEmbeddedArgumentPricing",
+  "producer": "compatibility/nom_embedded_argument_pricing_test.go.txt",
+  "recovery_action": "NONE",
+  "schema": "ptlc-nom-embedded-argument-pricing-selection-v1",
+  "scope": "HELPER ONLY; ABI, ADMISSION, QUOTE AND RECOVERY NOT ESTABLISHED",
+  "source_files": 518,
+  "unit": "argument-pricing",
+  "upstream_sha256": {
+    "vm/constants/plasma.go": "7180f0d9e5b042cc45867274fdd745f06ab8d90cbad48e1d30ecf5fd5a244c98",
+    "vm/plasma.go": "cd019cabd6b25e51e741afe73e2d1b4b0546ff555837f51e58a77e2b7df76f0d",
+    "vm/plasma_embedded_test.go": "2c7de2c731ae68f39fb542d75c66cc5786674ba1eea5fc8e2fddb3f994f7923f"
+  },
+  "word_bits": 64
+}
