@@ -13,6 +13,14 @@ or signatures. Reproduction plans, source/value readers, local native execution
 and hosted CI are separate evidence. The journal source is unchanged;
 application/core remain **NO-GO** and independent assessment remains unfilled.
 
+The additive [ac16bfd source and runtime selection](docs/NOM_DEV_AC16BFD.md)
+binds all 514 upstream files, preserves the 556 reference outcomes and adds
+seven runtime profiles selecting 52 upstream test functions. The current-core
+CI job uses one 538-file source view and one compiler cache for all 28 profiles.
+Source selection, local execution and hosted acceptance remain separate gates;
+three inventoried test fixtures configure structured diagnostics before tests.
+The recovery journal and independent assessment retain their existing scope.
+
 The [one-workspace native runner](docs/NOM_DEV_5CB_NATIVE.md) selects the same
 twenty profiles with one source view and one fresh compiler cache. Its CI
 construction reuses the existing pinned toolchain and byte-matched dependency

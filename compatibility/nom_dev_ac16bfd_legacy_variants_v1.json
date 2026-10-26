@@ -1,0 +1,58 @@
+{
+  "core_commit": "ac16bfd7c083e0b808a17014c38a5a77cc0141f1",
+  "schema": "ptlc-nom-dev-ac16bfd-legacy-variants-v1",
+  "variants": {
+    "compatibility/nom_dev_5cb_abi_boundary_test.go.txt": {
+      "edits": [
+        {
+          "after": "ac16bfd7c083e0b808a17014c38a5a77cc0141f1",
+          "after_position": 12293,
+          "before": "5cb5aac3bb21d012111d87466f946cbdccd344f6"
+        }
+      ],
+      "original_sha256": "ab65467918478e9a075cb52d50c3394a96dba57283e11cdf846739f780fa8458",
+      "scope": "EXPLICIT CURRENT-SOURCE LABEL; ALL PRODUCER LOGIC UNCHANGED",
+      "selected": "compatibility/nom_dev_ac16bfd_abi_boundary_test.go.txt",
+      "selected_sha256": "fd8da0d8815f14e502637f86f34a3f3f027fb25c50c4d9772a198bb890608c04"
+    },
+    "compatibility/nom_dev_5cb_keyless_supervisor_test.go.txt": {
+      "edits": [
+        {
+          "after": "ac16bfd7c083e0b808a17014c38a5a77cc0141f1",
+          "after_position": 3690,
+          "before": "5cb5aac3bb21d012111d87466f946cbdccd344f6"
+        }
+      ],
+      "original_sha256": "8cfc6c9d9247edd4ff667c6785fe156ae2c8c15427f72dac223766aa357fff38",
+      "scope": "EXPLICIT CURRENT-SOURCE LABEL; ALL PRODUCER LOGIC UNCHANGED",
+      "selected": "compatibility/nom_dev_ac16bfd_keyless_supervisor_test.go.txt",
+      "selected_sha256": "b1ef01f159ef96f479fdf332b1342c98e1bab299ac7bec4c46a6adbb544fdbf5"
+    },
+    "compatibility/nom_dev_5cb_receive_data_test.go.txt": {
+      "edits": [
+        {
+          "after": "ac16bfd7c083e0b808a17014c38a5a77cc0141f1",
+          "after_position": 6787,
+          "before": "5cb5aac3bb21d012111d87466f946cbdccd344f6"
+        }
+      ],
+      "original_sha256": "0ec4062b2668b6926aa075b799022336df1fcef11dfd0cba7d87e67e48914f31",
+      "scope": "EXPLICIT CURRENT-SOURCE LABEL; ALL PRODUCER LOGIC UNCHANGED",
+      "selected": "compatibility/nom_dev_ac16bfd_receive_data_test.go.txt",
+      "selected_sha256": "70cc79945ea60eddbfe505bee7528444512d296c6c1b45976fe26b727d20c262"
+    },
+    "compatibility/nom_dev_5cb_send_caller_test.go.txt": {
+      "edits": [
+        {
+          "after": "ac16bfd7c083e0b808a17014c38a5a77cc0141f1",
+          "after_position": 10560,
+          "before": "5cb5aac3bb21d012111d87466f946cbdccd344f6"
+        }
+      ],
+      "original_sha256": "4a50e02c85f58f3d90f4fcda188539b478fb8daa1dcd86486ffa73b3d0013a88",
+      "scope": "EXPLICIT CURRENT-SOURCE LABEL; ALL PRODUCER LOGIC UNCHANGED",
+      "selected": "compatibility/nom_dev_ac16bfd_send_caller_test.go.txt",
+      "selected_sha256": "1aac20a9b32fb5e124767ec6f424731468f9736c7088c623371e692bd90173e6"
+    }
+  }
+}

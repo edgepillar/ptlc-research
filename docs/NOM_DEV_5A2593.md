@@ -1,10 +1,16 @@
 # Current-source comparison at 5a2593
 
-Status: complete source selection and five source-substitution controls, plus
-ten manufactured legacy-reader and twelve reclaim-reader controls. A joint
-selection and finite capture candidate now bind all twenty-one producers. Its
-combined native execution is **not yet qualified**.
+Status: the twenty-one-profile combined comparison has complete local native
+evidence and accepted original hosted evidence at research commit
+[`86f471f33b89069fffec404798e565b41a467681`](https://github.com/edgepillar/ptlc-research/commit/86f471f33b89069fffec404798e565b41a467681).
+The separate [main push run](https://github.com/edgepillar/ptlc-research/actions/runs/40217785860)
+completed successfully. This finite comparison covers 556 reference outcomes
+and 25 actual Go commands; it does not qualify a later upstream source.
 Application and core remain **NO-GO**; recovery admission remains unfilled.
+
+The [ac16bfd selection](NOM_DEV_AC16BFD.md) retains this historical corpus and
+adds separate runtime obligations. The comparison design and required evidence
+below describe this pinned 5a2593 subject, not current-source authority.
 
 The immutable input is go-zenon
 [`5a2593ab0d5d56ab15ad7ae7a910323a1565969f`](https://github.com/zenon-network/go-zenon/tree/5a2593ab0d5d56ab15ad7ae7a910323a1565969f),

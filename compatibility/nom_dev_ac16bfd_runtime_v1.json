@@ -1,0 +1,146 @@
+{
+  "application": "NO-GO",
+  "compiler_diagnostic_scope": "EXPLICIT_DEPRECATION_CATEGORY_ONLY",
+  "core": "NO-GO",
+  "core_commit": "ac16bfd7c083e0b808a17014c38a5a77cc0141f1",
+  "core_tree": "6706aeccac61c64f2497a53a526623473bb6e46a",
+  "darwin_cgo_cflags": "-O2 -g -Wno-deprecated-declarations",
+  "excluded_real_node_test": "TestRunWithConfig_StartDoesNotBlock",
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/nom_dev_ac16bfd_cache_logging_test.go.txt": "41e32fa1579fe0807aa65cbcf8d459eb39c6d7f69619e72264ee829038c09ffd",
+    "compatibility/nom_dev_ac16bfd_node_logging_test.go.txt": "158fcb0030a48e7766ffd15343f15d1685f3584c351de9b7d17f28c2584156b7",
+    "compatibility/nom_dev_ac16bfd_protocol_logging_test.go.txt": "de8a6ddec219a23d67178ce046da18b02caac199056f078277ad6987891a3be6",
+    "qualification/nom_dev_ac16bfd_runtime.py": "d88b3472ab8a577f090a319799c3eb2a3003bc8085da097ce30360eb9a5a642a",
+    "tests/test_nom_dev_ac16bfd_runtime.py": "82c957c5701fab49e31f187b1a53ebf795af75658f5383f9cee4bd499f1d4b82"
+  },
+  "native_execution": "NOT_PERFORMED_BY_READER",
+  "profiles": 7,
+  "recovery_action": "NONE",
+  "required_top_level_tests": 52,
+  "schema": "ptlc-nom-dev-ac16bfd-runtime-selection-v1",
+  "source_files": 514,
+  "structured_log_handler": "DISCARD_DIAGNOSTICS_ONLY",
+  "test_logging_probes": {
+    "chain/cache/storage/ptlc_ac16bfd_logging_test.go": "compatibility/nom_dev_ac16bfd_cache_logging_test.go.txt",
+    "node/ptlc_ac16bfd_logging_test.go": "compatibility/nom_dev_ac16bfd_node_logging_test.go.txt",
+    "protocol/ptlc_ac16bfd_logging_test.go": "compatibility/nom_dev_ac16bfd_protocol_logging_test.go.txt"
+  },
+  "units": {
+    "runtime-cache-close": {
+      "fixture_scope": "INERT MEMORY AND TEMPORARY LOCAL RESOURCES; NO NODE START",
+      "outcome_scope": "REQUIRED TOP-LEVEL FUNCTIONS; CLOSED OBSERVED DESCENDANTS",
+      "package": "chain/cache/storage",
+      "source_file": "chain/cache/storage/db_test.go",
+      "source_sha256": "563496f4c1822f383f490382361362bfee7fae31f36db927eda6c51f7c0f00f2",
+      "tests": [
+        "TestCacheDBManagerStopIsIdempotent",
+        "TestCacheDBManagerStopAfterFailedClose",
+        "TestGetFrontierIdentifierCorrupted",
+        "TestGetFrontierIdentifierReadError"
+      ]
+    },
+    "runtime-decode-limits": {
+      "fixture_scope": "INERT MEMORY AND TEMPORARY LOCAL RESOURCES; NO NODE START",
+      "outcome_scope": "REQUIRED TOP-LEVEL FUNCTIONS; CLOSED OBSERVED DESCENDANTS",
+      "package": "chain/nom",
+      "source_file": "chain/nom/deserialize_decode_path_test.go",
+      "source_sha256": "2af9312e1d1158dbcd1f3527bff811b3db03746ebab4283a41d757049878c0b8",
+      "tests": [
+        "TestDeserializeAccountBlock_MalformedDescendantNamesIndex",
+        "TestDeserializeAccountBlock_MalformedNestedDescendantNamesPath",
+        "TestDeserializeAccountBlock_ValidDescendantsRoundTrip",
+        "TestDeserializeMomentum_MalformedContentAddressNamesIndex",
+        "TestDeserializeMomentum_MalformedContentHashNamesIndex",
+        "TestDeserializeMomentum_ValidContentRoundTrip",
+        "TestDeserializeAccountBlock_NestedPastDecoderLimitIsRejected",
+        "TestDeserializeAccountBlock_NestedBelowDecoderLimitDecodes"
+      ]
+    },
+    "runtime-manager-close": {
+      "fixture_scope": "INERT MEMORY AND TEMPORARY LOCAL RESOURCES; NO NODE START",
+      "outcome_scope": "REQUIRED TOP-LEVEL FUNCTIONS; CLOSED OBSERVED DESCENDANTS",
+      "package": "common/db",
+      "source_file": "common/db/versioned_db_test.go",
+      "source_sha256": "54372ee03c33fe6d2ec9a269ffd2518f2d644703ba60f15c7db455b356a7568f",
+      "tests": [
+        "TestManagerStopIsIdempotent",
+        "TestLevelDBManagerStopAfterFailedClose",
+        "TestRebase_Stopped",
+        "TestMemDBManagerStopDuringAdd",
+        "TestMemDBManagerAddRechecksFrontierAtCommit",
+        "TestMemDBManagerStopConcurrentWithAdd"
+      ]
+    },
+    "runtime-manager-guards": {
+      "fixture_scope": "INERT MEMORY AND TEMPORARY LOCAL RESOURCES; NO NODE START",
+      "outcome_scope": "REQUIRED TOP-LEVEL FUNCTIONS; CLOSED OBSERVED DESCENDANTS",
+      "package": "app",
+      "source_file": "app/run_with_config_test.go",
+      "source_sha256": "36b3c51d4e0ea6e96ae2de79c1a87e673b5d2d4d1484513a07b07d8e8b5ee19e",
+      "tests": [
+        "TestRunWithConfig_AlreadyRunning_ReturnsError",
+        "TestStop_ClearsNodeManager",
+        "TestRunWithConfig_SecondStartPreservesFirstNode"
+      ]
+    },
+    "runtime-node-stop": {
+      "fixture_scope": "INERT MEMORY AND TEMPORARY LOCAL RESOURCES; NO NODE START",
+      "outcome_scope": "REQUIRED TOP-LEVEL FUNCTIONS; CLOSED OBSERVED DESCENDANTS",
+      "package": "node",
+      "source_file": "node/node_stop_test.go",
+      "source_sha256": "e1554146ed2e1194f3db42ea53ee3a15bbd323d3f63fc5b5c280f1464a8bb434",
+      "tests": [
+        "TestStopRunsAllStepsDespiteErrors",
+        "TestStopJoinsErrorsFromMultipleSubsystems",
+        "TestStopFailingCoreStillCleansUp"
+      ]
+    },
+    "runtime-request-budget": {
+      "fixture_scope": "INERT MEMORY AND TEMPORARY LOCAL RESOURCES; NO NODE START",
+      "outcome_scope": "REQUIRED TOP-LEVEL FUNCTIONS; CLOSED OBSERVED DESCENDANTS",
+      "package": "protocol",
+      "source_file": "protocol/handler_budget_test.go",
+      "source_sha256": "3e491c28c7643f836e8291bbf0ed9734136a19199f220b87f1f5af56b6b76fa3",
+      "tests": [
+        "TestTokenBucket_ReserveRefillAndCap",
+        "TestTokenBucket_RequestAboveBurstIsRefusedWithoutCharge",
+        "TestTokenBucket_DeficitWithoutRateIsRefused",
+        "TestTokenBucket_BackwardClockDoesNotRefill",
+        "TestHandleRequests_UnknownHashStreamIsPacedOnceBudgetRunsDry",
+        "TestHandleRequests_MissCostsMoreThanHit",
+        "TestHandleRequests_HonestSyncPaceIsNeverPaced",
+        "TestHandleRequests_FlatOutHashSyncIsPacedNotRefused",
+        "TestHandleRequests_FlatOutLargeRepliesArePacedNotRefused",
+        "TestHandleRequests_BudgetRefillsOverTime",
+        "TestHandleRequests_ReplyAboveByteBurstIsRefusedAndNotSent",
+        "TestHandleRequests_ReplyBytesArePaced",
+        "TestHandleRequests_PacedWaitAbandonedWhenPeerCloses",
+        "TestHandleRequests_HashRequestsDrawFromTheSharedBudget",
+        "TestHandleRequests_HashRequestIsChargedTheClampedAmount",
+        "TestHandleRequests_HashesFromNumberDrawFromTheSharedBudget",
+        "TestHandleRequests_MissingHeightFallbackIsCharged",
+        "TestHandleRequests_FlatOutFromNumberSyncIsPacedNotRefused",
+        "TestHandleRequests_MixedFlatOutLookupTrafficStaysInsideTimeouts",
+        "TestHandleRequests_MixedFlatOutByteTrafficStaysInsideTimeouts",
+        "TestHandleRequests_AbandonedWaitStopsBeforeTheNextStep",
+        "TestHandleRequests_HashReplyBytesAreCharged",
+        "TestHandleRequests_EmptyRequestsAreNotFree",
+        "TestPeer_RequestBudgetDefaultsWhenUnset",
+        "TestSleepUnlessClosed",
+        "TestRequestBudgetDefaults_CoverHonestRequesters",
+        "TestPeer_DefaultBudgetsAreIndependentAndEndWithTheConnection"
+      ]
+    },
+    "runtime-spork-tombstone": {
+      "fixture_scope": "INERT MEMORY AND TEMPORARY LOCAL RESOURCES; NO NODE START",
+      "outcome_scope": "REQUIRED TOP-LEVEL FUNCTIONS; CLOSED OBSERVED DESCENDANTS",
+      "package": "vm/embedded/definition",
+      "source_file": "vm/embedded/definition/spork_test.go",
+      "source_sha256": "b9d46fd685089d846deb0de46b9333fc8e1e68dbbc25109e9ea685b5646d080a",
+      "tests": [
+        "TestGetAllSporksSkipsTombstones"
+      ]
+    }
+  }
+}
