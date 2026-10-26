@@ -1,0 +1,254 @@
+// Independently written MIT research probe; selected GPL node source is separate.
+// Isolated ABI, length-check, dispatch and static-method results are not admission.
+package embedded
+
+import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"math/big"
+	"testing"
+
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/common/types"
+	"github.com/zenon-network/go-zenon/vm/constants"
+	"github.com/zenon-network/go-zenon/vm/embedded/definition"
+	"github.com/zenon-network/go-zenon/vm/embedded/implementation"
+	"github.com/zenon-network/go-zenon/vm/vm_context"
+)
+
+type researchDevABIContext struct {
+	vm_context.AccountVmContext
+	dp, ptlc bool
+}
+
+func (c *researchDevABIContext) IsAcceleratorSporkEnforced() bool        { return false }
+func (c *researchDevABIContext) IsBridgeAndLiquiditySporkEnforced() bool { return false }
+func (c *researchDevABIContext) IsHtlcSporkEnforced() bool               { return false }
+func (c *researchDevABIContext) IsDynamicPlasmaSporkEnforced() bool      { return c.dp }
+func (c *researchDevABIContext) IsPtlcSporkEnforced() bool               { return c.ptlc }
+
+var _ vm_context.AccountVmContext = (*researchDevABIContext)(nil)
+
+func TestResearchNoMDevABIBoundary(t *testing.T) {
+	decode := func(text string) []byte {
+		raw, err := hex.DecodeString(text)
+		if err != nil {
+			t.Fatal("declared synthetic ABI bytes invalid")
+		}
+		return raw
+	}
+	// Values below are independently encoded by the earlier research wire model.
+	canonical := map[string][]byte{
+		"Create":      decode("22cec8ee000000000000000000000000000000000000000000000000000000006553f10a000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000031420000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"),
+		"Reclaim":     decode("7e003c8d1122330000000000000000000000000000000000000000000000000000000000"),
+		"Unlock":      decode("d33791d311223300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+		"ProxyUnlock": decode("8bffc216112233000000000000000000000000000000000000000000000000000000000000000000000000000000000000314200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+	}
+	entry := types.Hash{0x11, 0x22, 0x33}
+	destination := types.Address{0x00, 0x31, 0x42}
+	point := decode("79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798")
+	witness := make([]byte, 64)
+	arguments := map[string][]interface{}{
+		"Create":      {int64(1700000010), uint8(definition.PointTypeBIP340), point, destination},
+		"Reclaim":     {entry},
+		"Unlock":      {entry, witness},
+		"ProxyUnlock": {entry, destination, witness},
+	}
+	for name, values := range arguments {
+		actual, err := definition.ABIPtlc.PackMethod(name, values...)
+		if err != nil || !bytes.Equal(actual, canonical[name]) {
+			t.Fatal("independent canonical wire value differs")
+		}
+	}
+	type scenario struct {
+		id, method                       string
+		data                             []byte
+		dp, ptlc                         bool
+		address                          types.Address
+		guard, unpack, validation, route  string
+		repackEqual, validationChangesData bool
+	}
+	cases := make([]scenario, 0, 26)
+	add := func(id, method string, data []byte, guard, unpack, validation, route string, equal, changes bool) {
+		cases = append(cases, scenario{id, method, append([]byte(nil), data...), true, true,
+			types.PtlcContract, guard, unpack, validation, route, equal, changes})
+	}
+	for _, method := range []string{"Create", "Reclaim", "Unlock", "ProxyUnlock"} {
+		add(method+"_canonical", method, canonical[method], "NO_ERROR", "UNPACKED", "VALIDATED", "FOUND", true, false)
+		for _, count := range []int{1, 32} {
+			changed := append(append([]byte(nil), canonical[method]...), make([]byte, count)...)
+			add(fmt.Sprintf("%s_trailing_%d", method, count), method, changed,
+				"TRAILING_DATA", "UNPACKED", "VALIDATED", "FOUND", false, true)
+		}
+	}
+	gap := append([]byte(nil), canonical["Unlock"][:36]...)
+	offset := make([]byte, 32)
+	offset[31] = 96
+	gap = append(gap, offset...)
+	gap = append(gap, make([]byte, 32)...)
+	gap = append(gap, canonical["Unlock"][68:]...)
+	add("unlock_offset_gap", "Unlock", gap, "TRAILING_DATA", "UNPACKED", "VALIDATED", "FOUND", false, true)
+	proxyPadding := append([]byte(nil), canonical["ProxyUnlock"]...)
+	proxyPadding[36] = 1
+	add("proxy_address_high_padding", "ProxyUnlock", proxyPadding, "NO_ERROR", "UNPACKED", "VALIDATED", "FOUND", false, true)
+	pointPadding := append([]byte(nil), canonical["Create"]...)
+	pointPadding[36] = 1
+	add("create_point_type_high_padding", "Create", pointPadding, "NO_ERROR", "UNPACKED", "VALIDATED", "FOUND", false, true)
+	shortWitness, err := definition.ABIPtlc.PackMethod("Unlock", entry, make([]byte, 31))
+	if err != nil {
+		t.Fatal("synthetic short witness encoding failed")
+	}
+	add("unlock_invalid_witness_width", "Unlock", shortWitness, "NO_ERROR", "UNPACKED", "WITNESS_REFUSED", "FOUND", true, false)
+	shortPadding := append([]byte(nil), shortWitness...)
+	shortPadding[len(shortPadding)-1] = 1
+	add("unlock_invalid_width_nonzero_padding", "Unlock", shortPadding, "NO_ERROR", "UNPACKED", "WITNESS_REFUSED", "FOUND", false, false)
+	wrongSelector := append([]byte(nil), canonical["Unlock"]...)
+	copy(wrongSelector[:4], []byte{0xde, 0xad, 0xbe, 0xef})
+	add("unlock_unknown_selector", "Unlock", wrongSelector, "NO_ERROR", "UNPACK_REFUSED", "UNPACK_REFUSED", "METHOD_MISSING", false, false)
+	add("unlock_truncated_head", "Unlock", canonical["Unlock"][:35], "NO_ERROR", "UNPACK_REFUSED", "UNPACK_REFUSED", "FOUND", false, false)
+	add("unlock_selector_only", "Unlock", canonical["Unlock"][:4], "NO_ERROR", "UNPACK_REFUSED", "UNPACK_REFUSED", "FOUND", false, false)
+	add("unlock_empty_data", "Unlock", nil, "NO_ERROR", "UNPACK_REFUSED", "UNPACK_REFUSED", "METHOD_MISSING", false, false)
+	largeOffset := append([]byte(nil), canonical["Unlock"]...)
+	for i := 36; i < 68; i++ {
+		largeOffset[i] = 0
+	}
+	largeOffset[36] = 0x80
+	add("unlock_offset_overflow", "Unlock", largeOffset, "NO_ERROR", "UNPACK_REFUSED", "UNPACK_REFUSED", "FOUND", false, false)
+	add("ptlc_registry_absent", "Reclaim", canonical["Reclaim"], "NO_ERROR", "UNPACKED", "VALIDATED", "CONTRACT_MISSING", true, false)
+	cases[len(cases)-1].ptlc = false
+	add("dp_flag_off_isolated_helper", "Reclaim", append(append([]byte(nil), canonical["Reclaim"]...), 0),
+		"TRAILING_DATA", "UNPACKED", "VALIDATED", "FOUND", false, true)
+	cases[len(cases)-1].dp = false
+	add("nonembedded_address", "Reclaim", canonical["Reclaim"], "NO_ERROR", "UNPACKED", "VALIDATED", "NOT_CONTRACT", true, false)
+	cases[len(cases)-1].address = destination
+	unknownAddress := types.PtlcContract
+	unknownAddress[len(unknownAddress)-2], unknownAddress[len(unknownAddress)-1] = 0xfe, 0x21
+	if !types.IsEmbeddedAddress(unknownAddress) || types.IsEmbeddedAddress(destination) {
+		t.Fatal("declared address branch differs")
+	}
+	add("unknown_embedded_address", "Reclaim", canonical["Reclaim"], "NO_ERROR", "UNPACKED", "VALIDATED", "CONTRACT_MISSING", true, false)
+	cases[len(cases)-1].address = unknownAddress
+	if len(cases) != 26 {
+		t.Fatal("complete isolated ABI boundary selection required")
+	}
+	methods := map[string]Method{
+		"Create":      &implementation.CreatePtlcMethod{MethodName: "Create"},
+		"Reclaim":     &implementation.ReclaimPtlcMethod{MethodName: "Reclaim"},
+		"Unlock":      &implementation.UnlockPtlcMethod{MethodName: "Unlock"},
+		"ProxyUnlock": &implementation.ProxyUnlockPtlcMethod{MethodName: "ProxyUnlock"},
+	}
+	records, seen := make(map[string]interface{}), make(map[string]bool)
+	for _, selected := range cases {
+		selected := selected
+		if selected.id == "" || seen[selected.id] {
+			t.Fatal("boundary scenario identity is missing or repeated")
+		}
+		seen[selected.id] = true
+		t.Run(selected.id, func(t *testing.T) {
+			context := &researchDevABIContext{dp: selected.dp, ptlc: selected.ptlc}
+			guard := "NO_ERROR"
+			if err := CheckNoTrailingBytes(context, selected.address, selected.data); err != nil {
+				if !errors.Is(err, constants.ErrABDataTrailingBytes) {
+					t.Fatal("unexpected isolated length-check error")
+				}
+				guard = "TRAILING_DATA"
+			}
+			if guard != selected.guard {
+				t.Fatal("isolated length-check result differs")
+			}
+			route := "FOUND"
+			if _, err := GetEmbeddedMethod(context, selected.address, selected.data); err != nil {
+				switch {
+				case errors.Is(err, constants.ErrNotContractAddress):
+					route = "NOT_CONTRACT"
+				case errors.Is(err, constants.ErrContractDoesntExist):
+					route = "CONTRACT_MISSING"
+				case errors.Is(err, constants.ErrContractMethodNotFound):
+					route = "METHOD_MISSING"
+				default:
+					t.Fatal("unexpected dispatch error")
+				}
+			}
+			if route != selected.route {
+				t.Fatal("isolated dispatch result differs")
+			}
+			var target interface{}
+			switch selected.method {
+			case "Create":
+				target = new(definition.CreatePtlcParam)
+			case "Reclaim":
+				target = new(types.Hash)
+			case "Unlock":
+				target = new(definition.UnlockPtlcParam)
+			case "ProxyUnlock":
+				target = new(definition.ProxyUnlockPtlcParam)
+			default:
+				t.Fatal("unknown declared method")
+			}
+			unpack, repackEqual := "UNPACKED", false
+			var repacked []byte
+			if err := definition.ABIPtlc.UnpackMethod(target, selected.method, selected.data); err != nil {
+				unpack = "UNPACK_REFUSED"
+			} else {
+				method := definition.ABIPtlc.Methods[selected.method]
+				values, err := method.Inputs.UnpackValues(selected.data[4:])
+				if err != nil {
+					t.Fatal("successful decode disagrees with value unpacking")
+				}
+				repacked, err = definition.ABIPtlc.PackMethod(selected.method, values...)
+				if err != nil {
+					t.Fatal("selected decoded values cannot be repacked")
+				}
+				repackEqual = bytes.Equal(repacked, selected.data)
+			}
+			if unpack != selected.unpack || repackEqual != selected.repackEqual {
+				t.Fatal("decode or canonical-byte comparison differs")
+			}
+			amount := big.NewInt(0)
+			if selected.method == "Create" {
+				amount = big.NewInt(1)
+			}
+			block := &nom.AccountBlock{BlockType: nom.BlockTypeUserSend, Address: destination,
+				ToAddress: selected.address, Amount: amount, Data: append([]byte(nil), selected.data...)}
+			validation := "VALIDATED"
+			if err := methods[selected.method].ValidateSendBlock(block); err != nil {
+				switch {
+				case errors.Is(err, constants.ErrUnpackError):
+					validation = "UNPACK_REFUSED"
+				case errors.Is(err, constants.ErrInvalidPointSignature):
+					validation = "WITNESS_REFUSED"
+				default:
+					t.Fatal("unexpected static-method validation error")
+				}
+			}
+			changed := !bytes.Equal(block.Data, selected.data)
+			if validation != selected.validation || changed != selected.validationChangesData {
+				t.Fatal("static validation or its data mutation differs")
+			}
+			inputDigest, outputDigest := sha256.Sum256(selected.data), sha256.Sum256(block.Data)
+			records[selected.id] = map[string]interface{}{
+				"method": selected.method, "data_bytes": len(selected.data),
+				"input_sha256": hex.EncodeToString(inputDigest[:]), "validated_data_sha256": hex.EncodeToString(outputDigest[:]),
+				"guard_outcome": guard, "dispatch_outcome": route, "unpack_outcome": unpack,
+				"validation_outcome": validation, "repack_equal": repackEqual, "validation_changes_data": changed,
+				"dp_flag": selected.dp, "ptlc_flag": selected.ptlc,
+			}
+		})
+	}
+	if len(records) != len(cases) {
+		t.Fatal("one or more selected ABI boundary records absent")
+	}
+	raw, err := json.Marshal(map[string]interface{}{
+		"schema": "zenon-nom-dev-abi-boundary-result-v1", "scope": "ISOLATED_ABI_AND_METHOD_LAYERS_ONLY",
+		"selected_core_commit": "ac16bfd7c083e0b808a17014c38a5a77cc0141f1", "records": records,
+		"application": "NO-GO", "core": "NO-GO", "independent_assessment": "UNFILLED",
+	})
+	if err != nil {
+		t.Fatal("isolated ABI boundary report unavailable")
+	}
+	fmt.Println(string(raw))
+}

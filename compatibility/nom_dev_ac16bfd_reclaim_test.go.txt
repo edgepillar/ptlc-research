@@ -1,0 +1,504 @@
+// Independently written MIT tests; unchanged GPL core is referenced only.
+// Requires the selected MIT VM-path probe in the same 21-producer source view.
+package vm
+
+import (
+	"bytes"
+	"crypto/ed25519"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"io"
+	"math/big"
+	"os"
+	"strconv"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/btcsuite/btcd/btcec/v2"
+	"github.com/btcsuite/btcd/btcec/v2/schnorr"
+	"github.com/zenon-network/go-zenon/chain/account"
+	"github.com/zenon-network/go-zenon/chain/nom"
+	"github.com/zenon-network/go-zenon/common/db"
+	"github.com/zenon-network/go-zenon/common/types"
+	"github.com/zenon-network/go-zenon/vm/constants"
+	"github.com/zenon-network/go-zenon/vm/embedded/definition"
+	"github.com/zenon-network/go-zenon/vm/embedded/implementation"
+	"github.com/zenon-network/go-zenon/vm/vm_context"
+)
+
+type researchCurrentReclaimMaterials struct {
+	Chain           string            `json:"chain_id"`
+	Creator         string            `json:"creator_hex"`
+	Destination     string            `json:"destination_hex"`
+	Other           string            `json:"other_hex"`
+	Token           string            `json:"token_hex"`
+	Amount          string            `json:"amount"`
+	Expiration      string            `json:"expiration_time"`
+	CreateTime      string            `json:"create_time"`
+	ClaimPoints     map[string]string `json:"claim_points"`
+	ReclaimPoints   map[string]string `json:"reclaim_points"`
+	AlternatePoints map[string]string `json:"alternate_reclaim_points"`
+}
+
+type researchCurrentReclaimCase struct {
+	ID      string `json:"id"`
+	Kind    string `json:"kind"`
+	Mode    string `json:"mode"`
+	Claim   uint8  `json:"claim_type"`
+	Reclaim uint8  `json:"reclaim_type"`
+}
+
+func researchCurrentReclaimRaw(t *testing.T, encoded string, size int) []byte {
+	t.Helper()
+	raw, err := hex.DecodeString(encoded)
+	if err != nil || len(raw) != size {
+		t.Fatal("invalid selected public bytes")
+	}
+	return raw
+}
+
+func researchCurrentReclaimAddress(t *testing.T, encoded string) types.Address {
+	var value types.Address
+	copy(value[:], researchCurrentReclaimRaw(t, encoded, types.AddressSize))
+	return value
+}
+
+func researchCurrentReclaimHash(t *testing.T, encoded string) types.Hash {
+	var value types.Hash
+	copy(value[:], researchCurrentReclaimRaw(t, encoded, types.HashSize))
+	return value
+}
+
+func researchCurrentReclaimNumber(t *testing.T, encoded string) uint64 {
+	t.Helper()
+	value, err := strconv.ParseUint(encoded, 10, 64)
+	if err != nil {
+		t.Fatal("invalid selected public number")
+	}
+	return value
+}
+
+func researchCurrentReclaimTerms(t *testing.T, m researchCurrentReclaimMaterials, c researchCurrentReclaimCase) *definition.PtlcInfo {
+	amount, ok := new(big.Int).SetString(m.Amount, 10)
+	if !ok {
+		t.Fatal("invalid selected public amount")
+	}
+	var token types.ZenonTokenStandard
+	copy(token[:], researchCurrentReclaimRaw(t, m.Token, types.ZenonTokenStandardSize))
+	point := m.ClaimPoints[fmt.Sprint(c.Claim)]
+	size := 32
+	if c.Claim == definition.PointTypeSecp256k1Point {
+		size = 33
+	}
+	return &definition.PtlcInfo{TimeLocked: researchCurrentReclaimAddress(t, m.Creator),
+		Destination: researchCurrentReclaimAddress(t, m.Destination), TokenStandard: token,
+		Amount: amount, ExpirationTime: int64(researchCurrentReclaimNumber(t, m.Expiration)),
+		PointType: c.Claim, PointLock: researchCurrentReclaimRaw(t, point, size)}
+}
+
+func researchCurrentReclaimError(t *testing.T, err error) string {
+	t.Helper()
+	if err == nil {
+		return "NONE"
+	}
+	for name, selected := range map[string]error{
+		"ErrUnpackError": constants.ErrUnpackError, "ErrInvalidPointType": constants.ErrInvalidPointType,
+		"ErrInvalidPointLock": constants.ErrInvalidPointLock, "ErrInvalidDestination": constants.ErrInvalidDestination,
+		"ErrInvalidTokenOrAmount": constants.ErrInvalidTokenOrAmount, "ErrInvalidPointSignature": constants.ErrInvalidPointSignature,
+		"ErrPermissionDenied": constants.ErrPermissionDenied, "ErrExpired": constants.ErrExpired,
+		"ReclaimNotDue": constants.ReclaimNotDue, "ErrNoReclaimLock": constants.ErrNoReclaimLock,
+		"ErrReclaimSignatureRequired": constants.ErrReclaimSignatureRequired, "ErrInsufficientBalance": constants.ErrInsufficientBalance,
+	} {
+		if err == selected {
+			return name
+		}
+	}
+	t.Fatal("unselected source error")
+	return "UNSELECTED"
+}
+
+// All seeds/scalars below are intentionally public fixture constants. There is
+// no entropy, wallet, application signer or secret-bearing input in this probe.
+func researchCurrentReclaimSign(t *testing.T, pointType uint8, claim bool, message []byte) []byte {
+	t.Helper()
+	if pointType == definition.PointTypeED25519 {
+		seed := byte(0)
+		if claim {
+			seed = 1
+		}
+		return ed25519.Sign(ed25519.NewKeyFromSeed(bytes.Repeat([]byte{seed}, 32)), message)
+	}
+	if pointType != definition.PointTypeBIP340 {
+		t.Fatal("unselected fixture signing type")
+	}
+	scalar := make([]byte, 32)
+	scalar[31] = 3
+	if claim {
+		scalar[31] = 7
+	}
+	key, _ := btcec.PrivKeyFromBytes(scalar)
+	signature, err := schnorr.Sign(key, message, schnorr.CustomNonce([32]byte{}))
+	if err != nil {
+		t.Fatal("public fixture signature generation failed")
+	}
+	return signature.Serialize()
+}
+
+func researchCurrentReclaimPack(t *testing.T, method string, e *definition.PtlcInfo, pointType uint8, point []byte, id types.Hash, signature []byte) []byte {
+	t.Helper()
+	var data []byte
+	var err error
+	switch method {
+	case definition.CreatePtlcMethodName:
+		data, err = definition.ABIPtlc.PackMethod(method, e.ExpirationTime, e.PointType, e.PointLock, e.Destination)
+	case definition.CreateWithReclaimLockPtlcMethodName:
+		data, err = definition.ABIPtlc.PackMethod(method, e.ExpirationTime, e.PointType, e.PointLock, e.Destination, pointType, point)
+	case definition.ReclaimPtlcMethodName:
+		data, err = definition.ABIPtlc.PackMethod(method, id)
+	case definition.ReclaimWithSignaturePtlcMethodName, definition.UnlockPtlcMethodName:
+		data, err = definition.ABIPtlc.PackMethod(method, id, signature)
+	default:
+		t.Fatal("unselected public method")
+	}
+	if err != nil {
+		t.Fatal("selected public method encoding failed")
+	}
+	return data
+}
+
+func researchCurrentReclaimMessage(t *testing.T, m researchCurrentReclaimMaterials, c researchCurrentReclaimCase) map[string]interface{} {
+	e := researchCurrentReclaimTerms(t, m, c)
+	chain := researchCurrentReclaimNumber(t, m.Chain)
+	switch c.Mode {
+	case "chain_zero":
+		chain = 0
+	case "chain_max":
+		chain = ^uint64(0)
+	case "chain_endian":
+		chain = 0x0102030405060708
+	case "other_creator":
+		e.TimeLocked = researchCurrentReclaimAddress(t, m.Other)
+	case "open_destination":
+		e.Destination = types.ZeroAddress
+	case "other_destination":
+		e.Destination = researchCurrentReclaimAddress(t, m.Other)
+	case "other_token":
+		copy(e.TokenStandard[:], bytes.Repeat([]byte{0x66}, 10))
+	case "amount_one":
+		e.Amount = big.NewInt(1)
+	case "amount_max":
+		e.Amount = new(big.Int).SetBytes(bytes.Repeat([]byte{0xff}, 32))
+	case "expiry_endian":
+		e.ExpirationTime = 0x0102030405060708
+	case "other_claim_point":
+		e.PointLock = append([]byte{2}, researchCurrentReclaimRaw(t, m.ClaimPoints["1"], 32)...)
+	}
+	e.Id = researchCurrentReclaimHash(t, strings.Repeat("11", 32))
+	if c.Mode == "other_id" {
+		e.Id = researchCurrentReclaimHash(t, strings.Repeat("22", 32))
+	}
+	before := definition.GetPtlcReclaimMessage(chain, c.Reclaim, e)
+	unlock := definition.GetPtlcUnlockMessage(chain, e.PointType, e.Id, e.Destination)
+	e.Id = researchCurrentReclaimHash(t, strings.Repeat("33", 32))
+	after := definition.GetPtlcReclaimMessage(chain, c.Reclaim, e)
+	otherUnlock := definition.GetPtlcUnlockMessage(chain, e.PointType, e.Id, e.Destination)
+	// The preimage is an independent projection of these selected public
+	// fields; GetPtlcReclaimMessage itself returns only the digest.
+	preimage := append([]byte(definition.PtlcReclaimMessageDomain), byte(chain>>56), byte(chain>>48), byte(chain>>40), byte(chain>>32), byte(chain>>24), byte(chain>>16), byte(chain>>8), byte(chain))
+	preimage = append(preimage, types.PtlcContract.Bytes()...)
+	preimage = append(preimage, c.Reclaim)
+	preimage = append(preimage, e.TimeLocked.Bytes()...)
+	preimage = append(preimage, e.Destination.Bytes()...)
+	preimage = append(preimage, e.TokenStandard.Bytes()...)
+	amount := make([]byte, 32)
+	e.Amount.FillBytes(amount)
+	preimage = append(preimage, amount...)
+	u := uint64(e.ExpirationTime)
+	preimage = append(preimage, byte(u>>56), byte(u>>48), byte(u>>40), byte(u>>32), byte(u>>24), byte(u>>16), byte(u>>8), byte(u))
+	preimage = append(preimage, e.PointType)
+	preimage = append(preimage, e.PointLock...)
+	return map[string]interface{}{"kind": "message", "reclaim_preimage_hex": hex.EncodeToString(preimage),
+		"reclaim_message_hex": hex.EncodeToString(before), "unlock_message_hex": hex.EncodeToString(unlock),
+		"changing_id_preserves_reclaim": bytes.Equal(before, after), "changing_id_changes_unlock": !bytes.Equal(unlock, otherUnlock)}
+}
+
+func researchCurrentReclaimSend(t *testing.T, m researchCurrentReclaimMaterials, c researchCurrentReclaimCase) map[string]interface{} {
+	e := researchCurrentReclaimTerms(t, m, c)
+	pointType := c.Reclaim
+	point := researchCurrentReclaimRaw(t, m.ReclaimPoints[fmt.Sprint(c.Reclaim)], 32)
+	signature := make([]byte, 64)
+	method := definition.ReclaimWithSignaturePtlcMethodName
+	amount := big.NewInt(0)
+	if strings.HasPrefix(c.Mode, "create_") {
+		method = definition.CreateWithReclaimLockPtlcMethodName
+		amount = new(big.Int).Set(e.Amount)
+	}
+	switch c.Mode {
+	case "create_scalar_reclaim":
+		pointType = 2
+		point = researchCurrentReclaimRaw(t, m.ClaimPoints["2"], 33)
+	case "create_bad_claim_type":
+		e.PointType = 3
+	case "create_short_reclaim_point":
+		point = point[:31]
+	case "create_multisig_destination":
+		e.Destination[0] = 2
+	case "create_zero_amount":
+		amount = big.NewInt(0)
+	case "create_negative_amount":
+		amount = big.NewInt(-1)
+	case "reclaim_nonzero_amount":
+		amount = big.NewInt(1)
+	case "reclaim_short_signature":
+		signature = signature[:32]
+	}
+	data := researchCurrentReclaimPack(t, method, e, pointType, point, researchCurrentReclaimHash(t, strings.Repeat("11", 32)), signature)
+	switch {
+	case strings.HasSuffix(c.Mode, "trailing_1"):
+		data = append(data, 0)
+	case strings.HasSuffix(c.Mode, "trailing_32"):
+		data = append(data, make([]byte, 32)...)
+	case strings.HasSuffix(c.Mode, "truncated"):
+		data = data[:35]
+	case strings.HasSuffix(c.Mode, "unknown_selector"):
+		copy(data[:4], []byte{0xde, 0xad, 0xbe, 0xef})
+	}
+	before := hex.EncodeToString(data)
+	block := &nom.AccountBlock{Data: data, Amount: amount}
+	var err error
+	if method == definition.CreateWithReclaimLockPtlcMethodName {
+		err = (&implementation.CreateWithReclaimLockPtlcMethod{MethodName: method}).ValidateSendBlock(block)
+	} else {
+		err = (&implementation.ReclaimWithSignaturePtlcMethod{MethodName: method}).ValidateSendBlock(block)
+	}
+	return map[string]interface{}{"kind": "send", "method": method, "amount": amount.String(), "input_hex": before,
+		"post_validation_hex": hex.EncodeToString(block.Data), "returned_error": researchCurrentReclaimError(t, err)}
+}
+
+func researchCurrentReclaimVM(t *testing.T, m researchCurrentReclaimMaterials, c researchCurrentReclaimCase) map[string]interface{} {
+	e := researchCurrentReclaimTerms(t, m, c)
+	chain := researchCurrentReclaimNumber(t, m.Chain)
+	at := time.Unix(int64(researchCurrentReclaimNumber(t, m.CreateTime)), 0)
+	ledger := &researchVMPathLedger{momentum: &nom.Momentum{ChainIdentifier: chain, Height: 9,
+		Hash: researchCurrentReclaimHash(t, strings.Repeat("55", 32)), Timestamp: &at}, blocks: map[types.Hash]*nom.AccountBlock{}}
+	cache := &researchVMPathCache{}
+	root := db.NewMemDB()
+	contract := vm_context.NewAccountContext(ledger, account.NewAccountStore(types.PtlcContract, root), cache, nil)
+	funder := vm_context.NewAccountContext(ledger, account.NewAccountStore(e.TimeLocked, db.NewMemDB()), cache, nil)
+	if err := funder.SetBalance(e.TokenStandard, new(big.Int).Mul(e.Amount, big.NewInt(3))); err != nil {
+		t.Fatal("public setup balance failed")
+	}
+	adopt := func(block *nom.AccountBlock) {
+		wire, err := block.Serialize()
+		if err != nil || db.SetFrontier(root, block.Identifier(), wire) != nil {
+			t.Fatal("selected memory frontier adoption failed")
+		}
+	}
+	generate := func(send *nom.AccountBlock) (*nom.AccountBlock, error) {
+		ledger.blocks[send.Hash] = send.Copy()
+		parent, methodErr, internalErr := NewVM(contract, ledger).generateEmbeddedReceive(send.Hash)
+		if internalErr != nil || parent == nil || parent.Hash != parent.ComputeHash() {
+			t.Fatal("selected memory VM generation failed")
+		}
+		return parent, methodErr
+	}
+	point := researchCurrentReclaimRaw(t, m.ReclaimPoints[fmt.Sprint(c.Reclaim)], 32)
+	if c.Mode == "fresh_reclaim_key" {
+		point = researchCurrentReclaimRaw(t, m.AlternatePoints[fmt.Sprint(c.Reclaim)], 32)
+	}
+	createMethod := definition.CreateWithReclaimLockPtlcMethodName
+	if c.Mode == "missing_lock" {
+		createMethod = definition.CreatePtlcMethodName
+	}
+	create := func(previous *nom.AccountBlock) *nom.AccountBlock {
+		fund := &nom.AccountBlock{Version: 1, ChainIdentifier: chain, BlockType: nom.BlockTypeUserSend,
+			Address: e.TimeLocked, ToAddress: types.PtlcContract, Height: 1, MomentumAcknowledged: ledger.momentum.Identifier(),
+			Amount: new(big.Int).Set(e.Amount), TokenStandard: e.TokenStandard,
+			Data: researchCurrentReclaimPack(t, createMethod, e, c.Reclaim, point, types.ZeroHash, nil)}
+		if previous != nil {
+			fund.Height = 2
+			fund.PreviousHash = previous.Hash
+			fund.Nonce.Data[7] = 1
+		}
+		fund.Hash = fund.ComputeHash()
+		if err := NewVM(funder, ledger).applySend(fund); err != nil || fund.Hash != fund.ComputeHash() {
+			t.Fatal("selected public funding send failed")
+		}
+		parent, methodErr := generate(fund)
+		if methodErr != nil || len(parent.DescendantBlocks) != 0 {
+			t.Fatal("selected reclaim-lock creation failed")
+		}
+		adopt(parent)
+		return fund
+	}
+	primary := create(nil)
+	target := primary
+	fundings := 1
+	if c.Mode == "same_terms_other_id" {
+		target = create(primary)
+		fundings = 2
+	}
+	e.Id = target.Hash
+	readStorage := func(prefix byte, id types.Hash) string {
+		key := append([]byte{prefix}, id.Bytes()...)
+		raw, err := contract.Storage().Get(key)
+		if err != nil {
+			t.Fatal("selected public storage read failed")
+		}
+		return hex.EncodeToString(raw)
+	}
+	beforeEntry, beforeLock := readStorage(1, target.Hash), readStorage(2, target.Hash)
+	if strings.HasSuffix(c.Mode, "payout_failure") {
+		if err := contract.SetBalance(e.TokenStandard, new(big.Int).Sub(e.Amount, big.NewInt(1))); err != nil {
+			t.Fatal("selected failure balance failed")
+		}
+	}
+	balance := func() string {
+		value, err := contract.GetBalance(e.TokenStandard)
+		if err != nil {
+			t.Fatal("selected contract balance unavailable")
+		}
+		return value.String()
+	}
+	beforeBalance := balance()
+	when := int64(1000)
+	if c.Mode == "reclaim_before" || c.Mode == "unlock_before" || c.Mode == "unlock_wrong_destination" || c.Mode == "unlock_payout_failure" {
+		when = 999
+	}
+	if c.Mode == "reclaim_after" {
+		when = 1001
+	}
+	at = time.Unix(when, 0)
+	ledger.momentum.Timestamp = &at
+	ledger.momentum.Height = 10
+	ledger.momentum.Hash = researchCurrentReclaimHash(t, strings.Repeat("66", 32))
+	canonicalMessage := definition.GetPtlcReclaimMessage(chain, c.Reclaim, e)
+	message := append([]byte(nil), canonicalMessage...)
+	if c.Mode == "wrong_chain" {
+		message = definition.GetPtlcReclaimMessage(chain+1, c.Reclaim, e)
+	}
+	if c.Mode == "wrong_terms" {
+		other := *e
+		other.Amount = new(big.Int).Add(e.Amount, big.NewInt(1))
+		message = definition.GetPtlcReclaimMessage(chain, c.Reclaim, &other)
+	}
+	caller := e.TimeLocked
+	method := definition.ReclaimWithSignaturePtlcMethodName
+	if c.Mode == "wrong_caller" {
+		caller = researchCurrentReclaimAddress(t, m.Other)
+	}
+	if c.Mode == "wrong_domain" {
+		message = definition.GetPtlcUnlockMessage(chain, e.PointType, target.Hash, e.Destination)
+	}
+	var signature []byte
+	if strings.HasPrefix(c.Mode, "unlock_") {
+		method = definition.UnlockPtlcMethodName
+		caller = e.Destination
+		if c.Mode == "unlock_wrong_destination" {
+			caller = researchCurrentReclaimAddress(t, m.Other)
+		}
+		message = definition.GetPtlcUnlockMessage(chain, e.PointType, target.Hash, caller)
+		if e.PointType == definition.PointTypeSecp256k1Point {
+			signature = make([]byte, 32)
+			signature[31] = 1
+			message = nil
+		} else {
+			signature = researchCurrentReclaimSign(t, e.PointType, true, message)
+		}
+	} else if c.Mode == "plain_reclaim_locked" {
+		method = definition.ReclaimPtlcMethodName
+		message = nil
+	} else {
+		signature = researchCurrentReclaimSign(t, c.Reclaim, false, message)
+	}
+	if c.Mode == "wrong_signature" {
+		signature[0] ^= 1
+	}
+	if c.Mode == "short_signature" {
+		signature = signature[:32]
+	}
+	send := &nom.AccountBlock{Version: 1, ChainIdentifier: chain, BlockType: nom.BlockTypeUserSend,
+		Address: caller, ToAddress: types.PtlcContract, Height: 3, MomentumAcknowledged: ledger.momentum.Identifier(),
+		Amount: big.NewInt(0), TokenStandard: e.TokenStandard,
+		Data: researchCurrentReclaimPack(t, method, e, c.Reclaim, point, target.Hash, signature)}
+	send.Hash = send.ComputeHash()
+	parent, methodErr := generate(send)
+	payoutAmount, payoutDestination := "0", ""
+	consistent := parent.Hash == parent.ComputeHash()
+	for _, child := range parent.DescendantBlocks {
+		consistent = consistent && child.Hash == child.ComputeHash() && child.Address == types.PtlcContract && child.TokenStandard == e.TokenStandard
+		payoutAmount = child.Amount.String()
+		payoutDestination = hex.EncodeToString(child.ToAddress[:])
+	}
+	if len(parent.Data) != 8 {
+		t.Fatal("selected receive status unavailable")
+	}
+	status := new(big.Int).SetBytes(parent.Data).String()
+	return map[string]interface{}{"kind": "vm", "funding_id_hex": hex.EncodeToString(primary.Hash[:]),
+		"target_id_hex": hex.EncodeToString(target.Hash[:]), "fundings": fundings, "confirming_time": fmt.Sprint(when),
+		"reclaim_message_hex": hex.EncodeToString(canonicalMessage), "signing_message_hex": hex.EncodeToString(message), "witness_bytes": len(signature),
+		"before_target_entry_hex": beforeEntry, "before_target_lock_hex": beforeLock,
+		"after_target_entry_hex": readStorage(1, target.Hash), "after_target_lock_hex": readStorage(2, target.Hash),
+		"after_primary_entry_hex": readStorage(1, primary.Hash), "after_primary_lock_hex": readStorage(2, primary.Hash),
+		"contract_balance_before": beforeBalance, "contract_balance_after": balance(), "returned_error": researchCurrentReclaimError(t, methodErr),
+		"receipt_status": status, "receipt_height": fmt.Sprint(parent.Height), "receipt_momentum_hash_hex": hex.EncodeToString(parent.MomentumAcknowledged.Hash[:]),
+		"receipt_momentum_height": fmt.Sprint(parent.MomentumAcknowledged.Height), "payouts": len(parent.DescendantBlocks),
+		"payout_amount": payoutAmount, "payout_destination_hex": payoutDestination, "receipt_hash_self_consistent": consistent,
+		"original_send_bound": parent.FromBlockHash == send.Hash, "same_terms_other_id_message_equal": fundings == 2 && bytes.Equal(canonicalMessage, definition.GetPtlcReclaimMessage(chain, c.Reclaim, &definition.PtlcInfo{
+			Id: primary.Hash, TimeLocked: e.TimeLocked, Destination: e.Destination, TokenStandard: e.TokenStandard, Amount: e.Amount,
+			ExpirationTime: e.ExpirationTime, PointType: e.PointType, PointLock: e.PointLock}))}
+}
+
+func TestResearchNoMCurrentReclaim(t *testing.T) {
+	raw, err := os.ReadFile(os.Getenv("PTLC_NOM_RECLAIM_CURRENT_INPUT"))
+	if err != nil || len(raw) > 128*1024 {
+		t.Fatal("selected public reclaim input unavailable")
+	}
+	var selected struct {
+		Schema    string                          `json:"schema"`
+		Core      string                          `json:"core_commit"`
+		Tree      string                          `json:"core_tree"`
+		Scope     string                          `json:"scope"`
+		Materials researchCurrentReclaimMaterials `json:"materials"`
+		Cases     []researchCurrentReclaimCase    `json:"cases"`
+	}
+	decoder := json.NewDecoder(bytes.NewReader(raw))
+	decoder.DisallowUnknownFields()
+	if decoder.Decode(&selected) != nil || decoder.Decode(&struct{}{}) != io.EOF ||
+		selected.Schema != "ptlc-nom-dev-ac16bfd-reclaim-inputs-v1" || selected.Core != "ac16bfd7c083e0b808a17014c38a5a77cc0141f1" ||
+		selected.Tree != "6706aeccac61c64f2497a53a526623473bb6e46a" || len(selected.Cases) != 76 {
+		t.Fatal("exact public reclaim selection required")
+	}
+	records := map[string]interface{}{}
+	for _, c := range selected.Cases {
+		if c.ID == "" || records[c.ID] != nil {
+			t.Fatal("duplicate or empty selected reclaim case")
+		}
+		t.Run(c.ID, func(t *testing.T) {
+			var row map[string]interface{}
+			switch c.Kind {
+			case "message":
+				row = researchCurrentReclaimMessage(t, selected.Materials, c)
+			case "send":
+				row = researchCurrentReclaimSend(t, selected.Materials, c)
+			case "vm":
+				row = researchCurrentReclaimVM(t, selected.Materials, c)
+			default:
+				t.Fatal("unselected public reclaim case kind")
+			}
+			records[c.ID] = row
+		})
+	}
+	result := map[string]interface{}{"schema": "ptlc-nom-dev-ac16bfd-reclaim-result-v1", "selected_core_commit": selected.Core,
+		"scope": "FINITE PUBLIC ENCODING AND SELECTED MEMORY VM PATHS", "records": records,
+		"fixture_signing": "KNOWN PUBLIC TEST CONSTANTS ONLY", "application_signer_calls": 0,
+		"account_admission": "NOT_CALLED", "chain_insertion": "NOT_CALLED", "journal_write": "NOT_PERFORMED",
+		"recovery_action": "NONE", "application": "NO-GO", "core": "NO-GO", "independent_assessment": "UNFILLED"}
+	encoded, err := json.Marshal(result)
+	if err != nil {
+		t.Fatal("selected public reclaim report encoding failed")
+	}
+	fmt.Println(string(encoded))
+}

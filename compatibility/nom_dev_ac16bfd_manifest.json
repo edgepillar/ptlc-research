@@ -1,0 +1,251 @@
+{
+  "actual_native_commands": 32,
+  "application": "NO-GO",
+  "combined_source_files": 538,
+  "complete_original_profile_streams": 56,
+  "complete_profiles": 28,
+  "core": "NO-GO",
+  "core_commit": "ac16bfd7c083e0b808a17014c38a5a77cc0141f1",
+  "core_tree": "6706aeccac61c64f2497a53a526623473bb6e46a",
+  "historical_results_reclassified": false,
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/nom_dev_ac16bfd_legacy_manifest.json": "ef050e46630281270dfeeb3bdbb0b774c46681b079224a0b67f906d722ef64a7",
+    "compatibility/nom_dev_ac16bfd_reclaim_manifest.json": "92b50b861a8d32144de869de6237f1ebcf74e8eb45537af147d5f722c07b70c7",
+    "compatibility/nom_dev_ac16bfd_runtime_v1.json": "13a9b5b894a8abf0a9d426825cdb58345d5e0e52f8eb93ecff5b3dc6e8fa7cf3",
+    "qualification/nom_dev_ac16bfd.py": "b23eb5ecc7402d243c40b275d06e7603dac67150d78edd3837195ae22c2a17f7",
+    "scripts/check_nom_ac16bfd_evidence.py": "32ac8f6c0a7e0f39056fc4b2825581fe3fda05b6523ca4fd78335b62cd5c1d70",
+    "scripts/nom_ac16bfd_command.py": "0a55bb989fb9efa354829f4cdf1dcef7fd1c02d22fc0fbb752866de4d5348c66",
+    "scripts/prepare_nom_ac16bfd.py": "8bbf90f0f5971723bbd0d4e541005359e6c231a5d8f56563b00725fce616a63d",
+    "scripts/qualify_nom_ac16bfd_native.py": "82a6d015ed0a21a70fe193305650596469e7e35f6ca7012a702c4cf00c7d10f1",
+    "tests/test_nom_dev_ac16bfd.py": "8d87b2e799be369227a2bab5790c1ac705454e5dcbdfa7ba968a5bd342ca9a70"
+  },
+  "journal_source_upgrade": "NOT_SELECTED",
+  "legacy_outcomes": 479,
+  "legacy_profiles": 20,
+  "project_producers": 24,
+  "reclaim_cases": 76,
+  "reclaim_outcomes": 77,
+  "reference_outcome_scope": "PROJECT_PRODUCERS_ONLY",
+  "reference_producers": 21,
+  "required_runtime_tests": 52,
+  "runtime_log_initializers": 3,
+  "runtime_profiles": 7,
+  "schema": "ptlc-nom-dev-ac16bfd-combined-selection-v1",
+  "selected_parent_and_child_outcomes": 556,
+  "transport_variants": {
+    "scripts/check_nom_5cb_evidence.py": {
+      "edits": [
+        {
+          "after": "ac16bfd",
+          "before": "5cb",
+          "occurrences": 9
+        },
+        {
+          "after": "nom_dev_ac16bfd as reproduction",
+          "before": "nom_dev_ac16bfd_reproduction as reproduction",
+          "occurrences": 1
+        },
+        {
+          "after": "len(result) == 32",
+          "before": "len(result) == 24",
+          "occurrences": 1
+        },
+        {
+          "after": "upstream_files=514",
+          "before": "upstream_files=482",
+          "occurrences": 1
+        },
+        {
+          "after": "project_producers=24, combined_files=538",
+          "before": "project_producers=20, combined_files=502",
+          "occurrences": 1
+        },
+        {
+          "after": "report['complete_profiles'] == 28",
+          "before": "report['complete_profiles'] == 20",
+          "occurrences": 1
+        },
+        {
+          "after": "report['selected_parent_and_child_outcomes'] == 556\n            and report['reference_outcome_scope'] == 'PROJECT_PRODUCERS_ONLY'\n            and report['required_runtime_tests'] == 52",
+          "before": "report['selected_parent_and_child_outcomes'] == 479",
+          "occurrences": 1
+        },
+        {
+          "after": "report['complete_original_profile_streams'] == 56",
+          "before": "report['complete_original_profile_streams'] == 40",
+          "occurrences": 1
+        },
+        {
+          "after": "report['actual_native_commands'] == 32",
+          "before": "report['actual_native_commands'] == 24",
+          "occurrences": 1
+        },
+        {
+          "after": "'compiler_unchanged', 'elapsed_seconds', 'reference_outcome_scope', 'required_runtime_tests',",
+          "before": "'compiler_unchanged', 'elapsed_seconds',",
+          "occurrences": 1
+        },
+        {
+          "after": "    'schema', 'outcome', 'core_commit', 'core_tree', 'profile', 'source_before',\n    'cgo_diagnostic_profile',",
+          "before": "    'schema', 'outcome', 'core_commit', 'core_tree', 'profile', 'source_before',",
+          "occurrences": 1
+        },
+        {
+          "after": "    require(report['cgo_diagnostic_profile'] == (selected.runtime.DEFAULT_CGO_PROFILE\n        if report['platform_sdk'] == 'NOT_SELECTED' else selected.runtime.DARWIN_CGO_PROFILE))\n    if report['platform_sdk'] != 'NOT_SELECTED' and 'go_version' in report:",
+          "before": "    if report['platform_sdk'] != 'NOT_SELECTED' and 'go_version' in report:",
+          "occurrences": 1
+        },
+        {
+          "after": "def ascii_privacy_view(text):\n    \"\"\"Inspect one exact upstream NBSP diagnostic without rewriting originals.\"\"\"\n    require(type(text) is str)\n    if text.isascii():\n        return text\n    require({char for char in text if not char.isascii()} == {'\\u00a0'})\n\n    def unique(values):\n        result = {}\n        for key, value in values:\n            require(key not in result)\n            result[key] = value\n        return result\n\n    for line in text.split('\\n'):\n        if line.isascii():\n            continue\n        event = json.loads(line, object_pairs_hook=unique)\n        require(type(event) is dict\n            and set(event) == {'Time', 'Action', 'Package', 'Test', 'Output'})\n        require(type(event['Time']) is str and re.fullmatch(\n            r'[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}'\n            r'(?:[.][0-9]{1,9})?(?:Z|[+-][0-9]{2}:[0-9]{2})', event['Time']))\n        require(event['Action'] == 'output'\n            and event['Package'] == 'github.com/zenon-network/go-zenon/chain/cache/storage'\n            and event['Test'] == 'TestGetFrontierIdentifierCorrupted'\n            and event['Output'] == 'proto:\\u00a0cannot parse invalid wire-format data\\n')\n    # This temporary audit view cannot escape this function into retention.\n    # Retention still hashes and selects the original, unmodified byte string.\n    return text.replace('\\u00a0', ' ')\n\n\ndef privacy(raw):\n    require(type(raw) is bytes)\n    text = raw.decode('utf-8')\n    roots = ('Users', 'Volumes', 'private', 'home', 'tmp', 'var',\n             'opt', 'Applications', 'Library', 'usr')\n    # Inspect escaped representations too. Retained originals are never decoded,\n    # redacted, replaced or rewritten. Each view is bounded by the input length.\n    for unused_depth in range(8):\n        inspected = ascii_privacy_view(text)\n        require(not any(pattern.search(inspected) for unused, pattern in PATTERNS))\n        require(not re.search(r'(?i)/(?:' + '|'.join(roots) + r')/', inspected))\n        require(not re.search(r'(?i)localhost|\\b[A-Za-z0-9_-]+[.]local\\b|127[.]0[.]0[.]1', inspected))\n        decoded = re.sub(r'\\\\u([0-9a-fA-F]{4})',\n                         lambda match: chr(int(match.group(1), 16)), text)\n        decoded = decoded.replace(chr(92) * 2, chr(92))\n        if decoded == text:\n            return\n        text = decoded\n    require(False)",
+          "before": "def privacy(raw):\n    require(type(raw) is bytes)\n    text = raw.decode('ascii')\n    roots = ('Users', 'Volumes', 'private', 'home', 'tmp', 'var',\n             'opt', 'Applications', 'Library', 'usr')\n    # Inspect escaped representations too. Retained originals are never decoded,\n    # redacted, replaced or rewritten. Each view is bounded by the input length.\n    for unused_depth in range(8):\n        require(text.isascii())\n        require(not any(pattern.search(text) for unused, pattern in PATTERNS))\n        require(not re.search(r'(?i)/(?:' + '|'.join(roots) + r')/', text))\n        require(not re.search(r'(?i)localhost|\\b[A-Za-z0-9_-]+[.]local\\b|127[.]0[.]0[.]1', text))\n        decoded = re.sub(r'\\\\u([0-9a-fA-F]{4})',\n                         lambda match: chr(int(match.group(1), 16)), text)\n        decoded = decoded.replace(chr(92) * 2, chr(92))\n        if decoded == text:\n            return\n        text = decoded\n    require(False)",
+          "occurrences": 1
+        },
+        {
+          "after": "    'cgo_diagnostic_profile', 'go_source_path_profile',",
+          "before": "    'cgo_diagnostic_profile',",
+          "occurrences": 1
+        },
+        {
+          "after": "        if report['platform_sdk'] == 'NOT_SELECTED' else selected.runtime.DARWIN_CGO_PROFILE))\n    require(report['go_source_path_profile'] == 'GOFLAGS_TRIMPATH')",
+          "before": "        if report['platform_sdk'] == 'NOT_SELECTED' else selected.runtime.DARWIN_CGO_PROFILE))",
+          "occurrences": 1
+        }
+      ],
+      "original_sha256": "b0d12c627aafbb04ece36622770d4bcd622df8e588d0037f0d016c63982c74e7",
+      "scope": "SOURCE SELECTION, PROFILE COUNTS, EXPLICIT DIAGNOSTIC SETTINGS AND EXACT PROTOBUF DIAGNOSTIC INSPECTION ONLY",
+      "selected": "scripts/check_nom_ac16bfd_evidence.py",
+      "selected_sha256": "32ac8f6c0a7e0f39056fc4b2825581fe3fda05b6523ca4fd78335b62cd5c1d70"
+    },
+    "scripts/nom_5cb_command.py": {
+      "edits": [
+        {
+          "after": "ac16bfd",
+          "before": "5cb",
+          "occurrences": 10
+        },
+        {
+          "after": "'keyless-supervisor', 'reclaim-current', 'runtime-manager-guards', 'runtime-node-stop', 'runtime-spork-tombstone', 'runtime-decode-limits', 'runtime-manager-close', 'runtime-cache-close', 'runtime-request-budget',",
+          "before": "'keyless-supervisor',",
+          "occurrences": 1
+        }
+      ],
+      "original_sha256": "22a8d66c57622c83f754a77881d1d817bf4e48b0e25ef83de3d1b8295fbb9cc0",
+      "scope": "SOURCE SELECTION, PROFILE COUNTS, EXPLICIT DIAGNOSTIC SETTINGS AND EXACT PROTOBUF DIAGNOSTIC INSPECTION ONLY",
+      "selected": "scripts/nom_ac16bfd_command.py",
+      "selected_sha256": "0a55bb989fb9efa354829f4cdf1dcef7fd1c02d22fc0fbb752866de4d5348c66"
+    },
+    "scripts/prepare_nom_5cb.py": {
+      "edits": [
+        {
+          "after": "ac16bfd",
+          "before": "5cb",
+          "occurrences": 7
+        },
+        {
+          "after": "zenon-network-go-zenon-ac16bfd",
+          "before": "zenon-network-go-zenon-ac16bfd5aac",
+          "occurrences": 1
+        },
+        {
+          "after": "2035969",
+          "before": "1941926",
+          "occurrences": 1
+        },
+        {
+          "after": "f35f1962a3fb69890c1a409900858a7dc65c1310f797cfe466cc2f3988e3e5cb",
+          "before": "d4f8e26ce3d8cba37c30e166a11b63423218b6e47451d4c31507b520f5e61f39",
+          "occurrences": 1
+        },
+        {
+          "after": "538",
+          "before": "502",
+          "occurrences": 2
+        },
+        {
+          "after": "original_source_files=514",
+          "before": "original_source_files=482",
+          "occurrences": 1
+        },
+        {
+          "after": "project_producers=24",
+          "before": "project_producers=20",
+          "occurrences": 1
+        }
+      ],
+      "original_sha256": "4dce6b27300a6eaa56d4412ca5336e9d617a574f747c2c33724be145850132bd",
+      "scope": "SOURCE SELECTION, PROFILE COUNTS, EXPLICIT DIAGNOSTIC SETTINGS AND EXACT PROTOBUF DIAGNOSTIC INSPECTION ONLY",
+      "selected": "scripts/prepare_nom_ac16bfd.py",
+      "selected_sha256": "8bbf90f0f5971723bbd0d4e541005359e6c231a5d8f56563b00725fce616a63d"
+    },
+    "scripts/qualify_nom_5cb_native.py": {
+      "edits": [
+        {
+          "after": "ac16bfd",
+          "before": "5cb",
+          "occurrences": 8
+        },
+        {
+          "after": "nom_dev_ac16bfd as reproduction",
+          "before": "nom_dev_ac16bfd_reproduction as reproduction",
+          "occurrences": 1
+        },
+        {
+          "after": "== 538 and len(plan['units']) == 28",
+          "before": "== 502 and len(plan['units']) == 20",
+          "occurrences": 1
+        },
+        {
+          "after": "selected_commands=28",
+          "before": "selected_commands=20",
+          "occurrences": 1
+        },
+        {
+          "after": "complete_profiles=28",
+          "before": "complete_profiles=20",
+          "occurrences": 1
+        },
+        {
+          "after": "selected_parent_and_child_outcomes=556, reference_outcome_scope='PROJECT_PRODUCERS_ONLY', required_runtime_tests=52",
+          "before": "selected_parent_and_child_outcomes=479",
+          "occurrences": 1
+        },
+        {
+          "after": "complete_original_profile_streams=56",
+          "before": "complete_original_profile_streams=40",
+          "occurrences": 1
+        },
+        {
+          "after": "actual_native_commands=32",
+          "before": "actual_native_commands=24",
+          "occurrences": 1
+        },
+        {
+          "after": "environment['SDKROOT'] = str(sdk)\n        environment['CGO_CFLAGS'] = reproduction.runtime.DARWIN_CGO_CFLAGS",
+          "before": "environment['SDKROOT'] = str(sdk)",
+          "occurrences": 1
+        },
+        {
+          "after": "cgo_diagnostic_profile=reproduction.runtime.diagnostic_profile(sdk),\n        compiler_workspaces=1, source_views=1, selected_commands=28,",
+          "before": "compiler_workspaces=1, source_views=1, selected_commands=28,",
+          "occurrences": 1
+        },
+        {
+          "after": "GOFLAGS='-trimpath'",
+          "before": "GOFLAGS=''",
+          "occurrences": 1
+        },
+        {
+          "after": "        cgo_diagnostic_profile=reproduction.runtime.diagnostic_profile(sdk),\n        go_source_path_profile='GOFLAGS_TRIMPATH',",
+          "before": "        cgo_diagnostic_profile=reproduction.runtime.diagnostic_profile(sdk),",
+          "occurrences": 1
+        }
+      ],
+      "original_sha256": "39aa50206a89594c884fe1745ce99465a8dc34b2734cccf0d2e81f5b7eb7e4d1",
+      "scope": "SOURCE SELECTION, PROFILE COUNTS, EXPLICIT DIAGNOSTIC SETTINGS AND EXACT PROTOBUF DIAGNOSTIC INSPECTION ONLY",
+      "selected": "scripts/qualify_nom_ac16bfd_native.py",
+      "selected_sha256": "82a6d015ed0a21a70fe193305650596469e7e35f6ca7012a702c4cf00c7d10f1"
+    }
+  },
+  "upstream_source_files": 514
+}

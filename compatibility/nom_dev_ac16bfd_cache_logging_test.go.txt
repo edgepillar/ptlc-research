@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: MIT
+package storage
+
+import "github.com/inconshreveable/log15"
+
+// Configure structured diagnostics before selected tests. Go test assertions,
+// panic output and framework streams retain their normal behavior.
+func init() {
+	log15.Root().SetHandler(log15.DiscardHandler())
+}
