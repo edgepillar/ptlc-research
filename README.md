@@ -15,11 +15,19 @@ application/core remain **NO-GO** and independent assessment remains unfilled.
 
 The additive [ac16bfd source and runtime selection](docs/NOM_DEV_AC16BFD.md)
 binds all 514 upstream files, preserves the 556 reference outcomes and adds
-seven runtime profiles selecting 52 upstream test functions. The current-core
-CI job uses one 538-file source view and one compiler cache for all 28 profiles.
+seven runtime profiles selecting 52 upstream test functions. Its retained
+runner uses one 538-file source view and one compiler cache for all 28 profiles.
 Source selection, local execution and hosted acceptance remain separate gates;
 three inventoried test fixtures configure structured diagnostics before tests.
 The recovery journal and independent assessment retain their existing scope.
+
+The additive [661b5ef selection](docs/NOM_DEV_661B5EF.md) binds 518 upstream
+files and adds 85 independent argument-pricing cases plus two runtime profiles.
+The current-core job selects one 543-file source view, 31 profiles and one
+compiler workspace. Source/data checks, local native execution and hosted
+acceptance remain separate. The source-specific keyless oracle expects an
+earlier fee refusal for the existing underfunded signed originals and preserves
+their exact bytes. The recovery journal retains its existing pin.
 
 The [one-workspace native runner](docs/NOM_DEV_5CB_NATIVE.md) selects the same
 twenty profiles with one source view and one fresh compiler cache. Its CI

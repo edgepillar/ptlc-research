@@ -1,0 +1,524 @@
+{
+  "application": "NO-GO",
+  "argument_byte_plasma": "68",
+  "core": "NO-GO",
+  "core_commit": "661b5ef404487cd41685654bf87530f10adebbe4",
+  "core_tree": "78937597e8e0e5835a8856cb44d592e349451d9f",
+  "data_cap": "16384",
+  "records": {
+    "balance_above_cap": {
+      "base_plasma": "0",
+      "data_length": "16385",
+      "returned_error": "AB_DATA_TOO_BIG",
+      "tier": "52500"
+    },
+    "balance_at_cap": {
+      "base_plasma": "1166340",
+      "data_length": "16384",
+      "returned_error": "NONE",
+      "tier": "52500"
+    },
+    "balance_below_cap": {
+      "base_plasma": "1166272",
+      "data_length": "16383",
+      "returned_error": "NONE",
+      "tier": "52500"
+    },
+    "balance_empty": {
+      "base_plasma": "52500",
+      "data_length": "0",
+      "returned_error": "NONE",
+      "tier": "52500"
+    },
+    "balance_first_argument": {
+      "base_plasma": "52568",
+      "data_length": "5",
+      "returned_error": "NONE",
+      "tier": "52500"
+    },
+    "balance_large_int": {
+      "base_plasma": "0",
+      "data_length": "2147483647",
+      "returned_error": "AB_DATA_TOO_BIG",
+      "tier": "52500"
+    },
+    "balance_max_int": {
+      "base_plasma": "0",
+      "data_length": "9223372036854775807",
+      "returned_error": "AB_DATA_TOO_BIG",
+      "tier": "52500"
+    },
+    "balance_min_int": {
+      "base_plasma": "52500",
+      "data_length": "-9223372036854775808",
+      "returned_error": "NONE",
+      "tier": "52500"
+    },
+    "balance_negative": {
+      "base_plasma": "52500",
+      "data_length": "-1",
+      "returned_error": "NONE",
+      "tier": "52500"
+    },
+    "balance_one": {
+      "base_plasma": "52500",
+      "data_length": "1",
+      "returned_error": "NONE",
+      "tier": "52500"
+    },
+    "balance_selector": {
+      "base_plasma": "52500",
+      "data_length": "4",
+      "returned_error": "NONE",
+      "tier": "52500"
+    },
+    "balance_thirty_five": {
+      "base_plasma": "54608",
+      "data_length": "35",
+      "returned_error": "NONE",
+      "tier": "52500"
+    },
+    "balance_thirty_one": {
+      "base_plasma": "54336",
+      "data_length": "31",
+      "returned_error": "NONE",
+      "tier": "52500"
+    },
+    "balance_thirty_two": {
+      "base_plasma": "54404",
+      "data_length": "32",
+      "returned_error": "NONE",
+      "tier": "52500"
+    },
+    "balance_three": {
+      "base_plasma": "52500",
+      "data_length": "3",
+      "returned_error": "NONE",
+      "tier": "52500"
+    },
+    "balance_two_words": {
+      "base_plasma": "56852",
+      "data_length": "68",
+      "returned_error": "NONE",
+      "tier": "52500"
+    },
+    "balance_word": {
+      "base_plasma": "54676",
+      "data_length": "36",
+      "returned_error": "NONE",
+      "tier": "52500"
+    },
+    "base_above_cap": {
+      "base_plasma": "0",
+      "data_length": "16385",
+      "returned_error": "AB_DATA_TOO_BIG",
+      "tier": "21000"
+    },
+    "base_at_cap": {
+      "base_plasma": "1134840",
+      "data_length": "16384",
+      "returned_error": "NONE",
+      "tier": "21000"
+    },
+    "base_below_cap": {
+      "base_plasma": "1134772",
+      "data_length": "16383",
+      "returned_error": "NONE",
+      "tier": "21000"
+    },
+    "base_empty": {
+      "base_plasma": "21000",
+      "data_length": "0",
+      "returned_error": "NONE",
+      "tier": "21000"
+    },
+    "base_first_argument": {
+      "base_plasma": "21068",
+      "data_length": "5",
+      "returned_error": "NONE",
+      "tier": "21000"
+    },
+    "base_large_int": {
+      "base_plasma": "0",
+      "data_length": "2147483647",
+      "returned_error": "AB_DATA_TOO_BIG",
+      "tier": "21000"
+    },
+    "base_max_int": {
+      "base_plasma": "0",
+      "data_length": "9223372036854775807",
+      "returned_error": "AB_DATA_TOO_BIG",
+      "tier": "21000"
+    },
+    "base_min_int": {
+      "base_plasma": "21000",
+      "data_length": "-9223372036854775808",
+      "returned_error": "NONE",
+      "tier": "21000"
+    },
+    "base_negative": {
+      "base_plasma": "21000",
+      "data_length": "-1",
+      "returned_error": "NONE",
+      "tier": "21000"
+    },
+    "base_one": {
+      "base_plasma": "21000",
+      "data_length": "1",
+      "returned_error": "NONE",
+      "tier": "21000"
+    },
+    "base_selector": {
+      "base_plasma": "21000",
+      "data_length": "4",
+      "returned_error": "NONE",
+      "tier": "21000"
+    },
+    "base_thirty_five": {
+      "base_plasma": "23108",
+      "data_length": "35",
+      "returned_error": "NONE",
+      "tier": "21000"
+    },
+    "base_thirty_one": {
+      "base_plasma": "22836",
+      "data_length": "31",
+      "returned_error": "NONE",
+      "tier": "21000"
+    },
+    "base_thirty_two": {
+      "base_plasma": "22904",
+      "data_length": "32",
+      "returned_error": "NONE",
+      "tier": "21000"
+    },
+    "base_three": {
+      "base_plasma": "21000",
+      "data_length": "3",
+      "returned_error": "NONE",
+      "tier": "21000"
+    },
+    "base_two_words": {
+      "base_plasma": "25352",
+      "data_length": "68",
+      "returned_error": "NONE",
+      "tier": "21000"
+    },
+    "base_word": {
+      "base_plasma": "23176",
+      "data_length": "36",
+      "returned_error": "NONE",
+      "tier": "21000"
+    },
+    "max_above_cap": {
+      "base_plasma": "0",
+      "data_length": "16385",
+      "returned_error": "AB_DATA_TOO_BIG",
+      "tier": "18446744073709551615"
+    },
+    "max_at_cap": {
+      "base_plasma": "1113839",
+      "data_length": "16384",
+      "returned_error": "NONE",
+      "tier": "18446744073709551615"
+    },
+    "max_below_cap": {
+      "base_plasma": "1113771",
+      "data_length": "16383",
+      "returned_error": "NONE",
+      "tier": "18446744073709551615"
+    },
+    "max_empty": {
+      "base_plasma": "18446744073709551615",
+      "data_length": "0",
+      "returned_error": "NONE",
+      "tier": "18446744073709551615"
+    },
+    "max_first_argument": {
+      "base_plasma": "67",
+      "data_length": "5",
+      "returned_error": "NONE",
+      "tier": "18446744073709551615"
+    },
+    "max_large_int": {
+      "base_plasma": "0",
+      "data_length": "2147483647",
+      "returned_error": "AB_DATA_TOO_BIG",
+      "tier": "18446744073709551615"
+    },
+    "max_max_int": {
+      "base_plasma": "0",
+      "data_length": "9223372036854775807",
+      "returned_error": "AB_DATA_TOO_BIG",
+      "tier": "18446744073709551615"
+    },
+    "max_min_int": {
+      "base_plasma": "18446744073709551615",
+      "data_length": "-9223372036854775808",
+      "returned_error": "NONE",
+      "tier": "18446744073709551615"
+    },
+    "max_negative": {
+      "base_plasma": "18446744073709551615",
+      "data_length": "-1",
+      "returned_error": "NONE",
+      "tier": "18446744073709551615"
+    },
+    "max_one": {
+      "base_plasma": "18446744073709551615",
+      "data_length": "1",
+      "returned_error": "NONE",
+      "tier": "18446744073709551615"
+    },
+    "max_selector": {
+      "base_plasma": "18446744073709551615",
+      "data_length": "4",
+      "returned_error": "NONE",
+      "tier": "18446744073709551615"
+    },
+    "max_thirty_five": {
+      "base_plasma": "2107",
+      "data_length": "35",
+      "returned_error": "NONE",
+      "tier": "18446744073709551615"
+    },
+    "max_thirty_one": {
+      "base_plasma": "1835",
+      "data_length": "31",
+      "returned_error": "NONE",
+      "tier": "18446744073709551615"
+    },
+    "max_thirty_two": {
+      "base_plasma": "1903",
+      "data_length": "32",
+      "returned_error": "NONE",
+      "tier": "18446744073709551615"
+    },
+    "max_three": {
+      "base_plasma": "18446744073709551615",
+      "data_length": "3",
+      "returned_error": "NONE",
+      "tier": "18446744073709551615"
+    },
+    "max_two_words": {
+      "base_plasma": "4351",
+      "data_length": "68",
+      "returned_error": "NONE",
+      "tier": "18446744073709551615"
+    },
+    "max_word": {
+      "base_plasma": "2175",
+      "data_length": "36",
+      "returned_error": "NONE",
+      "tier": "18446744073709551615"
+    },
+    "withdraw_above_cap": {
+      "base_plasma": "0",
+      "data_length": "16385",
+      "returned_error": "AB_DATA_TOO_BIG",
+      "tier": "73500"
+    },
+    "withdraw_at_cap": {
+      "base_plasma": "1187340",
+      "data_length": "16384",
+      "returned_error": "NONE",
+      "tier": "73500"
+    },
+    "withdraw_below_cap": {
+      "base_plasma": "1187272",
+      "data_length": "16383",
+      "returned_error": "NONE",
+      "tier": "73500"
+    },
+    "withdraw_empty": {
+      "base_plasma": "73500",
+      "data_length": "0",
+      "returned_error": "NONE",
+      "tier": "73500"
+    },
+    "withdraw_first_argument": {
+      "base_plasma": "73568",
+      "data_length": "5",
+      "returned_error": "NONE",
+      "tier": "73500"
+    },
+    "withdraw_large_int": {
+      "base_plasma": "0",
+      "data_length": "2147483647",
+      "returned_error": "AB_DATA_TOO_BIG",
+      "tier": "73500"
+    },
+    "withdraw_max_int": {
+      "base_plasma": "0",
+      "data_length": "9223372036854775807",
+      "returned_error": "AB_DATA_TOO_BIG",
+      "tier": "73500"
+    },
+    "withdraw_min_int": {
+      "base_plasma": "73500",
+      "data_length": "-9223372036854775808",
+      "returned_error": "NONE",
+      "tier": "73500"
+    },
+    "withdraw_negative": {
+      "base_plasma": "73500",
+      "data_length": "-1",
+      "returned_error": "NONE",
+      "tier": "73500"
+    },
+    "withdraw_one": {
+      "base_plasma": "73500",
+      "data_length": "1",
+      "returned_error": "NONE",
+      "tier": "73500"
+    },
+    "withdraw_selector": {
+      "base_plasma": "73500",
+      "data_length": "4",
+      "returned_error": "NONE",
+      "tier": "73500"
+    },
+    "withdraw_thirty_five": {
+      "base_plasma": "75608",
+      "data_length": "35",
+      "returned_error": "NONE",
+      "tier": "73500"
+    },
+    "withdraw_thirty_one": {
+      "base_plasma": "75336",
+      "data_length": "31",
+      "returned_error": "NONE",
+      "tier": "73500"
+    },
+    "withdraw_thirty_two": {
+      "base_plasma": "75404",
+      "data_length": "32",
+      "returned_error": "NONE",
+      "tier": "73500"
+    },
+    "withdraw_three": {
+      "base_plasma": "73500",
+      "data_length": "3",
+      "returned_error": "NONE",
+      "tier": "73500"
+    },
+    "withdraw_two_words": {
+      "base_plasma": "77852",
+      "data_length": "68",
+      "returned_error": "NONE",
+      "tier": "73500"
+    },
+    "withdraw_word": {
+      "base_plasma": "75676",
+      "data_length": "36",
+      "returned_error": "NONE",
+      "tier": "73500"
+    },
+    "zero_above_cap": {
+      "base_plasma": "0",
+      "data_length": "16385",
+      "returned_error": "AB_DATA_TOO_BIG",
+      "tier": "0"
+    },
+    "zero_at_cap": {
+      "base_plasma": "1113840",
+      "data_length": "16384",
+      "returned_error": "NONE",
+      "tier": "0"
+    },
+    "zero_below_cap": {
+      "base_plasma": "1113772",
+      "data_length": "16383",
+      "returned_error": "NONE",
+      "tier": "0"
+    },
+    "zero_empty": {
+      "base_plasma": "0",
+      "data_length": "0",
+      "returned_error": "NONE",
+      "tier": "0"
+    },
+    "zero_first_argument": {
+      "base_plasma": "68",
+      "data_length": "5",
+      "returned_error": "NONE",
+      "tier": "0"
+    },
+    "zero_large_int": {
+      "base_plasma": "0",
+      "data_length": "2147483647",
+      "returned_error": "AB_DATA_TOO_BIG",
+      "tier": "0"
+    },
+    "zero_max_int": {
+      "base_plasma": "0",
+      "data_length": "9223372036854775807",
+      "returned_error": "AB_DATA_TOO_BIG",
+      "tier": "0"
+    },
+    "zero_min_int": {
+      "base_plasma": "0",
+      "data_length": "-9223372036854775808",
+      "returned_error": "NONE",
+      "tier": "0"
+    },
+    "zero_negative": {
+      "base_plasma": "0",
+      "data_length": "-1",
+      "returned_error": "NONE",
+      "tier": "0"
+    },
+    "zero_one": {
+      "base_plasma": "0",
+      "data_length": "1",
+      "returned_error": "NONE",
+      "tier": "0"
+    },
+    "zero_selector": {
+      "base_plasma": "0",
+      "data_length": "4",
+      "returned_error": "NONE",
+      "tier": "0"
+    },
+    "zero_thirty_five": {
+      "base_plasma": "2108",
+      "data_length": "35",
+      "returned_error": "NONE",
+      "tier": "0"
+    },
+    "zero_thirty_one": {
+      "base_plasma": "1836",
+      "data_length": "31",
+      "returned_error": "NONE",
+      "tier": "0"
+    },
+    "zero_thirty_two": {
+      "base_plasma": "1904",
+      "data_length": "32",
+      "returned_error": "NONE",
+      "tier": "0"
+    },
+    "zero_three": {
+      "base_plasma": "0",
+      "data_length": "3",
+      "returned_error": "NONE",
+      "tier": "0"
+    },
+    "zero_two_words": {
+      "base_plasma": "4352",
+      "data_length": "68",
+      "returned_error": "NONE",
+      "tier": "0"
+    },
+    "zero_word": {
+      "base_plasma": "2176",
+      "data_length": "36",
+      "returned_error": "NONE",
+      "tier": "0"
+    }
+  },
+  "recovery_action": "NONE",
+  "schema": "ptlc-nom-embedded-argument-pricing-result-v1",
+  "scope": "HELPER ONLY; ABI, ADMISSION, QUOTE AND RECOVERY NOT ESTABLISHED",
+  "word_bits": "64"
+}

@@ -81,8 +81,9 @@ cold build, upstream-definition test and module verification. All 56 original
 profile streams must be retained and compared; receipts, completeness and
 actual exits remain separate obligations.
 
-The existing `nom-current-core` job selects this source instead of adding a
-second current-source build. Historical CI selections remain unchanged. The
+The `nom-current-core` job now selects the additive [661b5ef input](NOM_DEV_661B5EF.md).
+The ac16bfd source, reference inputs and runners remain available under their
+original pins. Other historical CI selections remain unchanged. The
 bootstrap dependency copy may acquire additional canonical checksums only
 while preserving every original checksum and exact requirements. The source
 module files remain byte-identical. This input check does not authenticate

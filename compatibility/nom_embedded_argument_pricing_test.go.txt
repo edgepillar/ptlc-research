@@ -1,0 +1,82 @@
+package vm
+
+import (
+    "encoding/json"
+    "fmt"
+    "io"
+    "os"
+    "regexp"
+    "strconv"
+    "testing"
+
+    "github.com/zenon-network/go-zenon/verifier"
+    "github.com/zenon-network/go-zenon/vm/constants"
+)
+
+// This producer receives public inputs only. Independent expected values remain
+// in the Python reader and are never opened by the Go process.
+func TestResearchNoMEmbeddedArgumentPricing(t *testing.T) {
+    if strconv.IntSize != 64 || constants.MaxDataLength != 16384 || constants.ABByteDataPlasma != 68 {
+        t.Fatal("unselected machine or pricing constants")
+    }
+    type pricingCase struct {
+        ID string `json:"id"`
+        Tier string `json:"tier"`
+        Length string `json:"data_length"`
+    }
+    var input struct {
+        Schema string `json:"schema"`
+        Core string `json:"core_commit"`
+        Tree string `json:"core_tree"`
+        Scope string `json:"scope"`
+        WordBits string `json:"word_bits"`
+        BytePlasma string `json:"argument_byte_plasma"`
+        Cap string `json:"data_cap"`
+        Cases []pricingCase `json:"cases"`
+    }
+    f, err := os.Open(os.Getenv("PTLC_NOM_ARGUMENT_PRICING_INPUT"))
+    if err != nil { t.Fatal("public input unavailable") }
+    defer f.Close()
+    info, err := f.Stat()
+    if err != nil || info.Size() <= 0 || info.Size() > 1<<20 { t.Fatal("public input width refused") }
+    decoder := json.NewDecoder(io.LimitReader(f, 1<<20))
+    decoder.DisallowUnknownFields()
+    if decoder.Decode(&input) != nil || decoder.Decode(new(interface{})) != io.EOF {
+        t.Fatal("public input framing refused")
+    }
+    const core = "661b5ef404487cd41685654bf87530f10adebbe4"
+    const tree = "78937597e8e0e5835a8856cb44d592e349451d9f"
+    const scope = "HELPER ONLY; ABI, ADMISSION, QUOTE AND RECOVERY NOT ESTABLISHED"
+    if input.Schema != "ptlc-nom-embedded-argument-pricing-inputs-v1" ||
+        input.Core != core || input.Tree != tree || input.Scope != scope ||
+        input.WordBits != "64" || input.BytePlasma != "68" || input.Cap != "16384" || len(input.Cases) != 85 {
+        t.Fatal("public input context refused")
+    }
+    ids := map[string]bool{}
+    records := map[string]interface{}{}
+    validID := regexp.MustCompile(`^[a-z0-9_]{1,100}$`)
+    for _, c := range input.Cases {
+        if ids[c.ID] || !validID.MatchString(c.ID) { t.Fatal("case identifier refused") }
+        ids[c.ID] = true
+        tier, err := strconv.ParseUint(c.Tier, 10, 64)
+        if err != nil || strconv.FormatUint(tier, 10) != c.Tier { t.Fatal("tier refused") }
+        length, err := strconv.ParseInt(c.Length, 10, 64)
+        if err != nil || strconv.FormatInt(length, 10) != c.Length { t.Fatal("data length refused") }
+        t.Run(c.ID, func(t *testing.T) {
+            got, err := EmbeddedSendBasePlasma(tier, int(length))
+            code := "NONE"
+            if err == verifier.ErrABDataTooBig { code = "AB_DATA_TOO_BIG" } else if err != nil {
+                t.Fatal("unselected helper error")
+            }
+            records[c.ID] = map[string]interface{}{"tier":c.Tier,"data_length":c.Length,
+                "base_plasma":strconv.FormatUint(got,10),"returned_error":code}
+        })
+    }
+    report := map[string]interface{}{"schema":"ptlc-nom-embedded-argument-pricing-result-v1",
+        "core_commit":core,"core_tree":tree,"scope":scope,"word_bits":"64",
+        "argument_byte_plasma":"68","data_cap":"16384","records":records,
+        "application":"NO-GO","core":"NO-GO","recovery_action":"NONE"}
+    raw, err := json.Marshal(report)
+    if err != nil { t.Fatal("result framing failed") }
+    fmt.Println(string(raw))
+}

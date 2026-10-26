@@ -1,0 +1,36 @@
+{
+  "application": "NO-GO",
+  "core": "NO-GO",
+  "core_commit": "661b5ef404487cd41685654bf87530f10adebbe4",
+  "core_tree": "78937597e8e0e5835a8856cb44d592e349451d9f",
+  "frozen_input_sha256": {
+    "qualification/nom_dev_5cb.py": "3ee5b4667b8af10a8693802fbe056a1bc04c4c9ef542159c8b714426b33e4868",
+    "qualification/nom_dev_5cb_reproduction.py": "098bd8952dc14766b5dcfde2f459e8b5563467cddf2fe5c28380a5f90403a189",
+    "qualification/nom_keyless_supervisor.py": "bd55e2ad506fcfd03f0e05a4ee9fadf0d6b772dd6de0e94576a74784343f3a53"
+  },
+  "historical_core": "5cb5aac3bb21d012111d87466f946cbdccd344f6",
+  "historical_value_changes": "TWELVE DYNAMIC KEYLESS FEE REFUSALS; FRESH_EXECUTION_REQUIRED",
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/fixtures/nom_dev_661b5ef_keyless_inputs_v1.json": "114d3525c2cb95f6e7771c50e85a294652f50a824f15547749c3f486f28c4059",
+    "compatibility/fixtures/nom_dev_661b5ef_keyless_values_v1.json": "747bf06554cf43dd62e0083f7e2bf92f224880041b287af2fae90542244681a1",
+    "compatibility/nom_dev_661b5ef_abi_boundary_test.go.txt": "36a4bc02b4835d61f584f0116cbaa2349058a9586b340fd521bc0d366bf5ceea",
+    "compatibility/nom_dev_661b5ef_keyless_supervisor_test.go.txt": "69d7ea810363c8499e6082a4bb70f299626037b6e55b9204de881769fcd80a7c",
+    "compatibility/nom_dev_661b5ef_legacy_variants_v1.json": "a2133ccf3ade1223ed13a0bccaa11e2183f8bb918c42499a98aa6a5afc22d65b",
+    "compatibility/nom_dev_661b5ef_receive_data_test.go.txt": "5b9dec34da137d739818cfe9fffb8caedd9783d72a98367a4a866c59ff7f9598",
+    "compatibility/nom_dev_661b5ef_send_caller_test.go.txt": "60a69428c63a7df96c7aab9dd443d0811c6d65cf563699e897d29840c29f72c7",
+    "compatibility/nom_dev_661b5ef_source_v1.json": "a6eec89b1ca82e66cb6bcc855b1efc8b95981ffb7e43b1e3528d3daf8ba956fa",
+    "compatibility/nom_embedded_argument_pricing_manifest.json": "28fe0c83b3e41848afd6fdc3c8de988715f0093725c44ca09d39ccd8d0de769e",
+    "qualification/nom_dev_661b5ef_legacy.py": "67f080b675fd6e01055c55a85e9df99e144725500e9c32b7f6f8c42591796305",
+    "qualification/nom_dev_661b5ef_price_hold.py": "739281b418998389f336d38b953a515f7bbfd86cbb1accfb257aef900c359f10",
+    "qualification/nom_dev_661b5ef_source.py": "e879c15c06259e56cb23d2cb4909e0f27e3fc610c343c4bed3ee237d3ce91ede",
+    "tests/test_nom_dev_661b5ef_legacy.py": "0b13545310ee9720a736936d9a0d72b87fba4468645ed2bdc75d307e6d888b7e"
+  },
+  "journal_source_upgrade": "NOT_SELECTED",
+  "legacy_outcomes": 479,
+  "legacy_profiles": 20,
+  "reclaim_profile": "SEPARATE_REQUIRED",
+  "schema": "ptlc-nom-dev-661b5ef-legacy-selection-v1",
+  "source_files": 518,
+  "source_index_sha256": "a6eec89b1ca82e66cb6bcc855b1efc8b95981ffb7e43b1e3528d3daf8ba956fa"
+}

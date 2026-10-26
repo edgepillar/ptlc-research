@@ -1219,7 +1219,7 @@ jobs:
           umask 077
           python3 -B - <<'PY'
           import os, shutil
-          from qualification import nom_dev_ac16bfd as selected
+          from qualification import nom_dev_661b5ef as selected
           selected.inputs()
           assert shutil.disk_usage(os.environ['RUNNER_TEMP']).free >= 12 * 1024**3
           print('PASS: complete current selection and finite workspace admission')
@@ -1244,7 +1244,7 @@ jobs:
           printf '%s  %s\n' d3847fef834e9db11bf64e3fb34db9c04db14e068eeb064f49af747010454f90 "$ptlc_current_go_archive" | sha256sum --check
           tar -xzf "$ptlc_current_go_archive" -C "$PTLC_NOM_CURRENT_ROOT/toolchain"
           printf '%s\n' "$PTLC_NOM_CURRENT_ROOT/toolchain/go/bin" >> "$GITHUB_PATH"
-      - name: Prepare the exact current 538-file source view once
+      - name: Prepare the exact current 543-file source view once
         shell: bash
         run: |
           set -eu
@@ -1254,11 +1254,11 @@ jobs:
           (
             ulimit -f 8192
             curl --disable --fail --silent --show-error --location --max-redirs 2 \
-              --proto '=https' --proto-redir '=https' --max-time 180 --max-filesize 2035969 \
-              https://api.github.com/repos/zenon-network/go-zenon/zipball/ac16bfd7c083e0b808a17014c38a5a77cc0141f1 \
+              --proto '=https' --proto-redir '=https' --max-time 180 --max-filesize 2053008 \
+              https://api.github.com/repos/zenon-network/go-zenon/zipball/661b5ef404487cd41685654bf87530f10adebbe4 \
               --output "$ptlc_current_archive"
           )
-          python3 -B scripts/prepare_nom_ac16bfd.py --archive "$ptlc_current_archive" \
+          python3 -B scripts/prepare_nom_661b5ef.py --archive "$ptlc_current_archive" \
             --destination "$PTLC_NOM_CURRENT_ROOT/source"
       - name: Acquire dependencies from separate unchanged module inputs
         env:
@@ -1279,7 +1279,7 @@ jobs:
           python3 -B - <<'PY'
           import base64, hashlib, json, os
           from pathlib import Path
-          from qualification import nom_dev_ac16bfd as selected
+          from qualification import nom_dev_661b5ef as selected
           unused, index = selected.inputs()
           root = Path(os.environ['PTLC_NOM_CURRENT_ROOT'])
           # Go may populate checksums in the isolated bootstrap copy. The source
@@ -1306,7 +1306,7 @@ jobs:
           original = checksum_entries(source['go.sum'])
           expanded = checksum_entries(bootstrap['go.sum'])
           assert all(expanded.get(key) == value for key, value in original.items()), 'original checksum changed or missing'
-          print(json.dumps(dict(schema='ptlc-nom-ac16bfd-bootstrap-inputs-v1',
+          print(json.dumps(dict(schema='ptlc-nom-661b5ef-bootstrap-inputs-v1',
               source_files_unchanged=True, bootstrap_requirements_unchanged=True,
               original_checksum_entries=len(original), added_checksum_entries=len(set(expanded) - set(original)),
               source_go_sum_sha256=index['go.sum']['sha256'],
@@ -1319,7 +1319,7 @@ jobs:
           ptlc_current_proxy="$(python3 -B -c 'from pathlib import Path; import sys; print(Path(sys.argv[1]).resolve(strict=True))' "$ptlc_current_proxy")"
           test -d "$ptlc_current_proxy"
           printf 'PTLC_NOM_CURRENT_PROXY=%s\n' "$ptlc_current_proxy" >> "$GITHUB_ENV"
-      - name: Compare all twenty-eight current profiles with one fresh cache offline
+      - name: Compare all thirty-one current profiles with one fresh cache offline
         id: nom_current_native
         env:
           GOTOOLCHAIN: local
@@ -1332,7 +1332,7 @@ jobs:
           ptlc_current_go="$(command -v go)"
           ptlc_current_go_sha="$(sha256sum "$ptlc_current_go" | cut -d ' ' -f 1)"
           ptlc_current_cc="$(readlink -f "$(command -v cc)")"
-          python3 -B scripts/qualify_nom_ac16bfd_native.py \
+          python3 -B scripts/qualify_nom_661b5ef_native.py \
             --source "$PTLC_NOM_CURRENT_ROOT/source" \
             --workspace "$PTLC_NOM_CURRENT_ROOT/workspace" --go "$ptlc_current_go" \
             --expect-go-sha256 "$ptlc_current_go_sha" --cc "$ptlc_current_cc" \
@@ -1343,7 +1343,7 @@ jobs:
         shell: bash
         run: |
           set -eu
-          ptlc_current_paths="$(python3 -B scripts/check_nom_ac16bfd_evidence.py \
+          ptlc_current_paths="$(python3 -B scripts/check_nom_661b5ef_evidence.py \
             --workspace "$PTLC_NOM_CURRENT_ROOT/workspace" \
             --allow-incomplete-for-retention --artifact-files)"
           {
@@ -1357,7 +1357,7 @@ jobs:
         if: always() && steps.nom_current_selection.outcome == 'success'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: nom-ac16bfd-source-linux-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          name: nom-661b5ef-source-linux-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ steps.nom_current_selection.outputs.files }}
           if-no-files-found: error
           retention-days: 90
