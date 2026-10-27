@@ -1,12 +1,73 @@
 # Complete offline regression with bounded CI module shards
 
-The workflow schedules complete module groups for all four CI profiles. Module
-weights use normalized case-clock measurements; the matrix include order retains
-the separate historical ordering refresh below. A weight changes module placement.
-Every test, verifier, fixture, source pin and native evidence gate is preserved.
+The workflow schedules one job for each Ubuntu/macOS and Python 3.11/3.13
+profile. Each job supervises the same four complete module groups. Module
+weights determine placement inside a profile; every discovered module still
+executes, including modules without a weight. Native jobs, their source inputs,
+verifiers and nine original artifact families remain unchanged.
 Application/core remain **NO-GO** and independent assessment remains **UNFILLED**.
 
-## Current complete-profile weight refresh
+## Four complete profile jobs and original stream custody
+
+The [profile driver](../scripts/run_offline_ci_profile.py) reuses the unchanged
+[module runner](../scripts/run_offline_shard.py) and
+[process supervisor](../scripts/run_offline_shards.py). Four jobs replace sixteen
+single-shard jobs while preserving four OS/Python profiles and sixteen logical
+shards. Each profile retains eight separate stdout/stderr streams: thirty-two
+original streams across the complete workflow. The other ten actual jobs remain
+required, for fourteen actual jobs in total. None of these counts supplies test,
+native-artifact or whole-workflow acceptance by itself.
+
+The caller creates eight empty, private regular files and a temporary parent
+outside the checkout. Symlink ancestors, nonempty or publicly readable outputs,
+replaced identities, and output/temporary roots equal to or inside the checkout
+are refused. Unknown files and uncertain ownership remain with the caller;
+the driver does not repair, adopt or recursively clean them. The supervisor
+terminates only its direct children and preserves failed fixture custody.
+
+The driver binds the selected commit, tree, complete tracked source inventory,
+file modes and SHA-256 values before and after execution. Four fresh commands
+use the same Python executable, assertions, bytecode suppression, required
+OpenSSL and ResourceWarning errors. A successful profile requires all four
+actual exits to be zero, complete original streams, matching module plans,
+every expected case exactly once, unchanged source and no observed interrupt.
+An interrupt after successful children still prevents profile success.
+
+Original bytes use bounded 16 KiB base64 chunks with offsets and terminal
+SHA-256/byte/chunk counts. Each original stream is capped at 4 MiB. The
+[content decoder](../scripts/read_offline_ci_profile.py) reconstructs those bytes
+against independently selected context/source pins. Content equality grants no
+execution authority: the complete case counter, actual workflow commands,
+selected run/attempt metadata, all native original artifacts and a subsequent
+main push must be accepted separately. Transported data is never executed.
+
+The grouping changes resource scheduling. It does not cache test results,
+remove tests, share mutable fixture owners or replace a verifier. The profile
+job has a finite hosted workspace admission; its reported reservation is not
+an OS-enforced filesystem quota. Failed and incomplete originals remain failed
+or unknown and are not converted into a successful retry.
+
+## Scheduling rationale and measurement limits
+
+The retained [main attempt 40503259965/1](https://github.com/edgepillar/ptlc-research/actions/runs/40503259965/attempts/1)
+and [PR attempt 40489686385/1](https://github.com/edgepillar/ptlc-research/actions/runs/40489686385/attempts/1)
+use the same [`e61aa17` source](https://github.com/edgepillar/ptlc-research/tree/e61aa17418cc96d82c21ebfdb651c339363230fd).
+Each original workflow has 26 successful jobs and four complete 4,497-case
+profiles. The last actual job finished 2,283 and 2,477 seconds after run creation,
+respectively. In both attempts, macOS/Python 3.13 shard 0 finished last.
+Its reported creation-to-start interval was 1,233 and 1,490 seconds; execution
+was 1,050 and 986 seconds. These API clocks are not an isolated experiment in
+runner capacity, CPU cost or queueing cause.
+
+Four profile jobs reduce repeated checkout, setup and review-inventory steps.
+The six post-regression comparisons still execute once per complete profile.
+Four logical workers now share one runner per profile, so the new schedule may
+change contention and critical-path duration. The old observations establish no
+speedup for this grouping. Fresh local regression, artifact/privacy checks,
+four complete hosted profiles, original-content acceptance and separate main
+push acceptance remain required before claiming an improvement.
+
+## Retained complete-profile weight calibration
 
 The current table uses the four complete 4,471-case profiles in
 [PR run 40429778558, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/40429778558/attempts/1)
@@ -34,9 +95,10 @@ comparison:
 These are calibration data, not a controlled speedup or a prediction of future
 wall time. Class setup, teardown outside case clocks, queueing, runner capacity
 and other jobs are excluded. Complete fresh local regression, artifact checks,
-exact-head PR CI and separate push/main acceptance remain required. The current
-workflow requires 26 jobs, four complete Python profiles, sixteen original
-regression streams and nine original artifact families. Application/core remain
+exact-head PR CI and separate push/main acceptance remain required. The earlier
+workflow used 26 jobs, four complete Python profiles, sixteen combined
+regression views and nine original artifact families. The grouped workflow
+requires the separate fourteen-job gate described above. Application/core remain
 NO-GO; independent assessment and AS1-AS7 remain unfilled.
 
 ## Historical normalized module weights
@@ -116,30 +178,23 @@ the exact new subject before claiming an improvement.
 
 ## CI coverage and avoiding duplicate work
 
-Each of the four Ubuntu/macOS and Python 3.11/3.13 profiles uses four separate
-CI jobs. All sixteen actual regression streams must combine into four complete
-case counters, one per platform/version, with no missing, additional or duplicated
-execution. The serial `--shard all` command remains available for local diagnosis;
-historical serial results keep their original scopes and are not relabeled as
-new executions.
+Each complete profile now has one job with four real logical shard processes.
+All sixteen logical shards must combine into four complete case counters, one
+per platform/version, without missing, additional or duplicate execution. Each
+original stdout/stderr stream remains separate. The serial `--shard all` command
+remains available for local diagnosis; historical serial results retain their
+original scope and are not relabeled as new executions.
 
-The workflow still declares eight job definitions; matrix expansion produces
-25 jobs instead of 19. Offline jobs retain the existing maximum of eight
-simultaneous matrix slots. The include list places larger observed jobs first,
-using the larger whole-job wall time for each combination in the current
-same-source timing pair below. These static weights change only job creation order. GitHub's
-[matrix documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations)
-does not guarantee runner start order or a timing improvement. Actual wall time
-depends on runner capacity, queueing and the selected source. All 25 jobs, four
-complete profiles, sixteen original regression streams and eight original native
-artifact families remain required. Only a fresh completed run can establish a
-timing improvement.
+The offline matrix permits all four profile jobs to be admitted concurrently.
+Runner availability and job order remain external observations. The selected
+source, four complete profiles, fourteen successful actual jobs, thirty-two
+original shard streams and nine native artifact families remain required.
+Original-content acceptance is separate from a green job summary.
 
-The extra post-regression comparisons execute once per platform/version, in
-the `all` or `0` job. They are not repeated in the other three shards. Every
-shard still checks artifact hygiene. Other native job definitions, source
-profiles and original artifact families remain unchanged. No additional copy
-of a full source tree or compiler cache is required by the shard runner.
+The six post-regression comparisons execute once in each complete profile job.
+Artifact hygiene also runs once per complete profile. The native job definitions,
+source profiles and original artifact families retain their existing commands.
+The grouping requires no second full-source checkout or compiler-cache copy.
 
 ## Historical ordering model and its limits
 
