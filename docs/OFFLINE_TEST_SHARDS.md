@@ -6,7 +6,40 @@ the separate historical ordering refresh below. A weight changes module placemen
 Every test, verifier, fixture, source pin and native evidence gate is preserved.
 Application/core remain **NO-GO** and independent assessment remains **UNFILLED**.
 
-## Normalized module weights
+## Current complete-profile weight refresh
+
+The current table uses the four complete 4,471-case profiles in
+[PR run 40429778558, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/40429778558/attempts/1)
+at source [`656b735`](https://github.com/edgepillar/ptlc-research/tree/656b735a1f679ffe04e6e82d7a3419d02996b6d0).
+All 226 modules have measured weights. Fifteen modules previously received the
+default weight of one; several of their recorded case-clock totals exceed
+one minute. New modules still execute with that default until measured.
+
+For each profile, divide each module's case seconds by the profile's total case
+seconds. Average the four fractions, multiply by 1,000,000 and round upward to a
+positive integer. The partition algorithm, four groups, complete test inventory,
+per-module setup/teardown and test order remain unchanged. No result cache,
+test filter, assertion change or native verifier replacement is introduced.
+
+The same recorded clocks produce this retrospective largest-group/mean-group
+comparison:
+
+| Clock profile | Previous weights | Refreshed weights |
+| --- | ---: | ---: |
+| Ubuntu / Python 3.11 | 1.369877 | 1.059680 |
+| Ubuntu / Python 3.13 | 1.127293 | 1.045194 |
+| macOS / Python 3.11 | 1.102663 | 1.040251 |
+| macOS / Python 3.13 | 1.243964 | 1.061098 |
+
+These are calibration data, not a controlled speedup or a prediction of future
+wall time. Class setup, teardown outside case clocks, queueing, runner capacity
+and other jobs are excluded. Complete fresh local regression, artifact checks,
+exact-head PR CI and separate push/main acceptance remain required. The current
+workflow requires 26 jobs, four complete Python profiles, sixteen original
+regression streams and nine original artifact families. Application/core remain
+NO-GO; independent assessment and AS1-AS7 remain unfilled.
+
+## Historical normalized module weights
 
 The hint table uses the four Ubuntu/macOS and Python 3.11/3.13 profiles in
 [attempt 39997915069/1](https://github.com/edgepillar/ptlc-research/actions/runs/39997915069/attempts/1)
