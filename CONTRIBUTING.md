@@ -172,3 +172,24 @@ It checks four historical signatures without a current-policy lookup. Old or
 coherently restored selections still replay; a new challenge can be signed over
 old active state. See [validation](docs/STAGE44_VALIDATION.md). Source integration,
 core port and production use remain NO-GO; independent assessments stay unfilled.
+
+## Commit attribution
+
+Use `edgepillar` for both the author and committer of every new or recreated
+source commit. Select the account's GitHub-provided no-reply email in this
+repository's local Git configuration; keep account addresses out of committed
+files. Verify both effective identities with `git var GIT_AUTHOR_IDENT` and
+`git var GIT_COMMITTER_IDENT` before creating a commit. An operating-system
+default or a temporary build placeholder is not an accepted identity.
+
+Keep the local pre-commit and pre-push identity checks enabled. Create authorized
+merge commits locally with the same attribution, then push the verified commit.
+GitHub merge and squash APIs may introduce a different committer and must not
+be used to create source-history commits for this repository.
+
+An identity migration preserves the original object archive and the complete
+old-to-new SHA map. Retain original verification reports under their original
+revision. File-tree equality establishes content preservation; it does not
+convert an earlier CI run or independent assessment into verification of a new
+commit. Qualify the new revision separately and preserve every failed or missing
+verification result honestly.

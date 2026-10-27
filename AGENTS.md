@@ -10,3 +10,8 @@
 - Pin external source claims to immutable commits when possible. Attribute reused material and check its license before copying it.
 - Run the offline suite and artifact checks after relevant edits. Report failed runs and skipped independent verification honestly.
 - Do not use an installed Git identity implicitly for publication. Review commit metadata and the publication destination before a public action.
+
+- Use `edgepillar` for both author and committer on every new or recreated commit, with that account's GitHub-provided no-reply email configured locally for this repository. Never use an operating-system identity or a placeholder.
+- Verify the effective author and committer before committing. Keep the repository-local pre-commit and pre-push identity checks enabled; do not bypass their refusal or disable hooks for publication.
+- Create authorized merge commits locally with the same author and committer. GitHub merge and squash APIs must not create source-history commits with a different committer.
+- Preserve original Git object archives, old-to-new SHA mappings and source-bound verification reports during an identity migration. Equal file trees do not qualify a new revision using an old CI run or frozen assessment.
