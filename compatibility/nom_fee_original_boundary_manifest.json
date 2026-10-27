@@ -1,0 +1,47 @@
+{
+  "additional_project_files": 1,
+  "application": "NO-GO",
+  "baseline_project_files": 25,
+  "caller_scope": "DIRECT_UNLOCK_WITH_FIXED_RECIPIENT_AS_CALLER",
+  "cases": 14,
+  "combined_source_files": 544,
+  "core": "NO-GO",
+  "core_commit": "661b5ef404487cd41685654bf87530f10adebbe4",
+  "core_tree": "78937597e8e0e5835a8856cb44d592e349451d9f",
+  "earlier_fee_refusals": 6,
+  "frozen_input_sha256": {
+    "compatibility/fixtures/nom_dev_661b5ef_keyless_inputs_v1.json": "114d3525c2cb95f6e7771c50e85a294652f50a824f15547749c3f486f28c4059",
+    "compatibility/fixtures/nom_signed_originals_v1.json": "aef86fe911de1f7505fafbf216f33a9e10d8c32304ba91fa81e147035b03b0d9",
+    "offline_session/nom_wire.py": "d79dd83b98b6a31c3b5b15deb26ea4b671d2ed96dab03bf02381b9648492b839",
+    "qualification/nom_keyless_supervisor.py": "bd55e2ad506fcfd03f0e05a4ee9fadf0d6b772dd6de0e94576a74784343f3a53"
+  },
+  "independent_assessment": "UNFILLED",
+  "input_sha256": {
+    "compatibility/fixtures/nom_fee_original_boundary_values_v1.json": "f25c4354e5f54f355114123cfb26a8b011d4c1d09775163ef6fc63fee4caa0a8",
+    "compatibility/nom_fee_original_boundary_test.go.txt": "16f5a38729510f32cdb13f9199528305afa65d7a22a6962e0e1c3266f9483fe4",
+    "qualification/nom_fee_original_boundary.py": "73c1e22587109274f3096e74e3fa9ab693a51982aa2897b1ca86506019660f4e",
+    "scripts/prepare_nom_fee_original_boundary.py": "696e627fbc21e1cbea444c79af15ebe11ed146a2acc6d189ba9380ddbbc1fa1e",
+    "tests/test_nom_fee_original_boundary.py": "2bc47dec9b066ba4030b2e804daf5edf22f8ff315ab6ba1d65550518b57cb53d"
+  },
+  "journal_source_upgrade": "NOT_SELECTED",
+  "later_hash_refusals": 4,
+  "later_signature_refusals": 4,
+  "native_execution": "NOT_PERFORMED_BY_READER",
+  "original_replacement": "NOT_SELECTED",
+  "outcomes": 15,
+  "package": "github.com/zenon-network/go-zenon/vm",
+  "parent": "TestResearchNoMCurrentFeeOriginalBoundary",
+  "price_context": "DECLARED_DYNAMIC_SPORK_AND_SYNTHETIC_MEMORY_SNAPSHOTS",
+  "producer": "compatibility/nom_fee_original_boundary_test.go.txt",
+  "recovery_action": "NONE",
+  "schema": "ptlc-nom-fee-original-boundary-selection-v1",
+  "upstream_files": 518,
+  "upstream_sha256": {
+    "chain/nom/account_block.go": "40a7b6172aa33a29f699b7a80b751da788a5dbf4f0f0ad6d1afaa4b88c55cae3",
+    "verifier/account_block.go": "de6b650786aac46e5735671d044878e396e81d5400ec70d847bf5617c8c480d5",
+    "vm/embedded/implementation/ptlc.go": "86234b5f7e32524b1799e77aba5bcceac4ff9b12ce7d77efe78a5ee18f4cf24c",
+    "vm/plasma.go": "cd019cabd6b25e51e741afe73e2d1b4b0546ff555837f51e58a77e2b7df76f0d",
+    "vm/vm.go": "b32342ab1e8cadea3c1a120e2590609818025d900c19314ac6def7345a03f592",
+    "wallet/crypto.go": "81b4886699585a3eba29b07b1882baf570f714d8d8e38c9ccc1057492da73112"
+  }
+}

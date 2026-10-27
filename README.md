@@ -548,6 +548,16 @@ evidence; completed exact-head hosted results must be reported separately.
 
 ## Next milestone
 
+The separate [fee-bound original corpus](docs/NOM_FEE_ORIGINAL_BOUNDARY.md)
+compares fourteen account-send refusals on pinned go-zenon `661b5ef`: the existing
+originals and diagnostic allowances below, at and above the selected price.
+Once that price is met, keeping the advertised hash reaches a hash refusal;
+recomputing it leaves the
+existing outer signature invalid. Originals remain distinct from every copy.
+Direct fixed-recipient `Unlock` and a separately authorized `ProxyUnlock` payer
+are explicit, separate scopes. The corpus selects no signer, journal upgrade or
+recovery permission; application/core remain **NO-GO**.
+
 The [NoM wire conformance corpus](docs/NOM_WIRE_CONFORMANCE.md) compares four
 typed ABI methods, hash inputs and normalization counterexamples with the exact
 PR #138 source. See its [validation scope](docs/NOM_WIRE_VALIDATION.md). This
