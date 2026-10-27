@@ -189,6 +189,12 @@ from the earlier 620-file NoM subject. Eleven earlier review inputs remain
 unchanged. See [local packaging validation](docs/NOM_RECOVERY_DELTA_REVIEW_VALIDATION.md);
 the new independent report remains UNFILLED and grants no operational permission.
 
+The [current source review handoff](docs/NOM_CURRENT_REVIEW_HANDOFF.md) separately
+freezes all 1,256 files at the later fee-corpus source. It identifies 287 added
+and 20 changed paths against the 969-file subject, preserves all thirteen older
+review inputs, and supplies a separate unfilled assessment template. Source
+identity and successful execution do not complete independent assessment.
+
 The [pinned dev rebase comparison](docs/NOM_DEV_REBASE_COMPARISON.md) selects the
 later c25 source separately. It compares removed-parent child aliases and exact
 admitted patches without weakening the historical fixtures. Its pure reader
