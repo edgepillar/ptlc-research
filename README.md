@@ -18,6 +18,8 @@ The initial executable client slice consists of public, offline JSON inspection
 and codec tools:
 
 ```sh
+python3 -B -m reference_client inspect-agreement < reference_client/synthetic_agreement.json
+python3 -B -m reference_client bind-funding < reference_client/synthetic_funding_request.json
 python3 -B -m reference_client inspect-terms < public-input.json
 python3 -B -m reference_client encode-call < public-input.json
 python3 -B -m reference_client hash-account-block < public-input.json
@@ -25,8 +27,9 @@ python3 -B -m reference_client hash-account-block < public-input.json
 
 Each command reads bounded JSON from standard input and writes JSON to standard
 output. The tools use no network, files, private keys or signing operation.
-`inspect-terms` accepts only the selected source profile and local-devnet chain
-69. Its post-funding terms are public claims, not authenticated observations or
+`inspect-agreement` omits entry IDs. `bind-funding` checks ordered declared
+Create hash/entry projections and refuses conflicting replacements.
+The client profiles select the pinned source and local-devnet chain 69. Its post-funding terms are public claims, not authenticated observations or
 permission to fund, sign, recover or broadcast. RPC, signing and durable client
 state remain planned work; see the protocol candidate for input contracts.
 

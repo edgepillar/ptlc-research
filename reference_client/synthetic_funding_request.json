@@ -1,0 +1,65 @@
+{
+  "agreement": {
+    "adaptor_point_sec1_hex": "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+    "alice_address_hex": "0019e9425dcb7b0d14099922e4909cb12afb0500",
+    "bob_address_hex": "00a307fb31c7585b6ccb5dc3ddc844e22b14b7aa",
+    "chain_id": "69",
+    "genesis_hash_hex": "6666666666666666666666666666666666666666666666666666666666666666",
+    "long": {
+      "amount": "100",
+      "expires_at": "2000",
+      "funder": "alice",
+      "funder_key_xonly_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "recipient": "bob",
+      "token_standard_hex": "01010101010101010101"
+    },
+    "minimum_expiry_gap_seconds": "500",
+    "schema": "ptlc-nom-client-agreement-v1",
+    "session_id_hex": "f9c12e34f44d7624e9bf8359cfa41b28e3e7b09c2d83ddae7ecf64a09d830d68",
+    "short": {
+      "amount": "200",
+      "expires_at": "1000",
+      "funder": "bob",
+      "funder_key_xonly_hex": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+      "recipient": "alice",
+      "token_standard_hex": "02020202020202020202"
+    },
+    "source_commit": "77ba9c7ee8c881e90911946756cdb67d8b586043"
+  },
+  "bindings": [],
+  "funding": {
+    "account_block": {
+      "address_hex": "0019e9425dcb7b0d14099922e4909cb12afb0500",
+      "amount": "100",
+      "block_type": "2",
+      "chain_id": "69",
+      "data_hex": "22cec8ee00000000000000000000000000000000000000000000000000000000000007d00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000a307fb31c7585b6ccb5dc3ddc844e22b14b7aa000000000000000000000000000000000000000000000000000000000000002079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "descendant_hashes_hex": [],
+      "difficulty": "0",
+      "from_block_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "fused_plasma": "0",
+      "height": "1",
+      "momentum_hash_hex": "ce8a47b0e0cc100979a76de3759265fe8595e76cb804b2ed0d368a0f10e822e9",
+      "momentum_height": "10109250",
+      "nonce_hex": "0000000000000000",
+      "previous_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "to_address_hex": "01b3b6e5adcb4c15ff06318c6318c6318c6318c6",
+      "token_standard_hex": "01010101010101010101",
+      "version": "1"
+    },
+    "agreement_digest_hex": "c15a1c4017bdbbdb376775e64d53dac315c86caf02de0eb02bac629155319fc8",
+    "entry_projection": {
+      "amount": "100",
+      "creator_hex": "0019e9425dcb7b0d14099922e4909cb12afb0500",
+      "destination_hex": "00a307fb31c7585b6ccb5dc3ddc844e22b14b7aa",
+      "entry_id_hex": "60b7c653bd13e7a98d6c3f809dd3810e4b9adc8bb392e3c00d9873f6ff3ad3bc",
+      "expires_at": "2000",
+      "point_lock_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "point_type": 1,
+      "token_standard_hex": "01010101010101010101"
+    },
+    "leg": "long",
+    "schema": "ptlc-nom-client-declared-funding-v1"
+  },
+  "schema": "ptlc-nom-client-bind-funding-v1"
+}

@@ -7,6 +7,7 @@ import sys
 from offline_session.nom_wire import account_block_hash, account_block_preimage, encode_call
 from offline_session.pr138 import CompatibilityError
 from .plan import MAX_INPUT, canonical, inspect_terms
+from .agreement import bind_funding, inspect_agreement
 
 
 def _object(pairs):
@@ -25,7 +26,7 @@ class _Parser(argparse.ArgumentParser):
 
 def main(argv=None, *, input_stream=None, output_stream=None, error_stream=None):
     parser = _Parser(description=__doc__, allow_abbrev=False)
-    parser.add_argument("command", choices=("inspect-terms", "encode-call", "hash-account-block"))
+    parser.add_argument("command", choices=("inspect-terms", "inspect-agreement", "bind-funding", "encode-call", "hash-account-block"))
     source = sys.stdin.buffer if input_stream is None else input_stream
     output = sys.stdout if output_stream is None else output_stream
     errors = sys.stderr if error_stream is None else error_stream
@@ -38,6 +39,10 @@ def main(argv=None, *, input_stream=None, output_stream=None, error_stream=None)
                            parse_constant=lambda unused: (_ for _ in ()).throw(ValueError()))
         if args.command == "inspect-terms":
             result = inspect_terms(value)
+        elif args.command == "inspect-agreement":
+            result = inspect_agreement(value)
+        elif args.command == "bind-funding":
+            result = bind_funding(value)
         elif args.command == "encode-call":
             result = dict(schema="ptlc-nom-client-call-v1", data_hex=encode_call(value).hex(),
                           action_permission="NONE", contract_admission="NOT_VERIFIED")

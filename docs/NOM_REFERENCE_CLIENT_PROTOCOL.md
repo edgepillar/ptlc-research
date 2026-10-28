@@ -94,6 +94,47 @@ them to the observed entry and retained transcript. See the pinned
 [message definition](https://github.com/zenon-network/go-zenon/blob/77ba9c7ee8c881e90911946756cdb67d8b586043/vm/embedded/definition/ptlc.go)
 and the existing [public codec](../offline_session/pr138.py).
 
+## Staged public agreement and funding projections
+
+The additive `inspect-agreement` command accepts schema
+`ptlc-nom-client-agreement-v1`. Its top-level fields match the initial terms
+projection, but each leg omits `entry_id_hex`. No entry identifier or Unlock
+message is invented before funding. The output derives the two Create calls and
+an economic agreement digest using the agreement schema, a zero byte and the
+canonical public projection. This is a commitment to supplied terms, not proof
+of counterparty consent or a complete operational timing/observation agreement.
+
+`bind-funding` accepts exactly `schema`, `agreement`, `bindings` and `funding`,
+with schema `ptlc-nom-client-bind-funding-v1`. `bindings` is a prefix of at most
+two declared records in long-then-short order. Each funding record has exactly
+`schema`, `agreement_digest_hex`, `leg`, `account_block` and `entry_projection`,
+with schema `ptlc-nom-client-declared-funding-v1`. `account_block` uses the
+existing public hash-input codec; it is neither RPC JSON nor signed wire.
+The selected projection requires a version-1 chain-69 user send, the agreed
+creator, PTLC contract, amount/token and exact canonical Create data, with no
+receive reference or descendant claims. Height/predecessor shape and a positive
+acknowledged momentum height are checked; ledger ancestry is not authenticated.
+
+The entry projection has exactly `entry_id_hex`, `creator_hex`, `point_type`,
+`point_lock_hex`, `destination_hex`, `token_standard_hex`, `amount` and
+`expires_at`. All must match the agreement and the entry identifier must equal
+the locally computed Create send hash. A second binding produces the existing
+post-funding inspection plan from these hashes. These are declared matching
+projections, not successful Create executions, live entries or a permission to
+fund or disclose. Pre-signature checks remain unperformed at every phase.
+
+An exact canonical public record may be replayed without changing the prefix.
+A conflicting candidate cannot replace either retained binding, including when
+only Plasma changes. The economic digest stays constant while a separate
+binding digest commits to the accumulated records. Neither digest authenticates
+a peer, detects coherent rollback or retains original signed bytes. There is no
+persistent journal, automatic retry, new account signature or fee-refresh policy.
+
+The public examples use preserved synthetic bilateral hash inputs. Their
+historical byte/hash/message oracles remain distinct from current-source
+admission, current fees and real chain execution. The source label selects the
+candidate behavior; changing it does not qualify a fixture on another revision.
+
 ## Required party sequence
 
 The following is a target state machine, **not implemented network behavior**.
@@ -212,7 +253,7 @@ not completed independent reviews or permission records.
 
 ## CLI mapping and acceptance
 
-The first three commands below are present in the Python source at
+The first five commands below are present in the Python source at
 [`reference_client/__main__.py`](../reference_client/__main__.py). Invoke them
 with `python3 -B -m reference_client COMMAND`, supplying one bounded public JSON
 object on standard input. This is implementation presence, not an execution or
@@ -221,6 +262,8 @@ test result; actual evidence must be reported for its exact revision.
 | Command | Initial slice | Guarantee excluded |
 | --- | --- | --- |
 | `inspect-terms` | Strictly inspect a new declared public terms profile, derive both Create calls and Unlock preimages/messages, and report a terms digest and required actor/event sequence | No entry proof, curve/pre-signature check, agreement authentication, time safety or execution permission |
+| `inspect-agreement` | Inspect economic terms without entry IDs; derive Create calls and a separate agreement digest | No counterparty consent, curve check, funding, operational policy or action permission |
+| `bind-funding` | Match supplied Create hash inputs and entry projections in long-then-short order, preserving exact declared replay | No signature verification, chain execution, persistent custody, pre-signature admission or fee replacement |
 | `encode-call` | Reuse the existing bounded public ABI codec for explicit supplied calls | No transaction admission, signing or network action; codec support for ProxyUnlock is not client proxy support |
 | `hash-account-block` | Reuse the existing public account hash-input codec for an explicit supplied public block | No account authorization, canonical signed wire, valid account predecessor, Plasma sufficiency, inclusion or replacement permission |
 | `init`, `fund`, `presign`, `verify`, `claim`, `watch`, `reclaim`, `receive` | Planned stateful client responsibilities mapped to the sequence above; not implemented by the initial slice | No secret, node, transport or persistent application state interface yet |

@@ -6,10 +6,12 @@ funds are authorized by this status record.
 
 ## Active delivery work
 
-The active milestone is M0/M1: provide a concise repository entry point, one
-delivery roadmap, an explicit protocol candidate and a small executable offline
-client slice. The initial CLI inspects public terms and encodes public calls and
-account-block hashes. It does not supply RPC, signing or durable client state.
+The active work advances M2a: staged public agreement and funding projections.
+The CLI can distinguish pre-funding economics from declared Create hash/entry
+bindings, retain their ordered public prefix and derive the post-funding plan.
+It does not verify Create execution, pre-signatures or counterparty consent,
+and supplies no RPC, signing or durable client state. This implementation still
+requires its own relevant qualification before publication or integration.
 
 - [Roadmap and milestone acceptance](docs/REFERENCE_CLIENT_ROADMAP.md)
 - [Protocol candidate and decision boundaries](docs/NOM_REFERENCE_CLIENT_PROTOCOL.md)
