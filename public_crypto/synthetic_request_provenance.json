@@ -1,0 +1,12 @@
+{
+  "action_permission": "NONE",
+  "application": "NO-GO",
+  "construction": "FROM ALREADY PUBLIC COMPLETION: s_hat = (s - 3) mod n, needs_negation = false; NOT AN APPLICATION SIGNING METHOD",
+  "core": "NO-GO",
+  "curve_validation": "NOT_PERFORMED; REQUIRE PINNED REAL BACKEND",
+  "original_completion_fixture": "compatibility/fixtures/nom_bilateral_completions_v1.json",
+  "original_completion_sha256": "d9316dcbdd048848b72d991784266ef83bfbc1c6d3688d4901dcce9e8d8f1446",
+  "original_source_execution": "NOT RELABELED; HISTORICAL BYTE ORACLE ONLY",
+  "public_witness_scalar_decimal": "3",
+  "status": "UNQUALIFIED_SYNTHETIC_CANDIDATE"
+}

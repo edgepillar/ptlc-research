@@ -14,7 +14,7 @@ No statement here authorizes a node, spork, wallet, signature, broadcast or fund
 | Contract/account behavior used by this design | [go-zenon `77ba9c7ee8c881e90911946756cdb67d8b586043`](https://github.com/zenon-network/go-zenon/tree/77ba9c7ee8c881e90911946756cdb67d8b586043), tree `57da4b9588e053facfdb8299181fe15a8ad2a223` |
 | Separately tracked upstream head | `5bf75c8139e192cefaa7a9da441610f1c43622ab`; tracking is not a new execution or compatibility qualification |
 | Historical codec profile | `zenon-ptlc-unlock:v1`; its historical PR #138 source selection and existing manifests remain unchanged |
-| New implementation target | `reference_client`: Python public terms/ABI/hash tools; a separate Rust qualification test target exercises deterministic adaptor signing with public synthetic constants |
+| New implementation target | `reference_client`: Python public terms/ABI/hash and presignature-request tools; `public_crypto`: a separate public relation checker using the already pinned backend; synthetic signing remains confined to qualification tests |
 | Existing executable evidence | Component-specific source, runtime, run and platform selections in the existing qualification documents; no old result is relabeled as a result for this design |
 
 The [77ba9c7 source comparison](NOM_DEV_77BA9C7.md) identifies unchanged PTLC
@@ -121,7 +121,8 @@ The entry projection has exactly `entry_id_hex`, `creator_hex`, `point_type`,
 the locally computed Create send hash. A second binding produces the existing
 post-funding inspection plan from these hashes. These are declared matching
 projections, not successful Create executions, live entries or a permission to
-fund or disclose. Pre-signature checks remain unperformed at every phase.
+fund or disclose. Funding binding itself performs no pre-signature check. The
+separate public checker below covers mathematical validity only.
 
 An exact canonical public record may be replayed without changing the prefix.
 A conflicting candidate cannot replace either retained binding, including when
@@ -134,6 +135,53 @@ The public examples use preserved synthetic bilateral hash inputs. Their
 historical byte/hash/message oracles remain distinct from current-source
 admission, current fees and real chain execution. The source label selects the
 candidate behavior; changing it does not qualify a fixture on another revision.
+
+## Selected public presignature preparation and checking
+
+This M2b implementation slice has no signing owner, observer, durable state or
+funding permission. Its own exact-source qualification is separate from protocol
+assessment and application/core acceptance.
+
+`prepare-presignature-check` accepts exactly `schema`, `agreement`, `bindings`,
+`leg` and `presignature`, with schema `ptlc-nom-client-prepare-presignature-v1`.
+It rechecks the complete ordered funding prefix before selecting an already
+bound leg. A long-leg check requires no short entry identifier. A short-leg check
+requires the ordered long and short bindings. All existing agreement, Create
+hash-input and entry-projection checks apply.
+
+The command derives the selected key, full compressed adaptor point and exact
+Unlock message locally. It accepts no peer-supplied message, context digest,
+backend or executable path. The presignature has exactly `r_x_hex`, `s_hat_hex`
+and boolean `needs_negation`. The compact ASCII output is a request for the
+selected `schnorr_fun-encrypted-v1` backend at revision
+`74d18bbf864f98e5cf7c18dcfb74ba1ecfe837ce`. This representation is neither a
+musig2 adaptor encoding nor the earlier 65-byte test comparison value.
+
+The Rust checker parses the x-only key and adapted nonce as nonzero curve points,
+the full compressed adaptor point as a nonzero curve point, and the scalar
+without reducing out-of-range input. It checks the selected library's encrypted
+signature relation against the locally derived 32-byte message. It generates no
+operational presignature, adapts no signature, extracts no witness, selects no
+file, reads no key and contacts no node. Test scalars are public synthetic inputs.
+
+Preparation commits to the entire economic agreement and the selected leg's
+exact declared Create binding. Appending the other leg leaves the first leg's
+request unchanged. This is a local association of supplied public records.
+The context digest is not part of the contract's inner message; the checker only
+echoes it. Mathematical validity does not authenticate economics, session/genesis,
+peers, key ownership, signing/nonce safety, funding, currentness or timing.
+
+The backend library accepts canonical compact ASCII JSON up to 8 KiB. Exact
+canonical roundtrip refuses alternate encodings and duplicate fields. The CLI
+also admits one trailing framing LF; the request digest hashes JSON without it.
+Refusals echo no input. Success reports `PUBLIC_MATHEMATICS_ONLY`, action
+permission `NONE`, unauthenticated context and application/core NO-GO. A claimed
+backend label or caller-supplied result authenticates neither code nor source.
+
+Public presignature validity remains insufficient permission to fund, disclose
+or recover. Both current entry checks, authenticated agreement, a selected
+timing/observation policy, exact original custody and a separately assessed
+signing owner remain open. Independent assessment remains unfilled.
 
 ## Required party sequence
 
@@ -156,8 +204,8 @@ node policy, not a peer's assertion or a parsed offline file.
 
 Ordinary BIP340 validity alone does not establish extraction from the selected
 pre-signature. The completed signature, retained pre-signature and full `T`
-must satisfy the selected adaptor relation. Neither Python hash tooling nor
-fixture values implement that mathematics or an application secret owner.
+must satisfy the selected adaptor relation. The public presignature checker
+does not implement completion, extraction or an application secret owner.
 If Bob learns a valid completion before the client's success threshold,
 possible witness knowledge must still be retained; the observation rule cannot
 make that knowledge disappear.
@@ -246,14 +294,14 @@ not completed independent reviews or permission records.
 | D2: signing/nonces | Distinct single-signer BIP340 lock keys per leg; investigate reviewed deterministic adaptor signing bound to key, message and full `T` | The additive `nom_deterministic_adaptor` Rust test target exercises the already pinned `schnorr_fun` candidate with public constants. Application selection, domain separation, entropy, key custody, retry/restore/copy behavior and independent review remain OPEN. Test source or a passing synthetic run does not supply an application signer. |
 | D3: fee refresh | Consider a family of economically equivalent outer account candidates while preserving the inner witness | Policy and implementation UNSELECTED. Preserve exact bytes and UNKNOWN for every candidate. No automatic re-signing, account rebasing or original-only journal migration. |
 | D4: operating scope | Offline public tools first; later separately scoped local devnet with synthetic allocations and explicitly owned test accounts | This document does not expand Stage 0 authority. Testnet, mainnet, user wallets, real funds and activation remain outside the current slice. Any later execution must meet the then-current explicit authorization and storage lifecycle. |
-| D5: language/license | Python for public deterministic tooling; later Rust synthetic cryptography and a separately selected signer; future node access via JSON-RPC | No Go node import or new cryptographic dependency is selected here. A process boundary is an architecture choice, not a legal conclusion. Review actual dependencies and distribution licenses before publication/distribution. |
+| D5: language/license | Python for public deterministic tooling; a separate Rust public checker using the already pinned backend; a signing owner remains separately unselected | No Go node import or new cryptographic primitive is introduced. The small package uses existing pinned dependencies. A process boundary is not a license conclusion; actual dependency and distribution obligations remain separately scoped. |
 | D6: upstream tracking | Compare immutable inventories of PTLC and relevant shared paths; qualify affected behavior rather than every unrelated commit | Include ABI, verifier, VM accounting/pricing, receive sequencing, account/momentum insertion and rollback, pool behavior, token/spork/genesis configuration and dependencies. Unchanged PTLC filenames alone are insufficient. Keep tracked `5bf75c8` distinct from behavior pin `77ba9c7`. |
 | D7: Bitcoin extension | Preserve the historical CANDIDATE-01 subject; investigate a separate tapscript 2-of-2/NUMS design later | Bitcoin is outside this NoM implementation. Key-path exclusion, sighash/output binding, refund, MTP/momentum margin, fee policy/CPFP and delta review remain OPEN. No existing Bitcoin review or test is inherited. |
 | D8: work and acceptance | Add work only against a named protocol, implementation or evidence gate; stop at its explicit exit condition | Preserve old evidence and unrelated work. Parallel early crypto review preparation and bounded synthetic development are appropriate. No reviewer outreach, cleanup, branch deletion, CI erasure or publication follows from this record. |
 
 ## CLI mapping and acceptance
 
-The first five commands below are present in the Python source at
+The first six commands below are present in the Python source at
 [`reference_client/__main__.py`](../reference_client/__main__.py). Invoke them
 with `python3 -B -m reference_client COMMAND`, supplying one bounded public JSON
 object on standard input. This is implementation presence, not an execution or
@@ -264,8 +312,10 @@ test result; actual evidence must be reported for its exact revision.
 | `inspect-terms` | Strictly inspect a new declared public terms profile, derive both Create calls and Unlock preimages/messages, and report a terms digest and required actor/event sequence | No entry proof, curve/pre-signature check, agreement authentication, time safety or execution permission |
 | `inspect-agreement` | Inspect economic terms without entry IDs; derive Create calls and a separate agreement digest | No counterparty consent, curve check, funding, operational policy or action permission |
 | `bind-funding` | Match supplied Create hash inputs and entry projections in long-then-short order, preserving exact declared replay | No signature verification, chain execution, persistent custody, pre-signature admission or fee replacement |
+| `prepare-presignature-check` | Recheck the funding prefix and derive one bound leg's message/key/point/context request | No curve check, agreement authentication, chain truth, action or signer permission |
 | `encode-call` | Reuse the existing bounded public ABI codec for explicit supplied calls | No transaction admission, signing or network action; codec support for ProxyUnlock is not client proxy support |
 | `hash-account-block` | Reuse the existing public account hash-input codec for an explicit supplied public block | No account authorization, canonical signed wire, valid account predecessor, Plasma sufficiency, inclusion or replacement permission |
+| `public_crypto` executable | Separately verify the selected public adaptor relation from bounded canonical JSON | No authenticated context, signing, adaptation, extraction, operational recovery or action permission |
 | `init`, `fund`, `presign`, `verify`, `claim`, `watch`, `reclaim`, `receive` | Planned stateful client responsibilities mapped to the sequence above; not implemented by the initial slice | No secret, node, transport or persistent application state interface yet |
 
 Initial offline-slice acceptance requires strict bounded input handling, exact

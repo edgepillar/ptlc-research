@@ -92,6 +92,19 @@ and assumptions. A later authorized local-only experiment uses isolated test
 accounts and no real funds. Keep trusted-node assumptions explicit and maintain
 raw original bytes separately from parsed observations and client summaries.
 
+The current offline slices keep their acceptance scopes separate:
+
+| Slice | Component condition | Guarantee excluded |
+| --- | --- | --- |
+| M2a: declared funding | Separate economic agreement from ordered, exact Create hash/entry projections | No successful Create, authenticated agreement or current entry proof |
+| M2b: public presignature | Derive one bound leg's request locally; separately check its selected public curve relation with bounded input and explicit refusals | No signing/nonce safety, context authentication, disclosure or funding permission |
+| Later composition | Connect independently scoped signer, observer and persistence under an assessed protocol | No local-devnet or operational acceptance follows from M2a/M2b component results |
+
+M2b must work after the long binding without inventing a short entry. A separate
+small package and the qualification tests use the same checker source. A result
+digest binds input bytes only; the caller's context digest remains unauthenticated.
+Exact source, package/build context and actual checks accompany every result.
+
 Acceptance for that later composition:
 
 - An explicitly selected local network and exact client source execute both

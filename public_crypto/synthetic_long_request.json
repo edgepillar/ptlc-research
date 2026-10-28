@@ -1,0 +1,14 @@
+{
+  "adaptor_point_sec1_hex": "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+  "backend": "schnorr_fun-encrypted-v1",
+  "backend_commit": "74d18bbf864f98e5cf7c18dcfb74ba1ecfe837ce",
+  "context_digest_hex": "3a861b6e50da4f4723ef08b4f1861452e3b5626e2de927f699e7eccaf998f34a",
+  "key_xonly_hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+  "message_hex": "3460e00ec099354483fd2c6402b99b839ed58fe49fd4d25a46619e3d55bcb353",
+  "presignature": {
+    "needs_negation": false,
+    "r_x_hex": "d493abcfb096580b8df27cf38715db805fdc95927c31458c180a6a74634422fe",
+    "s_hat_hex": "9927780976fd8fbd4faa33d55578c35f45da6ec549b8676599540ff60e09ee09"
+  },
+  "schema": "ptlc-nom-client-presignature-check-v1"
+}

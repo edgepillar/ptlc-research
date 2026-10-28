@@ -6,12 +6,16 @@ funds are authorized by this status record.
 
 ## Active delivery work
 
-The active work advances M2a: staged public agreement and funding projections.
-The CLI can distinguish pre-funding economics from declared Create hash/entry
-bindings, retain their ordered public prefix and derive the post-funding plan.
-It does not verify Create execution, pre-signatures or counterparty consent,
-and supplies no RPC, signing or durable client state. This implementation still
-requires its own relevant qualification before publication or integration.
+The active work advances M2b: one public presignature relation after a declared
+funding binding. The Python CLI rechecks the complete ordered funding prefix and
+derives the selected message, key, full adaptor point and local context digest.
+A separate Rust package checks the selected pinned library's public relation.
+It has no signing, adaptation or extraction interface and grants no action.
+
+These tools do not verify Create execution, agreement authentication, current
+chain state, nonce safety or a complete swap protocol. RPC, a signing owner and
+durable client state remain open. Implementation presence and component tests
+require their own relevant qualification before publication or integration.
 
 - [Roadmap and milestone acceptance](docs/REFERENCE_CLIENT_ROADMAP.md)
 - [Protocol candidate and decision boundaries](docs/NOM_REFERENCE_CLIENT_PROTOCOL.md)
