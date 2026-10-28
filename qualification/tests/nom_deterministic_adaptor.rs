@@ -99,7 +99,8 @@ fn public_pre_nonce_binds_message_and_full_adaptor_point_in_selected_cases() {
     let key = schnorr.new_keypair(fun_scalar(1));
     let point = schnorr.encryption_key_for(&fun_scalar(2));
     let changed_point = schnorr.encryption_key_for(&fun_scalar(5));
-    let negated_witness = fun_scalar(2).conditional_negate(true);
+    let mut negated_witness = fun_scalar(2);
+    negated_witness.conditional_negate(true);
     let negated_point = schnorr.encryption_key_for(&negated_witness);
     let message = [3; 32];
     let changed_message = [4; 32];
