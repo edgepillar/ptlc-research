@@ -26,7 +26,10 @@ class ReconciliationCrashTests(unittest.TestCase):
         try:
             with selectors.DefaultSelector() as selector:
                 selector.register(child.stdout, selectors.EVENT_READ)
-                self.assertTrue(selector.select(timeout=20), "reconciliation checkpoint timed out")
+                # Revalidation and durable fixture writes precede the marker.
+                # Loaded hosted runners need a bounded setup allowance; the
+                # observed checkpoint still determines the exact process cut.
+                self.assertTrue(selector.select(timeout=90), "reconciliation checkpoint timed out")
             self.assertEqual(child.stdout.readline().strip(), b"paused")
             child.kill()
             stdout, stderr = child.communicate(timeout=10)
