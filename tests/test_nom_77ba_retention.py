@@ -39,9 +39,10 @@ class TwoStageRetentionControls(unittest.TestCase):
         value,cls.input_raw,cls.expected_raw = helper.report()
         cls.fee_stream = helper.frames(value)
         cls.comparison = fee.read(cls.fee_stream,cls.input_raw,cls.expected_raw)
+        cls.fee_source = reader.expected_fee_source(ROOT)
 
     def fixture(self,directory):
-        source = reader.expected_fee_source(ROOT)
+        source = copy.deepcopy(self.fee_source)
         base_source = dict(core_commit=selected.CORE,combined_files=546,
             reference_fixture_core=selected.FIXTURE_CORE)
         native_pin = write(directory,'native-result.json',dict(source_before=base_source))
@@ -103,9 +104,15 @@ class TwoStageRetentionControls(unittest.TestCase):
         write(directory,'bundle-native-result.json',bundle)
         return base
 
-    def read(self,directory,base,**kwargs):
+    def read(self,directory,base,*,verify_source=False,**kwargs):
         with mock.patch.object(reader.baseline_checker,'inspect',return_value=base):
-            return reader.inspect(directory,**kwargs)
+            if verify_source:
+                return reader.inspect(directory,**kwargs)
+            # Schema refusal cases share this test-local input. The complete
+            # path still invokes the real provider; production stays uncached.
+            with mock.patch.object(reader,'expected_fee_source',
+                    return_value=copy.deepcopy(self.fee_source)):
+                return reader.inspect(directory,**kwargs)
 
     def change(self,directory,name,mutate):
         value = json.loads((directory/name).read_bytes())
@@ -115,7 +122,7 @@ class TwoStageRetentionControls(unittest.TestCase):
     def test_complete_manufactured_selection_does_not_establish_execution_origin(self):
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary).resolve();base = self.fixture(directory)
-            result = self.read(directory,base)
+            result = self.read(directory,base,verify_source=True)
             self.assertIs(result['full_attempt'],True)
             self.assertEqual(result['native_execution'],'NOT_PERFORMED_BY_CHECKER')
             self.assertEqual(result['execution_origin'],'NOT_ESTABLISHED_BY_CHECKER')

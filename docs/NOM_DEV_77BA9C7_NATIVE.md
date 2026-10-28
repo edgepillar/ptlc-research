@@ -60,6 +60,17 @@ the fee test can rebuild its affected test package; it does not require another
 empty dependency/compiler cache or another upstream archive copy. Runtime and
 storage savings remain unmeasured until actual executions are retained.
 
+The `nom-current-core` workflow job selects this two-stage driver and retains
+the `nom-77ba9c7-source-linux` artifact family. It keeps the preceding 31
+profiles, all three new upstream groups and the separate fee-original profile.
+The job count does not increase. Selection after failure uses the incomplete
+retention path; a preserved artifact is not a successful native qualification.
+
+Synthetic retention tests compute their common source fixture once per class.
+The complete selection test still invokes the real source provider. Typed
+field and refusal tests reuse only that test-local fixture; production source
+verification, native execution and count-one behavior are unchanged.
+
 Before publication, the candidate still needs synthetic selector/transport and
 failure-retention controls, fresh offline native execution on the exact source,
 public artifact/privacy checks, complete local regression and hosted PR/main
