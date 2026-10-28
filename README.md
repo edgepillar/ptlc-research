@@ -554,6 +554,12 @@ evidence; completed exact-head hosted results must be reported separately.
 
 ## Next milestone
 
+The additive [77ba9c7 source corpus](docs/NOM_DEV_77BA9C7.md) pins the next
+complete go-zenon dev inventory and its guardian, reward-bound and Bridge JSON
+delta. All 18 PTLC paths are unchanged, but shared VM entry changes still need
+fresh native comparison. The preceding source results and recovery journals
+retain their original scope; source equality grants no recovery permission.
+
 The separate [fee-bound original corpus](docs/NOM_FEE_ORIGINAL_BOUNDARY.md)
 compares fourteen account-send refusals on pinned go-zenon `661b5ef`: the existing
 originals and diagnostic allowances below, at and above the selected price.
