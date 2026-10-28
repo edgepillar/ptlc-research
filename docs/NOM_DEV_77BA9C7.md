@@ -64,8 +64,10 @@ fee producer, then run the separate component with count-one tests and default
 vet in the same owned compiler cache. Each stage needs its own exact source
 snapshot, complete original streams and honest exit/completeness evidence.
 Historical closed caches are not adopted, test results are not cached, and a
-failed stage is not retried or rewritten as a success. This is the next
-implementation requirement, not a claim that the shared-cache extension exists.
+failed stage is not retried or rewritten as a success. The
+[separate candidate driver](NOM_DEV_77BA9C7_NATIVE.md) implements these stage
+boundaries. Synthetic controls and measured native execution must qualify it
+before any execution claim is made.
 
 Source-bound local regression, privacy checks, hosted PR qualification, normal
 main integration and main-push qualification remain separate gates. Source
