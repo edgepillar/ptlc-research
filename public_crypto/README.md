@@ -29,8 +29,10 @@ already. The qualification tests also compile the exact same checker source;
 older frozen qualification workers and their formats remain separate.
 
 Backend attribution: [schnorr_fun at the selected revision](https://github.com/LLFourn/secp256kfun/tree/74d18bbf864f98e5cf7c18dcfb74ba1ecfe837ce/schnorr_fun),
-licensed under 0BSD. The existing pinned qualification inputs retain their
-separate provenance and licenses.
+with its package-level 0BSD license. Its arithmetic dependency's embedded MIT
+and Apache-2.0 code and other transitive terms remain covered by the
+[third-party notices](../THIRD_PARTY_NOTICES.md#embedded-and-transitive-dependency-boundaries).
+The existing pinned qualification inputs retain their separate provenance.
 
 A successful response means `PUBLIC_MATHEMATICS_ONLY` with action permission
 `NONE`. The context digest is caller supplied and merely echoed. It is not part
