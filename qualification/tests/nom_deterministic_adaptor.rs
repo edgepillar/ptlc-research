@@ -68,11 +68,8 @@ fn same_inputs_and_reconstructed_synthetic_owners_have_identical_outputs() {
     let reconstructed = schnorr_fun::new_with_deterministic_nonces::<Sha256>();
     let restored_key = reconstructed.new_keypair(fun_scalar(1));
     let restored_point = reconstructed.encryption_key_for(&fun_scalar(2));
-    let replay = reconstructed.encrypted_sign(
-        &restored_key,
-        &restored_point,
-        Message::raw(&message),
-    );
+    let replay =
+        reconstructed.encrypted_sign(&restored_key, &restored_point, Message::raw(&message));
     assert_eq!(comparison_bytes(&first), comparison_bytes(&repeated));
     assert_eq!(comparison_bytes(&first), comparison_bytes(&replay));
     assert!(schnorr.verify_encrypted_signature(
@@ -152,8 +149,8 @@ fn synthetic_parity_cases_complete_verify_and_extract_only_the_bound_witness() {
         let point = schnorr.encryption_key_for(&witness);
         let message = [tag + 32; 32];
         let pre = schnorr.encrypted_sign(&key, &point, Message::raw(&message));
-        coverage[usize::from(!public_point(tag).has_even_y())]
-            [usize::from(pre.needs_negation)] = true;
+        coverage[usize::from(!public_point(tag).has_even_y())][usize::from(pre.needs_negation)] =
+            true;
         assert!(schnorr.verify_encrypted_signature(
             &key.public_key(),
             &point,
@@ -184,5 +181,8 @@ fn synthetic_parity_cases_complete_verify_and_extract_only_the_bound_witness() {
                 .is_none()
         );
     }
-    assert_eq!(coverage, [[true; 2]; 2], "all four parity pairs must execute");
+    assert_eq!(
+        coverage, [[true; 2]; 2],
+        "all four parity pairs must execute"
+    );
 }
