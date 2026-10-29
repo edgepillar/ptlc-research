@@ -10,4 +10,3 @@ tmp/
 coverage/
 /qualification/target/
 /qualification-native-partial/target/
-/public_crypto/target/
