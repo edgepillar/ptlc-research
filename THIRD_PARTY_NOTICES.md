@@ -61,12 +61,6 @@ research premises, not claims about an actual authority implementation.
 
 The [Rust manifest](qualification/Cargo.toml), [Rust lockfile](qualification/Cargo.lock), [core-verifier Go module](qualification-go/go.mod) and [Bitcoin Go module](qualification-bitcoin-go/go.mod) record the dependency selections. The corresponding Go checksum files cover downloaded module contents. Dependency source is obtained separately in an ignored cache.
 
-The separate [public-checker manifest](public_crypto/Cargo.toml) and
-[lockfile](public_crypto/Cargo.lock) reuse the existing pinned `schnorr_fun`,
-`sha2` and `serde_json` inputs. Its own target/feature closure is distinct from
-the larger qualification crate. The embedded and transitive license boundaries
-below also apply to that closure; no dependency source or binary is vendored.
-
 | Direct dependency | Pinned version or revision | Upstream terms and source |
 | --- | --- | --- |
 | `musig2` | 0.4.1, `5a09b1197b1b5c621a5a9abc60fa95fa84a1da30` | [Unlicense](https://github.com/conduition/musig2/blob/5a09b1197b1b5c621a5a9abc60fa95fa84a1da30/LICENSE) |

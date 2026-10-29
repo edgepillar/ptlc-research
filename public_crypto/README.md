@@ -33,6 +33,9 @@ with its package-level 0BSD license. Its arithmetic dependency's embedded MIT
 and Apache-2.0 code and other transitive terms remain covered by the
 [third-party notices](../THIRD_PARTY_NOTICES.md#embedded-and-transitive-dependency-boundaries).
 The existing pinned qualification inputs retain their separate provenance.
+The independent manifest and lockfile also reuse the existing `sha2` and
+`serde_json` selections. Its target/feature closure remains distinct from the
+larger qualification crate. No dependency source or binary is vendored.
 
 A successful response means `PUBLIC_MATHEMATICS_ONLY` with action permission
 `NONE`. The context digest is caller supplied and merely echoed. It is not part
