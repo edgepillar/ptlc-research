@@ -11,3 +11,7 @@ description = "Candidate public-only NoM presignature verification"
 schnorr_fun = { git = "https://github.com/LLFourn/secp256kfun", rev = "74d18bbf864f98e5cf7c18dcfb74ba1ecfe837ce", default-features = false, features = ["std"] }
 sha2 = { version = "=0.10.9", default-features = false }
 serde_json = { version = "=1.0.151", default-features = false, features = ["std"] }
+
+[[test]]
+name = "client_public_crypto_process"
+path = "../qualification/tests/client_public_crypto_process.rs"

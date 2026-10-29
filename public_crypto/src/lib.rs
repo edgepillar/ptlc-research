@@ -132,7 +132,9 @@ pub fn run_cli() -> i32 {
     let request = input.strip_suffix(b"\n").unwrap_or(&input);
     match verify_request(request) {
         Ok(result) => {
-            if io::stdout().write_all(&result).is_ok() {
+            let stdout = io::stdout();
+            let mut output = stdout.lock();
+            if output.write_all(&result).is_ok() && output.flush().is_ok() {
                 0
             } else {
                 2

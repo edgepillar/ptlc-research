@@ -6,11 +6,17 @@ funds are authorized by this status record.
 
 ## Active delivery work
 
-The active work advances M2b: one public presignature relation after a declared
-funding binding. The Python CLI rechecks the complete ordered funding prefix and
-derives the selected message, key, full adaptor point and local context digest.
-A separate Rust package checks the selected pinned library's public relation.
-It has no signing, adaptation or extraction interface and grants no action.
+The active work applies M3 to the public verification component: incomplete
+input, process interruption and output loss. The same process cases are selected
+by the small Rust package and the larger qualification crate. The
+[scenario matrix](docs/NOM_PUBLIC_CLIENT_MATRIX.md) names the applicable checks
+and their separate evidence requirements.
+
+The M2a/M2b components retain their declared funding and public presignature
+scope. The Python CLI rechecks the complete ordered funding prefix and derives
+the selected message, key, full adaptor point and local context digest. A separate
+Rust package checks the selected pinned library's public relation. It has no
+signing, adaptation or extraction interface and grants no action.
 
 These tools do not verify Create execution, agreement authentication, current
 chain state, nonce safety or a complete swap protocol. RPC, a signing owner and
@@ -30,9 +36,9 @@ defect, with its verification scope declared before execution.
 
 | Evidence | Selected scope |
 | --- | --- |
-| Source | [`db05a9294aa3fb40ebc35f0f926e76d6f989982b`](https://github.com/edgepillar/ptlc-research/tree/db05a9294aa3fb40ebc35f0f926e76d6f989982b) |
-| Hosted main run | [40670225920, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/40670225920/attempts/1) |
-| Recorded acceptance | All 14 actual jobs and their selected original evidence accepted for that source |
+| Source | [`366a4157fdd85fd5b32c5257b529c170430fe22e`](https://github.com/edgepillar/ptlc-research/tree/366a4157fdd85fd5b32c5257b529c170430fe22e) |
+| Hosted main run | [40888304942, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/40888304942/attempts/1) |
+| Recorded acceptance | All 14 actual jobs, nine original artifact families and complete console accepted for that exact source; four fresh 4,578-case Python profiles and the selected native results |
 | Meaning | Source-bound offline/native/hosted baseline evidence; no operational or independent-review acceptance |
 
 The baseline contains a public adaptor verifier, reference journals, source-pinned
@@ -41,6 +47,11 @@ These are completed research outputs. They are not an implemented swap client.
 Later working-tree changes require their own relevant checks; the baseline run
 cannot be relabeled as their qualification. Record failed and interrupted
 attempts separately from later successful observations.
+The earlier `db05a929` baseline and its main run `40670225920/1` remain historical
+subjects. The [M2b PR record](https://github.com/edgepillar/ptlc-research/pull/215)
+records the separate PR and main acceptance. Later M3 changes require their own
+source and checks; the accepted baseline has two process cases and two small
+package targets, rather than the current candidate's five cases and three targets.
 
 ## Open acceptance boundaries
 

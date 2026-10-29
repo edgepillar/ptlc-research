@@ -44,8 +44,13 @@ signing, adaptation, extraction or funding action.
 ## Evidence and checks
 
 The recorded accepted baseline is
-[`db05a929`](https://github.com/edgepillar/ptlc-research/tree/db05a9294aa3fb40ebc35f0f926e76d6f989982b),
-including accepted [main CI attempt 40670225920/1](https://github.com/edgepillar/ptlc-research/actions/runs/40670225920/attempts/1).
+[`366a4157`](https://github.com/edgepillar/ptlc-research/tree/366a4157fdd85fd5b32c5257b529c170430fe22e),
+including accepted [main CI attempt 40888304942/1](https://github.com/edgepillar/ptlc-research/actions/runs/40888304942/attempts/1).
+Its own 14 jobs, nine original artifact families and complete console were
+accepted separately from the PR run. The earlier
+[`db05a929`](https://github.com/edgepillar/ptlc-research/tree/db05a9294aa3fb40ebc35f0f926e76d6f989982b)
+and [main attempt 40670225920/1](https://github.com/edgepillar/ptlc-research/actions/runs/40670225920/attempts/1)
+remain separate historical evidence.
 That evidence belongs to its exact source and does not qualify later changes,
 independent review, signing custody or a real swap.
 
@@ -58,6 +63,17 @@ python3 -B scripts/check_artifacts_batch.py
 The client tests join the existing offline suite. Preserve the distinction
 between focused tests, complete offline regression, native comparisons and hosted
 acceptance; a fast check does not replace the complete selected baseline.
+For focused public client feedback in the declared qualification environment:
+
+```sh
+python3 -B -W error::ResourceWarning -m unittest discover -s tests -p 'test_*client*.py' -v
+cargo test --locked --offline --manifest-path public_crypto/Cargo.toml
+```
+
+The first command selects the three client modules. The Rust command selects the
+small package's library and process cases with its existing three dependencies.
+See the [public client scenario matrix](docs/NOM_PUBLIC_CLIENT_MATRIX.md) for the
+applicable checks and excluded operational scenarios.
 See [regression and source custody](docs/OFFLINE_TEST_SHARDS.md) for the existing
 full-profile requirements.
 
