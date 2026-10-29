@@ -6,11 +6,18 @@ funds are authorized by this status record.
 
 ## Active delivery work
 
-The active work applies M3 to the public verification component: incomplete
-input, process interruption and output loss. The same process cases are selected
-by the small Rust package and the larger qualification crate. The
+The recorded M3 public-component subset covers incomplete input, process
+interruption and output loss. Its five process cases are selected by the small
+Rust package and the larger qualification crate. The
 [scenario matrix](docs/NOM_PUBLIC_CLIENT_MATRIX.md) names the applicable checks
 and their separate evidence requirements.
+
+The current work implements the roadmap's [proportionate CI tier](docs/CI_TIERS.md).
+Existing native recipes and full main qualification remain selected for shared,
+dependency, CI or unknown changes. A narrow public-client PR tier needs complete
+trusted-base scope selection, exact original case/stream checks and separate
+hosted acceptance. First adoption runs full CI; fast-tier timing and resource
+targets require an actual eligible hosted run before any performance claim.
 
 The M2a/M2b components retain their declared funding and public presignature
 scope. The Python CLI rechecks the complete ordered funding prefix and derives
@@ -36,8 +43,8 @@ defect, with its verification scope declared before execution.
 
 | Evidence | Selected scope |
 | --- | --- |
-| Source | [`366a4157fdd85fd5b32c5257b529c170430fe22e`](https://github.com/edgepillar/ptlc-research/tree/366a4157fdd85fd5b32c5257b529c170430fe22e) |
-| Hosted main run | [40888304942, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/40888304942/attempts/1) |
+| Source | [`39453004bff7ba7f39178012c5fac5b4df8366dc`](https://github.com/edgepillar/ptlc-research/tree/39453004bff7ba7f39178012c5fac5b4df8366dc) |
+| Hosted main run | [40945647891, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/40945647891/attempts/1) |
 | Recorded acceptance | All 14 actual jobs, nine original artifact families and complete console accepted for that exact source; four fresh 4,578-case Python profiles and the selected native results |
 | Meaning | Source-bound offline/native/hosted baseline evidence; no operational or independent-review acceptance |
 
@@ -47,11 +54,11 @@ These are completed research outputs. They are not an implemented swap client.
 Later working-tree changes require their own relevant checks; the baseline run
 cannot be relabeled as their qualification. Record failed and interrupted
 attempts separately from later successful observations.
-The earlier `db05a929` baseline and its main run `40670225920/1` remain historical
-subjects. The [M2b PR record](https://github.com/edgepillar/ptlc-research/pull/215)
-records the separate PR and main acceptance. Later M3 changes require their own
-source and checks; the accepted baseline has two process cases and two small
-package targets, rather than the current candidate's five cases and three targets.
+The earlier `db05a929` and `366a4157` baselines and their main runs remain
+historical subjects. The [M3 PR record](https://github.com/edgepillar/ptlc-research/pull/216)
+records separate PR and main acceptance, including the public checker's five
+library cases and five process cases. That component evidence does not establish
+receiver custody, a complete recovery protocol or independent assessment.
 
 ## Open acceptance boundaries
 

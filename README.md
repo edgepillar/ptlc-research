@@ -44,8 +44,8 @@ signing, adaptation, extraction or funding action.
 ## Evidence and checks
 
 The recorded accepted baseline is
-[`366a4157`](https://github.com/edgepillar/ptlc-research/tree/366a4157fdd85fd5b32c5257b529c170430fe22e),
-including accepted [main CI attempt 40888304942/1](https://github.com/edgepillar/ptlc-research/actions/runs/40888304942/attempts/1).
+[`39453004`](https://github.com/edgepillar/ptlc-research/tree/39453004bff7ba7f39178012c5fac5b4df8366dc),
+including accepted [main CI attempt 40945647891/1](https://github.com/edgepillar/ptlc-research/actions/runs/40945647891/attempts/1).
 Its own 14 jobs, nine original artifact families and complete console were
 accepted separately from the PR run. The earlier
 [`db05a929`](https://github.com/edgepillar/ptlc-research/tree/db05a9294aa3fb40ebc35f0f926e76d6f989982b)
@@ -70,12 +70,16 @@ python3 -B -W error::ResourceWarning -m unittest discover -s tests -p 'test_*cli
 cargo test --locked --offline --manifest-path public_crypto/Cargo.toml
 ```
 
-The first command selects the three client modules. The Rust command selects the
+The first command selects the three client modules and CI scope/transport controls.
+The Rust command selects the
 small package's library and process cases with its existing three dependencies.
 See the [public client scenario matrix](docs/NOM_PUBLIC_CLIENT_MATRIX.md) for the
 applicable checks and excluded operational scenarios.
 See [regression and source custody](docs/OFFLINE_TEST_SHARDS.md) for the existing
 full-profile requirements.
+The [CI tier candidate](docs/CI_TIERS.md) keeps main on full qualification and
+selects focused PR work only from a complete, trusted source range. Its first
+adoption requires full CI; hosted fast-tier timing remains unmeasured.
 
 ## Preserved research
 
