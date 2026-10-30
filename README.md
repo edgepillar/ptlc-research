@@ -48,11 +48,11 @@ signing, adaptation, extraction or funding action.
 ## Evidence and checks
 
 The recorded accepted baseline is
-[`7186cab2`](https://github.com/edgepillar/ptlc-research/tree/7186cab21ecb09427fa63f68f1502de948d5787a),
-including accepted [main CI attempt 41014539081/1](https://github.com/edgepillar/ptlc-research/actions/runs/41014539081/attempts/1).
+[`9db3ebc8`](https://github.com/edgepillar/ptlc-research/tree/9db3ebc83796de0972ec4fc119151372691f8a15),
+including accepted [main CI attempt 41030654523/1](https://github.com/edgepillar/ptlc-research/actions/runs/41030654523/attempts/1).
 Its own 17 jobs were accounted for: 16 succeeded and the fast job was unexecuted.
 All 14 runtime jobs, nine original artifact families, both controls and complete
-console were accepted separately from [PR #218](https://github.com/edgepillar/ptlc-research/pull/218).
+console were accepted separately from [PR #219](https://github.com/edgepillar/ptlc-research/pull/219).
 Each of four Python profiles contained 4,619 cases; the original Rust console
 contained 217 cases, including ten selected public checker cases. The earlier
 [`39453004`](https://github.com/edgepillar/ptlc-research/tree/39453004bff7ba7f39178012c5fac5b4df8366dc),
@@ -87,9 +87,16 @@ See [regression and source custody](docs/OFFLINE_TEST_SHARDS.md) for the existin
 full-profile requirements.
 The [CI tiers](docs/CI_TIERS.md) keep main on full qualification and select
 focused PR work only from a complete, trusted source range. At the recorded
-baseline, successful hosted fast-tier qualification and timing remain unfilled.
+baseline, [PR #219](https://github.com/edgepillar/ptlc-research/pull/219)
+separately records a successful 71-Python/ten-Rust fast run in 27 seconds,
+including setup, fetch and post work. Its one measured workspace peak is
+110,651,061 bytes; neither measurement qualifies unexecuted full/native work.
 The [fast-path qualification procedure](docs/PUBLIC_CLIENT_FAST_QUALIFICATION.md)
 defines the separate source, original-stream, nonexecution and measurement gates.
+
+The [821bdd2 upstream tracking corpus](docs/NOM_DEV_821BDD2.md) records complete
+source bytes and changed shared paths. Tracking remains separate from the
+`77ba9c7` behavior selection and the candidate's unfilled native comparison.
 
 ## Preserved research
 

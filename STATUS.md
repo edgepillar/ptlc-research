@@ -13,12 +13,22 @@ cases selected by the small package and the larger qualification crate. The
 [scenario matrix](docs/NOM_PUBLIC_CLIENT_MATRIX.md) names each component scope
 and its separate evidence requirements. Missing output remains UNKNOWN.
 
-The active CI work item qualifies the selected public-client PR path after the
-pinned dependency README-link accounting repair. It updates this reading entry
-point and follows the [fast-path procedure](docs/PUBLIC_CLIENT_FAST_QUALIFICATION.md).
-Its acceptance requires exact eligible source selection, actual original streams,
-explicit unexecuted full-tier jobs and a separately measured hosted duration.
-The baseline's full-tier success does not supply that fast-path evidence.
+The active M1 D6 work item tracks upstream dev source `821bdd2` through a
+[complete 523-file inventory and shared-path impact record](docs/NOM_DEV_821BDD2.md).
+Two added and five modified paths are separated from 516 byte-identical files.
+The behavior pin stays at `77ba9c7`; 821bdd2 native compatibility is UNFILLED.
+Its inventory reader and source controls do not execute a compiler or qualify
+an operational recovery protocol.
+
+The selected public-client fast path was separately accepted for `9db3ebc8` in
+[PR #219](https://github.com/edgepillar/ptlc-research/pull/219), using
+[attempt 41028135584/1](https://github.com/edgepillar/ptlc-research/actions/runs/41028135584/attempts/1).
+The complete selected job took 27 seconds including setup/fetch/post work; its
+original data contained 71 Python and ten Rust cases and a sampled workspace
+peak of 110,651,061 bytes. This single run meets the approximate 15-minute
+fast-tier target; it is not a performance distribution or full/native evidence.
+The [fast-path procedure](docs/PUBLIC_CLIENT_FAST_QUALIFICATION.md) retains
+separate source, original-stream, nonexecution and timing gates.
 
 The [proportionate CI tier](docs/CI_TIERS.md) keeps the existing native recipes
 and full main qualification selected for shared,
@@ -51,10 +61,10 @@ defect, with its verification scope declared before execution.
 
 | Evidence | Selected scope |
 | --- | --- |
-| Source | [`7186cab21ecb09427fa63f68f1502de948d5787a`](https://github.com/edgepillar/ptlc-research/tree/7186cab21ecb09427fa63f68f1502de948d5787a) |
-| Hosted main run | [41014539081, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/41014539081/attempts/1) |
-| Separate PR record | [PR #218](https://github.com/edgepillar/ptlc-research/pull/218), with [PR run 41004598656/1](https://github.com/edgepillar/ptlc-research/actions/runs/41004598656/attempts/1) |
-| Recorded acceptance | All 17 jobs accounted for: 16 succeeded and the fast job was unexecuted; all 14 runtime jobs, both controls, nine artifact families and complete console accepted; four fresh 4,619-case Python profiles, 217 Rust cases and ten exact public checker cases |
+| Source | [`9db3ebc83796de0972ec4fc119151372691f8a15`](https://github.com/edgepillar/ptlc-research/tree/9db3ebc83796de0972ec4fc119151372691f8a15) |
+| Hosted main run | [41030654523, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/41030654523/attempts/1) |
+| Separate PR record | [PR #219](https://github.com/edgepillar/ptlc-research/pull/219), with [PR run 41028135584/1](https://github.com/edgepillar/ptlc-research/actions/runs/41028135584/attempts/1) |
+| Recorded main acceptance | All 17 jobs accounted for: 16 succeeded and the fast job was unexecuted; all 14 runtime jobs, both controls, nine artifact families and complete console accepted; four fresh 4,619-case Python profiles, 217 Rust cases and ten exact public checker cases |
 | Meaning | Source-bound offline/native/hosted baseline evidence; no operational or independent-review acceptance |
 
 The baseline contains a public adaptor verifier, reference journals, source-pinned
@@ -63,7 +73,7 @@ These are completed research outputs. They are not an implemented swap client.
 Later working-tree changes require their own relevant checks; the baseline run
 cannot be relabeled as their qualification. Record failed and interrupted
 attempts separately from later successful observations.
-The earlier `285cd07`, `39453004`, `db05a929` and `366a4157` baselines and their main runs remain
+The earlier `7186cab2`, `285cd07`, `39453004`, `db05a929` and `366a4157` baselines and their main runs remain
 historical subjects. The [M3 PR record](https://github.com/edgepillar/ptlc-research/pull/216)
 records separate PR and main acceptance, including the public checker's five
 library cases and five process cases. That component evidence does not establish
