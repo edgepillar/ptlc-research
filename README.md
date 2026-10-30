@@ -48,10 +48,14 @@ signing, adaptation, extraction or funding action.
 ## Evidence and checks
 
 The recorded accepted baseline is
+[`7186cab2`](https://github.com/edgepillar/ptlc-research/tree/7186cab21ecb09427fa63f68f1502de948d5787a),
+including accepted [main CI attempt 41014539081/1](https://github.com/edgepillar/ptlc-research/actions/runs/41014539081/attempts/1).
+Its own 17 jobs were accounted for: 16 succeeded and the fast job was unexecuted.
+All 14 runtime jobs, nine original artifact families, both controls and complete
+console were accepted separately from [PR #218](https://github.com/edgepillar/ptlc-research/pull/218).
+Each of four Python profiles contained 4,619 cases; the original Rust console
+contained 217 cases, including ten selected public checker cases. The earlier
 [`39453004`](https://github.com/edgepillar/ptlc-research/tree/39453004bff7ba7f39178012c5fac5b4df8366dc),
-including accepted [main CI attempt 40945647891/1](https://github.com/edgepillar/ptlc-research/actions/runs/40945647891/attempts/1).
-Its own 14 jobs, nine original artifact families and complete console were
-accepted separately from the PR run. The earlier
 [`db05a929`](https://github.com/edgepillar/ptlc-research/tree/db05a9294aa3fb40ebc35f0f926e76d6f989982b)
 and [main attempt 40670225920/1](https://github.com/edgepillar/ptlc-research/actions/runs/40670225920/attempts/1)
 remain separate historical evidence.
@@ -81,9 +85,11 @@ See the [public client scenario matrix](docs/NOM_PUBLIC_CLIENT_MATRIX.md) for th
 applicable checks and excluded operational scenarios.
 See [regression and source custody](docs/OFFLINE_TEST_SHARDS.md) for the existing
 full-profile requirements.
-The [CI tier candidate](docs/CI_TIERS.md) keeps main on full qualification and
-selects focused PR work only from a complete, trusted source range. Its first
-adoption requires full CI; hosted fast-tier timing remains unmeasured.
+The [CI tiers](docs/CI_TIERS.md) keep main on full qualification and select
+focused PR work only from a complete, trusted source range. At the recorded
+baseline, successful hosted fast-tier qualification and timing remain unfilled.
+The [fast-path qualification procedure](docs/PUBLIC_CLIENT_FAST_QUALIFICATION.md)
+defines the separate source, original-stream, nonexecution and measurement gates.
 
 ## Preserved research
 

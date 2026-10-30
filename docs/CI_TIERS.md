@@ -1,7 +1,7 @@
 # Selected CI tiers
 
-Status: **implementation candidate; hosted tier selection and timing require
-their own qualification**. Application/core remain **NO-GO** and independent
+Status: **full-tier baseline accepted; selected hosted fast-path success and
+timing require their own qualification**. Application/core remain **NO-GO** and independent
 assessment is **UNFILLED**.
 
 The delivery roadmap calls for focused public-client feedback and a complete
@@ -9,6 +9,16 @@ baseline tier. This change adds an explicit selector and acceptance job around
 the existing native and four-profile workflow. Its first adoption changes CI
 code, so it must run the full tier. A later eligible PR is needed to measure the
 hosted fast path; a target of approximately 15 minutes is not a measured result.
+
+The recorded full-tier baseline is
+[`7186cab21ecb09427fa63f68f1502de948d5787a`](https://github.com/edgepillar/ptlc-research/tree/7186cab21ecb09427fa63f68f1502de948d5787a).
+[PR run 41004598656/1](https://github.com/edgepillar/ptlc-research/actions/runs/41004598656/attempts/1)
+and its separate [main push run 41014539081/1](https://github.com/edgepillar/ptlc-research/actions/runs/41014539081/attempts/1)
+were each accepted from their own metadata, nine artifact families and complete
+console. Each selected all 14 runtime jobs, including four 4,619-case Python
+profiles and the original native results. The fast job was unexecuted in both.
+The [selected-path procedure](PUBLIC_CLIENT_FAST_QUALIFICATION.md) declares the
+next work item's original-data and measurement gates before its eligible run.
 
 ## Source selection
 

@@ -6,12 +6,19 @@ funds are authorized by this status record.
 
 ## Active delivery work
 
-The current M3 candidate addresses Python public IO refusal: complete local
-writing/flushing, read/write/flush faults, short output and lost diagnostics.
-Its seven new Python cases remain separate from the existing five Rust process
+The recorded M3 component evidence covers Python public IO refusal: complete
+local writing/flushing, read/write/flush faults, short output and lost diagnostics.
+Its seven Python cases remain separate from the existing five Rust process
 cases selected by the small package and the larger qualification crate. The
 [scenario matrix](docs/NOM_PUBLIC_CLIENT_MATRIX.md) names each component scope
 and its separate evidence requirements. Missing output remains UNKNOWN.
+
+The active CI work item qualifies the selected public-client PR path after the
+pinned dependency README-link accounting repair. It updates this reading entry
+point and follows the [fast-path procedure](docs/PUBLIC_CLIENT_FAST_QUALIFICATION.md).
+Its acceptance requires exact eligible source selection, actual original streams,
+explicit unexecuted full-tier jobs and a separately measured hosted duration.
+The baseline's full-tier success does not supply that fast-path evidence.
 
 The [proportionate CI tier](docs/CI_TIERS.md) keeps the existing native recipes
 and full main qualification selected for shared,
@@ -44,9 +51,10 @@ defect, with its verification scope declared before execution.
 
 | Evidence | Selected scope |
 | --- | --- |
-| Source | [`285cd07e371c48743583dbd641b1133cb8e62e60`](https://github.com/edgepillar/ptlc-research/tree/285cd07e371c48743583dbd641b1133cb8e62e60) |
-| Hosted main run | [40985764730, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/40985764730/attempts/1) |
-| Recorded acceptance | All 17 jobs accounted for: 16 succeeded and the fast job was unexecuted; all 14 runtime jobs, both controls, nine artifact families and complete console accepted; four fresh 4,609-case Python profiles and the selected native results |
+| Source | [`7186cab21ecb09427fa63f68f1502de948d5787a`](https://github.com/edgepillar/ptlc-research/tree/7186cab21ecb09427fa63f68f1502de948d5787a) |
+| Hosted main run | [41014539081, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/41014539081/attempts/1) |
+| Separate PR record | [PR #218](https://github.com/edgepillar/ptlc-research/pull/218), with [PR run 41004598656/1](https://github.com/edgepillar/ptlc-research/actions/runs/41004598656/attempts/1) |
+| Recorded acceptance | All 17 jobs accounted for: 16 succeeded and the fast job was unexecuted; all 14 runtime jobs, both controls, nine artifact families and complete console accepted; four fresh 4,619-case Python profiles, 217 Rust cases and ten exact public checker cases |
 | Meaning | Source-bound offline/native/hosted baseline evidence; no operational or independent-review acceptance |
 
 The baseline contains a public adaptor verifier, reference journals, source-pinned
@@ -55,11 +63,18 @@ These are completed research outputs. They are not an implemented swap client.
 Later working-tree changes require their own relevant checks; the baseline run
 cannot be relabeled as their qualification. Record failed and interrupted
 attempts separately from later successful observations.
-The earlier `db05a929` and `366a4157` baselines and their main runs remain
+The earlier `285cd07`, `39453004`, `db05a929` and `366a4157` baselines and their main runs remain
 historical subjects. The [M3 PR record](https://github.com/edgepillar/ptlc-research/pull/216)
 records separate PR and main acceptance, including the public checker's five
 library cases and five process cases. That component evidence does not establish
 receiver custody, a complete recovery protocol or independent assessment.
+
+The first selected fast attempt
+[40999048053/1](https://github.com/edgepillar/ptlc-research/actions/runs/40999048053/attempts/1)
+remains failed. Its generic preflight refusal does not identify its exact cause.
+The separately reproduced README-link defect and subsequent full-tier successes
+do not reclassify that original failure. Original archives, completed data-reader
+results and failed local reader/collection records remain preserved.
 
 ## Open acceptance boundaries
 
