@@ -408,6 +408,53 @@ class PublicClientOriginalStreamTests(unittest.TestCase):
 
 
 class PublicClientWorkspaceTests(unittest.TestCase):
+    def test_pinned_dependency_readme_link_and_its_target_are_charged(self):
+        with tempfile.TemporaryDirectory(prefix='public-client-workspace-') as name:
+            root = Path(name)
+            alias = root / producer.PINNED_README
+            target = alias.parent / producer.PINNED_README_TARGET
+            target.parent.mkdir(parents=True)
+            target.write_bytes(b'synthetic')
+            alias.symlink_to(producer.PINNED_README_TARGET)
+            identity = root.stat().st_dev, root.stat().st_ino
+            self.assertEqual(producer.workspace_size(root, identity), 9 + alias.lstat().st_size)
+            self.assertEqual(os.readlink(alias), producer.PINNED_README_TARGET)
+
+    def test_dependency_readme_alias_requires_the_exact_path_and_target(self):
+        for relative, destination in [
+                (producer.PINNED_README, '../README.md'),
+                (producer.PINNED_README, '/synthetic-outside-readme'),
+                (producer.PINNED_README, 'secp256kfun/OTHER.md'),
+                (Path(str(producer.PINNED_README).replace('/74d18bb/', '/0000000/')),
+                    producer.PINNED_README_TARGET)]:
+            with self.subTest(relative=relative, destination=destination), \
+                    tempfile.TemporaryDirectory(prefix='public-client-workspace-') as name:
+                root = Path(name)
+                alias = root / relative
+                alias.parent.mkdir(parents=True)
+                alias.symlink_to(destination)
+                with self.assertRaises(ValueError):
+                    producer.workspace_size(root, (root.stat().st_dev, root.stat().st_ino))
+
+    def test_dependency_readme_target_and_parent_cannot_be_links(self):
+        for linked_parent in (False, True):
+            with self.subTest(linked_parent=linked_parent), \
+                    tempfile.TemporaryDirectory(prefix='public-client-workspace-') as name:
+                root = Path(name)
+                alias = root / producer.PINNED_README
+                target = alias.parent / producer.PINNED_README_TARGET
+                alias.parent.mkdir(parents=True)
+                alias.symlink_to(producer.PINNED_README_TARGET)
+                if linked_parent:
+                    (root / 'other').mkdir()
+                    target.parent.symlink_to(root / 'other', target_is_directory=True)
+                else:
+                    target.parent.mkdir()
+                    (root / 'other').write_bytes(b'synthetic')
+                    target.symlink_to(root / 'other')
+                with self.assertRaises(ValueError):
+                    producer.workspace_size(root, (root.stat().st_dev, root.stat().st_ino))
+
     def test_declared_synthetic_fixture_links_are_charged_without_following(self):
         with tempfile.TemporaryDirectory(prefix='public-client-workspace-') as name:
             root = Path(name)

@@ -30,6 +30,8 @@ AUTHORITY = 'CALLER_DECLARED_RUN; EXTERNAL_METADATA_ACCEPTANCE_REQUIRED'
 BUILD_ENV = dict(CARGO_INCREMENTAL='0', CARGO_BUILD_JOBS='2',
     CARGO_PROFILE_DEV_DEBUG='0', CARGO_PROFILE_TEST_DEBUG='0', RUSTFLAGS='',
     RUSTDOCFLAGS='', RUSTC_WRAPPER='', RUSTC_WORKSPACE_WRAPPER='')
+PINNED_README = Path('cargo-home/git/checkouts/secp256kfun-84afa725c2a26f78/74d18bb/README.md')
+PINNED_README_TARGET = 'secp256kfun/README.md'
 
 
 def require(value):
@@ -111,7 +113,7 @@ def emit(label, value):
 
 
 def workspace_size(root, identity):
-    """Strict size sample; count declared synthetic links without following them."""
+    """Charge declared links without following them or accepting new aliases."""
     info = root.lstat()
     require((info.st_dev, info.st_ino) == identity and stat.S_ISDIR(info.st_mode))
     total = count = 0
@@ -122,7 +124,16 @@ def workspace_size(root, identity):
             require(info.st_uid == os.getuid() and info.st_dev == identity[0])
             count += 1
             if stat.S_ISLNK(info.st_mode):
-                require(path.is_relative_to(root / 'fixtures'))
+                if not path.is_relative_to(root / 'fixtures'):
+                    require(path == root / PINNED_README
+                        and os.readlink(path) == PINNED_README_TARGET)
+                    target = path.parent / PINNED_README_TARGET
+                    parent_info = target.parent.lstat()
+                    require(stat.S_ISDIR(parent_info.st_mode) and parent_info.st_uid == os.getuid()
+                        and parent_info.st_dev == identity[0])
+                    target_info = target.lstat()
+                    require(stat.S_ISREG(target_info.st_mode) and target_info.st_uid == os.getuid()
+                        and target_info.st_dev == identity[0])
                 if name in directories:
                     directories.remove(name)
                 total += info.st_size

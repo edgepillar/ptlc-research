@@ -74,6 +74,24 @@ debug information disabled. This changes build storage, not assertion policy.
 Compiler setup and dependency transport are outside the offline execution
 measurement and require their own actual hosted step outcomes.
 
+The pinned dependency checkout contains a
+[README link](https://github.com/LLFourn/secp256kfun/blob/74d18bbf864f98e5cf7c18dcfb74ba1ecfe837ce/README.md)
+to `secp256kfun/README.md`. The workspace sampler permits that exact cache path
+and relative target, requires its target and parent to be regular file/directory
+entries owned on the workspace device, and charges the link without traversing
+it. The target is charged separately by the ordinary walk. Other cache aliases,
+changed targets and link chains remain refused. This is workspace accounting,
+not dependency authentication or permission to adopt existing cache files.
+
+The first selected hosted attempt,
+[40999048053/1](https://github.com/edgepillar/ptlc-research/actions/runs/40999048053/attempts/1),
+failed before its initial producer record. Its original console contains a
+generic workspace refusal and does not identify the rejected entry. The prior
+sampler also rejects the pinned README link; a local counterexample tests that
+defect separately. It does not establish the original hosted refusal's exact
+cause. The failed attempt remains failed, its originals are retained, and a new
+revision requires fresh qualification. A sampler change selects the full tier.
+
 The selected public checks grant no funding, signing, disclosure, replacement,
 activation, broadcast or funds authority. Full native CI does not close those
 operational or independent-review gates either.
