@@ -87,6 +87,10 @@ adoption requires full CI; hosted fast-tier timing remains unmeasured.
 
 ## Preserved research
 
+The [public component assessment reading map](docs/NOM_PUBLIC_COMPONENT_REVIEW.md)
+freezes an explicit source and nine questions. It is author preparation only;
+independent assessment remains UNFILLED.
+
 The [full qualification history](README_QUALIFICATION_HISTORY.md) preserves the
 baseline README byte-for-byte at its original relative-link depth. It is a
 historical reading index, not the current delivery plan. All existing code,

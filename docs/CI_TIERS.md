@@ -29,9 +29,14 @@ verification scope; it is not a protocol, code-review or release approval.
 
 ## Actual execution and acceptance
 
-The workflow has 17 concrete jobs after expanding matrices:
+The full tier expands to 17 actual jobs, including 14 runtime jobs. A skipped
+matrix definition must not be counted as executed matrix members: GitHub
+[evaluates job conditions before matrix expansion](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax).
+The fast tier needs its own exact job metadata and explicit nonexecution checks;
+do not assume that its actual API inventory is the full tier's expanded graph.
+The table describes selected workload and required outcomes:
 
-| Selection | Scope control | Public-client job | Original runtime jobs | Final acceptance |
+| Selection | Scope control | Public-client job | Full-tier runtime workload | Final acceptance |
 | --- | --- | --- | --- | --- |
 | `full` | Successful | Not executed | All 14 must succeed | Successful |
 | `public-client` | Successful, source range established | Must succeed | All 14 not executed | Successful |

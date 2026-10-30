@@ -44,9 +44,9 @@ defect, with its verification scope declared before execution.
 
 | Evidence | Selected scope |
 | --- | --- |
-| Source | [`39453004bff7ba7f39178012c5fac5b4df8366dc`](https://github.com/edgepillar/ptlc-research/tree/39453004bff7ba7f39178012c5fac5b4df8366dc) |
-| Hosted main run | [40945647891, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/40945647891/attempts/1) |
-| Recorded acceptance | All 14 actual jobs, nine original artifact families and complete console accepted for that exact source; four fresh 4,578-case Python profiles and the selected native results |
+| Source | [`285cd07e371c48743583dbd641b1133cb8e62e60`](https://github.com/edgepillar/ptlc-research/tree/285cd07e371c48743583dbd641b1133cb8e62e60) |
+| Hosted main run | [40985764730, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/40985764730/attempts/1) |
+| Recorded acceptance | All 17 jobs accounted for: 16 succeeded and the fast job was unexecuted; all 14 runtime jobs, both controls, nine artifact families and complete console accepted; four fresh 4,609-case Python profiles and the selected native results |
 | Meaning | Source-bound offline/native/hosted baseline evidence; no operational or independent-review acceptance |
 
 The baseline contains a public adaptor verifier, reference journals, source-pinned
