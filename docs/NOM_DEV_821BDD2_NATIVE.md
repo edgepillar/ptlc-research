@@ -81,6 +81,34 @@ authentication or independent execution-origin claim. Those require actual
 source-bound evidence. The local controls use synthetic streams/processes and
 mocked compiler stages; their success cannot close native compatibility.
 
+## Isolated hosted comparison
+
+The separate [candidate workflow](../.github/workflows/nom-821bdd2-native.yml)
+selects the full 37-profile, 42-command comparison on Linux. It uses the same
+trusted-base scope policy as the existing workflow. A selected public-client
+change explicitly skips candidate execution; missing or unknown scope does not
+select that fast path. The final selection gate distinguishes an executed job
+from nonexecution. It does not accept the original artifact values itself.
+
+The job admits a new hosted workspace with the 10 GiB floor and 4 GiB initial
+allocation allowance, downloads the pinned Go archive and exact upstream ZIP,
+and acquires dependencies into a separate bootstrap module cache. The native
+runner retains its 2 GiB reservation and uses one fresh compiler workspace for
+both source stages. No historical local cache or completed native result is
+adopted. This admission is not an OS filesystem quota or a measured saving.
+
+Only the exact privacy-checked original file list is uploaded, including honest
+incomplete attempts. Compiler caches and private argument receipts are excluded.
+An absent or refused artifact remains missing evidence. Actual source-bound
+receipts, finite values, hosted originals, PR acceptance, normal main integration
+and the main push's own acceptance remain separate requirements. A Linux result
+does not establish Darwin behavior, compiler authentication or application safety.
+
+The native runner and evidence checker each obtain the baseline from one freshly
+validated frozen plan. They do not repeat the same plan construction within that
+entry point. Validation across calls is not cached, and exact scalar types,
+array order, original-source snapshots and refusal behavior remain required.
+
 ## Acceptance still required
 
 Keep local controls, actual native comparison, PR CI acceptance, normal main

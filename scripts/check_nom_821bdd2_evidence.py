@@ -94,8 +94,7 @@ def privacy(raw):
 
 
 def expected_arguments(root=ROOT):
-    plan = reproduction.plan(root, 'all')
-    require(reproduction.frozen_plan(root)['baseline'] == plan)
+    plan = reproduction.frozen_plan(root)['baseline']
     packages = sorted({'./' + row['package'] for row in plan['units']})
     result = dict((row['unit'], row['arguments']) for row in plan['units'])
     result.update({

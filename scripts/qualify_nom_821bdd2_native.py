@@ -99,8 +99,7 @@ def qualify(source, workspace, go, expected_go, proxy, cc, *, root=ROOT, sdk=Non
         and type(expected_go) is str and re.fullmatch('[0-9a-f]{64}', expected_go))
     source, workspace, go, proxy, cc = map(selected.earlier.physical,
                                          (source, workspace, go, proxy, cc))
-    plan = reproduction.plan(root, 'all')
-    require(reproduction.frozen_plan(root)['baseline'] == plan)
+    plan = reproduction.frozen_plan(root)['baseline']
     source_before = selected.compare_source(source, root, 'all')
     require(source_before['combined_files'] == 548 and len(plan['units']) == 36)
     require(sha(selected.earlier.regular(go, 64 * MIB)) == expected_go
