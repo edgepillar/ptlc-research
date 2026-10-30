@@ -75,6 +75,9 @@ and actual contract behavior still need their selected runtime evidence.
 
 Before selecting 821bdd2 as a behavior source, freeze a separate native plan:
 
+The [candidate native selection and runner](NOM_DEV_821BDD2_NATIVE.md) implement
+this preparation. They retain the same unfilled execution and acceptance gates.
+
 1. Run the existing 31 reference profiles and the three 77ba9c7 boundary profiles
    against the new complete source, preserving their reference fixture labels.
    Old streams cannot be relabeled as new-source results.

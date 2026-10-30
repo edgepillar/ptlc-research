@@ -48,12 +48,12 @@ signing, adaptation, extraction or funding action.
 ## Evidence and checks
 
 The recorded accepted baseline is
-[`9db3ebc8`](https://github.com/edgepillar/ptlc-research/tree/9db3ebc83796de0972ec4fc119151372691f8a15),
-including accepted [main CI attempt 41030654523/1](https://github.com/edgepillar/ptlc-research/actions/runs/41030654523/attempts/1).
+[`a51ba436`](https://github.com/edgepillar/ptlc-research/tree/a51ba436e5c5556319dcce5cf9397ce1198cd3b0),
+including accepted [main CI attempt 41071695312/1](https://github.com/edgepillar/ptlc-research/actions/runs/41071695312/attempts/1).
 Its own 17 jobs were accounted for: 16 succeeded and the fast job was unexecuted.
 All 14 runtime jobs, nine original artifact families, both controls and complete
-console were accepted separately from [PR #219](https://github.com/edgepillar/ptlc-research/pull/219).
-Each of four Python profiles contained 4,619 cases; the original Rust console
+console were accepted separately from [PR #220](https://github.com/edgepillar/ptlc-research/pull/220).
+Each of four Python profiles contained 4,621 cases; the original Rust console
 contained 217 cases, including ten selected public checker cases. The earlier
 [`39453004`](https://github.com/edgepillar/ptlc-research/tree/39453004bff7ba7f39178012c5fac5b4df8366dc),
 [`db05a929`](https://github.com/edgepillar/ptlc-research/tree/db05a9294aa3fb40ebc35f0f926e76d6f989982b)
@@ -97,6 +97,9 @@ defines the separate source, original-stream, nonexecution and measurement gates
 The [821bdd2 upstream tracking corpus](docs/NOM_DEV_821BDD2.md) records complete
 source bytes and changed shared paths. Tracking remains separate from the
 `77ba9c7` behavior selection and the candidate's unfilled native comparison.
+The [candidate native plan](docs/NOM_DEV_821BDD2_NATIVE.md) preserves all prior
+profiles and adds the changed upstream tests, with a separate fee-original stage
+sharing one fresh compiler workspace. It records no completed native attempt.
 
 ## Preserved research
 
