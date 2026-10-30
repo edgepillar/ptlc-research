@@ -3,6 +3,7 @@
 import copy
 import io
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -132,6 +133,174 @@ class ReferenceClientTests(unittest.TestCase):
             code = main(argv, input_stream=io.BytesIO(b"{}"), output_stream=output, error_stream=errors)
             self.assertEqual((code, output.getvalue()), (2, ""))
             self.assertEqual(errors.getvalue(), "REFUSED: invalid public input; no action authorized\n")
+
+
+    def test_successful_public_output_is_fully_written_and_flushed(self):
+        class Output(io.StringIO):
+            writes = 0
+            flushes = 0
+
+            def write(self, value):
+                self.writes += 1
+                return super().write(value)
+
+            def flush(self):
+                self.flushes += 1
+                return super().flush()
+
+        output, errors = Output(), io.StringIO()
+        code = main(["inspect-terms"], input_stream=io.BytesIO(canonical(self.terms)),
+                    output_stream=output, error_stream=errors)
+        self.assertEqual((code, output.writes, output.flushes, errors.getvalue()), (0, 1, 1, ""))
+        self.assertEqual(output.getvalue().encode("ascii"), canonical(inspect_terms(self.terms)) + b"\n")
+
+    def test_public_io_failures_return_sanitized_refusal(self):
+        class InputFault(io.BytesIO):
+            def read(self, *args):
+                raise OSError("synthetic-sensitive-marker")
+
+        class Output(io.StringIO):
+            failure = None
+            writes = 0
+            flushes = 0
+
+            def write(self, value):
+                self.writes += 1
+                if self.failure == "write":
+                    raise OSError("synthetic-sensitive-marker")
+                return super().write(value)
+
+            def flush(self):
+                self.flushes += 1
+                if self.failure == "flush":
+                    raise OSError("synthetic-sensitive-marker")
+                return super().flush()
+
+        for failure in ("read", "write", "flush"):
+            with self.subTest(failure=failure):
+                source = InputFault(canonical(self.terms)) if failure == "read" else io.BytesIO(canonical(self.terms))
+                output, errors = Output(), io.StringIO()
+                output.failure = failure
+                try:
+                    code = main(["inspect-terms"], input_stream=source, output_stream=output, error_stream=errors)
+                    self.assertEqual(code, 2)
+                    self.assertEqual(errors.getvalue(), "REFUSED: public IO failure; no action authorized\n")
+                    self.assertNotIn("synthetic-sensitive-marker", output.getvalue())
+                    self.assertLessEqual(output.writes, 1)
+                    self.assertLessEqual(output.flushes, 1)
+                    if output.getvalue():
+                        self.assertEqual(json.loads(output.getvalue())["action_permission"], "NONE")
+                finally:
+                    output.failure = None
+                    output.close()
+                    source.close()
+
+    def test_short_and_invalid_output_counts_are_refused_without_retry(self):
+        class Output(io.StringIO):
+            writes = 0
+            flushes = 0
+
+            def __init__(self, selected):
+                super().__init__()
+                self.selected = selected
+
+            def write(self, value):
+                self.writes += 1
+                count = self.selected(len(value))
+                if type(count) is int:
+                    super().write(value[:max(0, min(len(value), count))])
+                return count
+
+            def flush(self):
+                self.flushes += 1
+                return super().flush()
+
+        for selected in (lambda size: 0, lambda size: size // 2, lambda size: -1,
+                         lambda size: size + 1, lambda size: None, lambda size: True,
+                         lambda size: float(size)):
+            output, errors = Output(selected), io.StringIO()
+            code = main(["inspect-terms"], input_stream=io.BytesIO(canonical(self.terms)),
+                        output_stream=output, error_stream=errors)
+            self.assertEqual((code, output.writes, output.flushes), (2, 1, 0))
+            self.assertEqual(errors.getvalue(), "REFUSED: public IO failure; no action authorized\n")
+
+    def test_diagnostic_io_failure_preserves_refusal(self):
+        class Errors(io.StringIO):
+            failure = None
+
+            def write(self, value):
+                if self.failure == "write":
+                    raise OSError("synthetic-sensitive-marker")
+                return super().write(value)
+
+            def flush(self):
+                if self.failure == "flush":
+                    raise OSError("synthetic-sensitive-marker")
+                return super().flush()
+
+        for failure in ("write", "flush", "closed"):
+            output, errors = io.StringIO(), Errors()
+            errors.failure = failure
+            if failure == "closed":
+                errors.close()
+            try:
+                code = main(["inspect-terms"], input_stream=io.BytesIO(b"{"),
+                            output_stream=output, error_stream=errors)
+                self.assertEqual((code, output.getvalue()), (2, ""))
+            finally:
+                errors.failure = None
+                errors.close()
+
+    def test_closed_output_reader_returns_sanitized_module_refusal(self):
+        reader, writer = os.pipe()
+        os.close(reader)
+        try:
+            with subprocess.Popen([sys.executable, "-B", "-m", "reference_client", "inspect-terms"],
+                                  stdin=subprocess.PIPE, stdout=writer, stderr=subprocess.PIPE,
+                                  cwd=ROOT, close_fds=False) as child:
+                os.close(writer)
+                writer = None
+                try:
+                    uncollected, errors = child.communicate(canonical(self.terms), timeout=10)
+                except subprocess.TimeoutExpired:
+                    child.kill()
+                    child.communicate()
+                    raise
+                self.assertEqual(child.returncode, 2)
+                self.assertIsNone(uncollected)
+                self.assertEqual(errors, b"REFUSED: public IO failure; no action authorized\n")
+        finally:
+            if writer is not None:
+                os.close(writer)
+
+    def test_zero_exit_with_discarded_python_output_is_not_a_receipt(self):
+        child = subprocess.run([sys.executable, "-B", "-m", "reference_client", "inspect-terms"],
+                               input=canonical(self.terms), stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+                               cwd=ROOT, timeout=10, check=False, close_fds=False)
+        self.assertEqual((child.returncode, child.stderr), (0, b""))
+        self.assertIsNone(child.stdout)
+        # No output was captured. A successful local flush proves no custody.
+
+    def test_standalone_refusal_survives_closed_diagnostic_reader(self):
+        reader, writer = os.pipe()
+        os.close(reader)
+        try:
+            with subprocess.Popen([sys.executable, "-B", "-m", "reference_client", "inspect-terms"],
+                                  stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=writer,
+                                  cwd=ROOT, close_fds=False) as child:
+                os.close(writer)
+                writer = None
+                try:
+                    output, uncollected = child.communicate(b"{", timeout=10)
+                except subprocess.TimeoutExpired:
+                    child.kill()
+                    child.communicate()
+                    raise
+                self.assertEqual((child.returncode, output), (2, b""))
+                self.assertIsNone(uncollected)
+        finally:
+            if writer is not None:
+                os.close(writer)
 
 
 if __name__ == "__main__":

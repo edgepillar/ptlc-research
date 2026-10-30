@@ -27,7 +27,11 @@ python3 -B -m reference_client hash-account-block < public-input.json
 ```
 
 Each command reads bounded JSON from standard input and writes JSON to standard
-output. The tools use no network, files, private keys or signing operation.
+output. The tools use no network, private keys, signing interface or persistent
+client state. Public requests return success after one complete local write and
+flush. IO failures return a generic refusal when diagnostics are available;
+missing or incomplete output remains UNKNOWN. Even a zero exit and successful
+flush cannot prove that a caller captured and validated the JSON result.
 `inspect-agreement` omits entry IDs. `bind-funding` checks ordered declared
 Create hash/entry projections and refuses conflicting replacements.
 The client profiles select the pinned source and local-devnet chain 69. Its

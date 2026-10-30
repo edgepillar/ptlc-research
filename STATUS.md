@@ -6,14 +6,15 @@ funds are authorized by this status record.
 
 ## Active delivery work
 
-The recorded M3 public-component subset covers incomplete input, process
-interruption and output loss. Its five process cases are selected by the small
-Rust package and the larger qualification crate. The
-[scenario matrix](docs/NOM_PUBLIC_CLIENT_MATRIX.md) names the applicable checks
-and their separate evidence requirements.
+The current M3 candidate addresses Python public IO refusal: complete local
+writing/flushing, read/write/flush faults, short output and lost diagnostics.
+Its seven new Python cases remain separate from the existing five Rust process
+cases selected by the small package and the larger qualification crate. The
+[scenario matrix](docs/NOM_PUBLIC_CLIENT_MATRIX.md) names each component scope
+and its separate evidence requirements. Missing output remains UNKNOWN.
 
-The current work implements the roadmap's [proportionate CI tier](docs/CI_TIERS.md).
-Existing native recipes and full main qualification remain selected for shared,
+The [proportionate CI tier](docs/CI_TIERS.md) keeps the existing native recipes
+and full main qualification selected for shared,
 dependency, CI or unknown changes. A narrow public-client PR tier needs complete
 trusted-base scope selection, exact original case/stream checks and separate
 hosted acceptance. First adoption runs full CI; fast-tier timing and resource

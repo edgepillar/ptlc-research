@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import os
 import sys
 
 from offline_session.nom_wire import account_block_hash, account_block_preimage, encode_call
@@ -23,6 +24,16 @@ def _object(pairs):
 class _Parser(argparse.ArgumentParser):
     def error(self, message):
         raise CompatibilityError("unsupported public command")
+
+
+def _refuse(errors, message):
+    # A missing diagnostic cannot turn an incomplete request into success.
+    try:
+        errors.write(message + "\n")
+        errors.flush()
+    except (OSError, ValueError):
+        pass
+    return 2
 
 
 def main(argv=None, *, input_stream=None, output_stream=None, error_stream=None):
@@ -54,12 +65,41 @@ def main(argv=None, *, input_stream=None, output_stream=None, error_stream=None)
                           preimage_hex=account_block_preimage(value).hex(),
                           hash_hex=account_block_hash(value), action_permission="NONE",
                           signed_serialization="NOT_IMPLEMENTED")
-        output.write(canonical(result).decode("ascii") + "\n")
+        encoded = canonical(result).decode("ascii") + "\n"
+        written = output.write(encoded)
+        if type(written) is not int or written != len(encoded):
+            raise OSError("incomplete public output")
+        output.flush()
         return 0
+    except OSError:
+        return _refuse(errors, "REFUSED: public IO failure; no action authorized")
     except (CompatibilityError, UnicodeError, ValueError, TypeError, RecursionError):
-        print("REFUSED: invalid public input; no action authorized", file=errors)
-        return 2
+        return _refuse(errors, "REFUSED: invalid public input; no action authorized")
+
+
+def _discard_shutdown_buffers():
+    # Only the standalone process uses this after a refusal. Already written
+    # bytes cannot be recalled; remaining buffers are not delivery evidence.
+    targets = set()
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            targets.add(stream.fileno())
+        except (AttributeError, OSError, ValueError):
+            pass
+    descriptor = None
+    try:
+        descriptor = os.open(os.devnull, os.O_WRONLY)
+        for target in targets:
+            os.dup2(descriptor, target)
+    except OSError:
+        pass
+    finally:
+        if descriptor is not None and descriptor not in targets:
+            os.close(descriptor)
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    status = main()
+    if status:
+        _discard_shutdown_buffers()
+    raise SystemExit(status)

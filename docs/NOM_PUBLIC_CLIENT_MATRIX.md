@@ -76,6 +76,50 @@ a failed mathematical relation, operational recovery test or disclosure claim.
 The candidate explicitly checks writing and flushing before returning zero.
 The original baseline observation remains separate from any later candidate pass.
 
+## Python public IO candidate
+
+This separate M3 slice covers the Python public preparation entry point. The
+Rust subset above keeps its five library and five process cases. Neither subset
+selects an operational client, signer, observer or recovery store.
+
+An author-run bounded observation of Python source
+[`285cd07e371c48743583dbd641b1133cb8e62e60`](https://github.com/edgepillar/ptlc-research/tree/285cd07e371c48743583dbd641b1133cb8e62e60)
+used canonical synthetic terms with input SHA-256
+`e0c9e2b75b308e1410f6c21653cc950cdbfac0a022691e399c610b2382d09aed`.
+The stream entry point returned zero when an injected writer accepted no
+characters. It also returned zero without calling an injected failing `flush`.
+These are bounded stream-interface observations. In the actual standalone
+closed-reader case the process exited **120**, rather than zero; its output
+was deliberately uncollected. Discarding output to the null device exited zero
+and supplied no captured receipt. Original outcomes remain separate from later
+candidate results.
+
+The candidate checks the complete character count and explicitly flushes before
+returning success. It makes no second public-result write after a short or
+failed write. Input/output OS errors produce a generic refusal, and an
+unavailable diagnostic stream cannot turn refusal into success. The standalone
+process redirects remaining standard-stream buffers to the null device after
+refusal to avoid another failed flush at interpreter shutdown. This follows
+the [Python shutdown-flush guidance](https://docs.python.org/3.13/library/signal.html#note-on-sigpipe).
+It cannot recall bytes already written or establish receiver custody.
+
+The seven new selectors below are in the existing
+[Python component tests](../tests/test_reference_client.py). Their declared
+presence is not source-bound execution, hosted acceptance or independent review.
+
+| ID | Scenario | Selected check |
+| --- | --- | --- |
+| PUBLIC-15 | Complete local writing/flushing; read, write, flush and invalid write-count refusals without retry | `test_successful_public_output_is_fully_written_and_flushed`; `test_public_io_failures_return_sanitized_refusal`; `test_short_and_invalid_output_counts_are_refused_without_retry` |
+| PUBLIC-16 | Missing diagnostics preserve refusal; actual closed output/diagnostic readers yield a sanitized or deliberately uncollected refusal | `test_diagnostic_io_failure_preserves_refusal`; `test_closed_output_reader_returns_sanitized_module_refusal`; `test_standalone_refusal_survives_closed_diagnostic_reader` |
+| PUBLIC-17 | Zero exit with intentionally discarded Python output supplies no receipt | `test_zero_exit_with_discarded_python_output_is_not_a_receipt` |
+
+The interrupted-input Rust row, injected Python stream faults and actual Python
+process rows have distinct evidence scopes. They do not establish arbitrary
+instruction-cut recovery. Partial, discarded or missing output stays UNKNOWN;
+no JSON result is reconstructed. Local success still authenticates no peer,
+agreement, chain state or delivered receipt and grants no retry, funding,
+signing, disclosure, replacement or recovery authority.
+
 ## Focused feedback and remaining requirements
 
 The [small-package command](../public_crypto/README.md) runs the selected library
