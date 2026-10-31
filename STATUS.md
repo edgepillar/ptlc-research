@@ -26,6 +26,22 @@ or mathematical validity follows. The work item ends when these association and
 refusal conditions have their own relevant source-bound evidence. It selects no
 signer, observer or store and requires fresh qualification before integration.
 
+The preceding local full-profile attempt at `6866894` ended with actual exit
+`-15` after the 192 MiB fixture sampler reported an overflow. All four shards
+were incomplete; that attempt is not a full regression pass. Original outputs,
+partial streams, paths and the HOLD disposition remain preserved. A separate
+small control reproduced a size-policy mismatch: the reader's oversized-file
+test shape was 256 MiB plus one byte, larger than that sampler. The exact cause
+of the historical interruption remains **NOT_ESTABLISHED**.
+
+The candidate now uses a small isolated limit for that file-path refusal test,
+while declared-size cases retain the production reader limit. Actual file-size
+refusal before streaming is still checked. The production limit, local sampler,
+fixture charge and shared storage policy are unchanged; no physical space
+reclaim is claimed. The additional test-file change selects full PR CI under the
+existing trusted-base policy. It must receive fresh complete regression and
+hosted evidence; the earlier 52-case component result belongs to `6866894`.
+
 The completed M1 D6 work item tracks upstream dev source `821bdd2` through a
 [complete 523-file inventory and shared-path impact record](docs/NOM_DEV_821BDD2.md).
 Two added and five modified paths are separated from 516 byte-identical files.

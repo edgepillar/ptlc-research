@@ -158,13 +158,18 @@ class ArtifactPrefixTests(unittest.TestCase):
                 self.refuses(**{"{}_bytes".format(name): value})
 
     def test_empty_and_oversized_sparse_files_refuse_before_streaming(self):
-        for path in (self.first, self.second):
-            with path.open("wb") as handle: handle.truncate(check.MAX_ARTIFACT_BYTES+1)
-            with patch.object(check._Scan, "feed", side_effect=AssertionError("stream must not start")):
+        # Exercise actual file-size refusal with a small isolated test limit.
+        # Declared-size cases above retain the production limit; this shape
+        # needs no large logical allocation to prove that streaming never starts.
+        bound = max(len(self.left), len(self.right)) + 1
+        with patch.object(check, "MAX_ARTIFACT_BYTES", bound):
+            for path in (self.first, self.second):
+                with path.open("wb") as handle: handle.truncate(bound+1)
+                with patch.object(check._Scan, "feed", side_effect=AssertionError("stream must not start")):
+                    self.refuses()
+                path.write_bytes(b"")
                 self.refuses()
-            path.write_bytes(b"")
-            self.refuses()
-            path.write_bytes(self.left if path == self.first else self.right)
+                path.write_bytes(self.left if path == self.first else self.right)
 
     def test_same_path_and_hard_link_aliases_refuse(self):
         self.refuses(second=self.first, second_sha256=digest(self.left), second_bytes=len(self.left))
