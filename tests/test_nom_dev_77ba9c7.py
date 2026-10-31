@@ -1,6 +1,8 @@
 """Synthetic routing and failure controls; these execute no Go compiler or node."""
+from contextlib import redirect_stderr, redirect_stdout
 import hashlib
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -14,6 +16,7 @@ from qualification import nom_fee_original_boundary as fee
 from scripts import nom_77ba9c7_command as capture
 from scripts import qualify_nom_77ba9c7_native as native
 from scripts import qualify_nom_77ba9c7_bundle as bundle
+from scripts import qualify_nom_821bdd2_bundle as candidate_bundle
 
 ROOT = Path(__file__).resolve().parents[1]
 REFUSALS = (ValueError, AssertionError, KeyError, TypeError)
@@ -146,6 +149,61 @@ class CurrentCommandControls(unittest.TestCase):
                     environment={'PATH': os.defpath}, directory=directory, evidence=directory,
                     label='unselected-native-action', timeout=5)
             self.assertEqual(list(directory.iterdir()), [])
+
+
+class BundleCliControls(unittest.TestCase):
+    def invoke(self, module, producer, output, errors):
+        arguments = ['synthetic-bundle-cli', '--source', 'synthetic-source',
+            '--workspace', 'synthetic-workspace', '--go', 'synthetic-compiler',
+            '--offline-proxy', 'synthetic-proxy', '--cc', 'synthetic-cc',
+            '--expect-go-sha256', '0' * 64]
+        with mock.patch.object(sys, 'argv', arguments), \
+                mock.patch.object(module, 'qualify', producer), \
+                redirect_stdout(output), redirect_stderr(errors):
+            return module.main()
+
+    def test_worker_failure_returns_one_without_disclosing_exception_content(self):
+        for module in (bundle, candidate_bundle):
+            with self.subTest(module=module.__name__):
+                output, errors = io.StringIO(), io.StringIO()
+                producer = mock.Mock(side_effect=module.capture.WorkerError(
+                    'synthetic-sensitive-diagnostic'))
+                result = self.invoke(module, producer, output, errors)
+                self.assertEqual(result, 1)
+                producer.assert_called_once()
+                self.assertEqual(output.getvalue(), '')
+                self.assertEqual(errors.getvalue(),
+                    'REFUSED: two-stage qualification; preserve original owned evidence\n')
+
+    def test_interrupts_propagate_without_a_success_or_refusal_projection(self):
+        for module in (bundle, candidate_bundle):
+            for failure in (KeyboardInterrupt(), SystemExit(7)):
+                with self.subTest(module=module.__name__, failure=type(failure).__name__):
+                    output, errors = io.StringIO(), io.StringIO()
+                    producer = mock.Mock(side_effect=failure)
+                    with self.assertRaises(type(failure)) as raised:
+                        self.invoke(module, producer, output, errors)
+                    self.assertIs(raised.exception, failure)
+                    producer.assert_called_once()
+                    self.assertEqual(output.getvalue(), '')
+                    self.assertEqual(errors.getvalue(), '')
+
+    def test_success_keeps_only_the_existing_public_projection(self):
+        for module, profiles, commands, outcomes in (
+                (bundle, 35, 40, 756), (candidate_bundle, 37, 42, 782)):
+            with self.subTest(module=module.__name__):
+                projected = dict(outcome='SYNTHETIC_SUCCESS_PROJECTION_ONLY',
+                    core_commit='11' * 20, core_tree='22' * 20,
+                    compiler_workspaces=1, physical_source_views=1, source_stages=2,
+                    complete_profiles=profiles, actual_native_commands=commands,
+                    total_outcomes=outcomes, baseline_originals_unchanged=True)
+                output, errors = io.StringIO(), io.StringIO()
+                producer = mock.Mock(return_value=dict(projected,
+                    unselected_detail='synthetic-unpublished-detail'))
+                self.assertEqual(self.invoke(module, producer, output, errors), 0)
+                producer.assert_called_once()
+                self.assertEqual(json.loads(output.getvalue()), projected)
+                self.assertEqual(errors.getvalue(), '')
 
 
 class CurrentStageControls(unittest.TestCase):

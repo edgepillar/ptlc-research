@@ -192,7 +192,7 @@ def main():
         args = parser.parse_args()
         report = qualify(args.source, args.workspace, args.go,
             args.expect_go_sha256, args.offline_proxy, args.cc, sdk=args.sdk_root)
-    except (AssertionError,OSError,ValueError,KeyError,TypeError,RuntimeError):
+    except (AssertionError,OSError,ValueError,KeyError,TypeError,RuntimeError,capture.WorkerError):
         print('REFUSED: two-stage qualification; preserve original owned evidence',file=sys.stderr)
         return 1
     print(json.dumps({key:report[key] for key in ('outcome','core_commit','core_tree',

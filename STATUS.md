@@ -18,13 +18,36 @@ declared EOF before parsing. Five component selectors cover valid fragments,
 the exact byte limit, a later JSON value, late read faults and invalid late
 read values; the exact accepted baseline is recorded below.
 
-The current M2b/M3 candidate associates a supplied public-checker result with a
+The M2b/M3 result-association slice associates a supplied public-checker result with a
 locally rederived request. It rechecks all declared funding bindings and refuses
 another leg, changed economics, noncanonical result bytes or expanded authority
 claims. Matching JSON remains an unverified supplied claim: no backend execution
 or mathematical validity follows. The work item ends when these association and
 refusal conditions have their own relevant source-bound evidence. It selects no
-signer, observer or store and requires fresh qualification before integration.
+signer, observer or store.
+
+Source `2c239dc4afd08d28aafa71e6e2b95ce0fff7852b` received a complete fresh
+4,647-case local regression and separate full PR acceptance before its normal
+fast-forward in [PR #224](https://github.com/edgepillar/ptlc-research/pull/224).
+Its own [full main attempt 41243505502/1](https://github.com/edgepillar/ptlc-research/actions/runs/41243505502/attempts/1)
+failed: `nom-current-core` and the aggregate `ci_acceptance` job failed.
+All eight available artifact families and the complete original console are
+retained, but the failed native job exported no artifact after its output
+selection also refused. Its underlying failure cause is **NOT_ESTABLISHED**;
+missing native originals are not claimed as retained. The separately accepted
+[candidate main attempt 41243505567/1](https://github.com/edgepillar/ptlc-research/actions/runs/41243505567/attempts/1)
+matched 37 profiles, 42 Go commands and 782 outcomes. That finite comparison
+does not replace full main acceptance. The last fully accepted baseline below
+remains unchanged.
+
+The current M3 work item fixes a separate CLI exception boundary: both native
+bundle entry points must turn their selected command runner's `WorkerError`
+into the existing fixed refusal and exit code one. The acceptance scope covers
+non-disclosure of exception contents, preserved success projections and
+propagation of process interrupts. It changes no native command, comparison,
+admission, retention or retry rule. This source finding does not establish the
+cause of the failed main attempt. The change needs its own fresh offline and
+hosted evidence before integration.
 
 The preceding local full-profile attempt at `6866894` ended with actual exit
 `-15` after the 192 MiB fixture sampler reported an overflow. All four shards
@@ -34,13 +57,14 @@ small control reproduced a size-policy mismatch: the reader's oversized-file
 test shape was 256 MiB plus one byte, larger than that sampler. The exact cause
 of the historical interruption remains **NOT_ESTABLISHED**.
 
-The candidate now uses a small isolated limit for that file-path refusal test,
+Source `2c239dc4` uses a small isolated limit for that file-path refusal test,
 while declared-size cases retain the production reader limit. Actual file-size
 refusal before streaming is still checked. The production limit, local sampler,
 fixture charge and shared storage policy are unchanged; no physical space
 reclaim is claimed. The additional test-file change selects full PR CI under the
-existing trusted-base policy. It must receive fresh complete regression and
-hosted evidence; the earlier 52-case component result belongs to `6866894`.
+existing trusted-base policy. Its fresh local and PR evidence remains separate
+from its failed main attempt; the earlier 52-case component result belongs to
+`6866894`.
 
 The completed M1 D6 work item tracks upstream dev source `821bdd2` through a
 [complete 523-file inventory and shared-path impact record](docs/NOM_DEV_821BDD2.md).
