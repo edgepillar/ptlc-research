@@ -21,6 +21,7 @@ and codec tools:
 python3 -B -m reference_client inspect-agreement < reference_client/synthetic_agreement.json
 python3 -B -m reference_client bind-funding < reference_client/synthetic_funding_request.json
 python3 -B -m reference_client prepare-presignature-check < reference_client/synthetic_presignature_request.json
+python3 -B -m reference_client inspect-presignature-result < public-input.json
 python3 -B -m reference_client inspect-terms < public-input.json
 python3 -B -m reference_client encode-call < public-input.json
 python3 -B -m reference_client hash-account-block < public-input.json
@@ -45,20 +46,29 @@ selected adaptor relation with the existing pinned backend. It authenticates no
 agreement or chain fact and returns action permission `NONE`. It supplies no
 signing, adaptation, extraction or funding action.
 
+`inspect-presignature-result` rederives that request and associates a bounded,
+canonical supplied result with it. It refuses another leg, changed economics or
+an expanded authority claim. A matching JSON claim can still be fabricated:
+inspection runs no backend and establishes neither mathematical validity nor
+execution provenance. See the protocol candidate for its exact input contract.
+
 ## Evidence and checks
 
 The recorded accepted baseline is
-[`a51ba436`](https://github.com/edgepillar/ptlc-research/tree/a51ba436e5c5556319dcce5cf9397ce1198cd3b0),
-including accepted [main CI attempt 41071695312/1](https://github.com/edgepillar/ptlc-research/actions/runs/41071695312/attempts/1).
+[`26c64738`](https://github.com/edgepillar/ptlc-research/tree/26c647384626cd6b9b8d7cefbb2d64f6b3ac492f),
+including accepted [main CI attempt 41218407472/1](https://github.com/edgepillar/ptlc-research/actions/runs/41218407472/attempts/1).
 Its own 17 jobs were accounted for: 16 succeeded and the fast job was unexecuted.
 All 14 runtime jobs, nine original artifact families, both controls and complete
-console were accepted separately from [PR #220](https://github.com/edgepillar/ptlc-research/pull/220).
-Each of four Python profiles contained 4,621 cases; the original Rust console
+console were accepted separately from [PR #223](https://github.com/edgepillar/ptlc-research/pull/223).
+Each of four Python profiles contained 4,637 cases; the original Rust console
 contained 217 cases, including ten selected public checker cases. The earlier
 [`39453004`](https://github.com/edgepillar/ptlc-research/tree/39453004bff7ba7f39178012c5fac5b4df8366dc),
 [`db05a929`](https://github.com/edgepillar/ptlc-research/tree/db05a9294aa3fb40ebc35f0f926e76d6f989982b)
 and [main attempt 40670225920/1](https://github.com/edgepillar/ptlc-research/actions/runs/40670225920/attempts/1)
 remain separate historical evidence.
+The separate [candidate main attempt 41218407407/1](https://github.com/edgepillar/ptlc-research/actions/runs/41218407407/attempts/1)
+was accepted for its declared finite Linux comparison. Those records qualify
+the bounded-input completion change, not the later result-association candidate.
 That evidence belongs to its exact source and does not qualify later changes,
 independent review, signing custody or a real swap.
 

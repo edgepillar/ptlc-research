@@ -13,11 +13,34 @@ cases selected by the small package and the larger qualification crate. The
 [scenario matrix](docs/NOM_PUBLIC_CLIENT_MATRIX.md) names each component scope
 and its separate evidence requirements. Missing output remains UNKNOWN.
 
-The new M3 candidate completes bounded Python input through declared EOF before
-parsing. Five added component selectors cover valid fragments, the exact byte
-limit, a later JSON value, late read faults and invalid late read values. This
-candidate requires its own source-bound qualification; the accepted baseline
-below does not qualify these later changes.
+The accepted M3 input-completion slice reads bounded Python input through
+declared EOF before parsing. Five component selectors cover valid fragments,
+the exact byte limit, a later JSON value, late read faults and invalid late
+read values; the exact accepted baseline is recorded below.
+
+The current M2b/M3 candidate associates a supplied public-checker result with a
+locally rederived request. It rechecks all declared funding bindings and refuses
+another leg, changed economics, noncanonical result bytes or expanded authority
+claims. Matching JSON remains an unverified supplied claim: no backend execution
+or mathematical validity follows. The work item ends when these association and
+refusal conditions have their own relevant source-bound evidence. It selects no
+signer, observer or store and requires fresh qualification before integration.
+
+The preceding local full-profile attempt at `6866894` ended with actual exit
+`-15` after the 192 MiB fixture sampler reported an overflow. All four shards
+were incomplete; that attempt is not a full regression pass. Original outputs,
+partial streams, paths and the HOLD disposition remain preserved. A separate
+small control reproduced a size-policy mismatch: the reader's oversized-file
+test shape was 256 MiB plus one byte, larger than that sampler. The exact cause
+of the historical interruption remains **NOT_ESTABLISHED**.
+
+The candidate now uses a small isolated limit for that file-path refusal test,
+while declared-size cases retain the production reader limit. Actual file-size
+refusal before streaming is still checked. The production limit, local sampler,
+fixture charge and shared storage policy are unchanged; no physical space
+reclaim is claimed. The additional test-file change selects full PR CI under the
+existing trusted-base policy. It must receive fresh complete regression and
+hosted evidence; the earlier 52-case component result belongs to `6866894`.
 
 The completed M1 D6 work item tracks upstream dev source `821bdd2` through a
 [complete 523-file inventory and shared-path impact record](docs/NOM_DEV_821BDD2.md).
@@ -75,11 +98,11 @@ defect, with its verification scope declared before execution.
 
 | Evidence | Selected scope |
 | --- | --- |
-| Source | [`008189664c851111167c93d6e1908d82719e1e4d`](https://github.com/edgepillar/ptlc-research/tree/008189664c851111167c93d6e1908d82719e1e4d) |
-| Hosted full main run | [41198468734, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/41198468734/attempts/1) |
-| Separate PR record | [PR #222](https://github.com/edgepillar/ptlc-research/pull/222), with [full PR run 41137105701/1](https://github.com/edgepillar/ptlc-research/actions/runs/41137105701/attempts/1) and [candidate PR run 41137105801/1](https://github.com/edgepillar/ptlc-research/actions/runs/41137105801/attempts/1) |
-| Recorded full main acceptance | All 17 jobs accounted for: 16 succeeded and the fast job was unexecuted; all 14 runtime jobs, both controls, nine artifact families and complete console accepted; four fresh 4,632-case Python profiles, 217 Rust cases and ten exact public checker cases |
-| Separate candidate main acceptance | [41198468789/1](https://github.com/edgepillar/ptlc-research/actions/runs/41198468789/attempts/1): all three jobs and 92 originals accepted for the declared 37-profile, 42-command, 782-outcome Linux comparison, with 19 additional definition roots accounted for separately |
+| Source | [`26c647384626cd6b9b8d7cefbb2d64f6b3ac492f`](https://github.com/edgepillar/ptlc-research/tree/26c647384626cd6b9b8d7cefbb2d64f6b3ac492f) |
+| Hosted full main run | [41218407472, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/41218407472/attempts/1) |
+| Separate PR record | [PR #223](https://github.com/edgepillar/ptlc-research/pull/223), with [fast PR run 41214019137/1](https://github.com/edgepillar/ptlc-research/actions/runs/41214019137/attempts/1) and [candidate PR run 41214019297/1](https://github.com/edgepillar/ptlc-research/actions/runs/41214019297/attempts/1); full runtime and candidate native work were unexecuted on that PR |
+| Recorded full main acceptance | All 17 jobs accounted for: 16 succeeded and the fast job was unexecuted; all 14 runtime jobs, both controls, nine artifact families and complete console accepted; four fresh 4,637-case Python profiles, 217 Rust cases and ten exact public checker cases |
+| Separate candidate main acceptance | [41218407407/1](https://github.com/edgepillar/ptlc-research/actions/runs/41218407407/attempts/1): all three jobs and 92 originals accepted for the declared 37-profile, 42-command, 782-outcome Linux comparison, with 19 additional definition roots accounted for separately |
 | Meaning | Source-bound offline/native/hosted baseline evidence; no operational or independent-review acceptance |
 
 The baseline contains a public adaptor verifier, reference journals, source-pinned
@@ -88,7 +111,7 @@ These are completed research outputs. They are not an implemented swap client.
 Later working-tree changes require their own relevant checks; the baseline run
 cannot be relabeled as their qualification. Record failed and interrupted
 attempts separately from later successful observations.
-The earlier `823957da`, `a51ba436`, `9db3ebc8`, `7186cab2`, `285cd07`, `39453004`, `db05a929` and `366a4157` baselines and their main runs remain
+The earlier `00818966`, `823957da`, `a51ba436`, `9db3ebc8`, `7186cab2`, `285cd07`, `39453004`, `db05a929` and `366a4157` baselines and their main runs remain
 historical subjects. The [M3 PR record](https://github.com/edgepillar/ptlc-research/pull/216)
 records separate PR and main acceptance, including the public checker's five
 library cases and five process cases. That component evidence does not establish

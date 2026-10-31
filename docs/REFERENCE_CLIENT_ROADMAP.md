@@ -105,6 +105,14 @@ small package and the qualification tests use the same checker source. A result
 digest binds input bytes only; the caller's context digest remains unauthenticated.
 Exact source, package/build context and actual checks accompany every result.
 
+The next additive public slice is result association. Recheck the full funding
+prefix, rederive the selected request and compare a bounded canonical supplied
+response against both request and context digests and the checker's exact scope.
+Its stop condition is demonstrated refusal of stale/cross-leg/economic-context
+results and widened authority claims, while even a fabricated matching response
+stays explicitly unverified. This is caller-side association, not backend
+execution evidence or a substitute for the separate mathematical check.
+
 Acceptance for that later composition:
 
 - An explicitly selected local network and exact client source execute both

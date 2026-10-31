@@ -5,6 +5,7 @@ It neither verifies the supplied curve relation nor authenticates chain facts.
 """
 
 import hashlib
+import json
 
 from offline_session.pr138 import PROFILE, CompatibilityError, fixed_hex, unlock_message
 from reference_client.agreement import REQUEST_SCHEMA as FUNDING_REQUEST_SCHEMA, bind_funding
@@ -15,6 +16,8 @@ SCHEMA = "ptlc-nom-client-prepare-presignature-v1"
 BACKEND = "schnorr_fun-encrypted-v1"
 BACKEND_COMMIT = "74d18bbf864f98e5cf7c18dcfb74ba1ecfe837ce"
 MAX_CRYPTO_REQUEST = 8192
+RESULT_INSPECTION_SCHEMA = "ptlc-nom-client-inspect-presignature-result-v1"
+MAX_CRYPTO_RESULT = 4096
 
 
 def prepare_presignature(value):
@@ -69,5 +72,52 @@ def prepare_presignature(value):
         verification="NOT_PERFORMED; USE SELECTED PUBLIC-ONLY BACKEND",
         context_authentication="NOT_VERIFIED", chain_state="DECLARED_ONLY",
         outer_signature="NOT_VERIFIED", contract_execution="NOT_VERIFIED",
+        timing_policy="UNSELECTED", action_permission="NONE", application="NO-GO",
+        core="NO-GO", independent_assessment="UNFILLED")
+
+
+def inspect_presignature_result(value):
+    """Associate a supplied claim with a locally rederived public request.
+
+    A matching JSON claim can be fabricated. This function neither runs the
+    backend nor establishes mathematical validity, execution or provenance.
+    """
+    if (type(value) is not dict or value.keys() != {
+            "schema", "preparation", "result_json"}
+            or value["schema"] != RESULT_INSPECTION_SCHEMA):
+        raise CompatibilityError("unexpected public result inspection")
+    canonical(value)
+    prepared = prepare_presignature(value["preparation"])
+    text = value["result_json"]
+    if type(text) is not str or not 0 < len(text) <= MAX_CRYPTO_RESULT:
+        raise CompatibilityError("public crypto result exceeds its boundary")
+    try:
+        raw = text.encode("ascii")
+        supplied = json.loads(raw)
+    except (UnicodeError, ValueError, RecursionError) as error:
+        raise CompatibilityError("invalid supplied public result") from error
+    expected = dict(schema="ptlc-nom-client-presignature-result-v1",
+        request_digest_hex=prepared["request_digest_hex"],
+        context_digest_hex=prepared["crypto_request"]["context_digest_hex"],
+        presignature_valid=True, scope="PUBLIC_MATHEMATICS_ONLY",
+        action_permission="NONE", application="NO-GO", core="NO-GO",
+        independent_assessment="UNFILLED", context_authentication="NOT_VERIFIED",
+        chain_state="NOT_VERIFIED", signer_safety="NOT_ASSESSED")
+    # Canonical roundtrip also refuses duplicate fields and alternate framing.
+    # Exact boolean type prevents a JSON integer from posing as the claim.
+    if (type(supplied) is not dict or supplied != expected
+            or supplied["presignature_valid"] is not True or canonical(supplied) != raw):
+        raise CompatibilityError("public result does not match the declared request")
+    return dict(schema="ptlc-nom-client-inspected-presignature-result-v1",
+        association="MATCHING_DECLARED_REQUEST", leg=prepared["leg"],
+        agreement_digest_hex=prepared["agreement_digest_hex"],
+        declared_entry_id_hex=prepared["declared_entry_id_hex"],
+        request_digest_hex=prepared["request_digest_hex"],
+        context_digest_hex=expected["context_digest_hex"],
+        supplied_result_digest_hex=hashlib.sha256(raw).hexdigest(),
+        supplied_claim="PUBLIC_RELATION_VALID", verification="NOT_PERFORMED",
+        backend_execution="NOT_ESTABLISHED", context_authentication="NOT_VERIFIED",
+        chain_state="DECLARED_ONLY", outer_signature="NOT_VERIFIED",
+        contract_execution="NOT_VERIFIED", signer_safety="NOT_ASSESSED",
         timing_policy="UNSELECTED", action_permission="NONE", application="NO-GO",
         core="NO-GO", independent_assessment="UNFILLED")

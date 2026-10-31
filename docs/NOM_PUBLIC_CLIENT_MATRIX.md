@@ -146,6 +146,33 @@ Reading through declared EOF supplies no transport authentication, received
 receipt, retry permission or recovery authority. Application/core remain NO-GO
 and independent assessment remains UNFILLED.
 
+The input-completion slice was separately accepted at
+[`26c64738`](https://github.com/edgepillar/ptlc-research/tree/26c647384626cd6b9b8d7cefbb2d64f6b3ac492f),
+with its own [main original acceptance](https://github.com/edgepillar/ptlc-research/pull/223).
+That acceptance does not qualify the later result-association slice below.
+
+## Supplied public result association candidate
+
+This M2b/M3 work item adds `inspect-presignature-result` to the existing Python
+component. It rederives the expected request from the complete public
+preparation input and inspects a bounded canonical supplied result. Its tests
+deliberately fabricate claims; they exercise association and refusal rather
+than asserting mathematical validity or actual backend execution.
+
+| ID | Scenario | Selected check |
+| --- | --- | --- |
+| PUBLIC-20 | Matching claims remain unverified and confer no authority | `test_fabricated_matching_claim_does_not_become_verification_or_authority` |
+| PUBLIC-21 | Entire funding prefix is rechecked; append-only long association stays stable | `test_result_association_rechecks_the_complete_prefix_and_keeps_long_stable` |
+| PUBLIC-22 | Another leg, changed Create, changed economics with an equal message, changed presignature or only one matching digest is refused | `test_another_leg_or_changed_create_cannot_consume_the_original_result`; `test_equal_inner_message_does_not_allow_a_stale_economic_context`; `test_altered_presignature_or_only_one_matching_digest_is_refused` |
+| PUBLIC-23 | Expanded scope, malformed/noncanonical/oversized result bytes and peer overrides are refused | `test_result_claims_cannot_widen_the_selected_backend_scope`; `test_only_complete_bounded_canonical_ascii_result_bytes_are_associated`; `test_result_inspection_accepts_no_peer_context_or_executable_override` |
+| PUBLIC-24 | Exact supplied bytes are hashed without mutation; CLI success is association and refusal is sanitized | `test_result_digest_commits_to_supplied_bytes_without_rewriting_or_mutation`; `test_result_inspection_cli_returns_association_or_sanitized_refusal` |
+
+The stop condition is source-bound evidence for these association/refusal rows,
+including the explicit fabricated-claim limit. No backend is invoked by this
+inspector. An exact digest match authenticates no process, source, public curve
+relation, peer, chain fact or custody. It grants no retry, signing, funding,
+disclosure, recovery or operational composition permission.
+
 ## Focused feedback and remaining requirements
 
 The [small-package command](../public_crypto/README.md) runs the selected library
