@@ -96,10 +96,13 @@ defines the separate source, original-stream, nonexecution and measurement gates
 
 The [821bdd2 upstream tracking corpus](docs/NOM_DEV_821BDD2.md) records complete
 source bytes and changed shared paths. Tracking remains separate from the
-`77ba9c7` behavior selection and the candidate's unfilled native comparison.
+`77ba9c7` behavior and journal selections. The declared finite Linux candidate
+comparison was accepted for source `0081896`, with separate PR and main
+originals recorded in [PR #222](https://github.com/edgepillar/ptlc-research/pull/222).
 The [candidate native plan](docs/NOM_DEV_821BDD2_NATIVE.md) preserves all prior
 profiles and adds the changed upstream tests, with a separate fee-original stage
-sharing one fresh compiler workspace. It records no completed native attempt.
+sharing one fresh compiler workspace. Its exclusions and independent-assessment
+requirements remain separate from that accepted finite comparison.
 
 ## Preserved research
 

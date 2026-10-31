@@ -12,15 +12,15 @@ No statement here authorizes a node, spork, wallet, signature, broadcast or fund
 | Subject | Selection and evidence boundary |
 | --- | --- |
 | Contract/account behavior used by this design | [go-zenon `77ba9c7ee8c881e90911946756cdb67d8b586043`](https://github.com/zenon-network/go-zenon/tree/77ba9c7ee8c881e90911946756cdb67d8b586043), tree `57da4b9588e053facfdb8299181fe15a8ad2a223` |
-| Separately tracked upstream head | [`821bdd25eabacbf8a07b6310986f38713f27b4e3`](NOM_DEV_821BDD2.md); complete source inventory and shared-path impact only, with native compatibility UNFILLED |
+| Separately tracked upstream head | [`821bdd25eabacbf8a07b6310986f38713f27b4e3`](NOM_DEV_821BDD2.md); complete source inventory, shared-path impact and a separately [accepted finite Linux comparison](NOM_DEV_821BDD2_NATIVE.md); no behavior/journal pin upgrade or complete admission proof |
 | Historical codec profile | `zenon-ptlc-unlock:v1`; its historical PR #138 source selection and existing manifests remain unchanged |
 | New implementation target | `reference_client`: Python public terms/ABI/hash and presignature-request tools; `public_crypto`: a separate public relation checker using the already pinned backend; synthetic signing remains confined to qualification tests |
 | Existing executable evidence | Component-specific source, runtime, run and platform selections in the existing qualification documents; no old result is relabeled as a result for this design |
 
 The [77ba9c7 source comparison](NOM_DEV_77BA9C7.md) identifies unchanged PTLC
 files and changed shared VM paths. The [821bdd2 tracking corpus](NOM_DEV_821BDD2.md)
-adds a complete inventory and a proportionate next native selection. Neither
-source reader establishes complete current-source admission. The
+adds a complete inventory and a proportionate finite native selection. Its
+recorded Linux comparison does not establish complete current-source admission. The
 [historical fixed-recipient subject](NOM_FIXED_RECOVERY.md), its
 journals, original bytes and independent-review records remain separate. A new
 client must not silently migrate their source pins, formats or guarantees.
@@ -297,7 +297,7 @@ not completed independent reviews or permission records.
 | D3: fee refresh | Consider a family of economically equivalent outer account candidates while preserving the inner witness | Policy and implementation UNSELECTED. Preserve exact bytes and UNKNOWN for every candidate. No automatic re-signing, account rebasing or original-only journal migration. |
 | D4: operating scope | Offline public tools first; later separately scoped local devnet with synthetic allocations and explicitly owned test accounts | This document does not expand Stage 0 authority. Testnet, mainnet, user wallets, real funds and activation remain outside the current slice. Any later execution must meet the then-current explicit authorization and storage lifecycle. |
 | D5: language/license | Python for public deterministic tooling; a separate Rust public checker using the already pinned backend; a signing owner remains separately unselected | No Go node import or new cryptographic primitive is introduced. The small package uses existing pinned dependencies. A process boundary is not a license conclusion; actual dependency and distribution obligations remain separately scoped. |
-| D6: upstream tracking | Compare immutable inventories of PTLC and relevant shared paths; qualify affected behavior rather than every unrelated commit | Include ABI, verifier, VM accounting/pricing, receive sequencing, account/momentum insertion and rollback, pool behavior, token/spork/genesis configuration and dependencies. Unchanged PTLC filenames alone are insufficient. Keep tracked `821bdd2` distinct from behavior pin `77ba9c7`; the new candidate's native evidence is UNFILLED. |
+| D6: upstream tracking | Compare immutable inventories of PTLC and relevant shared paths; qualify affected behavior rather than every unrelated commit | Include ABI, verifier, VM accounting/pricing, receive sequencing, account/momentum insertion and rollback, pool behavior, token/spork/genesis configuration and dependencies. Unchanged PTLC filenames alone are insufficient. Keep tracked `821bdd2` distinct from behavior/journal pin `77ba9c7`; its accepted finite Linux comparison retains the declared shared-state, admission and compiler-authentication exclusions. |
 | D7: Bitcoin extension | Preserve the historical CANDIDATE-01 subject; investigate a separate tapscript 2-of-2/NUMS design later | Bitcoin is outside this NoM implementation. Key-path exclusion, sighash/output binding, refund, MTP/momentum margin, fee policy/CPFP and delta review remain OPEN. No existing Bitcoin review or test is inherited. |
 | D8: work and acceptance | Add work only against a named protocol, implementation or evidence gate; stop at its explicit exit condition | Preserve old evidence and unrelated work. Parallel early crypto review preparation and bounded synthetic development are appropriate. No reviewer outreach, cleanup, branch deletion, CI erasure or publication follows from this record. |
 
@@ -308,6 +308,11 @@ The first six commands below are present in the Python source at
 with `python3 -B -m reference_client COMMAND`, supplying one bounded public JSON
 object on standard input. This is implementation presence, not an execution or
 test result; actual evidence must be reported for its exact revision.
+
+The Python input API reads at most 32 KiB plus one refusal byte through declared
+EOF before parsing. Short reads are accumulated; a later value, read fault or
+invalid read result cannot be hidden behind a valid JSON prefix. The boundary
+does not authenticate the producer, impose an IO timeout or grant action.
 
 | Command | Initial slice | Guarantee excluded |
 | --- | --- | --- |

@@ -36,6 +36,22 @@ def _refuse(errors, message):
     return 2
 
 
+def _read_input(source):
+    """Read bounded public bytes through declared EOF before parsing."""
+    raw = bytearray()
+    while len(raw) <= MAX_INPUT:
+        remaining = MAX_INPUT + 1 - len(raw)
+        part = source.read(remaining)
+        if type(part) is not bytes or len(part) > remaining:
+            raise CompatibilityError("invalid public input boundary")
+        if not part:
+            if not raw:
+                raise CompatibilityError("invalid public input boundary")
+            return bytes(raw)
+        raw.extend(part)
+    raise CompatibilityError("invalid public input boundary")
+
+
 def main(argv=None, *, input_stream=None, output_stream=None, error_stream=None):
     parser = _Parser(description=__doc__, allow_abbrev=False)
     parser.add_argument("command", choices=("inspect-terms", "inspect-agreement", "bind-funding", "prepare-presignature-check", "encode-call", "hash-account-block"))
@@ -44,9 +60,7 @@ def main(argv=None, *, input_stream=None, output_stream=None, error_stream=None)
     errors = sys.stderr if error_stream is None else error_stream
     try:
         args = parser.parse_args(argv)
-        raw = source.read(MAX_INPUT + 1)
-        if type(raw) is not bytes or not 0 < len(raw) <= MAX_INPUT:
-            raise CompatibilityError("invalid public input boundary")
+        raw = _read_input(source)
         value = json.loads(raw.decode("ascii"), object_pairs_hook=_object,
                            parse_constant=lambda unused: (_ for _ in ()).throw(ValueError()))
         if args.command == "inspect-terms":

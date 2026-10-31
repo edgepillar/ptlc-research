@@ -120,6 +120,32 @@ no JSON result is reconstructed. Local success still authenticates no peer,
 agreement, chain state or delivered receipt and grants no retry, funding,
 signing, disclosure, replacement or recovery authority.
 
+## Python input completion candidate
+
+Baseline source
+[`008189664c851111167c93d6e1908d82719e1e4d`](https://github.com/edgepillar/ptlc-research/tree/008189664c851111167c93d6e1908d82719e1e4d)
+made one bounded read from the supplied Python input stream. Small synthetic
+controls reproduced three component counterexamples: a valid fragmented request
+was refused, a valid prefix hid a later JSON value, and a valid prefix hid a
+later read fault. Scope is the injectable Python input API. No standalone-process
+attack or operational recovery failure was established.
+
+The new candidate accumulates bounded bytes until the stream declares EOF.
+It retains the 32 KiB cap, refuses the first excess byte before another read,
+and emits no success when a later read faults or returns an invalid value.
+Blocking standard-input behavior, producer authenticity and operational timing
+remain distinct. The five selectors below require their own source-bound
+execution and applicable hosted acceptance.
+
+| ID | Scenario | Selected check |
+| --- | --- | --- |
+| PUBLIC-18 | Complete valid fragments, including the exact byte limit; stop at the first excess byte | `test_fragmented_valid_input_is_completed_before_success`; `test_fragmented_input_stops_at_the_existing_byte_limit` |
+| PUBLIC-19 | A later JSON value, read fault or invalid read value prevents success output | `test_valid_json_prefix_does_not_hide_a_later_input_value`; `test_late_input_fault_prevents_public_success_output`; `test_invalid_late_input_values_refuse_without_emitting_a_result` |
+
+Reading through declared EOF supplies no transport authentication, received
+receipt, retry permission or recovery authority. Application/core remain NO-GO
+and independent assessment remains UNFILLED.
+
 ## Focused feedback and remaining requirements
 
 The [small-package command](../public_crypto/README.md) runs the selected library

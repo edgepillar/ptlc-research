@@ -18,6 +18,24 @@ from reference_client.plan import MAX_INPUT, SOURCE_COMMIT, canonical, inspect_t
 ROOT = Path(__file__).resolve().parents[1]
 
 
+class FragmentedInput(io.BytesIO):
+    """A byte stream may return fewer bytes than the requested count."""
+
+    def __init__(self, raw, chunk_size):
+        super().__init__(raw)
+        self.chunk_size = chunk_size
+        self.read_calls = 0
+        self.saw_eof = False
+
+    def read(self, size):
+        self.read_calls += 1
+        if not 0 < size <= MAX_INPUT + 1:
+            raise AssertionError("input request exceeds its public boundary")
+        raw = super().read(min(size, self.chunk_size))
+        self.saw_eof = self.saw_eof or raw == b""
+        return raw
+
+
 class ReferenceClientTests(unittest.TestCase):
     def setUp(self):
         self.terms = json.loads((ROOT / "reference_client/synthetic_terms.json").read_bytes())
@@ -153,6 +171,92 @@ class ReferenceClientTests(unittest.TestCase):
                     output_stream=output, error_stream=errors)
         self.assertEqual((code, output.writes, output.flushes, errors.getvalue()), (0, 1, 1, ""))
         self.assertEqual(output.getvalue().encode("ascii"), canonical(inspect_terms(self.terms)) + b"\n")
+
+    def test_fragmented_valid_input_is_completed_before_success(self):
+        raw = canonical(self.terms)
+        inputs = [(raw, size) for size in (1, 7, len(raw) // 2, len(raw))]
+        inputs.append((raw + b" " * (MAX_INPUT - len(raw)), 257))
+        for public_input, chunk_size in inputs:
+            with self.subTest(size=len(public_input), chunk_size=chunk_size):
+                source = FragmentedInput(public_input, chunk_size)
+                output, errors = io.StringIO(), io.StringIO()
+                code = main(["inspect-terms"], input_stream=source,
+                            output_stream=output, error_stream=errors)
+                self.assertEqual(code, 0)
+                self.assertEqual(output.getvalue().encode("ascii"), canonical(inspect_terms(self.terms)) + b"\n")
+                self.assertEqual(errors.getvalue(), "")
+                self.assertTrue(source.saw_eof)
+                self.assertEqual(source.tell(), len(public_input))
+                self.assertGreater(source.read_calls, 1)
+
+    def test_valid_json_prefix_does_not_hide_a_later_input_value(self):
+        raw = canonical(self.terms)
+        source = FragmentedInput(raw + b"\n{}", len(raw))
+        output, errors = io.StringIO(), io.StringIO()
+        code = main(["inspect-terms"], input_stream=source,
+                    output_stream=output, error_stream=errors)
+        self.assertEqual((code, output.getvalue()), (2, ""))
+        self.assertEqual(errors.getvalue(), "REFUSED: invalid public input; no action authorized\n")
+        self.assertTrue(source.saw_eof)
+        self.assertEqual(source.tell(), len(raw) + 3)
+
+    def test_late_input_fault_prevents_public_success_output(self):
+        raw = canonical(self.terms)
+
+        class LateFault(FragmentedInput):
+            attempts = 0
+
+            def read(self, size):
+                self.attempts += 1
+                if self.attempts > 1:
+                    raise OSError("synthetic-sensitive-marker")
+                return super().read(size)
+
+        source = LateFault(raw, len(raw))
+        output, errors = io.StringIO(), io.StringIO()
+        code = main(["inspect-terms"], input_stream=source,
+                    output_stream=output, error_stream=errors)
+        self.assertEqual((code, output.getvalue()), (2, ""))
+        self.assertEqual(errors.getvalue(), "REFUSED: public IO failure; no action authorized\n")
+        self.assertEqual(source.attempts, 2)
+        self.assertNotIn("synthetic-sensitive-marker", errors.getvalue())
+
+    def test_invalid_late_input_values_refuse_without_emitting_a_result(self):
+        raw = canonical(self.terms)
+        for bad in (None, False, "synthetic", bytearray(b"synthetic"), b" " * (MAX_INPUT + 1)):
+            with self.subTest(value_type=type(bad).__name__):
+                class LateValue(FragmentedInput):
+                    def read(self, size):
+                        if self.read_calls:
+                            self.read_calls += 1
+                            return bad
+                        return super().read(size)
+
+                source = LateValue(raw, len(raw))
+                output, errors = io.StringIO(), io.StringIO()
+                code = main(["inspect-terms"], input_stream=source,
+                            output_stream=output, error_stream=errors)
+                self.assertEqual((code, output.getvalue()), (2, ""))
+                self.assertEqual(errors.getvalue(), "REFUSED: invalid public input; no action authorized\n")
+                self.assertEqual(source.read_calls, 2)
+
+    def test_fragmented_input_stops_at_the_existing_byte_limit(self):
+        raw = canonical(self.terms)
+
+        class LimitedInput(FragmentedInput):
+            def read(self, size):
+                if self.tell() >= MAX_INPUT + 1:
+                    raise AssertionError("read continued beyond the input cap")
+                return super().read(size)
+
+        source = LimitedInput(raw + b" " * (MAX_INPUT + 1 - len(raw)), 17)
+        output, errors = io.StringIO(), io.StringIO()
+        code = main(["inspect-terms"], input_stream=source,
+                    output_stream=output, error_stream=errors)
+        self.assertEqual((code, output.getvalue()), (2, ""))
+        self.assertEqual(errors.getvalue(), "REFUSED: invalid public input; no action authorized\n")
+        self.assertEqual(source.tell(), MAX_INPUT + 1)
+        self.assertFalse(source.saw_eof)
 
     def test_public_io_failures_return_sanitized_refusal(self):
         class InputFault(io.BytesIO):

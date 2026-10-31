@@ -1,10 +1,14 @@
 # Candidate native comparison at 821bdd2
 
 This M1 D6 work item supplies a frozen selection, source preparation, two-stage
-runner and original-evidence readers. It does not record a completed native
-attempt. The client behavior selection remains `77ba9c7`; candidate native
-compatibility, independent assessment and application/core acceptance remain
-**UNFILLED**, **UNFILLED** and **NO-GO**, respectively.
+runner and original-evidence readers. Its declared finite Linux comparison was
+accepted for research source
+[`008189664c851111167c93d6e1908d82719e1e4d`](https://github.com/edgepillar/ptlc-research/tree/008189664c851111167c93d6e1908d82719e1e4d),
+with separate PR and main originals in
+[PR #222](https://github.com/edgepillar/ptlc-research/pull/222).
+The client behavior and journal selections remain `77ba9c7`. Independent
+assessment remains **UNFILLED** and application/core acceptance remains
+**NO-GO**. Later source changes require their own applicable qualification.
 
 The [source tracking corpus](NOM_DEV_821BDD2.md) pins the 523 upstream files to
 [`821bdd25eabacbf8a07b6310986f38713f27b4e3`](https://github.com/zenon-network/go-zenon/tree/821bdd25eabacbf8a07b6310986f38713f27b4e3).
@@ -109,14 +113,30 @@ validated frozen plan. They do not repeat the same plan construction within that
 entry point. Validation across calls is not cached, and exact scalar types,
 array order, original-source snapshots and refusal behavior remain required.
 
-## Acceptance still required
+## Recorded finite acceptance and remaining boundaries
+
+The [candidate PR attempt 41137105801/1](https://github.com/edgepillar/ptlc-research/actions/runs/41137105801/attempts/1)
+and [candidate main attempt 41198468789/1](https://github.com/edgepillar/ptlc-research/actions/runs/41198468789/attempts/1)
+each passed their own three-job, 92-original-file acceptance for the source
+above. Both original comparisons contained 37 profiles, 42 Go commands and
+782 named outcomes; the 19 definition-package roots were checked separately.
+Each used the declared 548/549-file stages in one fresh compiler workspace.
+The [full main attempt 41198468734/1](https://github.com/edgepillar/ptlc-research/actions/runs/41198468734/attempts/1)
+separately passed all 17 job selections and nine original artifact families.
+Its native subject remains `77ba9c7`.
+
+These records establish the declared finite Linux comparison. They supply no
+Darwin candidate result, transitive compiler authentication or general account
+admission proof. Original local custody and reader failures retain their failed
+classifications. Corrected readers consumed retained originals without a new
+local compiler, CI retry or rewritten console archive.
 
 Keep local controls, actual native comparison, PR CI acceptance, normal main
 integration and the main push's own acceptance as separate records. The existing
 workflow's `77ba9c7` native subject is unchanged by these candidate tools. Green
 CI using that subject cannot qualify `821bdd2`.
 
-A future accepted native result may close only this declared finite selection.
+The accepted native result closes only this declared finite selection.
 The excluded shared-state boundaries, authenticated observation, signing and
 nonce custody, recovery reconciliation and independent protocol assessment keep
 their separate requirements. No node, wallet, deployment, activation or real

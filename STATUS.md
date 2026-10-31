@@ -13,17 +13,26 @@ cases selected by the small package and the larger qualification crate. The
 [scenario matrix](docs/NOM_PUBLIC_CLIENT_MATRIX.md) names each component scope
 and its separate evidence requirements. Missing output remains UNKNOWN.
 
-The active M1 D6 work item tracks upstream dev source `821bdd2` through a
+The new M3 candidate completes bounded Python input through declared EOF before
+parsing. Five added component selectors cover valid fragments, the exact byte
+limit, a later JSON value, late read faults and invalid late read values. This
+candidate requires its own source-bound qualification; the accepted baseline
+below does not qualify these later changes.
+
+The completed M1 D6 work item tracks upstream dev source `821bdd2` through a
 [complete 523-file inventory and shared-path impact record](docs/NOM_DEV_821BDD2.md).
 Two added and five modified paths are separated from 516 byte-identical files.
-The behavior pin stays at `77ba9c7`; 821bdd2 native compatibility is UNFILLED.
-Its inventory reader and source controls do not execute a compiler or qualify
-an operational recovery protocol.
+The behavior and journal pins stay at `77ba9c7`. The declared finite Linux
+comparison was separately accepted for source `0081896` in
+[PR #222](https://github.com/edgepillar/ptlc-research/pull/222). This does not
+qualify excluded shared-state boundaries or an operational recovery protocol.
 The [candidate native plan and two-stage runner](docs/NOM_DEV_821BDD2_NATIVE.md)
-select 36 baseline profiles and the separate fee-original profile in one new
-compiler workspace. Their presence and synthetic controls do not establish an
-actual candidate native result; the workflow still selects its existing native
-subject.
+cover 36 baseline profiles and the separate fee-original profile in one fresh
+compiler workspace. Both PR and main originals matched 37 profiles, 42 Go
+commands and 782 named outcomes; 19 definition-package roots remain separate.
+The existing full workflow keeps its `77ba9c7` native subject, while the isolated
+candidate workflow selects `821bdd2`. Compiler authentication, Darwin candidate
+behavior and independent assessment remain unfilled.
 
 The selected public-client fast path was separately accepted for `9db3ebc8` in
 [PR #219](https://github.com/edgepillar/ptlc-research/pull/219), using
@@ -66,10 +75,11 @@ defect, with its verification scope declared before execution.
 
 | Evidence | Selected scope |
 | --- | --- |
-| Source | [`a51ba436e5c5556319dcce5cf9397ce1198cd3b0`](https://github.com/edgepillar/ptlc-research/tree/a51ba436e5c5556319dcce5cf9397ce1198cd3b0) |
-| Hosted main run | [41071695312, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/41071695312/attempts/1) |
-| Separate PR record | [PR #220](https://github.com/edgepillar/ptlc-research/pull/220), with [PR run 41052230753/1](https://github.com/edgepillar/ptlc-research/actions/runs/41052230753/attempts/1) |
-| Recorded main acceptance | All 17 jobs accounted for: 16 succeeded and the fast job was unexecuted; all 14 runtime jobs, both controls, nine artifact families and complete console accepted; four fresh 4,621-case Python profiles, 217 Rust cases and ten exact public checker cases |
+| Source | [`008189664c851111167c93d6e1908d82719e1e4d`](https://github.com/edgepillar/ptlc-research/tree/008189664c851111167c93d6e1908d82719e1e4d) |
+| Hosted full main run | [41198468734, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/41198468734/attempts/1) |
+| Separate PR record | [PR #222](https://github.com/edgepillar/ptlc-research/pull/222), with [full PR run 41137105701/1](https://github.com/edgepillar/ptlc-research/actions/runs/41137105701/attempts/1) and [candidate PR run 41137105801/1](https://github.com/edgepillar/ptlc-research/actions/runs/41137105801/attempts/1) |
+| Recorded full main acceptance | All 17 jobs accounted for: 16 succeeded and the fast job was unexecuted; all 14 runtime jobs, both controls, nine artifact families and complete console accepted; four fresh 4,632-case Python profiles, 217 Rust cases and ten exact public checker cases |
+| Separate candidate main acceptance | [41198468789/1](https://github.com/edgepillar/ptlc-research/actions/runs/41198468789/attempts/1): all three jobs and 92 originals accepted for the declared 37-profile, 42-command, 782-outcome Linux comparison, with 19 additional definition roots accounted for separately |
 | Meaning | Source-bound offline/native/hosted baseline evidence; no operational or independent-review acceptance |
 
 The baseline contains a public adaptor verifier, reference journals, source-pinned
@@ -78,7 +88,7 @@ These are completed research outputs. They are not an implemented swap client.
 Later working-tree changes require their own relevant checks; the baseline run
 cannot be relabeled as their qualification. Record failed and interrupted
 attempts separately from later successful observations.
-The earlier `9db3ebc8`, `7186cab2`, `285cd07`, `39453004`, `db05a929` and `366a4157` baselines and their main runs remain
+The earlier `823957da`, `a51ba436`, `9db3ebc8`, `7186cab2`, `285cd07`, `39453004`, `db05a929` and `366a4157` baselines and their main runs remain
 historical subjects. The [M3 PR record](https://github.com/edgepillar/ptlc-research/pull/216)
 records separate PR and main acceptance, including the public checker's five
 library cases and five process cases. That component evidence does not establish

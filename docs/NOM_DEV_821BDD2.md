@@ -2,7 +2,9 @@
 
 This D6 work item records complete source bytes and the changed shared paths.
 It does not change the client's selected behavior source, authorize an adapter
-or qualify native execution. Application/core remain **NO-GO**, recovery
+or itself qualify native execution. The separately
+[recorded finite Linux comparison](NOM_DEV_821BDD2_NATIVE.md) retains its exact
+research source, PR/main attempts and exclusions. Application/core remain **NO-GO**, recovery
 authority **NONE**, and independent assessment **UNFILLED**.
 
 ## Source subjects and acquisition
@@ -71,12 +73,13 @@ serialization/dependency inputs. Outside the five listed modified paths and two
 added tests, these inputs retain their prior bytes. Shared package compilation
 and actual contract behavior still need their selected runtime evidence.
 
-## Proportionate next native selection
+## Finite candidate selection and separate behavior upgrade
 
-Before selecting 821bdd2 as a behavior source, freeze a separate native plan:
-
-The [candidate native selection and runner](NOM_DEV_821BDD2_NATIVE.md) implement
-this preparation. They retain the same unfilled execution and acceptance gates.
+The [candidate native selection and runner](NOM_DEV_821BDD2_NATIVE.md) freeze the
+following scope. Its declared finite Linux comparison was accepted for research
+source `0081896` in [PR #222](https://github.com/edgepillar/ptlc-research/pull/222),
+with separate PR and main originals. This does not select 821bdd2 as the client's
+behavior or journal source.
 
 1. Run the existing 31 reference profiles and the three 77ba9c7 boundary profiles
    against the new complete source, preserving their reference fixture labels.
@@ -93,9 +96,9 @@ this preparation. They retain the same unfilled execution and acceptance gates.
    default vet remain required. Do not adopt closed historical caches or rerun
    completed tests to repair evidence bookkeeping.
 
-The next selection must state whether malformed/cross-entity rows, key/value
-mismatch, iterator failures and exact voting deadlines are covered or excluded.
-Do not infer those cases from ordinary shared-prefix tests. A local comparison,
+The declared malformed-row, key/value mismatch, iterator-failure and exact
+voting-deadline exclusions remain. Do not infer those cases from ordinary
+shared-prefix tests. A local comparison,
 hosted PR acceptance, main integration and main-push acceptance remain separate
-gates. This source corpus leaves 821bdd2 native compatibility **UNFILLED** and
-all operational and independent-review requirements unchanged.
+gates. The accepted finite comparison leaves complete admission, operational
+and independent-review requirements unchanged.
