@@ -180,6 +180,33 @@ Refusals echo no input. Success reports `PUBLIC_MATHEMATICS_ONLY`, action
 permission `NONE`, unauthenticated context and application/core NO-GO. A claimed
 backend label or caller-supplied result authenticates neither code nor source.
 
+`inspect-presignature-result` accepts exactly `schema`, `preparation` and
+`result_json`, with schema `ptlc-nom-client-inspect-presignature-result-v1`.
+`preparation` is the complete preparation input above, not a caller-selected
+request hash or message. Its full ordered funding prefix is checked again and
+the selected request is rederived locally. `result_json` is a string containing
+the exact compact canonical ASCII result JSON, without framing or whitespace,
+up to 4 KiB; the enclosing public input remains capped at 32 KiB. Duplicate,
+extra, missing, alternate-encoding and noncanonical fields are refused.
+
+The supplied result must have the checker's exact result schema, request and
+context digests, boolean `presignature_valid: true` and unchanged public-only
+scope and refusal-of-authority fields. A different leg, a changed Create,
+changed economics even with an equal inner message, or a mismatched digest
+cannot consume the original result. Replaying the selected long binding after
+the short binding is appended preserves its association; the complete prefix
+must still be valid.
+
+Success reports `MATCHING_DECLARED_REQUEST` and hashes the exact supplied result
+bytes. It describes `PUBLIC_RELATION_VALID` as a **supplied claim**, retains
+`verification: NOT_PERFORMED` and `backend_execution: NOT_ESTABLISHED`, and grants
+no action. A caller can fabricate every matching result field, even for a
+mathematically invalid presignature. Association therefore supplies neither a
+successful backend check nor its source/build/process/output provenance; those
+must be retained and verified separately. This tool invokes no executable,
+accepts no executable override and writes no persistent receipt. Missing or
+partial backend output must remain UNKNOWN rather than reconstructed as success.
+
 Public presignature validity remains insufficient permission to fund, disclose
 or recover. Both current entry checks, authenticated agreement, a selected
 timing/observation policy, exact original custody and a separately assessed

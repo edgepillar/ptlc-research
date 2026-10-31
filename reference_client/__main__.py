@@ -9,7 +9,7 @@ from offline_session.nom_wire import account_block_hash, account_block_preimage,
 from offline_session.pr138 import CompatibilityError
 from .plan import MAX_INPUT, canonical, inspect_terms
 from .agreement import bind_funding, inspect_agreement
-from .presignature import prepare_presignature
+from .presignature import inspect_presignature_result, prepare_presignature
 
 
 def _object(pairs):
@@ -54,7 +54,7 @@ def _read_input(source):
 
 def main(argv=None, *, input_stream=None, output_stream=None, error_stream=None):
     parser = _Parser(description=__doc__, allow_abbrev=False)
-    parser.add_argument("command", choices=("inspect-terms", "inspect-agreement", "bind-funding", "prepare-presignature-check", "encode-call", "hash-account-block"))
+    parser.add_argument("command", choices=("inspect-terms", "inspect-agreement", "bind-funding", "prepare-presignature-check", "inspect-presignature-result", "encode-call", "hash-account-block"))
     source = sys.stdin.buffer if input_stream is None else input_stream
     output = sys.stdout if output_stream is None else output_stream
     errors = sys.stderr if error_stream is None else error_stream
@@ -71,6 +71,8 @@ def main(argv=None, *, input_stream=None, output_stream=None, error_stream=None)
             result = bind_funding(value)
         elif args.command == "prepare-presignature-check":
             result = prepare_presignature(value)["crypto_request"]
+        elif args.command == "inspect-presignature-result":
+            result = inspect_presignature_result(value)
         elif args.command == "encode-call":
             result = dict(schema="ptlc-nom-client-call-v1", data_hex=encode_call(value).hex(),
                           action_permission="NONE", contract_admission="NOT_VERIFIED")

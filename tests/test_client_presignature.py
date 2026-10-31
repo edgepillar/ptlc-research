@@ -14,7 +14,10 @@ from offline_session.nom_wire import account_block_hash
 from offline_session.pr138 import CompatibilityError
 from reference_client.agreement import FUNDING_SCHEMA, agreement_digest
 from reference_client.plan import canonical
-from reference_client.presignature import BACKEND, BACKEND_COMMIT, SCHEMA, prepare_presignature
+from reference_client.presignature import (
+    BACKEND, BACKEND_COMMIT, MAX_CRYPTO_RESULT, RESULT_INSPECTION_SCHEMA, SCHEMA,
+    inspect_presignature_result, prepare_presignature,
+)
 from reference_client.__main__ import main
 
 
@@ -43,6 +46,21 @@ class ClientPresignatureTests(unittest.TestCase):
             bindings=[self.record(name) for name in (("long", "short") if both else ("long",))],
             presignature=dict(r_x_hex=self.agreement["long"]["funder_key_xonly_hex"],
                 s_hat_hex="00" * 32, needs_negation=False))
+
+    def inspection(self, preparation=None):
+        # Deliberately fabricated claims exercise association only. No backend
+        # is executed and even a matching claim must remain unverified.
+        preparation = self.request() if preparation is None else preparation
+        prepared = prepare_presignature(preparation)
+        claim = dict(schema="ptlc-nom-client-presignature-result-v1",
+            request_digest_hex=prepared["request_digest_hex"],
+            context_digest_hex=prepared["crypto_request"]["context_digest_hex"],
+            presignature_valid=True, scope="PUBLIC_MATHEMATICS_ONLY",
+            action_permission="NONE", application="NO-GO", core="NO-GO",
+            independent_assessment="UNFILLED", context_authentication="NOT_VERIFIED",
+            chain_state="NOT_VERIFIED", signer_safety="NOT_ASSESSED")
+        return dict(schema=RESULT_INSPECTION_SCHEMA, preparation=preparation,
+                    result_json=canonical(claim).decode("ascii"))
 
     def test_long_preparation_uses_its_real_declared_send_without_a_short_id(self):
         value = self.request()
@@ -157,6 +175,133 @@ class ClientPresignatureTests(unittest.TestCase):
                         output_stream=output, error_stream=errors)
             self.assertEqual((code, output.getvalue()), (2, ""))
             self.assertEqual(errors.getvalue(), "REFUSED: invalid public input; no action authorized\n")
+
+    def test_fabricated_matching_claim_does_not_become_verification_or_authority(self):
+        value = self.inspection()
+        result = inspect_presignature_result(value)
+        self.assertEqual(result["association"], "MATCHING_DECLARED_REQUEST")
+        self.assertEqual(result["supplied_claim"], "PUBLIC_RELATION_VALID")
+        for field, wanted in dict(verification="NOT_PERFORMED", backend_execution="NOT_ESTABLISHED",
+                context_authentication="NOT_VERIFIED", chain_state="DECLARED_ONLY",
+                outer_signature="NOT_VERIFIED", contract_execution="NOT_VERIFIED",
+                signer_safety="NOT_ASSESSED", timing_policy="UNSELECTED",
+                action_permission="NONE", application="NO-GO", core="NO-GO",
+                independent_assessment="UNFILLED").items():
+            self.assertEqual(result[field], wanted)
+        self.assertNotIn("presignature_valid", result)
+
+    def test_result_association_rechecks_the_complete_prefix_and_keeps_long_stable(self):
+        value = self.inspection()
+        first = inspect_presignature_result(value)
+        value["preparation"]["bindings"].append(self.record("short"))
+        self.assertEqual(inspect_presignature_result(value), first)
+        value["preparation"]["bindings"][1]["entry_projection"]["amount"] = "201"
+        with self.assertRaises(CompatibilityError):
+            inspect_presignature_result(value)
+
+    def test_another_leg_or_changed_create_cannot_consume_the_original_result(self):
+        value = self.inspection(self.request(both=True))
+        value["preparation"]["leg"] = "short"
+        with self.assertRaises(CompatibilityError):
+            inspect_presignature_result(value)
+        value = self.inspection()
+        record = value["preparation"]["bindings"][0]
+        record["account_block"]["fused_plasma"] = "1"
+        record["entry_projection"]["entry_id_hex"] = account_block_hash(record["account_block"])
+        with self.assertRaises(CompatibilityError):
+            inspect_presignature_result(value)
+
+    def test_equal_inner_message_does_not_allow_a_stale_economic_context(self):
+        value = self.inspection()
+        before = prepare_presignature(value["preparation"])
+        value["preparation"]["agreement"]["short"]["amount"] = "201"
+        value["preparation"]["bindings"][0]["agreement_digest_hex"] = agreement_digest(
+            value["preparation"]["agreement"])
+        after = prepare_presignature(value["preparation"])
+        self.assertEqual(before["crypto_request"]["message_hex"], after["crypto_request"]["message_hex"])
+        with self.assertRaises(CompatibilityError):
+            inspect_presignature_result(value)
+        # Matching only the outer request hash still leaves the stale context.
+        claim = json.loads(value["result_json"])
+        claim["request_digest_hex"] = after["request_digest_hex"]
+        value["result_json"] = canonical(claim).decode("ascii")
+        with self.assertRaises(CompatibilityError):
+            inspect_presignature_result(value)
+
+    def test_altered_presignature_or_only_one_matching_digest_is_refused(self):
+        value = self.inspection()
+        value["preparation"]["presignature"]["needs_negation"] = True
+        with self.assertRaises(CompatibilityError):
+            inspect_presignature_result(value)
+        for field in ("request_digest_hex", "context_digest_hex"):
+            value = self.inspection()
+            claim = json.loads(value["result_json"])
+            claim[field] = "00" * 32
+            value["result_json"] = canonical(claim).decode("ascii")
+            with self.subTest(field=field), self.assertRaises(CompatibilityError):
+                inspect_presignature_result(value)
+
+    def test_result_claims_cannot_widen_the_selected_backend_scope(self):
+        for field, supplied in (("schema", "foreign-result"), ("presignature_valid", False),
+                ("presignature_valid", 1), ("action_permission", "FUND"),
+                ("application", "GO"), ("core", "GO"), ("independent_assessment", "PASSED"),
+                ("context_authentication", "VERIFIED"), ("chain_state", "CONFIRMED"),
+                ("signer_safety", "ASSESSED"), ("scope", "OPERATIONAL"),
+                ("backend", BACKEND)):
+            value = self.inspection()
+            claim = json.loads(value["result_json"])
+            claim[field] = supplied
+            value["result_json"] = canonical(claim).decode("ascii")
+            with self.subTest(field=field), self.assertRaises(CompatibilityError):
+                inspect_presignature_result(value)
+        value = self.inspection()
+        claim = json.loads(value["result_json"])
+        del claim["signer_safety"]
+        value["result_json"] = canonical(claim).decode("ascii")
+        with self.assertRaises(CompatibilityError):
+            inspect_presignature_result(value)
+
+    def test_only_complete_bounded_canonical_ascii_result_bytes_are_associated(self):
+        valid = self.inspection()["result_json"]
+        duplicate = valid[:-1] + ',"schema":"ptlc-nom-client-presignature-result-v1"}'
+        for raw in ("", "[]", "null", "{", valid + "\n", " " + valid, duplicate,
+                valid + "{}", '{"synthetic":NaN}', "\u00e9", "x" * (MAX_CRYPTO_RESULT + 1),
+                None, True, 1):
+            value = self.inspection()
+            value["result_json"] = raw
+            with self.subTest(raw_type=type(raw).__name__), self.assertRaises(CompatibilityError):
+                inspect_presignature_result(value)
+
+    def test_result_inspection_accepts_no_peer_context_or_executable_override(self):
+        for field in ("context_digest_hex", "message_hex", "request_digest_hex", "worker"):
+            value = self.inspection()
+            value[field] = "synthetic-untrusted-override"
+            with self.subTest(field=field), self.assertRaises(CompatibilityError):
+                inspect_presignature_result(value)
+
+    def test_result_digest_commits_to_supplied_bytes_without_rewriting_or_mutation(self):
+        value = self.inspection()
+        original = copy.deepcopy(value)
+        result = inspect_presignature_result(value)
+        self.assertEqual(result["supplied_result_digest_hex"],
+                         hashlib.sha256(value["result_json"].encode("ascii")).hexdigest())
+        result["leg"] = "short"
+        self.assertEqual(value, original)
+        self.assertNotIn("result_json", result)
+
+    def test_result_inspection_cli_returns_association_or_sanitized_refusal(self):
+        value = self.inspection()
+        output, errors = io.StringIO(), io.StringIO()
+        code = main(["inspect-presignature-result"], input_stream=io.BytesIO(canonical(value)),
+                    output_stream=output, error_stream=errors)
+        self.assertEqual((code, errors.getvalue()), (0, ""))
+        self.assertEqual(json.loads(output.getvalue()), inspect_presignature_result(value))
+        value["result_json"] = "synthetic-sensitive-marker"
+        output, errors = io.StringIO(), io.StringIO()
+        code = main(["inspect-presignature-result"], input_stream=io.BytesIO(canonical(value)),
+                    output_stream=output, error_stream=errors)
+        self.assertEqual((code, output.getvalue()), (2, ""))
+        self.assertEqual(errors.getvalue(), "REFUSED: invalid public input; no action authorized\n")
 
 
 if __name__ == "__main__":
