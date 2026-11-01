@@ -91,6 +91,11 @@ This work item ends with complete source/delta binding and its relevant checks.
 It does not promote a new behavior source. The earlier 821bdd2 native results
 cannot be relabeled as 18c048a compatibility.
 
+The separate [candidate native plan](NOM_DEV_18C048A_NATIVE.md) now declares
+42 profiles and 47 commands, including the preserved fee boundary and the added
+shared-component probes. Its implementation and synthetic controls do not close
+native compatibility; fresh source-bound original acceptance is still required.
+
 ## Next native gate before a behavior upgrade
 
 1. Select this complete source in a separate finite native plan and run the

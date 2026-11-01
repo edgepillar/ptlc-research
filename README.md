@@ -55,12 +55,12 @@ execution provenance. See the protocol candidate for its exact input contract.
 ## Evidence and checks
 
 The recorded accepted baseline is
-[`26c64738`](https://github.com/edgepillar/ptlc-research/tree/26c647384626cd6b9b8d7cefbb2d64f6b3ac492f),
-including accepted [main CI attempt 41218407472/1](https://github.com/edgepillar/ptlc-research/actions/runs/41218407472/attempts/1).
+[`50df48f8`](https://github.com/edgepillar/ptlc-research/tree/50df48f823f6b47c72a37f92a722a38042d975a7),
+including accepted [main CI attempt 41282624789/1](https://github.com/edgepillar/ptlc-research/actions/runs/41282624789/attempts/1).
 Its own 17 jobs were accounted for: 16 succeeded and the fast job was unexecuted.
 All 14 runtime jobs, nine original artifact families, both controls and complete
-console were accepted separately from [PR #223](https://github.com/edgepillar/ptlc-research/pull/223).
-Each of four Python profiles contained 4,637 cases; the original Rust console
+console were accepted separately from [PR #226](https://github.com/edgepillar/ptlc-research/pull/226).
+Each of four Python profiles contained 4,653 cases; the original Rust console
 contained 217 cases, including ten selected public checker cases. The earlier
 [`39453004`](https://github.com/edgepillar/ptlc-research/tree/39453004bff7ba7f39178012c5fac5b4df8366dc),
 [`db05a929`](https://github.com/edgepillar/ptlc-research/tree/db05a9294aa3fb40ebc35f0f926e76d6f989982b)
@@ -107,7 +107,10 @@ defines the separate source, original-stream, nonexecution and measurement gates
 The [18c048a upstream tracking corpus](docs/NOM_DEV_18C048A.md) records all 525
 source files and the shared storage/lifecycle delta. It preserves the preceding
 [821bdd2 corpus](docs/NOM_DEV_821BDD2.md). Tracking remains separate from the
-`77ba9c7` behavior and journal selections. The declared finite 821bdd2 Linux candidate
+`77ba9c7` behavior and journal selections. The new
+[18c048a candidate plan](docs/NOM_DEV_18C048A_NATIVE.md) preserves all previous
+profiles and adds storage, collection and shutdown scopes in one fresh workspace;
+its native acceptance remains unfilled. The declared finite 821bdd2 Linux candidate
 comparison was accepted for source `0081896`, with separate PR and main
 originals recorded in [PR #222](https://github.com/edgepillar/ptlc-research/pull/222).
 The [candidate native plan](docs/NOM_DEV_821BDD2_NATIVE.md) preserves all prior
