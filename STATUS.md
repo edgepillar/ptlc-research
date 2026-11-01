@@ -11,8 +11,11 @@ The active M1 D6 item tracks upstream dev source `18c048a` through a
 Relative to the retained 821bdd2 input, two files are added and six modified;
 517 retain their complete bytes. Shared DB tombstone iteration, collection
 guards and protocol shutdown require explicit scopes. The new corpus and its
-index controls need their own relevant source-bound checks. No 18c048a native
-comparison is claimed; behavior/journal selection remains at `77ba9c7`, and the
+index controls were accepted at `50df48f8` in PR #226. The next
+[finite native selection](docs/NOM_DEV_18C048A_NATIVE.md) preserves all previous
+profiles and adds storage composition, iterator-error, collection and shutdown
+scopes. Its 42 profiles and 47 commands need fresh native originals; no 18c048a
+native comparison is claimed. Behavior/journal selection remains at `77ba9c7`, and the
 separate finite candidate native selection remains at `821bdd2`.
 
 The recorded M3 component evidence covers Python public IO refusal: complete
@@ -135,11 +138,11 @@ defect, with its verification scope declared before execution.
 
 | Evidence | Selected scope |
 | --- | --- |
-| Source | [`15934a6a0ef51787a15897ffbaab0a82e9f7a0f8`](https://github.com/edgepillar/ptlc-research/tree/15934a6a0ef51787a15897ffbaab0a82e9f7a0f8) |
-| Hosted full main run | [41262041447, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/41262041447/attempts/1) |
-| Separate PR record | [PR #225](https://github.com/edgepillar/ptlc-research/pull/225), with [full PR run 41252207503/1](https://github.com/edgepillar/ptlc-research/actions/runs/41252207503/attempts/1) and [candidate PR run 41252207550/1](https://github.com/edgepillar/ptlc-research/actions/runs/41252207550/attempts/1); both original gates accepted separately from main |
-| Recorded full main acceptance | All 17 jobs accounted for: 16 succeeded and the fast job was unexecuted; all 14 runtime jobs, both controls, nine artifact families and complete console accepted; four fresh 4,650-case Python profiles, 217 Rust cases and ten exact public checker cases |
-| Separate candidate main acceptance | [41262041565/1](https://github.com/edgepillar/ptlc-research/actions/runs/41262041565/attempts/1): all three jobs and 92 originals accepted for the declared 37-profile, 42-command, 782-outcome Linux comparison, with 19 additional definition roots accounted for separately |
+| Source | [`50df48f823f6b47c72a37f92a722a38042d975a7`](https://github.com/edgepillar/ptlc-research/tree/50df48f823f6b47c72a37f92a722a38042d975a7) |
+| Hosted full main run | [41282624789, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/41282624789/attempts/1) |
+| Separate PR record | [PR #226](https://github.com/edgepillar/ptlc-research/pull/226), with [full PR run 41275297117/1](https://github.com/edgepillar/ptlc-research/actions/runs/41275297117/attempts/1) and [candidate PR run 41275297133/1](https://github.com/edgepillar/ptlc-research/actions/runs/41275297133/attempts/1); both original gates accepted separately from main |
+| Recorded full main acceptance | All 17 jobs accounted for: 16 succeeded and the fast job was unexecuted; all 14 runtime jobs, both controls, nine artifact families and complete console accepted; four fresh 4,653-case Python profiles, 217 Rust cases and ten exact public checker cases |
+| Separate candidate main acceptance | [41282624613/1](https://github.com/edgepillar/ptlc-research/actions/runs/41282624613/attempts/1): all three jobs and 92 originals accepted for the declared 37-profile, 42-command, 782-outcome Linux comparison, with 19 additional definition roots accounted for separately |
 | Meaning | Source-bound offline/native/hosted baseline evidence; no operational or independent-review acceptance |
 
 The baseline contains a public adaptor verifier, reference journals, source-pinned

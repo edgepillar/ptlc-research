@@ -1,0 +1,964 @@
+{
+  "added_component_coverage": {
+    "accelerator_exact_voting_deadline": "NOT_SELECTED_BY_ADDED_COMPONENTS",
+    "canonicality": "NOT_ESTABLISHED",
+    "collection_database_errors": "EXISTING PANIC AND RELEASE BOUNDARY; NOT EMPTY SUCCESS",
+    "collection_values": "POST-WRAPPER EMPTY ROWS, LIVE ROWS AND CALLBACK REFUSAL",
+    "iterator_errors": "SCRIPTED WRAPPER FORWARDING; NOT PHYSICAL IO FAULTS",
+    "malformed_rows": "NOT_SELECTED",
+    "mismatched_storage_keys_and_values": "NOT_SELECTED",
+    "physical_durability": "NOT_ESTABLISHED",
+    "protocol_shutdown": "PINNED MOCK COMPONENT START/STOP; NOT A NODE OR LEAK-FREEDOM PROOF",
+    "reverse_iteration": "MERGED PREV/LAST REMAIN UNSUPPORTED WITH AN ERROR",
+    "storage": "SNAPSHOT MASKING, NESTED VIEWS, LIVE EMPTY VALUES, PREFIXES, POP, REOPEN"
+  },
+  "added_producer_sha256": {
+    "qualification-go/nom_18c_collection_test.go": "633d1eaa22b4983d46136db51e6305760540fdb823f10c11cec9ad9a287cd515",
+    "qualification-go/nom_18c_storage_test.go": "a4248a0d0b5fb01bd93f11ade4a084f0cbaf410edcea0016a5a455a783ce6635"
+  },
+  "application": "NO-GO",
+  "automatic_retry": false,
+  "baseline": {
+    "application": "NO-GO",
+    "core": "NO-GO",
+    "core_commit": "18c048abb3f825274fa7b6900b65bd691ced15ef",
+    "core_tree": "460c182324f021e0e54b23fcf6df6d19a98f5e3b",
+    "historical_results_reclassified": false,
+    "independent_assessment": "UNFILLED",
+    "journal_source_upgrade": "NOT_SELECTED",
+    "last_qualified_behavior_core": "77ba9c7ee8c881e90911946756cdb67d8b586043",
+    "producers": {
+      "chain/cache/storage/ptlc_661b5ef_logging_test.go": "compatibility/nom_dev_661b5ef_cache_logging_test.go.txt",
+      "common/db/ptlc_research18_storage_test.go": "qualification-go/nom_18c_storage_test.go",
+      "node/ptlc_661b5ef_logging_test.go": "compatibility/nom_dev_661b5ef_node_logging_test.go.txt",
+      "protocol/ptlc_661b5ef_logging_test.go": "compatibility/nom_dev_661b5ef_protocol_logging_test.go.txt",
+      "verifier/research_nom_dev_receive_data_test.go": "compatibility/nom_dev_661b5ef_receive_data_test.go.txt",
+      "verifier/zz_research_nom_account_authorization_test.go": "compatibility/nom_account_authorization_test.go.txt",
+      "verifier/zz_research_nom_account_context_test.go": "compatibility/nom_dev_5cb_account_context_test.go.txt",
+      "verifier/zz_research_nom_vm_path_test.go": "compatibility/nom_dev_5cb_vm_receipt_verifier_test.go.txt",
+      "vm/embedded/definition/ptlc_research18_collection_test.go": "qualification-go/nom_18c_collection_test.go",
+      "vm/embedded/implementation/zz_research_compatibility_test.go": "compatibility/core_overlay_test.go.txt",
+      "vm/embedded/implementation/zz_research_nom_wire_test.go": "compatibility/nom_wire_core_test.go.txt",
+      "vm/embedded/research_nom_dev_abi_boundary_test.go": "compatibility/nom_dev_661b5ef_abi_boundary_test.go.txt",
+      "vm/research_nom_5cb_keyless_supervisor_test.go": "compatibility/nom_dev_661b5ef_keyless_supervisor_test.go.txt",
+      "vm/research_nom_dev_send_caller_test.go": "compatibility/nom_dev_661b5ef_send_caller_test.go.txt",
+      "vm/zz_research_nom_account_pool_test.go": "compatibility/nom_account_pool_test.go.txt",
+      "vm/zz_research_nom_batched_rollback_test.go": "compatibility/nom_batched_rollback_test.go.txt",
+      "vm/zz_research_nom_bilateral_graph_test.go": "compatibility/nom_dev_bilateral_graph_test.go.txt",
+      "vm/zz_research_nom_content_cap_test.go": "compatibility/nom_content_cap_test.go.txt",
+      "vm/zz_research_nom_dev_661b5ef_reclaim_test.go": "compatibility/nom_dev_661b5ef_reclaim_test.go.txt",
+      "vm/zz_research_nom_embedded_argument_pricing_test.go": "compatibility/nom_embedded_argument_pricing_test.go.txt",
+      "vm/zz_research_nom_momentum_admission_test.go": "compatibility/nom_dev_5cb_momentum_admission_test.go.txt",
+      "vm/zz_research_nom_multi_rollback_test.go": "compatibility/nom_multi_rollback_test.go.txt",
+      "vm/zz_research_nom_pool_dependencies_test.go": "compatibility/nom_dev_5cb_pool_dependencies_test.go.txt",
+      "vm/zz_research_nom_pool_forks_test.go": "compatibility/nom_pool_forks_test.go.txt",
+      "vm/zz_research_nom_rollback_refusal_test.go": "compatibility/nom_rollback_refusal_test.go.txt",
+      "vm/zz_research_nom_supervisor_plasma_test.go": "compatibility/nom_dev_supervisor_plasma_test.go.txt",
+      "vm/zz_research_nom_vm_path_test.go": "compatibility/nom_vm_path_test.go.txt"
+    },
+    "reference_fixture_core": "661b5ef404487cd41685654bf87530f10adebbe4",
+    "reference_fixture_tree": "78937597e8e0e5835a8856cb44d592e349451d9f",
+    "schema": "ptlc-nom-dev-18c048a-reference-plan-v1",
+    "units": [
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchPR138CompatibilityCorpus$",
+          "./vm/embedded/implementation"
+        ],
+        "package": "vm/embedded/implementation",
+        "parent": "TestResearchPR138CompatibilityCorpus",
+        "parent_and_child_outcomes": 1,
+        "prior_streams_required": [],
+        "unit": "pr138-corpus"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMWireCorpus$",
+          "./vm/embedded/implementation"
+        ],
+        "package": "vm/embedded/implementation",
+        "parent": "TestResearchNoMWireCorpus",
+        "parent_and_child_outcomes": 45,
+        "prior_streams_required": [],
+        "unit": "wire-corpus"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMVMPath$",
+          "./vm"
+        ],
+        "package": "vm",
+        "parent": "TestResearchNoMVMPath",
+        "parent_and_child_outcomes": 33,
+        "prior_streams_required": [],
+        "unit": "vm-path"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMVMReceiptVerifier$",
+          "./verifier"
+        ],
+        "package": "verifier",
+        "parent": "TestResearchNoMVMReceiptVerifier",
+        "parent_and_child_outcomes": 25,
+        "prior_streams_required": [
+          "vm-path.stdout"
+        ],
+        "unit": "vm-verifier"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMAccountAuthorization$",
+          "./verifier"
+        ],
+        "package": "verifier",
+        "parent": "TestResearchNoMAccountAuthorization",
+        "parent_and_child_outcomes": 127,
+        "prior_streams_required": [
+          "vm-path.stdout"
+        ],
+        "unit": "account-authorization"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMAccountContext$",
+          "./verifier"
+        ],
+        "package": "verifier",
+        "parent": "TestResearchNoMAccountContext",
+        "parent_and_child_outcomes": 85,
+        "prior_streams_required": [
+          "vm-path.stdout",
+          "account-authorization.stdout"
+        ],
+        "unit": "account-context"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMBilateralGraph$",
+          "./vm"
+        ],
+        "package": "vm",
+        "parent": "TestResearchNoMBilateralGraph",
+        "parent_and_child_outcomes": 5,
+        "prior_streams_required": [],
+        "unit": "bilateral-graph"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMSupervisorPlasma$",
+          "./vm"
+        ],
+        "package": "vm",
+        "parent": "TestResearchNoMSupervisorPlasma",
+        "parent_and_child_outcomes": 3,
+        "prior_streams_required": [],
+        "unit": "supervisor-plasma"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMAccountPool$",
+          "./vm"
+        ],
+        "package": "vm",
+        "parent": "TestResearchNoMAccountPool",
+        "parent_and_child_outcomes": 3,
+        "prior_streams_required": [],
+        "unit": "account-pool"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMPoolForks$",
+          "./vm"
+        ],
+        "package": "vm",
+        "parent": "TestResearchNoMPoolForks",
+        "parent_and_child_outcomes": 6,
+        "prior_streams_required": [],
+        "unit": "pool-forks"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMPoolDependencies$",
+          "./vm"
+        ],
+        "package": "vm",
+        "parent": "TestResearchNoMPoolDependencies",
+        "parent_and_child_outcomes": 4,
+        "prior_streams_required": [],
+        "unit": "pool-dependencies"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMMomentumAdmission$",
+          "./vm"
+        ],
+        "package": "vm",
+        "parent": "TestResearchNoMMomentumAdmission",
+        "parent_and_child_outcomes": 15,
+        "prior_streams_required": [],
+        "unit": "momentum-admission"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMBatchedRollback$",
+          "./vm"
+        ],
+        "package": "vm",
+        "parent": "TestResearchNoMBatchedRollback",
+        "parent_and_child_outcomes": 7,
+        "prior_streams_required": [],
+        "unit": "batched-rollback"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMContentCap$",
+          "./vm"
+        ],
+        "package": "vm",
+        "parent": "TestResearchNoMContentCap",
+        "parent_and_child_outcomes": 6,
+        "prior_streams_required": [],
+        "unit": "content-cap"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMMultiRollback$",
+          "./vm"
+        ],
+        "package": "vm",
+        "parent": "TestResearchNoMMultiRollback",
+        "parent_and_child_outcomes": 8,
+        "prior_streams_required": [],
+        "unit": "multi-rollback"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMRollbackRefusal$",
+          "./vm"
+        ],
+        "package": "vm",
+        "parent": "TestResearchNoMRollbackRefusal",
+        "parent_and_child_outcomes": 15,
+        "prior_streams_required": [],
+        "unit": "rollback-refusal"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMDevReceiveData$",
+          "./verifier"
+        ],
+        "package": "verifier",
+        "parent": "TestResearchNoMDevReceiveData",
+        "parent_and_child_outcomes": 15,
+        "prior_streams_required": [],
+        "unit": "receive-data"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMDevABIBoundary$",
+          "./vm/embedded"
+        ],
+        "package": "vm/embedded",
+        "parent": "TestResearchNoMDevABIBoundary",
+        "parent_and_child_outcomes": 27,
+        "prior_streams_required": [],
+        "unit": "abi-boundary"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMDevSendCaller$",
+          "./vm"
+        ],
+        "package": "vm",
+        "parent": "TestResearchNoMDevSendCaller",
+        "parent_and_child_outcomes": 24,
+        "prior_streams_required": [],
+        "unit": "send-caller"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMKeylessOriginalSupervisor$",
+          "./vm"
+        ],
+        "package": "vm",
+        "parent": "TestResearchNoMKeylessOriginalSupervisor",
+        "parent_and_child_outcomes": 25,
+        "prior_streams_required": [],
+        "unit": "keyless-supervisor"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMCurrentReclaim$",
+          "./vm"
+        ],
+        "package": "vm",
+        "parent": "TestResearchNoMCurrentReclaim",
+        "parent_and_child_outcomes": 77,
+        "prior_streams_required": [],
+        "unit": "reclaim-current"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^TestResearchNoMEmbeddedArgumentPricing$",
+          "./vm"
+        ],
+        "package": "vm",
+        "parent": "TestResearchNoMEmbeddedArgumentPricing",
+        "parent_and_child_outcomes": 86,
+        "prior_streams_required": [],
+        "unit": "argument-pricing"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestCacheDBManagerStopIsIdempotent|TestCacheDBManagerStopAfterFailedClose|TestGetFrontierIdentifierCorrupted|TestGetFrontierIdentifierReadError)$",
+          "./chain/cache/storage"
+        ],
+        "outcome_scope": "TOP_LEVEL_FUNCTIONS_ONLY; CHILD COUNT OBSERVED SEPARATELY",
+        "package": "chain/cache/storage",
+        "parent": "^(TestCacheDBManagerStopIsIdempotent|TestCacheDBManagerStopAfterFailedClose|TestGetFrontierIdentifierCorrupted|TestGetFrontierIdentifierReadError)$",
+        "parent_and_child_outcomes": 4,
+        "prior_streams_required": [],
+        "unit": "runtime-cache-close"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestDeserializeAccountBlock_MalformedDescendantNamesIndex|TestDeserializeAccountBlock_MalformedNestedDescendantNamesPath|TestDeserializeAccountBlock_ValidDescendantsRoundTrip|TestDeserializeMomentum_MalformedContentAddressNamesIndex|TestDeserializeMomentum_MalformedContentHashNamesIndex|TestDeserializeMomentum_ValidContentRoundTrip|TestDeserializeAccountBlock_NestedPastDecoderLimitIsRejected|TestDeserializeAccountBlock_NestedBelowDecoderLimitDecodes)$",
+          "./chain/nom"
+        ],
+        "outcome_scope": "TOP_LEVEL_FUNCTIONS_ONLY; CHILD COUNT OBSERVED SEPARATELY",
+        "package": "chain/nom",
+        "parent": "^(TestDeserializeAccountBlock_MalformedDescendantNamesIndex|TestDeserializeAccountBlock_MalformedNestedDescendantNamesPath|TestDeserializeAccountBlock_ValidDescendantsRoundTrip|TestDeserializeMomentum_MalformedContentAddressNamesIndex|TestDeserializeMomentum_MalformedContentHashNamesIndex|TestDeserializeMomentum_ValidContentRoundTrip|TestDeserializeAccountBlock_NestedPastDecoderLimitIsRejected|TestDeserializeAccountBlock_NestedBelowDecoderLimitDecodes)$",
+        "parent_and_child_outcomes": 8,
+        "prior_streams_required": [],
+        "unit": "runtime-decode-limits"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestEmbeddedSendBasePlasma)$",
+          "./vm"
+        ],
+        "outcome_scope": "TOP_LEVEL_FUNCTIONS_ONLY; CHILD COUNT OBSERVED SEPARATELY",
+        "package": "vm",
+        "parent": "^(TestEmbeddedSendBasePlasma)$",
+        "parent_and_child_outcomes": 1,
+        "prior_streams_required": [],
+        "unit": "runtime-embedded-pricing"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestManagerStopIsIdempotent|TestLevelDBManagerStopAfterFailedClose|TestRebase_Stopped|TestMemDBManagerStopDuringAdd|TestMemDBManagerAddRechecksFrontierAtCommit|TestMemDBManagerStopConcurrentWithAdd)$",
+          "./common/db"
+        ],
+        "outcome_scope": "TOP_LEVEL_FUNCTIONS_ONLY; CHILD COUNT OBSERVED SEPARATELY",
+        "package": "common/db",
+        "parent": "^(TestManagerStopIsIdempotent|TestLevelDBManagerStopAfterFailedClose|TestRebase_Stopped|TestMemDBManagerStopDuringAdd|TestMemDBManagerAddRechecksFrontierAtCommit|TestMemDBManagerStopConcurrentWithAdd)$",
+        "parent_and_child_outcomes": 6,
+        "prior_streams_required": [],
+        "unit": "runtime-manager-close"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestRunWithConfig_AlreadyRunning_ReturnsError|TestStop_ClearsNodeManager|TestRunWithConfig_SecondStartPreservesFirstNode)$",
+          "./app"
+        ],
+        "outcome_scope": "TOP_LEVEL_FUNCTIONS_ONLY; CHILD COUNT OBSERVED SEPARATELY",
+        "package": "app",
+        "parent": "^(TestRunWithConfig_AlreadyRunning_ReturnsError|TestStop_ClearsNodeManager|TestRunWithConfig_SecondStartPreservesFirstNode)$",
+        "parent_and_child_outcomes": 3,
+        "prior_streams_required": [],
+        "unit": "runtime-manager-guards"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestStopRunsAllStepsDespiteErrors|TestStopJoinsErrorsFromMultipleSubsystems|TestStopFailingCoreStillCleansUp)$",
+          "./node"
+        ],
+        "outcome_scope": "TOP_LEVEL_FUNCTIONS_ONLY; CHILD COUNT OBSERVED SEPARATELY",
+        "package": "node",
+        "parent": "^(TestStopRunsAllStepsDespiteErrors|TestStopJoinsErrorsFromMultipleSubsystems|TestStopFailingCoreStillCleansUp)$",
+        "parent_and_child_outcomes": 3,
+        "prior_streams_required": [],
+        "unit": "runtime-node-stop"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestGetRequiredPoWFusedPlasmaTarget|TestGetRequiredPoWFusedOnlyTargetMeetsPrice|TestGetRequiredResultJSONIncludesZeroFusedTarget|TestFusionEntryListUnmarshalFreshReceiver|TestGetRequiredPoWMissingCapturedFrontierCache)$",
+          "./rpc/api/embedded"
+        ],
+        "outcome_scope": "TOP_LEVEL_FUNCTIONS_ONLY; CHILD COUNT OBSERVED SEPARATELY",
+        "package": "rpc/api/embedded",
+        "parent": "^(TestGetRequiredPoWFusedPlasmaTarget|TestGetRequiredPoWFusedOnlyTargetMeetsPrice|TestGetRequiredResultJSONIncludesZeroFusedTarget|TestFusionEntryListUnmarshalFreshReceiver|TestGetRequiredPoWMissingCapturedFrontierCache)$",
+        "parent_and_child_outcomes": 5,
+        "prior_streams_required": [],
+        "unit": "runtime-quote-snapshot"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestTokenBucket_ReserveRefillAndCap|TestTokenBucket_RequestAboveBurstIsRefusedWithoutCharge|TestTokenBucket_DeficitWithoutRateIsRefused|TestTokenBucket_BackwardClockDoesNotRefill|TestHandleRequests_UnknownHashStreamIsPacedOnceBudgetRunsDry|TestHandleRequests_MissCostsMoreThanHit|TestHandleRequests_HonestSyncPaceIsNeverPaced|TestHandleRequests_FlatOutHashSyncIsPacedNotRefused|TestHandleRequests_FlatOutLargeRepliesArePacedNotRefused|TestHandleRequests_BudgetRefillsOverTime|TestHandleRequests_ReplyAboveByteBurstIsRefusedAndNotSent|TestHandleRequests_ReplyBytesArePaced|TestHandleRequests_PacedWaitAbandonedWhenPeerCloses|TestHandleRequests_HashRequestsDrawFromTheSharedBudget|TestHandleRequests_HashRequestIsChargedTheClampedAmount|TestHandleRequests_HashesFromNumberDrawFromTheSharedBudget|TestHandleRequests_MissingHeightFallbackIsCharged|TestHandleRequests_FlatOutFromNumberSyncIsPacedNotRefused|TestHandleRequests_MixedFlatOutLookupTrafficStaysInsideTimeouts|TestHandleRequests_MixedFlatOutByteTrafficStaysInsideTimeouts|TestHandleRequests_AbandonedWaitStopsBeforeTheNextStep|TestHandleRequests_HashReplyBytesAreCharged|TestHandleRequests_EmptyRequestsAreNotFree|TestPeer_RequestBudgetDefaultsWhenUnset|TestSleepUnlessClosed|TestRequestBudgetDefaults_CoverHonestRequesters|TestPeer_DefaultBudgetsAreIndependentAndEndWithTheConnection)$",
+          "./protocol"
+        ],
+        "outcome_scope": "TOP_LEVEL_FUNCTIONS_ONLY; CHILD COUNT OBSERVED SEPARATELY",
+        "package": "protocol",
+        "parent": "^(TestTokenBucket_ReserveRefillAndCap|TestTokenBucket_RequestAboveBurstIsRefusedWithoutCharge|TestTokenBucket_DeficitWithoutRateIsRefused|TestTokenBucket_BackwardClockDoesNotRefill|TestHandleRequests_UnknownHashStreamIsPacedOnceBudgetRunsDry|TestHandleRequests_MissCostsMoreThanHit|TestHandleRequests_HonestSyncPaceIsNeverPaced|TestHandleRequests_FlatOutHashSyncIsPacedNotRefused|TestHandleRequests_FlatOutLargeRepliesArePacedNotRefused|TestHandleRequests_BudgetRefillsOverTime|TestHandleRequests_ReplyAboveByteBurstIsRefusedAndNotSent|TestHandleRequests_ReplyBytesArePaced|TestHandleRequests_PacedWaitAbandonedWhenPeerCloses|TestHandleRequests_HashRequestsDrawFromTheSharedBudget|TestHandleRequests_HashRequestIsChargedTheClampedAmount|TestHandleRequests_HashesFromNumberDrawFromTheSharedBudget|TestHandleRequests_MissingHeightFallbackIsCharged|TestHandleRequests_FlatOutFromNumberSyncIsPacedNotRefused|TestHandleRequests_MixedFlatOutLookupTrafficStaysInsideTimeouts|TestHandleRequests_MixedFlatOutByteTrafficStaysInsideTimeouts|TestHandleRequests_AbandonedWaitStopsBeforeTheNextStep|TestHandleRequests_HashReplyBytesAreCharged|TestHandleRequests_EmptyRequestsAreNotFree|TestPeer_RequestBudgetDefaultsWhenUnset|TestSleepUnlessClosed|TestRequestBudgetDefaults_CoverHonestRequesters|TestPeer_DefaultBudgetsAreIndependentAndEndWithTheConnection)$",
+        "parent_and_child_outcomes": 27,
+        "prior_streams_required": [],
+        "unit": "runtime-request-budget"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestGetAllSporksSkipsTombstones)$",
+          "./vm/embedded/definition"
+        ],
+        "outcome_scope": "TOP_LEVEL_FUNCTIONS_ONLY; CHILD COUNT OBSERVED SEPARATELY",
+        "package": "vm/embedded/definition",
+        "parent": "^(TestGetAllSporksSkipsTombstones)$",
+        "parent_and_child_outcomes": 1,
+        "prior_streams_required": [],
+        "unit": "runtime-spork-tombstone"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestWrapTokenRequestUnmarshalEmpty|TestUnwrapTokenRequestUnmarshalEmpty)$",
+          "./rpc/api/embedded"
+        ],
+        "package": "rpc/api/embedded",
+        "parent_and_child_outcomes": 2,
+        "parents": [
+          "TestWrapTokenRequestUnmarshalEmpty",
+          "TestUnwrapTokenRequestUnmarshalEmpty"
+        ],
+        "prior_streams_required": [],
+        "unit": "upstream-bridge-json"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestGuardian_CheckNominatedGuardians|TestGuardian_NominateGuardians_ReceiveBlock_SporkGating|TestGuardian_ProposeAdministrator_ThresholdsPostSpork|TestGuardian_ProposeAdministrator_PreSporkTruncation|TestGuardian_ProposeAdministrator_RepeatVoteCountsOnce|TestGuardian_ProposeAdministrator_FinalVoteDecisive)$",
+          "./vm/embedded/implementation"
+        ],
+        "package": "vm/embedded/implementation",
+        "parent_and_child_outcomes": 30,
+        "parents": [
+          "TestGuardian_CheckNominatedGuardians",
+          "TestGuardian_NominateGuardians_ReceiveBlock_SporkGating",
+          "TestGuardian_ProposeAdministrator_ThresholdsPostSpork",
+          "TestGuardian_ProposeAdministrator_PreSporkTruncation",
+          "TestGuardian_ProposeAdministrator_RepeatVoteCountsOnce",
+          "TestGuardian_ProposeAdministrator_FinalVoteDecisive"
+        ],
+        "prior_streams_required": [],
+        "unit": "upstream-guardians"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestUpdateStakeRewardsCappedAtMaxRewardEpochsPerCall|TestUpdateStakeRewardsCapDoesNotSkipEpoch|TestUpdateStakeRewardsUncappedBeforeSpork|TestUpdateSentinelRewardsCappedAtMaxRewardEpochsPerCall|TestUpdateSentinelRewardsCapDoesNotSkipEpoch|TestUpdateSentinelRewardsUncappedBeforeSpork|TestUpdatePillarRewardsCappedAtMaxRewardEpochsPerCall|TestUpdatePillarRewardsCapDoesNotSkipEpoch|TestUpdatePillarRewardsUncappedBeforeSpork)$",
+          "./vm/embedded/implementation"
+        ],
+        "package": "vm/embedded/implementation",
+        "parent_and_child_outcomes": 9,
+        "parents": [
+          "TestUpdateStakeRewardsCappedAtMaxRewardEpochsPerCall",
+          "TestUpdateStakeRewardsCapDoesNotSkipEpoch",
+          "TestUpdateStakeRewardsUncappedBeforeSpork",
+          "TestUpdateSentinelRewardsCappedAtMaxRewardEpochsPerCall",
+          "TestUpdateSentinelRewardsCapDoesNotSkipEpoch",
+          "TestUpdateSentinelRewardsUncappedBeforeSpork",
+          "TestUpdatePillarRewardsCappedAtMaxRewardEpochsPerCall",
+          "TestUpdatePillarRewardsCapDoesNotSkipEpoch",
+          "TestUpdatePillarRewardsUncappedBeforeSpork"
+        ],
+        "prior_streams_required": [],
+        "unit": "upstream-reward-bounds"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestAcceleratorFinalTally_PostSpork_ExpiredWindow_PassingVotes_Activates|TestAcceleratorFinalTally_PostSpork_ExpiredWindow_FailingVotes_Closes|TestAcceleratorFinalTally_PreSpork_ExpiredWindow_ClosesWithoutTally|TestAcceleratorFinalTally_PostSpork_VoteOnExpiredProject_Rejected|TestAcceleratorFinalTally_PostSpork_VoteOnNonExpiredProject_Accepted|TestAcceleratorFinalTally_PostSpork_VoteOnPhaseId_NotAffected|TestAcceleratorFinalTally_PreSpork_VoteOnExpiredProject_Accepted)$",
+          "./vm/embedded/implementation"
+        ],
+        "package": "vm/embedded/implementation",
+        "parent_and_child_outcomes": 15,
+        "parents": [
+          "TestAcceleratorFinalTally_PostSpork_ExpiredWindow_PassingVotes_Activates",
+          "TestAcceleratorFinalTally_PostSpork_ExpiredWindow_FailingVotes_Closes",
+          "TestAcceleratorFinalTally_PreSpork_ExpiredWindow_ClosesWithoutTally",
+          "TestAcceleratorFinalTally_PostSpork_VoteOnExpiredProject_Rejected",
+          "TestAcceleratorFinalTally_PostSpork_VoteOnNonExpiredProject_Accepted",
+          "TestAcceleratorFinalTally_PostSpork_VoteOnPhaseId_NotAffected",
+          "TestAcceleratorFinalTally_PreSpork_VoteOnExpiredProject_Accepted"
+        ],
+        "prior_streams_required": [],
+        "unit": "upstream-final-tally"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestGetStakeListByAddressIteratesSubRange|TestGetStakeListByAddressRevokedSkipped|TestGetLiquidityStakeListByAddressIteratesSubRange|TestGetAllPillarVotesIteratesSubRange|TestGetVoteBreakdownAfterSubRangeIteration|TestGetStakeListByAddressEmptyEntity|TestGetStakeListByAddressSharedPrefix|TestGetLiquidityStakeListByAddressSharedPrefix|TestGetLiquidityStakeListByAddressEmptyEntity|TestGetAllPillarVotesEmptyEntity|TestGetAllPillarVotesSharedPrefix)$",
+          "./vm/embedded/definition"
+        ],
+        "package": "vm/embedded/definition",
+        "parent_and_child_outcomes": 11,
+        "parents": [
+          "TestGetStakeListByAddressIteratesSubRange",
+          "TestGetStakeListByAddressRevokedSkipped",
+          "TestGetLiquidityStakeListByAddressIteratesSubRange",
+          "TestGetAllPillarVotesIteratesSubRange",
+          "TestGetVoteBreakdownAfterSubRangeIteration",
+          "TestGetStakeListByAddressEmptyEntity",
+          "TestGetStakeListByAddressSharedPrefix",
+          "TestGetLiquidityStakeListByAddressSharedPrefix",
+          "TestGetLiquidityStakeListByAddressEmptyEntity",
+          "TestGetAllPillarVotesEmptyEntity",
+          "TestGetAllPillarVotesSharedPrefix"
+        ],
+        "prior_streams_required": [],
+        "unit": "upstream-per-entity"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestPTLCResearchCollectionEmptyRows|TestPTLCResearchCollectionIteratorErrors)$",
+          "./vm/embedded/definition"
+        ],
+        "package": "vm/embedded/definition",
+        "parent_and_child_outcomes": 9,
+        "parents": [
+          "TestPTLCResearchCollectionEmptyRows",
+          "TestPTLCResearchCollectionIteratorErrors"
+        ],
+        "prior_streams_required": [],
+        "unit": "research-collection-boundaries"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestPTLCResearchStorageComposition|TestPTLCResearchIteratorErrorForwarding)$",
+          "./common/db"
+        ],
+        "package": "common/db",
+        "parent_and_child_outcomes": 11,
+        "parents": [
+          "TestPTLCResearchStorageComposition",
+          "TestPTLCResearchIteratorErrorForwarding"
+        ],
+        "prior_streams_required": [],
+        "unit": "research-storage-composition"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestEnableDeleteIteratorSkipsTombstones|TestEnableDeleteIteratorPrevSkipsTombstones|TestEnableDeleteIteratorLastSkipsTombstones|TestEnableDeleteIteratorAllTombstones|TestLevelDBManagerPopTombstoneIterator|TestLevelDBManagerPopTombstoneIteratorReopen)$",
+          "./common/db"
+        ],
+        "package": "common/db",
+        "parent_and_child_outcomes": 6,
+        "parents": [
+          "TestEnableDeleteIteratorSkipsTombstones",
+          "TestEnableDeleteIteratorPrevSkipsTombstones",
+          "TestEnableDeleteIteratorLastSkipsTombstones",
+          "TestEnableDeleteIteratorAllTombstones",
+          "TestLevelDBManagerPopTombstoneIterator",
+          "TestLevelDBManagerPopTombstoneIteratorReopen"
+        ],
+        "prior_streams_required": [],
+        "unit": "upstream-db-tombstones"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestGetAllSentinelInfoSkipsTombstones|TestIterateSentinelEntriesSkipsTombstones|TestGetProjectListSkipsTombstones)$",
+          "./vm/embedded/definition"
+        ],
+        "package": "vm/embedded/definition",
+        "parent_and_child_outcomes": 3,
+        "parents": [
+          "TestGetAllSentinelInfoSkipsTombstones",
+          "TestIterateSentinelEntriesSkipsTombstones",
+          "TestGetProjectListSkipsTombstones"
+        ],
+        "prior_streams_required": [],
+        "unit": "upstream-definition-tombstones"
+      },
+      {
+        "arguments": [
+          "test",
+          "-json",
+          "-p",
+          "2",
+          "-mod=readonly",
+          "-count=1",
+          "-run",
+          "^(TestProtocolManagerStopTwice|TestProtocolManagerStartStop)$",
+          "./protocol"
+        ],
+        "package": "protocol",
+        "parent_and_child_outcomes": 2,
+        "parents": [
+          "TestProtocolManagerStopTwice",
+          "TestProtocolManagerStartStop"
+        ],
+        "prior_streams_required": [],
+        "unit": "upstream-protocol-shutdown"
+      }
+    ]
+  },
+  "baseline_profiles": 41,
+  "compiler_cache": "SAME LIVE INVOCATION ONLY; NO HISTORICAL CACHE ADOPTION",
+  "complete_profiles": 42,
+  "core": "NO-GO",
+  "core_commit": "18c048abb3f825274fa7b6900b65bd691ced15ef",
+  "core_tree": "460c182324f021e0e54b23fcf6df6d19a98f5e3b",
+  "fee_profiles": 1,
+  "fee_stage": {
+    "arguments": [
+      "test",
+      "-json",
+      "-p",
+      "2",
+      "-mod=readonly",
+      "-count=1",
+      "-run",
+      "^TestResearchNoMCurrentFeeOriginalBoundary$",
+      "./vm"
+    ],
+    "cases": 14,
+    "destination": "vm/research_nom_661b5ef_fee_original_boundary_test.go",
+    "expected_sha256": "f25c4354e5f54f355114123cfb26a8b011d4c1d09775163ef6fc63fee4caa0a8",
+    "input_sha256": "3cf837ddc90308f3ee2ab621f341e25773f609d54e84e5e3a682943b5ff16280",
+    "new_keys": 0,
+    "new_signatures": 0,
+    "producer": "compatibility/nom_fee_original_boundary_test.go.txt",
+    "replacement_or_resigning": "NOT_SELECTED",
+    "signed_synthetic_originals": 2
+  },
+  "historical_results_reclassified": false,
+  "independent_assessment": "UNFILLED",
+  "journal_source_upgrade": "NOT_SELECTED",
+  "last_qualified_behavior_core": "77ba9c7ee8c881e90911946756cdb67d8b586043",
+  "named_finite_outcomes": {
+    "fee_including_parent": 15,
+    "prior_runtime": 58,
+    "reference": 642,
+    "total": 813,
+    "upstream": 98
+  },
+  "native_compatibility": "UNFILLED",
+  "native_execution": "NOT_PERFORMED_BY_PLAN",
+  "normal_default_vet": true,
+  "original_archive": {
+    "bytes": 2076928,
+    "sha256": "98b7c5ec34484b26159d9dbad4cbcd34426f8969caf607652036e406ed95a55c"
+  },
+  "planned_native_commands": 47,
+  "recovery_action": "NONE",
+  "required_new_compiler_workspaces": 1,
+  "required_source_views": 1,
+  "schema": "ptlc-nom-dev-18c048a-two-stage-plan-v1",
+  "separate_package_regression": {
+    "arguments": [
+      "test",
+      "-json",
+      "-p",
+      "2",
+      "-mod=readonly",
+      "-count=1",
+      "-run",
+      "^(TestAcceleratorStoragePrefixValues|TestPtlcUnlockMessageVectors|TestPtlcReclaimMessageVectors|TestPtlcAbiBeforeReclaimLockUnchanged|TestPtlcReclaimLockStorage|TestPtlcInfoKeyParsing|TestGetAllSporksSkipsTombstones|TestGetSwapAssetsSkipsEmptyValues)$",
+      "./vm/embedded/definition"
+    ],
+    "coverage_roots": 24,
+    "overlap_with_profile_roots": 0,
+    "package": "vm/embedded/definition",
+    "scope": "EIGHT COMPLEMENT ROOTS AND ALL OBSERVED DESCENDANTS; EXCLUDED FROM 813 PROFILE OUTCOMES",
+    "selected_roots": [
+      "TestAcceleratorStoragePrefixValues",
+      "TestPtlcUnlockMessageVectors",
+      "TestPtlcReclaimMessageVectors",
+      "TestPtlcAbiBeforeReclaimLockUnchanged",
+      "TestPtlcReclaimLockStorage",
+      "TestPtlcInfoKeyParsing",
+      "TestGetAllSporksSkipsTombstones",
+      "TestGetSwapAssetsSkipsEmptyValues"
+    ]
+  },
+  "source_stages": 2,
+  "stage_source_files": [
+    552,
+    553
+  ],
+  "test_result_cache": "DISABLED_BY_COUNT_ONE"
+}
