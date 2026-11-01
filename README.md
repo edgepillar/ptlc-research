@@ -104,9 +104,10 @@ including setup, fetch and post work. Its one measured workspace peak is
 The [fast-path qualification procedure](docs/PUBLIC_CLIENT_FAST_QUALIFICATION.md)
 defines the separate source, original-stream, nonexecution and measurement gates.
 
-The [821bdd2 upstream tracking corpus](docs/NOM_DEV_821BDD2.md) records complete
-source bytes and changed shared paths. Tracking remains separate from the
-`77ba9c7` behavior and journal selections. The declared finite Linux candidate
+The [18c048a upstream tracking corpus](docs/NOM_DEV_18C048A.md) records all 525
+source files and the shared storage/lifecycle delta. It preserves the preceding
+[821bdd2 corpus](docs/NOM_DEV_821BDD2.md). Tracking remains separate from the
+`77ba9c7` behavior and journal selections. The declared finite 821bdd2 Linux candidate
 comparison was accepted for source `0081896`, with separate PR and main
 originals recorded in [PR #222](https://github.com/edgepillar/ptlc-research/pull/222).
 The [candidate native plan](docs/NOM_DEV_821BDD2_NATIVE.md) preserves all prior

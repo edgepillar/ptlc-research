@@ -6,6 +6,15 @@ funds are authorized by this status record.
 
 ## Active delivery work
 
+The active M1 D6 item tracks upstream dev source `18c048a` through a
+[complete 525-file inventory and shared-path impact record](docs/NOM_DEV_18C048A.md).
+Relative to the retained 821bdd2 input, two files are added and six modified;
+517 retain their complete bytes. Shared DB tombstone iteration, collection
+guards and protocol shutdown require explicit scopes. The new corpus and its
+index controls need their own relevant source-bound checks. No 18c048a native
+comparison is claimed; behavior/journal selection remains at `77ba9c7`, and the
+separate finite candidate native selection remains at `821bdd2`.
+
 The recorded M3 component evidence covers Python public IO refusal: complete
 local writing/flushing, read/write/flush faults, short output and lost diagnostics.
 Its seven Python cases remain separate from the existing five Rust process
@@ -22,9 +31,9 @@ The M2b/M3 result-association slice associates a supplied public-checker result 
 locally rederived request. It rechecks all declared funding bindings and refuses
 another leg, changed economics, noncanonical result bytes or expanded authority
 claims. Matching JSON remains an unverified supplied claim: no backend execution
-or mathematical validity follows. The work item ends when these association and
-refusal conditions have their own relevant source-bound evidence. It selects no
-signer, observer or store.
+or mathematical validity follows. Its association/refusal conditions are included
+in the recorded `15934a6` component evidence below. It selects no signer, observer
+or store.
 
 Source `2c239dc4afd08d28aafa71e6e2b95ce0fff7852b` received a complete fresh
 4,647-case local regression and separate full PR acceptance before its normal
@@ -37,17 +46,21 @@ selection also refused. Its underlying failure cause is **NOT_ESTABLISHED**;
 missing native originals are not claimed as retained. The separately accepted
 [candidate main attempt 41243505567/1](https://github.com/edgepillar/ptlc-research/actions/runs/41243505567/attempts/1)
 matched 37 profiles, 42 Go commands and 782 outcomes. That finite comparison
-does not replace full main acceptance. The last fully accepted baseline below
-remains unchanged.
+did not replace full main acceptance. The later `15934a6` acceptance is recorded
+separately below.
 
-The current M3 work item fixes a separate CLI exception boundary: both native
-bundle entry points must turn their selected command runner's `WorkerError`
-into the existing fixed refusal and exit code one. The acceptance scope covers
+The completed M3 item fixes a separate CLI exception boundary: both native
+bundle entry points turn their selected command runner's `WorkerError`
+into the existing fixed refusal and exit code one. Its acceptance scope covers
 non-disclosure of exception contents, preserved success projections and
 propagation of process interrupts. It changes no native command, comparison,
 admission, retention or retry rule. This source finding does not establish the
-cause of the failed main attempt. The change needs its own fresh offline and
-hosted evidence before integration.
+cause of the failed main attempt. Source `15934a6` received a fresh 4,650-case
+local profile, separate full PR original acceptance and both own-main original
+gates in [PR #225](https://github.com/edgepillar/ptlc-research/pull/225).
+The normal fast-forward preserved source history and both edgepillar roles
+across all 255 commits. Earlier reader/preparation refusals and the failed
+2c239dc4 main attempt retain their original classifications.
 
 The preceding local full-profile attempt at `6866894` ended with actual exit
 `-15` after the 192 MiB fixture sampler reported an overflow. All four shards
@@ -66,7 +79,7 @@ existing trusted-base policy. Its fresh local and PR evidence remains separate
 from its failed main attempt; the earlier 52-case component result belongs to
 `6866894`.
 
-The completed M1 D6 work item tracks upstream dev source `821bdd2` through a
+The preceding M1 D6 work item tracks upstream dev source `821bdd2` through a
 [complete 523-file inventory and shared-path impact record](docs/NOM_DEV_821BDD2.md).
 Two added and five modified paths are separated from 516 byte-identical files.
 The behavior and journal pins stay at `77ba9c7`. The declared finite Linux
@@ -122,11 +135,11 @@ defect, with its verification scope declared before execution.
 
 | Evidence | Selected scope |
 | --- | --- |
-| Source | [`26c647384626cd6b9b8d7cefbb2d64f6b3ac492f`](https://github.com/edgepillar/ptlc-research/tree/26c647384626cd6b9b8d7cefbb2d64f6b3ac492f) |
-| Hosted full main run | [41218407472, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/41218407472/attempts/1) |
-| Separate PR record | [PR #223](https://github.com/edgepillar/ptlc-research/pull/223), with [fast PR run 41214019137/1](https://github.com/edgepillar/ptlc-research/actions/runs/41214019137/attempts/1) and [candidate PR run 41214019297/1](https://github.com/edgepillar/ptlc-research/actions/runs/41214019297/attempts/1); full runtime and candidate native work were unexecuted on that PR |
-| Recorded full main acceptance | All 17 jobs accounted for: 16 succeeded and the fast job was unexecuted; all 14 runtime jobs, both controls, nine artifact families and complete console accepted; four fresh 4,637-case Python profiles, 217 Rust cases and ten exact public checker cases |
-| Separate candidate main acceptance | [41218407407/1](https://github.com/edgepillar/ptlc-research/actions/runs/41218407407/attempts/1): all three jobs and 92 originals accepted for the declared 37-profile, 42-command, 782-outcome Linux comparison, with 19 additional definition roots accounted for separately |
+| Source | [`15934a6a0ef51787a15897ffbaab0a82e9f7a0f8`](https://github.com/edgepillar/ptlc-research/tree/15934a6a0ef51787a15897ffbaab0a82e9f7a0f8) |
+| Hosted full main run | [41262041447, attempt 1](https://github.com/edgepillar/ptlc-research/actions/runs/41262041447/attempts/1) |
+| Separate PR record | [PR #225](https://github.com/edgepillar/ptlc-research/pull/225), with [full PR run 41252207503/1](https://github.com/edgepillar/ptlc-research/actions/runs/41252207503/attempts/1) and [candidate PR run 41252207550/1](https://github.com/edgepillar/ptlc-research/actions/runs/41252207550/attempts/1); both original gates accepted separately from main |
+| Recorded full main acceptance | All 17 jobs accounted for: 16 succeeded and the fast job was unexecuted; all 14 runtime jobs, both controls, nine artifact families and complete console accepted; four fresh 4,650-case Python profiles, 217 Rust cases and ten exact public checker cases |
+| Separate candidate main acceptance | [41262041565/1](https://github.com/edgepillar/ptlc-research/actions/runs/41262041565/attempts/1): all three jobs and 92 originals accepted for the declared 37-profile, 42-command, 782-outcome Linux comparison, with 19 additional definition roots accounted for separately |
 | Meaning | Source-bound offline/native/hosted baseline evidence; no operational or independent-review acceptance |
 
 The baseline contains a public adaptor verifier, reference journals, source-pinned
@@ -135,11 +148,19 @@ These are completed research outputs. They are not an implemented swap client.
 Later working-tree changes require their own relevant checks; the baseline run
 cannot be relabeled as their qualification. Record failed and interrupted
 attempts separately from later successful observations.
-The earlier `00818966`, `823957da`, `a51ba436`, `9db3ebc8`, `7186cab2`, `285cd07`, `39453004`, `db05a929` and `366a4157` baselines and their main runs remain
+The earlier `26c64738`, `00818966`, `823957da`, `a51ba436`, `9db3ebc8`, `7186cab2`, `285cd07`, `39453004`, `db05a929` and `366a4157` baselines and their main runs remain
 historical subjects. The [M3 PR record](https://github.com/edgepillar/ptlc-research/pull/216)
 records separate PR and main acceptance, including the public checker's five
 library cases and five process cases. That component evidence does not establish
 receiver custody, a complete recovery protocol or independent assessment.
+
+The 26c64738 input-completion baseline retains its separate
+[PR #223 record](https://github.com/edgepillar/ptlc-research/pull/223), full main
+[41218407472/1](https://github.com/edgepillar/ptlc-research/actions/runs/41218407472/attempts/1)
+and candidate main
+[41218407407/1](https://github.com/edgepillar/ptlc-research/actions/runs/41218407407/attempts/1).
+Its four 4,637-case profiles and the PR's explicit full/native nonexecution stay
+bound to that historical source and those attempts.
 
 The first selected fast attempt
 [40999048053/1](https://github.com/edgepillar/ptlc-research/actions/runs/40999048053/attempts/1)
