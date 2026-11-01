@@ -260,7 +260,8 @@ def inspect(workspace, *, allow_incomplete=False, root=ROOT):
             ('cold-build', packages, 'cold_build'),
             ('upstream-definition', {'github.com/zenon-network/go-zenon/vm/embedded/definition':
                 set(reproduction.DEFINITION_COMPLEMENT)}, 'definition_complement')):
-            require(package_streams[label + '.stderr'] == b'')
+            if label == 'upstream-definition':
+                require(package_streams[label + '.stderr'] == b'')
             exact(report[field], reproduction.package_events(package_streams[label + '.stdout'], required))
         require(report['outcome'] == 'PASS_SELECTED_NATIVE_FINITE_COMPARISONS_ONLY'
             and set(commands) == set(expected) and report['complete_profiles'] == 41

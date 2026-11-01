@@ -170,7 +170,10 @@ def qualify(source, workspace, go, expected_go, proxy, cc, *, root=ROOT, sdk=Non
         packages = sorted({'./' + row['package'] for row in plan['units']})
         cold = command('cold-build', ['test', '-json', '-p', '2', '-mod=readonly',
                                      '-count=1', '-run', '^$', *packages])
-        require(original(evidence, 'cold-build', 'stderr', cold) == b'')
+        # A fresh file proxy emits module-copy progress on stderr. Preserve and
+        # integrity-check it; the complete zero exit and package frames qualify
+        # the cold build. Diagnostics are checked again before public retention.
+        original(evidence, 'cold-build', 'stderr', cold)
         report['cold_build'] = reproduction.package_events(
             original(evidence, 'cold-build', 'stdout', cold),
             {'github.com/zenon-network/go-zenon/' + name[2:]: set() for name in packages})

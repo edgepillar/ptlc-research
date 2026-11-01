@@ -375,7 +375,7 @@ class PackageSelectionControls(unittest.TestCase):
 
 
 class OriginalRetentionControls(unittest.TestCase):
-    def fixture(self, directory, corrupt_complement=False):
+    def fixture(self, directory, corrupt_complement=False, cold_stderr=b''):
         """Mock command stages only; original receipts and data readers are real."""
         paths = {key: directory / key for key in ('source', 'workspace', 'proxy', 'go', 'cc')}
         for key in ('source', 'workspace', 'proxy'):
@@ -410,7 +410,7 @@ class OriginalRetentionControls(unittest.TestCase):
                     stdout = b'\n'.join(stdout.splitlines()[:-1]) + b'\n'
             else:
                 stdout = b'synthetic finite stream\n'
-            streams = dict(stdout=stdout, stderr=b'')
+            streams = dict(stdout=stdout, stderr=cold_stderr if label == 'cold-build' else b'')
             receipt = dict(schema='ptlc-nom-18c048a-native-command-v1', label=label,
                 argv=argv, actual_exit=0, result='RETURNED_ZERO_WITH_COMPLETE_STREAMS',
                 bytes={key: len(raw) for key, raw in streams.items()},
@@ -440,6 +440,34 @@ class OriginalRetentionControls(unittest.TestCase):
             self.assertEqual(result['original_profile_streams'], 82)
             self.assertEqual(len(result['files']), 92)
             self.assertNotIn('commands/go-version.receipt.json', result['files'])
+
+    def test_cold_file_proxy_progress_is_retained_without_becoming_test_output(self):
+        progress = b'go: downloading github.com/pkg/errors v0.9.1\n'
+        with tempfile.TemporaryDirectory() as temporary:
+            workspace, comparison = self.fixture(Path(temporary).resolve(), cold_stderr=progress)
+            with mock.patch.object(selected, 'compare_payloads', return_value=comparison):
+                result = retention.inspect(workspace)
+            self.assertTrue(result['full_attempt'])
+            self.assertEqual((workspace / 'commands/cold-build.stderr').read_bytes(), progress)
+            self.assertEqual(result['files']['commands/cold-build.stderr'],
+                dict(bytes=len(progress), sha256=selected.sha(progress)))
+            report = json.loads((workspace / 'native-result.json').read_bytes())
+            self.assertEqual(report['cold_build']['observed_parent_and_child_outcomes'], 0)
+            self.assertEqual(report['actual_native_commands'], 45)
+            # Repair synthetic receipt hashes too: rejection must still reach
+            # the privacy gate, rather than merely detect a stale digest.
+            unsafe = b'go: synthetic diagnostic /' + b'private' + b'/synthetic\n'
+            (workspace / 'commands/cold-build.stderr').write_bytes(unsafe)
+            receipt_path = workspace / 'commands/cold-build.receipt.json'
+            receipt = json.loads(receipt_path.read_bytes())
+            for value in (receipt, report['commands']['cold-build']):
+                value['bytes']['stderr'] = len(unsafe)
+                value['sha256']['stderr'] = selected.sha(unsafe)
+            receipt_path.write_text(json.dumps(receipt), encoding='ascii')
+            (workspace / 'native-result.json').write_text(json.dumps(report), encoding='ascii')
+            with mock.patch.object(selected, 'compare_payloads', return_value=comparison), \
+                    self.assertRaises(REFUSALS):
+                retention.inspect(workspace)
 
     def test_boolean_float_source_counts_and_omitted_complement_do_not_qualify(self):
         with tempfile.TemporaryDirectory() as temporary:

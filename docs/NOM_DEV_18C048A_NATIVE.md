@@ -81,6 +81,10 @@ not a measured timing or storage-saving claim.
 
 Cold-build JSON must contain each selected package and zero test roots. The
 complementary regression must complete every required root and observed child.
+Cold-build stderr is retained and privacy-checked, including normal module-copy
+progress from the offline file proxy. It is not counted as test output or
+evidence of network access. A complete zero exit remains required; no diagnostic
+bytes are removed or rewritten.
 Failed, skipped, duplicated, foreign or incomplete frames refuse. Slash-labelled
 children do not create fictitious intermediate parents. Both data checks are
 stored inline in the native result and rederived from original streams.
@@ -101,3 +105,17 @@ acceptance, normal history-preserving main integration and main's own push
 acceptance remain separate gates. Linux success would not establish Darwin
 behavior, compiler-build authentication or independent protocol assessment.
 No node, activation, wallet, signature, broadcast or funds action is authorized.
+
+## Preserved initial attempt
+
+The initial [candidate PR attempt 41295839798/1](https://github.com/edgepillar/ptlc-research/actions/runs/41295839798/attempts/1)
+for research source `3fe748e2b093000a9d701a122a884b3067df8119` remains failed.
+Version and cold-build commands returned zero, but the runner then rejected
+nonempty cold-build stderr. Its retained stderr contains file-proxy dependency
+progress; no selected test profile or fee stage had been reached. All six
+available original artifact files and the original CI console were retained.
+Removing this extra stderr-emptiness condition preserves the existing command,
+integrity, source, module, framing, privacy and resource gates. The added synthetic
+regression requires those progress bytes to survive native-result retention.
+The corrected source requires its own complete local and fresh hosted evidence;
+the failed initial attempt does not qualify it or identify an older main failure.
