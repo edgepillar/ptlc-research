@@ -62,6 +62,10 @@ class CandidateReferenceControls(unittest.TestCase):
         self.assertEqual(len(capture.LABELS), 47)
 
     def test_two_source_stages_keep_exact_original_fee_producer(self):
+        for source in selected.PRODUCERS.values():
+            with self.subTest(producer=source):
+                self.assertEqual(Path(source).parts[:2], ('qualification-go', 'testdata'))
+                self.assertFalse((ROOT / 'qualification-go' / Path(source).name).exists())
         base = selected.source_payloads()
         later = selected.source_payloads(fee_stage=True)
         self.assertEqual((len(base), len(later)), (552, 553))

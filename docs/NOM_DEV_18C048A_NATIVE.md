@@ -119,3 +119,22 @@ integrity, source, module, framing, privacy and resource gates. The added synthe
 regression requires those progress bytes to survive native-result retention.
 The corrected source requires its own complete local and fresh hosted evidence;
 the failed initial attempt does not qualify it or identify an older main failure.
+
+## Preserved standalone-module failure
+
+The [full PR attempt 41302235164/1](https://github.com/edgepillar/ptlc-research/actions/runs/41302235164/attempts/1)
+for research source `46617f13ca16da2071e7af28e6ccfaa4e55d6af7` remains failed.
+Its standalone `qualification-go` job rejected conflicting package declarations
+before starting Go tests. The two upstream-only project producers had been
+placed in that separate verifier module's root. All nine available artifact
+families and the original complete CI console are retained; passing separate
+candidate comparisons do not supply full-workflow acceptance.
+
+The producers now reside under `qualification-go/testdata` with byte-identical
+contents. The explicit native source map and frozen plan retain the same two
+upstream destinations, source views, commands and finite expectations. The
+standalone module's active Go and module-input bytes match the accepted parent
+source; no build constraint or test-selection exception is introduced. The
+source-stage regression also requires the fixture layout and absence of the
+old root-level files. The corrected revision requires fresh local regression
+and its own hosted PR and main acceptance. Prior failed evidence is unchanged.

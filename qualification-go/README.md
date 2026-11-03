@@ -28,3 +28,11 @@ GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off go test -mod=readonly -count=1 -v ./..
 ```
 
 Tests read public fixtures in sibling directories; run from this module's directory. No signing keys, seeds or adaptor witnesses are in the exported fixture. Synthetic test scalars in the Rust harness are deliberately public test inputs and must never be used with funds.
+
+The two [18c048a producers](testdata/) are source fixtures for separately
+acquired upstream packages. They remain under `testdata`, which the
+[Go package discovery rules](https://pkg.go.dev/cmd/go#hdr-Test_packages)
+exclude from `go test ./...`. The pinned native preparation copies their exact
+bytes into `common/db` and `vm/embedded/definition` through its explicit source
+map. Their upstream package declarations must not enter this module's
+`qualification` package. No build constraint or test filter is added.

@@ -13,8 +13,8 @@
     "storage": "SNAPSHOT MASKING, NESTED VIEWS, LIVE EMPTY VALUES, PREFIXES, POP, REOPEN"
   },
   "added_producer_sha256": {
-    "qualification-go/nom_18c_collection_test.go": "633d1eaa22b4983d46136db51e6305760540fdb823f10c11cec9ad9a287cd515",
-    "qualification-go/nom_18c_storage_test.go": "a4248a0d0b5fb01bd93f11ade4a084f0cbaf410edcea0016a5a455a783ce6635"
+    "qualification-go/testdata/nom_18c_collection_test.go": "633d1eaa22b4983d46136db51e6305760540fdb823f10c11cec9ad9a287cd515",
+    "qualification-go/testdata/nom_18c_storage_test.go": "a4248a0d0b5fb01bd93f11ade4a084f0cbaf410edcea0016a5a455a783ce6635"
   },
   "application": "NO-GO",
   "automatic_retry": false,
@@ -29,14 +29,14 @@
     "last_qualified_behavior_core": "77ba9c7ee8c881e90911946756cdb67d8b586043",
     "producers": {
       "chain/cache/storage/ptlc_661b5ef_logging_test.go": "compatibility/nom_dev_661b5ef_cache_logging_test.go.txt",
-      "common/db/ptlc_research18_storage_test.go": "qualification-go/nom_18c_storage_test.go",
+      "common/db/ptlc_research18_storage_test.go": "qualification-go/testdata/nom_18c_storage_test.go",
       "node/ptlc_661b5ef_logging_test.go": "compatibility/nom_dev_661b5ef_node_logging_test.go.txt",
       "protocol/ptlc_661b5ef_logging_test.go": "compatibility/nom_dev_661b5ef_protocol_logging_test.go.txt",
       "verifier/research_nom_dev_receive_data_test.go": "compatibility/nom_dev_661b5ef_receive_data_test.go.txt",
       "verifier/zz_research_nom_account_authorization_test.go": "compatibility/nom_account_authorization_test.go.txt",
       "verifier/zz_research_nom_account_context_test.go": "compatibility/nom_dev_5cb_account_context_test.go.txt",
       "verifier/zz_research_nom_vm_path_test.go": "compatibility/nom_dev_5cb_vm_receipt_verifier_test.go.txt",
-      "vm/embedded/definition/ptlc_research18_collection_test.go": "qualification-go/nom_18c_collection_test.go",
+      "vm/embedded/definition/ptlc_research18_collection_test.go": "qualification-go/testdata/nom_18c_collection_test.go",
       "vm/embedded/implementation/zz_research_compatibility_test.go": "compatibility/core_overlay_test.go.txt",
       "vm/embedded/implementation/zz_research_nom_wire_test.go": "compatibility/nom_wire_core_test.go.txt",
       "vm/embedded/research_nom_dev_abi_boundary_test.go": "compatibility/nom_dev_661b5ef_abi_boundary_test.go.txt",

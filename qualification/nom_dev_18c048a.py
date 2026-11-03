@@ -22,8 +22,8 @@ MAX_STREAM = prior.MAX_STREAM
 MAX_TOTAL = prior.MAX_TOTAL + 10 * MAX_STREAM
 PLAN = 'compatibility/nom_dev_18c048a_plan_v1.json'
 PRODUCERS = {
-    'common/db/ptlc_research18_storage_test.go': 'qualification-go/nom_18c_storage_test.go',
-    'vm/embedded/definition/ptlc_research18_collection_test.go': 'qualification-go/nom_18c_collection_test.go',
+    'common/db/ptlc_research18_storage_test.go': 'qualification-go/testdata/nom_18c_storage_test.go',
+    'vm/embedded/definition/ptlc_research18_collection_test.go': 'qualification-go/testdata/nom_18c_collection_test.go',
 }
 ADDED_UPSTREAM = {
     'upstream-db-tombstones': dict(package='common/db', source='common/db/enable_delete_test.go',
