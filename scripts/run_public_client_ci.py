@@ -63,7 +63,7 @@ def source_names(root, filename, minimum):
 
 def expected_python_cases(root):
     selected = sorted(path.name for path in (root / 'tests').glob('test_*client*.py'))
-    require(selected == ['test_client_agreement.py', 'test_client_presignature.py',
+    require(selected == ['test_client_agreement.py', 'test_client_checker.py', 'test_client_presignature.py',
         'test_public_client_ci_scope.py', 'test_reference_client.py'])
     suite = unittest.TestLoader().discover(str(root / 'tests'), pattern='test_*client*.py')
     names = []
@@ -91,7 +91,7 @@ def accept_streams(root, streams):
     require(len(summaries) == 1 and len(cases) == len(set(cases)) == int(summaries[0])
         and len(cases) >= 30)
     require(sorted(cases) == expected_python_cases(root))
-    require(all(name.startswith(('test_reference_client.', 'test_client_agreement.',
+    require(all(name.startswith(('test_reference_client.', 'test_client_agreement.', 'test_client_checker.',
         'test_client_presignature.', 'test_public_client_ci_scope.')) for name in cases))
     rust = streams[1, 'stdout'].decode('ascii')
     expected = (['tests::' + name for name in source_names(root, 'public_crypto/src/lib.rs', 5)]

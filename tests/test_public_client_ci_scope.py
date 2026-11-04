@@ -69,8 +69,9 @@ class PublicClientScopePolicyTests(unittest.TestCase):
         addition = changed('docs/READING.md')
         addition.update(status='A', old_mode='000000', old_blob='0' * 40)
         self.assertEqual(policy.classify([addition])[0], policy.FAST)
-        addition['path'] = 'reference_client/plan.py'
-        self.assertEqual(policy.classify([addition])[0], policy.FULL)
+        for path in ('reference_client/plan.py', 'reference_client/checker.py', 'tests/test_client_checker.py'):
+            addition['path'] = path
+            self.assertEqual(policy.classify([addition])[0], policy.FULL)
         addition['path'] = 'docs/READING.md'
         addition['old_blob'] = '1' * 40
         self.assertEqual(policy.classify([addition])[0], policy.FULL)

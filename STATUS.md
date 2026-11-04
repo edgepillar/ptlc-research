@@ -16,6 +16,15 @@ fabricated program replies; fresh full regression and actual built Rust checker
 assertions are required for this new source. The accepted execution baseline
 below retains its own earlier subject.
 
+The first complete local profile of this slice at `b9ccb094` finished all 4,690
+tests but was not accepted: seven public-tier decoder controls failed in setup
+because the strict module registry omitted the new test module. Three successful
+shards supplied 3,452 accepted cases; the whole profile remains failed. Original
+streams, paths, failure and HOLD are preserved. The correction explicitly
+registers the module and result prefix and extends the existing scoped-file list.
+No case is removed; first adoption, unknown/shared changes and main pushes still
+require full CI. This correction requires its own fresh complete qualification.
+
 The completed finite M1 D6 item tracks upstream dev source `18c048a` through a
 [complete 525-file inventory and shared-path impact record](docs/NOM_DEV_18C048A.md).
 Relative to the retained 821bdd2 input, two files are added and six modified;

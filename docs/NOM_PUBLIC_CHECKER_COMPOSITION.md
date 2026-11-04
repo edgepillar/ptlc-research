@@ -116,6 +116,12 @@ additional Rust cases. No binary copy or new dependency is introduced.
 Acceptance requires fresh full Python regression, artifact/privacy checks, the
 actual built-checker assertions and the applicable hosted original gates for
 the exact new source. The focused fabricated-program run alone is insufficient.
+The public-tier producer explicitly registers the five matching Python modules
+and their result prefixes, including the new checker controls. The policy names
+only the new public component and test file; new executable additions, changes
+to the policy/producer, unknown/shared source and every main push still select
+full CI. Later eligible component-only PRs can use the existing focused tier
+with these tests and the same actual Rust process case.
 Stop this item when those component conditions are met. It supplies no actual
 bilateral exchange, durable recovery, independent assessment or application/core
 approval; those remain the separate [roadmap](REFERENCE_CLIENT_ROADMAP.md) gates.

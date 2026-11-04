@@ -24,6 +24,7 @@ PUBLIC_FILES = frozenset({
     'reference_client/__init__.py', 'reference_client/__main__.py',
     'reference_client/plan.py', 'reference_client/agreement.py',
     'reference_client/presignature.py',
+    'reference_client/checker.py',
     'reference_client/synthetic_terms.json', 'reference_client/synthetic_agreement.json',
     'reference_client/synthetic_funding_request.json',
     'reference_client/synthetic_presignature_request.json',
@@ -32,6 +33,7 @@ PUBLIC_FILES = frozenset({
     'qualification/tests/client_public_crypto_process.rs',
     'tests/test_reference_client.py', 'tests/test_client_agreement.py',
     'tests/test_client_presignature.py',
+    'tests/test_client_checker.py',
 })
 TOP_DOCUMENTS = frozenset({'README.md', 'STATUS.md'})
 
