@@ -312,7 +312,7 @@ class PublicClientOriginalStreamTests(unittest.TestCase):
             workspace_limit_bytes=producer.MAX_WORKSPACE, sampled_workspace_peak_bytes=1234,
             transient_sample_retries=0)
 
-    def transport(self):
+    def transport(self, *, chunk_bytes=16384):
         pins = {str(i) + '.' + kind: dict(bytes=len(raw), sha256=producer.profile.sha(raw))
             for (i, kind), raw in self.streams.items()}
         children = [dict(shard=i, launched=True, output_complete=True, actual_exit=0,
@@ -330,8 +330,10 @@ class PublicClientOriginalStreamTests(unittest.TestCase):
         rows = [('BEGIN', dict(context=self.context, source=self.source, scope=self.scope,
             full_offline_suite='NOT_SELECTED', unrelated_native_jobs='NOT_SELECTED'))]
         for (i, kind), raw in self.streams.items():
-            rows.append(('STREAM', dict(context=self.context, command=i, kind=kind, offset=0,
-                data_base64=base64.b64encode(raw).decode('ascii'))))
+            # Match the production frame contract as the declared subset grows.
+            for offset in range(0, max(1, len(raw)), chunk_bytes):
+                rows.append(('STREAM', dict(context=self.context, command=i, kind=kind, offset=offset,
+                    data_base64=base64.b64encode(raw[offset:offset + chunk_bytes]).decode('ascii'))))
         rows.append(('RESULT', result))
         return b''.join((producer.PREFIX + name + '=' + json.dumps(value, sort_keys=True)
             + '\n').encode('ascii') for name, value in rows)
@@ -390,6 +392,10 @@ class PublicClientOriginalStreamTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     self.decode(self.transport())
                 self.streams[key] = before
+        # All final stream pins still match; only the per-frame cap is exceeded.
+        self.assertGreater(len(self.streams[0, 'stderr']), 16384)
+        with self.assertRaises(ValueError):
+            self.decode(self.transport(chunk_bytes=16385))
 
     def test_skips_duplicate_cases_and_unsolicited_python_output_are_refused(self):
         for key, replacement in [((0, 'stderr'), self.streams[0, 'stderr'].replace(b' ... ok', b' ... skipped', 1)),

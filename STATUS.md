@@ -25,6 +25,12 @@ registers the module and result prefix and extends the existing scoped-file list
 No case is removed; first adoption, unknown/shared changes and main pushes still
 require full CI. This correction requires its own fresh complete qualification.
 
+The focused follow-up at `8f03125f` passed eight controls and refused its remaining
+positive fixture: the enlarged synthetic Python stream was still emitted in a
+single record beyond the existing 16 KiB frame cap. The fixture now follows the
+production chunk contract and includes a self-consistent one-byte-over-cap
+refusal. The original focused failure and production decoder limits are unchanged.
+
 The completed finite M1 D6 item tracks upstream dev source `18c048a` through a
 [complete 525-file inventory and shared-path impact record](docs/NOM_DEV_18C048A.md).
 Relative to the retained 821bdd2 input, two files are added and six modified;
