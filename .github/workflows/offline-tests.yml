@@ -256,7 +256,9 @@ jobs:
           archive: true
 
   offline-tests:
-    needs: ci_scope
+    # Finish the two macOS preflights before admitting the two macOS profiles.
+    # Keep every profile and the final acceptance gate; this only orders jobs.
+    needs: [ci_scope, nom-anchor-sqlite, macho-object-prefix]
     if: ${{ !cancelled() && (needs.ci_scope.result != 'success' || needs.ci_scope.outputs.mode != 'public-client') }}
     name: offline-tests (${{ matrix.os }}, ${{ matrix.python-version }}, profile)
     runs-on: ${{ matrix.os }}

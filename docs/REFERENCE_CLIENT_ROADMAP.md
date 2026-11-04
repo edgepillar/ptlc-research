@@ -206,6 +206,16 @@ baseline tier with complete selected OS/Python profiles, native jobs and origina
 evidence acceptance available for significant changes and release decisions.
 The fast tier never reports unexecuted full/native work as passed.
 
+The full Python matrix waits for the complete SQLite matrix and the Apple
+object-prefix job. This separates the two macOS preflights from the two macOS
+Python profiles: at most two macOS jobs in this workflow can request a runner at
+the same time. The four Python profiles, fourteen runtime jobs, final acceptance
+conditions, runner architectures and test commands remain selected. Failed
+preflights still fail the final gate; ordering does not make missing evidence
+acceptable. This bounds this workflow's admission burst, not provider capacity
+or jobs in other workflows. Waiting for preflights can increase wall time; a
+speedup or successful hosted allocation requires new measurements and originals.
+
 Track PTLC source plus its shared verifier/VM, sequencer/pool, momentum/time,
 ABI/RPC, Plasma/spork, serialization and dependency/toolchain closure. Unchanged
 direct PTLC files do not prove unchanged behavior through shared entry points.

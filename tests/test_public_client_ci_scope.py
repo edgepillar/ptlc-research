@@ -130,6 +130,17 @@ class PublicClientScopePolicyTests(unittest.TestCase):
         for name, body in blocks.items():
             if name in selected:
                 continue
+            if name == 'offline-tests':
+                admission = ("    # Finish the two macOS preflights before admitting the two macOS profiles.\n"
+                    "    # Keep every profile and the final acceptance gate; this only orders jobs.\n"
+                    "    needs: [ci_scope, nom-anchor-sqlite, macho-object-prefix]\n")
+                self.assertEqual(body.count(admission), 1)
+                # A matrix prerequisite completes only after all of its rows.
+                # Neither macOS profile can overlap either macOS preflight.
+                self.assertIn('runs-on: macos-latest\n', blocks['macho-object-prefix'])
+                self.assertIn('os: macos-latest\n', blocks['nom-anchor-sqlite'])
+                self.assertIn('      fail-fast: false\n', body)
+                body = body.replace(admission, '    needs: ci_scope\n', 1)
             self.assertEqual(body.count(guards), 1)
             original += body.replace(guards, '')
         # One separator newline precedes the newly appended acceptance job.
@@ -161,6 +172,8 @@ class PublicClientScopePolicyTests(unittest.TestCase):
                 lambda value: value['ci_scope'].update(result='failure'),
                 lambda value: value['ci_scope']['outputs'].update(mode='unknown'),
                 lambda value: value['public_client_fast'].update(result='cancelled'),
+                lambda value: value['nom-anchor-sqlite'].update(result='cancelled'),
+                lambda value: value['macho-object-prefix'].update(result='failure'),
                 lambda value: value['nom-current-core'].update(result='failure')]
             for mutate in failures:
                 value = deepcopy(selected); mutate(value)

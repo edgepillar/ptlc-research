@@ -280,3 +280,29 @@ The complete earlier README is retained without path rewriting at
 [README_QUALIFICATION_HISTORY.md](README_QUALIFICATION_HISTORY.md). Historical
 Stage labels and conditional execution statements are snapshots. This status
 record supplies the delivery entry point without rewriting frozen evidence.
+# Full-CI macOS admission candidate
+
+The captured public-checker source at
+`f07efa757a382b52c128da3e7e21cfcaf5593a23` passed its complete 4,690-case local
+profile and both separately scoped native original-value gates. Its
+[first full attempt](https://github.com/edgepillar/ptlc-research/actions/runs/41883421528/attempts/1)
+and single corrective
+[second full attempt](https://github.com/edgepillar/ptlc-research/actions/runs/41883421528/attempts/2)
+failed after hosted macOS jobs were not acquired. Those failures, available
+artifact families, complete console archives and exact capacity API responses
+remain retained. Neither attempt supplies complete full-CI acceptance.
+
+The following candidate orders the unchanged full Python matrix after the
+complete SQLite matrix and the Apple object-prefix job. This reduces this
+workflow's possible simultaneous macOS runner requests from four to two. All
+four Python profiles, fourteen runtime jobs, runner architectures, test commands
+and final acceptance predicates remain required. The SQLite prerequisite includes
+both its Linux and macOS rows. A failed prerequisite remains a final-gate failure;
+no partial result is promoted. Provider allocation success and any wall-time
+improvement remain unestablished until fresh hosted execution.
+
+This is a scheduling change with its own source qualification requirement.
+The earlier revision's local and hosted results do not qualify the new revision.
+Main remains at the separately accepted `091c5676ab2ae2f1f1fcf01946d6b94297657406`.
+Behavior/journal selection remains `77ba9c7`, independent assessment remains
+UNFILLED and application/core remain NO-GO. Action permission remains NONE.
