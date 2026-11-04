@@ -36,3 +36,9 @@ exclude from `go test ./...`. The pinned native preparation copies their exact
 bytes into `common/db` and `vm/embedded/definition` through its explicit source
 map. Their upstream package declarations must not enter this module's
 `qualification` package. No build constraint or test filter is added.
+
+The formatting check still traverses `testdata`; these fixtures must remain
+formatted with the pinned Go 1.23.12 `gofmt`. The local publication qualification
+checks both Go module trees before the complete Python profile. See the
+[preserved formatting failure](../docs/NOM_DEV_18C048A_NATIVE.md#preserved-formatting-failure)
+for the original failed full workflow and its separate acceptance boundary.

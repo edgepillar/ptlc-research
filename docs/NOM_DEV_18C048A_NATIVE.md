@@ -130,11 +130,32 @@ placed in that separate verifier module's root. All nine available artifact
 families and the original complete CI console are retained; passing separate
 candidate comparisons do not supply full-workflow acceptance.
 
-The producers now reside under `qualification-go/testdata` with byte-identical
-contents. The explicit native source map and frozen plan retain the same two
+The producers were first moved under `qualification-go/testdata` with
+byte-identical contents. The formatting follow-up below updates their bytes
+and frozen hashes without changing the source map or finite expectations. The explicit native source map and frozen plan retain the same two
 upstream destinations, source views, commands and finite expectations. The
 standalone module's active Go and module-input bytes match the accepted parent
 source; no build constraint or test-selection exception is introduced. The
 source-stage regression also requires the fixture layout and absence of the
 old root-level files. The corrected revision requires fresh local regression
 and its own hosted PR and main acceptance. Prior failed evidence is unchanged.
+
+
+## Preserved formatting failure
+
+The [full PR attempt 41731077578/1](https://github.com/edgepillar/ptlc-research/actions/runs/41731077578/attempts/1)
+for research source `d46e5bd00e5e147eac33e046d0179d23ad56112d` remains failed.
+The standalone module completed its offline Go tests and fixed module-content
+checks, then failed `Check Go formatting`. All nine available artifact families
+and the complete original CI console are retained. Successful separate native
+comparisons do not qualify that failed full workflow.
+
+Both source fixtures now use pinned Go 1.23.12 formatter output. The frozen plan
+updates only their two producer hashes; source destinations, commands, expected
+values and stage counts are unchanged. Formatting checks remain enabled for
+fixtures under `testdata`. The local publication qualification also runs the
+pinned formatter's listing check across both Go modules before its complete
+Python profile, so this failure can be caught before expensive hosted work.
+No formatting exception, native test filter or CI retry is introduced. The
+new revision requires fresh local regression and its own three hosted PR gates;
+main publication and main's push-triggered acceptance remain separate.

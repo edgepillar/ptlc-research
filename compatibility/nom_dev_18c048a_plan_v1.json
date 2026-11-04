@@ -13,8 +13,8 @@
     "storage": "SNAPSHOT MASKING, NESTED VIEWS, LIVE EMPTY VALUES, PREFIXES, POP, REOPEN"
   },
   "added_producer_sha256": {
-    "qualification-go/testdata/nom_18c_collection_test.go": "633d1eaa22b4983d46136db51e6305760540fdb823f10c11cec9ad9a287cd515",
-    "qualification-go/testdata/nom_18c_storage_test.go": "a4248a0d0b5fb01bd93f11ade4a084f0cbaf410edcea0016a5a455a783ce6635"
+    "qualification-go/testdata/nom_18c_collection_test.go": "c5f1f7cfb4ee5054d216b39b67a30b69abbf52b0b9a07027aa4a97558266d8d9",
+    "qualification-go/testdata/nom_18c_storage_test.go": "bc8ed642783045d093fa0e94b87c196d1f5ad9ccbf985354aba04e9ff474d2b0"
   },
   "application": "NO-GO",
   "automatic_retry": false,

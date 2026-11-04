@@ -195,13 +195,15 @@ type research18cFaultIterator struct {
 	releases int
 }
 
-func (i *research18cFaultIterator) Next() bool { i.steps++; return i.steps == 1 }
-func (i *research18cFaultIterator) Prev() bool { i.steps++; return i.steps == 1 }
-func (i *research18cFaultIterator) Last() bool { return true }
-func (i *research18cFaultIterator) Key() []byte { return []byte("p/deleted") }
+func (i *research18cFaultIterator) Next() bool    { i.steps++; return i.steps == 1 }
+func (i *research18cFaultIterator) Prev() bool    { i.steps++; return i.steps == 1 }
+func (i *research18cFaultIterator) Last() bool    { return true }
+func (i *research18cFaultIterator) Key() []byte   { return []byte("p/deleted") }
 func (i *research18cFaultIterator) Value() []byte { return nil }
 func (i *research18cFaultIterator) Error() error {
-	if i.steps > 1 { return i.fault }
+	if i.steps > 1 {
+		return i.fault
+	}
 	return nil
 }
 func (i *research18cFaultIterator) Release() { i.releases++ }
@@ -214,15 +216,20 @@ func TestPTLCResearchIteratorErrorForwarding(t *testing.T) {
 			iterator := newEnableDeleteIterator(raw)
 			var moved bool
 			switch name {
-			case "Next": moved = iterator.Next()
-			case "Prev": moved = iterator.Prev()
-			case "Last": moved = iterator.Last()
+			case "Next":
+				moved = iterator.Next()
+			case "Prev":
+				moved = iterator.Prev()
+			case "Last":
+				moved = iterator.Last()
 			}
 			if moved || !errors.Is(iterator.Error(), fault) || raw.steps != 2 {
 				t.Fatalf("selected %s did not preserve its failure after a tombstone", name)
 			}
 			iterator.Release()
-			if raw.releases != 1 { t.Fatal("iterator release was not forwarded exactly once") }
+			if raw.releases != 1 {
+				t.Fatal("iterator release was not forwarded exactly once")
+			}
 		})
 	}
 }
