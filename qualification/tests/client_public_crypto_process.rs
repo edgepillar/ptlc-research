@@ -82,6 +82,61 @@ fn canonical_request() -> Vec<u8> {
     serde_json::to_vec(&value).unwrap()
 }
 
+fn assert_client_composition(expected_result: &[u8], expected_request_digest: &str) {
+    // Select the actual binary built in this package's existing target context.
+    // Read it without copying it or treating its digest as source authentication.
+    let executable = std::fs::canonicalize(public_cli_path()).unwrap();
+    assert!(std::fs::metadata(&executable).unwrap().len() <= 128 * 1024 * 1024);
+    let digest: String = Sha256::digest(std::fs::read(&executable).unwrap())
+        .iter()
+        .map(|byte| format!("{byte:02x}"))
+        .collect();
+    let run = |request: &[u8]| {
+        let mut child = Command::new("python3")
+            .args(["-B", "-m", "reference_client.checker", "--executable"])
+            .arg(&executable)
+            .arg("--sha256")
+            .arg(&digest)
+            .current_dir(root())
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap();
+        child.stdin.take().unwrap().write_all(request).unwrap();
+        bounded_output(child)
+    };
+    let input = std::fs::read(root().join("reference_client/synthetic_presignature_request.json"))
+        .unwrap();
+    let output = run(&input);
+    assert!(output.status.success() && output.stderr.is_empty());
+    assert!(output.stdout.len() <= 8192);
+    let captured: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(captured["request_digest_hex"], expected_request_digest);
+    assert_eq!(captured["executable_sha256"], digest);
+    assert_eq!(
+        captured["checker_result_json"].as_str().unwrap().as_bytes(),
+        expected_result
+    );
+    assert_eq!(captured["backend_execution"], "COMPLETE_SELECTED_LOCAL_PROCESS");
+    assert_eq!(captured["verification"], "CAPTURE_AND_ASSOCIATION_ONLY");
+    assert_eq!(captured["source_authentication"], "NOT_ESTABLISHED_BY_THIS_TOOL");
+    assert_eq!(captured["action_permission"], "NONE");
+    assert_eq!(captured["application"], "NO-GO");
+    assert_eq!(captured["core"], "NO-GO");
+    assert_eq!(captured["process_stderr_bytes"], 0);
+
+    let mut invalid: serde_json::Value = serde_json::from_slice(&input).unwrap();
+    invalid["presignature"]["s_hat_hex"] = serde_json::json!("00".repeat(32));
+    let refused = run(&serde_json::to_vec(&invalid).unwrap());
+    assert_eq!(refused.status.code(), Some(2));
+    assert!(refused.stdout.is_empty());
+    assert_eq!(
+        refused.stderr,
+        b"REFUSED: public checker result incomplete or invalid; no action authorized\n"
+    );
+}
+
 #[test]
 fn the_built_public_cli_accepts_one_framing_lf_and_refuses_oversized_input() {
     let value: serde_json::Value = serde_json::from_slice(
@@ -107,6 +162,7 @@ fn the_built_public_cli_accepts_one_framing_lf_and_refuses_oversized_input() {
     let refused = run_public_cli(&vec![b'x'; 8193]);
     assert_eq!(refused.status.code(), Some(2));
     assert!(refused.stdout.is_empty() && refused.stderr.is_empty());
+    assert_client_composition(&output.stdout, &digest);
 }
 
 #[test]

@@ -2,8 +2,9 @@
 
 This M1 D6 slice adds a finite comparison for the separately tracked
 [`18c048abb3f825274fa7b6900b65bd691ced15ef`](https://github.com/zenon-network/go-zenon/tree/18c048abb3f825274fa7b6900b65bd691ced15ef)
-source. Native compatibility remains **UNFILLED** until fresh originals pass
-their own source-bound acceptance. The behavior and journal selection remains
+source. The declared finite Linux comparison has separately accepted PR and
+own-main originals at the research source recorded below. Complete native
+compatibility remains **UNFILLED** outside that selection. The behavior and journal selection remains
 `77ba9c7`; the historical [821bdd2 comparison](NOM_DEV_821BDD2_NATIVE.md) and
 its evidence remain unchanged. Application/core acceptance stays **NO-GO** and
 independent assessment stays **UNFILLED**.
@@ -12,6 +13,31 @@ The [complete source inventory](NOM_DEV_18C048A.md) pins 525 upstream files,
 their Git tree, archive and GPL version 3 license. The source and its tests are
 acquired separately, not vendored or relicensed. The two original project
 producers below are added only to one newly prepared qualification source view.
+
+## Recorded finite acceptance
+
+Research source
+[`091c5676ab2ae2f1f1fcf01946d6b94297657406`](https://github.com/edgepillar/ptlc-research/tree/091c5676ab2ae2f1f1fcf01946d6b94297657406)
+received complete local regression and separate hosted original acceptance in
+[PR #228](https://github.com/edgepillar/ptlc-research/pull/228). Its native
+[PR attempt 41784819510/2](https://github.com/edgepillar/ptlc-research/actions/runs/41784819510/attempts/2)
+and [own-main attempt 41806034899/1](https://github.com/edgepillar/ptlc-research/actions/runs/41806034899/attempts/1)
+each accounted for three successful jobs, 42 complete profiles, 47 Go commands,
+813 named outcomes, 102 original files and all 24 disjoint definition roots.
+The eight-root complement is not added to the profile outcome count.
+
+The first PR attempt failed the workflow's 14 GiB free-space admission before
+Go execution. Its original console is retained; no native artifact was produced.
+Actual free bytes were not recorded by that original workflow. The separately
+accepted second attempt preserves the first failure and changes no source,
+admission threshold, storage policy or native command. Main's original acceptance
+uses its own first push attempt, not either PR attempt.
+
+The preceding `9e3fe639` acceptance remains recorded in
+[PR #227](https://github.com/edgepillar/ptlc-research/pull/227); none of its results
+is relabeled as evidence for 091c567. Later revisions need their own relevant
+checks. Darwin candidate behavior, compiler-build authentication, independent
+assessment, complete admission and operational recovery remain unfilled.
 
 ## Finite selection
 
@@ -102,7 +128,7 @@ Green results for those older native subjects cannot qualify this new candidate.
 
 Local regression, actual native values, original artifact custody, hosted PR
 acceptance, normal history-preserving main integration and main's own push
-acceptance remain separate gates. Linux success would not establish Darwin
+acceptance remain separate gates. Recorded Linux success does not establish Darwin
 behavior, compiler-build authentication or independent protocol assessment.
 No node, activation, wallet, signature, broadcast or funds action is authorized.
 

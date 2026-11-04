@@ -6,17 +6,29 @@ funds are authorized by this status record.
 
 ## Active delivery work
 
-The active M1 D6 item tracks upstream dev source `18c048a` through a
+The active M2b/M3 candidate adds a
+[captured public-checker composition](docs/NOM_PUBLIC_CHECKER_COMPOSITION.md).
+It rederives the request from the complete funding prefix, invokes only a local
+owner-selected executable and associates its complete exact result. This is
+capture evidence under declared local build/filesystem trust, not source
+authentication or signing authority. Its 19 regular-file controls use
+fabricated program replies; fresh full regression and actual built Rust checker
+assertions are required for this new source. The accepted execution baseline
+below retains its own earlier subject.
+
+The completed finite M1 D6 item tracks upstream dev source `18c048a` through a
 [complete 525-file inventory and shared-path impact record](docs/NOM_DEV_18C048A.md).
 Relative to the retained 821bdd2 input, two files are added and six modified;
 517 retain their complete bytes. Shared DB tombstone iteration, collection
 guards and protocol shutdown require explicit scopes. The new corpus and its
-index controls were accepted at `50df48f8` in PR #226. The next
+index controls were accepted at `50df48f8` in PR #226. The
 [finite native selection](docs/NOM_DEV_18C048A_NATIVE.md) preserves all previous
 profiles and adds storage composition, iterator-error, collection and shutdown
-scopes. Its 42 profiles and 47 commands need fresh native originals; no 18c048a
-native comparison is claimed. Behavior/journal selection remains at `77ba9c7`, and the
-separate finite candidate native selection remains at `821bdd2`.
+scopes. Its 42-profile, 47-command Linux comparison and 102 original files were
+accepted separately for the PR and own-main attempts recorded below. This is a
+finite comparison, not complete admission, running-node, crash-durability or
+independent-review acceptance. Behavior/journal selection remains at `77ba9c7`;
+the separate `821bdd2` comparison keeps its own source and evidence.
 
 The recorded M3 component evidence covers Python public IO refusal: complete
 local writing/flushing, read/write/flush faults, short output and lost diagnostics.
@@ -135,6 +147,35 @@ gates below. New work must advance a named acceptance condition or fix a concret
 defect, with its verification scope declared before execution.
 
 ## Recorded accepted baseline
+
+The current recorded execution baseline is
+[`091c5676ab2ae2f1f1fcf01946d6b94297657406`](https://github.com/edgepillar/ptlc-research/tree/091c5676ab2ae2f1f1fcf01946d6b94297657406).
+[PR #228](https://github.com/edgepillar/ptlc-research/pull/228) records complete
+local regression, separate PR original acceptance, normal fast-forward and
+three separately accepted own-main attempts. Later documentation or executable
+changes do not inherit qualification merely by citing this baseline.
+
+| Evidence | Accepted scope at 091c567 |
+| --- | --- |
+| Full own-main | [41806034731/1](https://github.com/edgepillar/ptlc-research/actions/runs/41806034731/attempts/1): 17 jobs accounted for, 16 successful and the fast job explicitly unexecuted; nine original artifact families and the complete console; four 4,671-case Python profiles and 217 Rust cases, including ten public checker cases |
+| 821bdd2 own-main | [41806034909/1](https://github.com/edgepillar/ptlc-research/actions/runs/41806034909/attempts/1): three jobs, 37 profiles, 42 Go commands, 782 named outcomes, 92 originals and 19 separately counted definition roots |
+| 18c048a own-main | [41806034899/1](https://github.com/edgepillar/ptlc-research/actions/runs/41806034899/attempts/1): three jobs, 42 profiles, 47 Go commands, 813 named outcomes, 102 originals and all 24 disjoint definition roots |
+| Source and retention | 1,345 files; 2,690 index/worktree versions passed artifact/privacy checks; both edgepillar roles verified across 261 source commits; original archives and prior failure evidence preserved |
+
+The scheduling-only change updates module weight hints from accepted profiles.
+All four observed maximum-to-mean shard ratios improved, while wall-clock
+results were mixed: the Ubuntu Python 3.13 maximum increased from 1,971 to 2,544
+seconds. Different hosts and uncontrolled conditions do not establish a causal
+or overall workflow speedup. No test, worker, fixture budget or retry rule was
+removed or relaxed. PR #228 preserves the failed first 18c048a capacity admission
+and its separately accepted second attempt; main passed its own first attempts.
+
+The preceding `9e3fe639` baseline and
+[PR #227](https://github.com/edgepillar/ptlc-research/pull/227) retain their own
+native adoption and original acceptance records. The table below preserves the
+earlier corpus-only baseline and its exact counts.
+
+### Preserved 50df48f8 corpus baseline
 
 | Evidence | Selected scope |
 | --- | --- |

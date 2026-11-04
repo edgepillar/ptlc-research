@@ -12,7 +12,7 @@ No statement here authorizes a node, spork, wallet, signature, broadcast or fund
 | Subject | Selection and evidence boundary |
 | --- | --- |
 | Contract/account behavior used by this design | [go-zenon `77ba9c7ee8c881e90911946756cdb67d8b586043`](https://github.com/zenon-network/go-zenon/tree/77ba9c7ee8c881e90911946756cdb67d8b586043), tree `57da4b9588e053facfdb8299181fe15a8ad2a223` |
-| Separately tracked upstream head | [`18c048abb3f825274fa7b6900b65bd691ced15ef`](NOM_DEV_18C048A.md); complete source inventory and shared storage/lifecycle impact; its [finite native plan](NOM_DEV_18C048A_NATIVE.md) requires fresh acceptance. The previous [821bdd2 finite Linux comparison](NOM_DEV_821BDD2_NATIVE.md) retains its own subject; no behavior/journal pin upgrade or complete admission proof |
+| Separately tracked upstream head | [`18c048abb3f825274fa7b6900b65bd691ced15ef`](NOM_DEV_18C048A.md); complete source inventory and shared storage/lifecycle impact; its [finite Linux comparison](NOM_DEV_18C048A_NATIVE.md) has separately recorded PR and own-main original acceptance. The previous [821bdd2 finite Linux comparison](NOM_DEV_821BDD2_NATIVE.md) retains its own subject; no behavior/journal pin upgrade or complete admission proof |
 | Historical codec profile | `zenon-ptlc-unlock:v1`; its historical PR #138 source selection and existing manifests remain unchanged |
 | New implementation target | `reference_client`: Python public terms/ABI/hash and presignature-request tools; `public_crypto`: a separate public relation checker using the already pinned backend; synthetic signing remains confined to qualification tests |
 | Existing executable evidence | Component-specific source, runtime, run and platform selections in the existing qualification documents; no old result is relabeled as a result for this design |
@@ -215,6 +215,15 @@ or recover. Both current entry checks, authenticated agreement, a selected
 timing/observation policy, exact original custody and a separately assessed
 signing owner remain open. Independent assessment remains unfilled.
 
+The separate [captured public-checker candidate](NOM_PUBLIC_CHECKER_COMPOSITION.md)
+adds one explicit local process invocation with bounded IO and exact result
+association. Its executable and expected digest come only from the local command
+line. Public preparation input still selects neither a program nor a peer
+message/context. Capture does not authenticate source or build; a fabricated
+owner-selected program can still report a matching claim. No signer, persistent
+store, network or action authority follows. Its fresh qualification is separate
+from the supplied-result inspector and the earlier accepted baseline.
+
 ## Required party sequence
 
 The following is a target state machine, **not implemented network behavior**.
@@ -327,7 +336,7 @@ not completed independent reviews or permission records.
 | D3: fee refresh | Consider a family of economically equivalent outer account candidates while preserving the inner witness | Policy and implementation UNSELECTED. Preserve exact bytes and UNKNOWN for every candidate. No automatic re-signing, account rebasing or original-only journal migration. |
 | D4: operating scope | Offline public tools first; later separately scoped local devnet with synthetic allocations and explicitly owned test accounts | This document does not expand Stage 0 authority. Testnet, mainnet, user wallets, real funds and activation remain outside the current slice. Any later execution must meet the then-current explicit authorization and storage lifecycle. |
 | D5: language/license | Python for public deterministic tooling; a separate Rust public checker using the already pinned backend; a signing owner remains separately unselected | No Go node import or new cryptographic primitive is introduced. The small package uses existing pinned dependencies. A process boundary is not a license conclusion; actual dependency and distribution obligations remain separately scoped. |
-| D6: upstream tracking | Compare immutable inventories of PTLC and relevant shared paths; qualify affected behavior rather than every unrelated commit | Include ABI, verifier, VM accounting/pricing, receive sequencing, account/momentum insertion and rollback, pool behavior, token/spork/genesis configuration and dependencies. Unchanged PTLC filenames alone are insufficient. Keep tracked `18c048a` distinct from behavior/journal pin `77ba9c7`; fresh candidate native acceptance is required. Historical `821bdd2` acceptance retains its own source and exclusions. |
+| D6: upstream tracking | Compare immutable inventories of PTLC and relevant shared paths; qualify affected behavior rather than every unrelated commit | Include ABI, verifier, VM accounting/pricing, receive sequencing, account/momentum insertion and rollback, pool behavior, token/spork/genesis configuration and dependencies. Unchanged PTLC filenames alone are insufficient. Keep tracked `18c048a` distinct from behavior/journal pin `77ba9c7`; its recorded finite Linux acceptance does not supply complete admission or qualify later source. Historical `821bdd2` acceptance retains its own source and exclusions. |
 | D7: Bitcoin extension | Preserve the historical CANDIDATE-01 subject; investigate a separate tapscript 2-of-2/NUMS design later | Bitcoin is outside this NoM implementation. Key-path exclusion, sighash/output binding, refund, MTP/momentum margin, fee policy/CPFP and delta review remain OPEN. No existing Bitcoin review or test is inherited. |
 | D8: work and acceptance | Add work only against a named protocol, implementation or evidence gate; stop at its explicit exit condition | Preserve old evidence and unrelated work. Parallel early crypto review preparation and bounded synthetic development are appropriate. No reviewer outreach, cleanup, branch deletion, CI erasure or publication follows from this record. |
 
@@ -350,9 +359,11 @@ does not authenticate the producer, impose an IO timeout or grant action.
 | `inspect-agreement` | Inspect economic terms without entry IDs; derive Create calls and a separate agreement digest | No counterparty consent, curve check, funding, operational policy or action permission |
 | `bind-funding` | Match supplied Create hash inputs and entry projections in long-then-short order, preserving exact declared replay | No signature verification, chain execution, persistent custody, pre-signature admission or fee replacement |
 | `prepare-presignature-check` | Recheck the funding prefix and derive one bound leg's message/key/point/context request | No curve check, agreement authentication, chain truth, action or signer permission |
+| `inspect-presignature-result` | Rederive the complete request and associate one exact canonical supplied checker result | No backend execution, mathematical verification, source authentication, chain truth or action permission |
 | `encode-call` | Reuse the existing bounded public ABI codec for explicit supplied calls | No transaction admission, signing or network action; codec support for ProxyUnlock is not client proxy support |
 | `hash-account-block` | Reuse the existing public account hash-input codec for an explicit supplied public block | No account authorization, canonical signed wire, valid account predecessor, Plasma sufficiency, inclusion or replacement permission |
 | `public_crypto` executable | Separately verify the selected public adaptor relation from bounded canonical JSON | No authenticated context, signing, adaptation, extraction, operational recovery or action permission |
+| `python3 -B -m reference_client.checker` | Capture one explicitly selected local public-checker process and associate its exact complete result | No source/build authentication, adversarial filesystem replacement proof, signer, chain truth, outer delivery proof or action permission |
 | `init`, `fund`, `presign`, `verify`, `claim`, `watch`, `reclaim`, `receive` | Planned stateful client responsibilities mapped to the sequence above; not implemented by the initial slice | No secret, node, transport or persistent application state interface yet |
 
 Initial offline-slice acceptance requires strict bounded input handling, exact

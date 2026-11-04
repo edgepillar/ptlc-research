@@ -175,6 +175,31 @@ disclosure, recovery or operational composition permission.
 
 ## Focused feedback and remaining requirements
 
+The [captured process candidate](NOM_PUBLIC_CHECKER_COMPOSITION.md) adds the
+following M2b/M3 component selection. Its 19 Python controls use fabricated
+regular-file executables. Actual public mathematics is selected separately by
+the extended existing Rust process case. These rows need fresh evidence for the
+new source and do not extend any earlier accepted subject.
+
+| ID | Scenario | Selected check |
+| --- | --- | --- |
+| PUBLIC-25 | An explicitly selected fabricated program can match every field without authenticating source or mathematics | `test_selected_capture_does_not_authenticate_a_fabricated_mathematical_claim` |
+| PUBLIC-26 | Exact captured original bytes and their digest survive bounded canonical outer output without private paths; discarded or closed outer output supplies no caller receipt | `test_complete_original_result_is_returned_without_reencoding`; `test_cli_emits_one_bounded_public_response_without_private_selection_paths`; `test_standalone_discarded_or_closed_output_is_not_a_caller_receipt` |
+| PUBLIC-27 | Peer/prefix, executable-selection, nonregular and size refusals occur before launch | `test_invalid_prefix_or_peer_overrides_never_reach_process_launch`; `test_wrong_digest_relative_or_unprotected_file_refuses_before_launch`; `test_nonregular_path_and_binary_cap_refuse_without_link_or_large_file_fixtures` |
+| PUBLIC-28 | Observed byte or inode changes, partial/foreign claims and expanded authority cannot produce a receipt | Executable-change and exact-result refusal selectors in `test_client_checker` |
+| PUBLIC-29 | Nonzero/signal exit, stream caps or timeout refuse and complete owned-child cleanup without retry | Exit, stream-limit and timeout selectors in `test_client_checker` |
+| PUBLIC-30 | Bounded diagnostics are not automatic failure; private environment, output/launch faults and interrupts retain their explicit boundaries | Diagnostic, environment, outer-output, launch and interrupt selectors in `test_client_checker` |
+| PUBLIC-31 | A changed economic context after execution cannot consume the original captured result | `test_context_is_rederived_after_execution_and_never_automatically_retried` |
+| PUBLIC-32 | The actual built Rust checker composes with the Python caller and refuses an invalid public scalar | Additional assertions in `the_built_public_cli_accepts_one_framing_lf_and_refuses_oversized_input`; the five process-case count is unchanged |
+
+Only regular small files are created by the Python selection. Its nonregular
+and size controls use mocked metadata or a reduced isolated cap. Timeout is an
+owned-process lifetime control, not an observed exact instruction cut. Local
+executable/build/filesystem trust remains an owner assumption; no source
+authentication, arbitrary-program sandbox, signer, observer or durable store is
+supplied. Captured backend output and delivery of the outer response remain
+distinct. Application/core stay NO-GO and independent assessment stays UNFILLED.
+
 The [small-package command](../public_crypto/README.md) runs the selected library
 and actual process cases using the same source as qualification. The manifest
 adds no dependency and its lockfile selection stays unchanged. Declared owned

@@ -31,6 +31,14 @@ qualification crate. Offline Cargo commands require those inputs to be available
 already. The qualification tests also compile the exact same checker source;
 older frozen qualification workers and their formats remain separate.
 
+The separate [captured client composition](../docs/NOM_PUBLIC_CHECKER_COMPOSITION.md)
+can invoke an already built, explicitly owner-selected checker and retain its
+exact response in the outer public JSON. It performs no build or fetch and copies
+no binary. Its digest checks are consistency checks, not source authentication.
+The existing first process case also exercises that actual composition and an
+invalid public scalar. The five library/five process case counts remain unchanged;
+these new assertions require fresh results for the changed source.
+
 Focused process checks use the same test source from the small package:
 
 ```sh

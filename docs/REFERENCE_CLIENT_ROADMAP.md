@@ -105,13 +105,22 @@ small package and the qualification tests use the same checker source. A result
 digest binds input bytes only; the caller's context digest remains unauthenticated.
 Exact source, package/build context and actual checks accompany every result.
 
-The next additive public slice is result association. Recheck the full funding
-prefix, rederive the selected request and compare a bounded canonical supplied
+The result-association component is implemented and has source-bound evidence
+recorded in [the status record](../STATUS.md). It rechecks the full funding
+prefix, rederives the selected request and compares a bounded canonical supplied
 response against both request and context digests and the checker's exact scope.
-Its stop condition is demonstrated refusal of stale/cross-leg/economic-context
-results and widened authority claims, while even a fabricated matching response
-stays explicitly unverified. This is caller-side association, not backend
-execution evidence or a substitute for the separate mathematical check.
+Its stale/cross-leg/economic-context and widened-authority refusal condition is
+complete for that recorded component subject. Even a fabricated matching
+response stays explicitly unverified. This is caller-side association, not
+backend execution evidence or a substitute for the separate mathematical check.
+
+A further [public-only composition candidate](NOM_PUBLIC_CHECKER_COMPOSITION.md)
+binds an actual selected local checker process to its complete captured response.
+Local executable selection, build
+trust, bounded IO, timeout, child completion and source-bound evidence require
+an explicit scope. A binary digest or matching result cannot authenticate its
+source. This remains separate from selecting a signer, observer, operational
+store or local-devnet execution.
 
 Acceptance for that later composition:
 
