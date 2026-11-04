@@ -31,6 +31,27 @@ single record beyond the existing 16 KiB frame cap. The fixture now follows the
 production chunk contract and includes a self-consistent one-byte-over-cap
 refusal. The original focused failure and production decoder limits are unchanged.
 
+Source `1abbd4b09b52d41bc196014f1c3133302713f1a5` subsequently passed a
+complete local profile: 4,690 Python cases across 241 modules, eight original
+streams and 2,696 index/worktree artifact checks. Its
+[first full PR attempt](https://github.com/edgepillar/ptlc-research/actions/runs/41860844118/attempts/1)
+failed. `nom-wire-core` refused its 10 GiB free-space floor plus 2 GiB allocation
+before RPC source acquisition. The Rust job completed its test step but later
+failed the Rust 1.90 formatting check; several macOS scopes were cancelled.
+Six available artifact families and the complete original console are retained;
+missing output is not claimed as verified. The separately completed
+[821bdd2](https://github.com/edgepillar/ptlc-research/actions/runs/41860844060/attempts/1)
+and [18c048a](https://github.com/edgepillar/ptlc-research/actions/runs/41860844383/attempts/1)
+comparisons reported success and their originals are retained. Those observations
+do not supply whole-workflow acceptance or qualify a later revision.
+
+The current correction changes the shared Rust test's formatting and this status
+record. Its assertions and five library/five process case counts are unchanged.
+Formatting must pass before another complete local profile; formatting alone
+executes no Rust test and supplies no mathematical acceptance. Fresh source-bound
+local and hosted checks remain required. The resource floor, earlier failures
+and application/core NO-GO are preserved.
+
 The completed finite M1 D6 item tracks upstream dev source `18c048a` through a
 [complete 525-file inventory and shared-path impact record](docs/NOM_DEV_18C048A.md).
 Relative to the retained 821bdd2 input, two files are added and six modified;

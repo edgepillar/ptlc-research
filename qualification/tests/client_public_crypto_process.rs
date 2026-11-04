@@ -106,8 +106,8 @@ fn assert_client_composition(expected_result: &[u8], expected_request_digest: &s
         child.stdin.take().unwrap().write_all(request).unwrap();
         bounded_output(child)
     };
-    let input = std::fs::read(root().join("reference_client/synthetic_presignature_request.json"))
-        .unwrap();
+    let input =
+        std::fs::read(root().join("reference_client/synthetic_presignature_request.json")).unwrap();
     let output = run(&input);
     assert!(output.status.success() && output.stderr.is_empty());
     assert!(output.stdout.len() <= 8192);
@@ -118,9 +118,15 @@ fn assert_client_composition(expected_result: &[u8], expected_request_digest: &s
         captured["checker_result_json"].as_str().unwrap().as_bytes(),
         expected_result
     );
-    assert_eq!(captured["backend_execution"], "COMPLETE_SELECTED_LOCAL_PROCESS");
+    assert_eq!(
+        captured["backend_execution"],
+        "COMPLETE_SELECTED_LOCAL_PROCESS"
+    );
     assert_eq!(captured["verification"], "CAPTURE_AND_ASSOCIATION_ONLY");
-    assert_eq!(captured["source_authentication"], "NOT_ESTABLISHED_BY_THIS_TOOL");
+    assert_eq!(
+        captured["source_authentication"],
+        "NOT_ESTABLISHED_BY_THIS_TOOL"
+    );
     assert_eq!(captured["action_permission"], "NONE");
     assert_eq!(captured["application"], "NO-GO");
     assert_eq!(captured["core"], "NO-GO");
