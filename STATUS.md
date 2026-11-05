@@ -6,15 +6,37 @@ funds are authorized by this status record.
 
 ## Active delivery work
 
-The active M2b/M3 candidate adds a
+The M2b/M3 [captured public-checker component](docs/NOM_PUBLIC_CHECKER_COMPOSITION.md)
+met its declared offline stop condition at `e43e6974`, as recorded below.
+It rederives the complete public request, captures an explicitly owner-selected
+local process and associates its exact result. The 19 fabricated-program Python
+controls and the actual built Rust checker assertions establish different scopes;
+neither authenticates an arbitrary executable or authorizes a swap.
+
+The next bounded M0/M4 item reconciles the delivery entry points and prepares a
+[new reading packet](docs/PUBLIC_CHECKER_CAPTURE_REVIEW.md) for that exact accepted
+source. The packet freezes its subject and questions; it is author preparation,
+not an independent assessment. Existing frozen review subjects stay unchanged.
+These documentation changes require their own applicable checks and do not
+inherit qualification from the source they describe.
+
+Before any later operational composition, D1 observation, D2 signer/nonce and D3
+original-custody/recovery decisions still need their selected constructions and
+assessments. No signer, observer, durable operational store or network is selected
+by this item. Behavior/journal stays at `77ba9c7`, independent assessment remains
+UNFILLED, application/core remain NO-GO, and action permission remains NONE.
+
+## Preserved component development records
+
+The M2b/M3 candidate that led to the accepted component added a
 [captured public-checker composition](docs/NOM_PUBLIC_CHECKER_COMPOSITION.md).
 It rederives the request from the complete funding prefix, invokes only a local
 owner-selected executable and associates its complete exact result. This is
 capture evidence under declared local build/filesystem trust, not source
 authentication or signing authority. Its 19 regular-file controls use
 fabricated program replies; fresh full regression and actual built Rust checker
-assertions are required for this new source. The accepted execution baseline
-below retains its own earlier subject.
+assertions were required for each new source. The candidate records below retain
+their original subjects and failures; the later acceptance does not reclassify them.
 
 The first complete local profile of this slice at `b9ccb094` finished all 4,690
 tests but was not accepted: seven public-tier decoder controls failed in setup
@@ -45,7 +67,7 @@ and [18c048a](https://github.com/edgepillar/ptlc-research/actions/runs/418608443
 comparisons reported success and their originals are retained. Those observations
 do not supply whole-workflow acceptance or qualify a later revision.
 
-The current correction changes the shared Rust test's formatting and this status
+The subsequent `f07efa75` correction changed the shared Rust test's formatting and this status
 record. Its assertions and five library/five process case counts are unchanged.
 Formatting must pass before another complete local profile; formatting alone
 executes no Rust test and supplies no mathematical acceptance. Fresh source-bound
@@ -185,6 +207,42 @@ defect, with its verification scope declared before execution.
 ## Recorded accepted baseline
 
 The current recorded execution baseline is
+[`e43e69747a95d0089c0f6f1a4979a42a7d5a58a9`](https://github.com/edgepillar/ptlc-research/tree/e43e69747a95d0089c0f6f1a4979a42a7d5a58a9),
+tree `4436577780e7ddd6819d88bc1a5ab2b2d5e6fb6a`, with accepted source-inventory
+SHA-256 `03c604b062ea9743aa2455a946858d351d6c98ed59affbe57733bb2df30940fd`.
+[PR #229](https://github.com/edgepillar/ptlc-research/pull/229) records the six
+history-preserving commits, complete local regression, separate PR gates, normal
+fast-forward and separately consumed own-main originals. It is merged.
+
+| Evidence | Accepted scope at e43e6974 |
+| --- | --- |
+| Local offline | 4,692 cases across 241 modules; all eight original shard streams complete; 2,696 index/worktree artifact versions checked |
+| Full PR | [41946219760/1](https://github.com/edgepillar/ptlc-research/actions/runs/41946219760/attempts/1): complete full-tier originals accepted separately from main |
+| Finite PR comparisons | [821bdd2: 41946219790/1](https://github.com/edgepillar/ptlc-research/actions/runs/41946219790/attempts/1) and [18c048a: 41946219770/1](https://github.com/edgepillar/ptlc-research/actions/runs/41946219770/attempts/1): each accepted against its own originals |
+| Full own-main | [41967151419/1](https://github.com/edgepillar/ptlc-research/actions/runs/41967151419/attempts/1): 17 jobs accounted for, 16 successful and the fast job explicitly unexecuted; all 14 runtime jobs, both controls, nine original artifact families and complete console; four 4,692-case Python profiles and 217 Rust cases, including five library and five public process cases |
+| 821bdd2 own-main | [41967151384/1](https://github.com/edgepillar/ptlc-research/actions/runs/41967151384/attempts/1): three jobs, 37 profiles, 42 Go commands, 782 named outcomes, 92 originals and 19 separately counted definition roots |
+| 18c048a own-main | [41967151411/1](https://github.com/edgepillar/ptlc-research/actions/runs/41967151411/attempts/1): three jobs, 42 profiles, 47 Go commands, 813 named outcomes, 102 originals and all 24 disjoint definition roots |
+| Source and scope | 1,348 files; both edgepillar roles verified across 267 source commits; no local native rerun used to substitute for hosted gates; originals and failed evidence preserved |
+
+The shared Rust process test ran the actual checker built by the qualification
+crate and refused an invalid public scalar through the Python capture path.
+This is not a fresh independent build of the smaller package's target/feature
+closure. That package reuses the same source, but its declared command and build
+context remain separate. Executable consistency is not source authentication.
+The [capture reading packet](docs/PUBLIC_CHECKER_CAPTURE_REVIEW.md) fixes the
+component review subject and exclusions without claiming independent review.
+
+The test-only ownership handoff correction waits for actual selected store locks;
+it changes no production store retry, worker, pool or cryptographic behavior.
+The scheduling change bounds this workflow's simultaneous macOS runner requests
+at two. Successful allocation in these attempts is observed evidence, not a causal
+speedup or provider capacity guarantee. All original failed attempts and local
+reader/preflight refusals remain failed or unqualified against their own subjects.
+Later documentation or executable revisions require their own relevant gates.
+
+### Preserved 091c5676 baseline
+
+The preceding recorded execution baseline is
 [`091c5676ab2ae2f1f1fcf01946d6b94297657406`](https://github.com/edgepillar/ptlc-research/tree/091c5676ab2ae2f1f1fcf01946d6b94297657406).
 [PR #228](https://github.com/edgepillar/ptlc-research/pull/228) records complete
 local regression, separate PR original acceptance, normal fast-forward and
@@ -280,7 +338,7 @@ The complete earlier README is retained without path rewriting at
 [README_QUALIFICATION_HISTORY.md](README_QUALIFICATION_HISTORY.md). Historical
 Stage labels and conditional execution statements are snapshots. This status
 record supplies the delivery entry point without rewriting frozen evidence.
-# Full-CI macOS admission candidate
+## Preserved full-CI macOS admission candidate
 
 The captured public-checker source at
 `f07efa757a382b52c128da3e7e21cfcaf5593a23` passed its complete 4,690-case local
@@ -303,7 +361,8 @@ improvement remain unestablished until fresh hosted execution.
 
 This is a scheduling change with its own source qualification requirement.
 The earlier revision's local and hosted results do not qualify the new revision.
-Main remains at the separately accepted `091c5676ab2ae2f1f1fcf01946d6b94297657406`.
+At that candidate's preparation, main remained at the separately accepted
+`091c5676ab2ae2f1f1fcf01946d6b94297657406`.
 Behavior/journal selection remains `77ba9c7`, independent assessment remains
 UNFILLED and application/core remain NO-GO. Action permission remains NONE.
 

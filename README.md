@@ -52,11 +52,33 @@ an expanded authority claim. A matching JSON claim can still be fabricated:
 inspection runs no backend and establishes neither mathematical validity nor
 execution provenance. See the protocol candidate for its exact input contract.
 
+The separate [captured checker command](docs/NOM_PUBLIC_CHECKER_COMPOSITION.md)
+invokes an already built, explicitly owner-selected local executable. It
+rederives the request, captures bounded original output through EOF and checks
+the exact result association. The owner must separately trust the selected
+source, build and filesystem path. A digest does not authenticate an executable,
+and capture grants no action or operational recovery authority.
+
 ## Evidence and checks
 
 The recorded accepted baseline is
+[`e43e6974`](https://github.com/edgepillar/ptlc-research/tree/e43e69747a95d0089c0f6f1a4979a42a7d5a58a9).
+[PR #229](https://github.com/edgepillar/ptlc-research/pull/229) records complete
+local regression, separate PR original acceptance, a normal fast-forward and
+three separately accepted own-main attempts. The
+[full main attempt 41967151419/1](https://github.com/edgepillar/ptlc-research/actions/runs/41967151419/attempts/1)
+accounted for 17 jobs: 16 succeeded and the fast job was unexecuted. Its nine
+original artifact families and complete console include four 4,692-case Python
+profiles and 217 Rust cases, including ten public checker cases. The actual
+built-checker process assertions qualify the declared capture component; they
+do not authenticate an arbitrary owner-selected binary. The
+[status record](STATUS.md) separates both finite native comparisons and all
+earlier failed attempts. Later source changes require their own relevant gates.
+
+The preceding
 [`50df48f8`](https://github.com/edgepillar/ptlc-research/tree/50df48f823f6b47c72a37f92a722a38042d975a7),
-including accepted [main CI attempt 41282624789/1](https://github.com/edgepillar/ptlc-research/actions/runs/41282624789/attempts/1).
+including accepted [main CI attempt 41282624789/1](https://github.com/edgepillar/ptlc-research/actions/runs/41282624789/attempts/1),
+remains a historical corpus baseline.
 Its own 17 jobs were accounted for: 16 succeeded and the fast job was unexecuted.
 All 14 runtime jobs, nine original artifact families, both controls and complete
 console were accepted separately from [PR #226](https://github.com/edgepillar/ptlc-research/pull/226).
@@ -88,7 +110,8 @@ python3 -B -W error::ResourceWarning -m unittest discover -s tests -p 'test_*cli
 cargo test --locked --offline --manifest-path public_crypto/Cargo.toml
 ```
 
-The first command selects the three client modules and CI scope/transport controls.
+The first command selects the four client component modules and the CI
+scope/transport controls: five modules in total.
 The Rust command selects the
 small package's library and process cases with its existing three dependencies.
 See the [public client scenario matrix](docs/NOM_PUBLIC_CLIENT_MATRIX.md) for the
@@ -110,7 +133,12 @@ source files and the shared storage/lifecycle delta. It preserves the preceding
 `77ba9c7` behavior and journal selections. The new
 [18c048a candidate plan](docs/NOM_DEV_18C048A_NATIVE.md) preserves all previous
 profiles and adds storage, collection and shutdown scopes in one fresh workspace;
-its native acceptance remains unfilled. The declared finite 821bdd2 Linux candidate
+its declared finite Linux comparison was separately accepted for `e43e6974` in
+[main attempt 41967151411/1](https://github.com/edgepillar/ptlc-research/actions/runs/41967151411/attempts/1):
+42 profiles, 47 Go commands, 813 named outcomes and 102 originals, with all 24
+disjoint definition roots accounted for separately. This is no claim of complete
+upstream, Darwin, running-node or independent-assessment acceptance.
+The declared finite 821bdd2 Linux candidate
 comparison was accepted for source `0081896`, with separate PR and main
 originals recorded in [PR #222](https://github.com/edgepillar/ptlc-research/pull/222).
 The [candidate native plan](docs/NOM_DEV_821BDD2_NATIVE.md) preserves all prior
@@ -119,6 +147,11 @@ sharing one fresh compiler workspace. Its exclusions and independent-assessment
 requirements remain separate from that accepted finite comparison.
 
 ## Preserved research
+
+The [captured checker reading packet](docs/PUBLIC_CHECKER_CAPTURE_REVIEW.md)
+freezes `e43e6974`, its reading subset, build contexts, accepted component
+evidence and remaining questions. It is author preparation for M4; no reviewer
+has been appointed or independent assessment completed.
 
 The [public component assessment reading map](docs/NOM_PUBLIC_COMPONENT_REVIEW.md)
 freezes an explicit source and nine questions. It is author preparation only;
