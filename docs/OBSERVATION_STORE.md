@@ -138,6 +138,13 @@ reference after result commit or failure; guard and worker references persist
 until they close or exit. The owner releases only its references by closing them;
 an explicit shared LOCK_UN would release a still-live worker's exclusion or slot.
 
+Shared-slot availability does not establish acquisition of both independent
+store-owner locks. A nonblocking open still returns `StoreBusy` before SQLite
+access while either lock remains held. Positive native handoff controls wait
+for the actual selected open within a fixed test deadline; a lock that remains
+unavailable fails the control. This test synchronization introduces no queue or
+automatic retry in production open, admission, observation or recovery.
+
 The returned statement must finish that exact target and profile. A malformed
 or cross-target return becomes an explicitly charged unknown, never a normal
 negative. Unexpected ordinary worker exceptions also become unknown without

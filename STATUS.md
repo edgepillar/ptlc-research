@@ -306,3 +306,32 @@ The earlier revision's local and hosted results do not qualify the new revision.
 Main remains at the separately accepted `091c5676ab2ae2f1f1fcf01946d6b94297657406`.
 Behavior/journal selection remains `77ba9c7`, independent assessment remains
 UNFILLED and application/core remain NO-GO. Action permission remains NONE.
+
+## Preserved 0415fe46 full-CI failure and ownership handoff candidate
+
+The [first full PR attempt for 0415fe46](https://github.com/edgepillar/ptlc-research/actions/runs/41922504374/attempts/1)
+completed with failure. All 17 jobs were accounted for: 14 successes, the failed
+Ubuntu/Python 3.11 profile, failed final acceptance, and explicit fast-tier
+nonexecution. The original failed profile contains all eight complete shard
+streams, with 4,689 reported `ok` outcomes and one `error`. The error occurred
+in the resource-store owner-death control when reopening returned `StoreBusy`.
+The other three Python jobs succeeded; full-attempt acceptance remains
+NOT_ACCEPTED. Nine available artifact families and the complete original
+console archive remain retained without reconstruction or repacking.
+
+That control observed a free shared worker slot before attempting the separate
+store locks. Slot availability does not establish that both owner locks can be
+acquired. The test candidate waits for the actual selected open within a bounded
+fixture deadline. An unreleased lock still fails the control. Two added real-lock
+controls establish that free capacity can coexist with blocked ownership, that
+SQLite and selected work remain untouched while blocked, and that an unreleased
+lock reaches an explicit test failure.
+
+The wait exists only in test support. Non-test store, pool, worker and guard code
+remain unchanged, including immediate `StoreBusy` before SQLite access and the
+absence of automatic observation/recovery retries. Focused controls select only
+regular-file fixtures; complete-suite fixture and hosted requirements remain
+separate. New source requires fresh local and hosted gates. The original failure
+is preserved against its original source and is not qualified by later results.
+Behavior/journal selection stays at `77ba9c7`; independent assessment remains
+UNFILLED, application/core remain NO-GO, and action permission remains NONE.

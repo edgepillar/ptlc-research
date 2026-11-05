@@ -21,7 +21,8 @@ from offline_session.observation_verifier import SubprocessObservation, _file_di
 from offline_session.worker_pool import PoolBusy
 from offline_session.worker_resources import WorkerResourceLimits
 from completion_test_support import final_signatures, released_bob
-from observation_store_test_support import STORE_ID, synthetic_pool, synthetic_verifier
+from observation_store_test_support import (STORE_ID, synthetic_pool, synthetic_verifier,
+                                            wait_for_store_ownership)
 
 
 class NativeResourceStoreTests(unittest.TestCase):
@@ -99,7 +100,7 @@ class NativeResourceStoreTests(unittest.TestCase):
             verifier=verifier, worker_pool=self.pool, resource_limits=self.policy, attempt_limit=2, target_limit=2)
 
     def recovered_unknown(self):
-        with self.open() as store:
+        with wait_for_store_ownership(self.open) as store:
             self.assertEqual((store.summary().attempts_consumed, store.summary().pending_attempts), (1, 0))
             self.assertIsNone(store.known_statement(self.state, self.signature))
         anchor = json.loads(self.anchor.read_bytes())

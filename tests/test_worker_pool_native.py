@@ -4,17 +4,21 @@ import json
 import os
 from pathlib import Path
 import signal
+import sqlite3
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import unittest
+from unittest.mock import patch
 
-from offline_session.observation_store import ObservationStore
+from offline_session.observation_store import ObservationStore, StoreBusy
 from offline_session.observation_verifier import SubprocessObservation, _file_digest
 from offline_session.worker_pool import PoolBusy
 from completion_test_support import final_signatures, released_bob
-from observation_store_test_support import STORE_ID, synthetic_pool
+from observation_store_test_support import (STORE_ID, synthetic_pool, synthetic_verifier,
+                                            wait_for_store_ownership)
 
 
 @unittest.skipUnless(os.name == "posix", "native shared admission requires POSIX locks and signals")
@@ -80,8 +84,71 @@ class NativeWorkerPoolTests(unittest.TestCase):
         root = self.base / name
         observer = SubprocessObservation(root / "controlled-worker",
             expected_executable_sha256_hex=_file_digest(root / "controlled-worker"))
-        return ObservationStore.open(root, self.base / (name + ".json"), store_id_hex=STORE_ID,
-            verifier=observer, worker_pool=self.pool, attempt_limit=2, target_limit=2)
+        return wait_for_store_ownership(lambda: ObservationStore.open(
+            root, self.base / (name + ".json"), store_id_hex=STORE_ID,
+            verifier=observer, worker_pool=self.pool, attempt_limit=2, target_limit=2))
+
+    def empty_store_opener(self):
+        self.configure()
+        observer = synthetic_verifier()
+        return lambda: ObservationStore.open(self.base / "ownership-records",
+            self.base / "ownership-head.json", store_id_hex=STORE_ID, verifier=observer,
+            worker_pool=self.pool, attempt_limit=2, target_limit=2)
+
+    def test_positive_handoff_waits_for_actual_store_lock_after_shared_capacity_is_free(self):
+        import fcntl
+        opener = self.empty_store_opener()
+        with opener():
+            pass
+        descriptor = os.open(self.base / "ownership-records" / "observations.lock", os.O_RDWR)
+        fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        release = threading.Event()
+        errors, busy = [], []
+        def release_owner():
+            try:
+                if not release.wait(10):
+                    errors.append("controlled ownership release was not requested")
+            finally:
+                os.close(descriptor)
+        owner = threading.Thread(target=release_owner)
+        owner.start()
+        try:
+            # Capacity is genuinely free while an independent owner lock is held.
+            with self.pool.acquire():
+                pass
+            with patch("offline_session.observation_store.sqlite3.connect", wraps=sqlite3.connect) as connect, \
+                    patch("offline_session.public_worker.subprocess.Popen") as spawn:
+                def selected_open():
+                    try:
+                        return opener()
+                    except StoreBusy:
+                        connect.assert_not_called()
+                        busy.append(True)
+                        release.set()
+                        raise
+                with wait_for_store_ownership(selected_open) as store:
+                    self.assertEqual((store.summary().attempts_consumed, store.summary().pending_attempts), (0, 0))
+                self.assertTrue(busy)
+                self.assertEqual(connect.call_count, 1)
+                spawn.assert_not_called()
+        finally:
+            release.set()
+            owner.join(timeout=10)
+        self.assertFalse(owner.is_alive())
+        self.assertEqual(errors, [])
+
+    def test_unreleased_store_lock_fails_bounded_handoff_before_sqlite_or_worker(self):
+        import fcntl
+        opener = self.empty_store_opener()
+        with opener():
+            with self.pool.acquire():
+                pass
+            with patch("offline_session.observation_store.sqlite3.connect") as connect, \
+                    patch("offline_session.public_worker.subprocess.Popen") as spawn:
+                with self.assertRaisesRegex(AssertionError, "controlled store ownership"):
+                    wait_for_store_ownership(opener, timeout=0)
+                connect.assert_not_called()
+                spawn.assert_not_called()
 
     def test_two_independent_live_workers_fill_pool_and_third_has_no_charge_until_explicit_retry(self):
         self.configure(2)
