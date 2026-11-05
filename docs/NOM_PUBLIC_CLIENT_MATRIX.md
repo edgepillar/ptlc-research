@@ -7,15 +7,29 @@ Application/core remain **NO-GO** and independent assessment is **UNFILLED**.
 
 ## Source and evidence boundaries
 
-The accepted M2b baseline is
+The current accepted public-component subject is
+[`e43e69747a95d0089c0f6f1a4979a42a7d5a58a9`](https://github.com/edgepillar/ptlc-research/tree/e43e69747a95d0089c0f6f1a4979a42a7d5a58a9).
+[PR #229](https://github.com/edgepillar/ptlc-research/pull/229) records complete
+4,692-case local regression, separate PR original acceptance and the accepted
+[full own-main attempt 41967151419/1](https://github.com/edgepillar/ptlc-research/actions/runs/41967151419/attempts/1).
+Each full hosted scope contains four 4,692-case Python profiles and 217 Rust
+cases, including the five library/five process public subset and its actual
+built-checker capture assertions. The 19 Python capture controls use fabricated
+programs; they supply capture/refusal evidence, not public mathematical proof.
+These component results do not execute the operational scenarios excluded below.
+The [status record](../STATUS.md) separates native comparisons and prior failures;
+the [capture reading packet](PUBLIC_CHECKER_CAPTURE_REVIEW.md) freezes this
+author-prepared review subject. Assessment remains UNFILLED.
+
+The earlier M2b baseline is
 [`366a4157fdd85fd5b32c5257b529c170430fe22e`](https://github.com/edgepillar/ptlc-research/tree/366a4157fdd85fd5b32c5257b529c170430fe22e).
 Its own [main run 40888304942/1](https://github.com/edgepillar/ptlc-research/actions/runs/40888304942/attempts/1)
 and nine original artifact families were accepted separately from the PR run;
 the [PR record](https://github.com/edgepillar/ptlc-research/pull/215) identifies
 that boundary. The baseline has five library cases, two process cases and two
-small-package targets. Its earlier results do not qualify this candidate.
+small-package targets. Its earlier results do not qualify later revisions.
 
-The current selection adds three process cases and reuses their exact source
+The later selection adds three process cases and reuses their exact source
 from the small package. It declares five library cases and five process cases,
 with library, binary and integration-test targets. Case presence and an expected
 count are not execution results. Fresh source, compiler, build context, complete
@@ -175,11 +189,13 @@ disclosure, recovery or operational composition permission.
 
 ## Focused feedback and remaining requirements
 
-The [captured process candidate](NOM_PUBLIC_CHECKER_COMPOSITION.md) adds the
+The [captured process component](NOM_PUBLIC_CHECKER_COMPOSITION.md) adds the
 following M2b/M3 component selection. Its 19 Python controls use fabricated
 regular-file executables. Actual public mathematics is selected separately by
-the extended existing Rust process case. These rows need fresh evidence for the
-new source and do not extend any earlier accepted subject.
+the extended existing Rust process case. PUBLIC-25 through PUBLIC-32 met their
+declared offline component condition at `e43e6974` under the evidence scopes
+above. No earlier run is extended to qualify it, and a later revision requires
+its own applicable checks.
 
 | ID | Scenario | Selected check |
 | --- | --- | --- |

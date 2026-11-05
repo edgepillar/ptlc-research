@@ -1,10 +1,19 @@
 # Captured public checker composition
 
-Status: **M2b/M3 offline component candidate; fresh complete qualification required**.
+Status: **M2b/M3 offline component condition met at e43e6974; no operational approval**.
 This component executes only an explicitly selected local public checker over
 public preparation data. It selects no signer, observer, operational store, node,
 wallet, signing, broadcast or funds. Application/core remain **NO-GO** and
 independent assessment remains **UNFILLED**.
+
+The exact accepted subject is
+[`e43e69747a95d0089c0f6f1a4979a42a7d5a58a9`](https://github.com/edgepillar/ptlc-research/tree/e43e69747a95d0089c0f6f1a4979a42a7d5a58a9).
+[PR #229](https://github.com/edgepillar/ptlc-research/pull/229) records complete
+local regression, separate PR original gates and three own-main original gates.
+The [status record](../STATUS.md) gives their exact run/attempt scopes. The
+[reading packet](PUBLIC_CHECKER_CAPTURE_REVIEW.md) freezes this component subject
+for author preparation; it supplies no independent assessment. Later changes
+still require their own applicable source-bound checks.
 
 ## Owner selection and trust
 
@@ -113,15 +122,22 @@ and requires refusal for an invalid public scalar. The existing five library
 and five process case counts remain unchanged; those new assertions are not
 additional Rust cases. No binary copy or new dependency is introduced.
 
-Acceptance requires fresh full Python regression, artifact/privacy checks, the
+Acceptance required fresh full Python regression, artifact/privacy checks, the
 actual built-checker assertions and the applicable hosted original gates for
-the exact new source. The focused fabricated-program run alone is insufficient.
+the exact selected source. At `e43e6974`, the accepted local profile contained
+4,692 cases across 241 modules and 2,696 checked index/worktree artifact versions.
+The separate full PR and own-main originals each contained four 4,692-case Python
+profiles and 217 Rust cases, including the actual built-checker assertions in
+the unchanged five-library/five-process public case counts. These hosted Rust
+results use the larger qualification crate, not a fresh independent build of
+the smaller package's target/feature closure. The focused fabricated-program
+run alone was insufficient and does not authenticate a selected executable.
 The public-tier producer explicitly registers the five matching Python modules
 and their result prefixes, including the new checker controls. The policy names
 only the new public component and test file; new executable additions, changes
 to the policy/producer, unknown/shared source and every main push still select
 full CI. Later eligible component-only PRs can use the existing focused tier
 with these tests and the same actual Rust process case.
-Stop this item when those component conditions are met. It supplies no actual
+That component stop condition is met for `e43e6974`. It supplies no actual
 bilateral exchange, durable recovery, independent assessment or application/core
 approval; those remain the separate [roadmap](REFERENCE_CLIENT_ROADMAP.md) gates.

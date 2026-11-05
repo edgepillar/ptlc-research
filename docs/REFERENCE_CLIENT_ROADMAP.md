@@ -114,13 +114,16 @@ complete for that recorded component subject. Even a fabricated matching
 response stays explicitly unverified. This is caller-side association, not
 backend execution evidence or a substitute for the separate mathematical check.
 
-A further [public-only composition candidate](NOM_PUBLIC_CHECKER_COMPOSITION.md)
-binds an actual selected local checker process to its complete captured response.
-Local executable selection, build
-trust, bounded IO, timeout, child completion and source-bound evidence require
-an explicit scope. A binary digest or matching result cannot authenticate its
-source. This remains separate from selecting a signer, observer, operational
-store or local-devnet execution.
+The [public-only capture component](NOM_PUBLIC_CHECKER_COMPOSITION.md) met its
+declared offline condition at `e43e6974`, with separate local, PR and own-main
+evidence recorded in [the status record](../STATUS.md). It binds one explicitly
+owner-selected local checker process to its complete captured response under
+declared source/build/filesystem trust. The 19 fabricated-program Python controls
+and the actual built Rust checker assertions have distinct scopes. A binary
+digest or matching result cannot authenticate its source. That completed item
+selects no signer, observer, operational store or local-devnet execution.
+The [capture reading packet](PUBLIC_CHECKER_CAPTURE_REVIEW.md) freezes the exact
+accepted subject for M4 author preparation; assessment remains UNFILLED.
 
 Acceptance for that later composition:
 
