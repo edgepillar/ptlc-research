@@ -23,7 +23,7 @@ remain pinned to `77ba9c7`.
 
 ## Finite native comparison
 
-The Linux workflow selects 38 top-level tests in 13 packages and checks every
+The Linux workflow selects 39 top-level tests in 13 packages and checks every
 observed subtest. It uses the unchanged project PR #138 corpus and the
 upstream unlock and reclaim message vectors. It also selects synthetic ABI,
 account-block decoding, VM rollback, store failure, verifier, and observation

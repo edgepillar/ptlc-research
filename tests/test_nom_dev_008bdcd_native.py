@@ -27,7 +27,10 @@ class NoMDev008bdcdNativeControls(unittest.TestCase):
     def test_plan_uses_one_exact_filter_and_the_original_corpus(self):
         plan, index, combined = selected.selection()
         self.assertEqual((len(index), len(combined), len(selected.ROOTS)), (562, 563, 13))
-        self.assertEqual(sum(map(len, selected.ROOTS.values())), 38)
+        self.assertEqual(sum(map(len, selected.ROOTS.values())), 39)
+        decode = 'TestAccountBlock_UnmarshalJSON_DescendantDecodeIsLinear'
+        self.assertEqual({package for package, roots in selected.ROOTS.items() if decode in roots},
+                         {'chain/nom', 'rpc/api'})
         self.assertEqual(combined[selected.PROBE], plan['project_input_sha256'][selected.DRIVER])
         self.assertEqual(len(plan['project_input_sha256']), 5)
         self.assertEqual(tuple(plan['test_arguments'][-13:]), selected.PACKAGES)
@@ -41,7 +44,7 @@ class NoMDev008bdcdNativeControls(unittest.TestCase):
     def test_stream_refuses_skipped_missing_and_additional_roots(self):
         original = synthetic_events()
         record = selected.accept_events(event_bytes(original))
-        self.assertEqual((record['packages'], record['required_parents']), (13, 38))
+        self.assertEqual((record['packages'], record['required_parents']), (13, 39))
         for events in (original[:1] + original[3:],
                        original[:2] + [dict(original[2], Action='skip')] + original[3:],
                        original[:3] + [dict(original[1], Test='TestUnselected')] + original[3:]):

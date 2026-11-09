@@ -37,6 +37,7 @@ ROOTS = {
     'common/db': ('TestLevelDBManagerAddInverseReadFailureWritesNothing',),
     'protocol': ('TestValidationFailureClassification',),
     'rpc/api': (
+        'TestAccountBlock_UnmarshalJSON_DescendantDecodeIsLinear',
         'TestGetUnreceivedBlocksByAddress_PagesPastFirst500',
         'TestGetUnreceivedBlocksByAddress_WidensPastReceivedEntries',
         'TestGetUnreceivedBlocksByAddress_SmallMailboxUnchanged',
@@ -71,7 +72,8 @@ ROOTS = {
     ),
 }
 PACKAGES = tuple('./' + package for package in ROOTS)
-TEST_FILTER = '^(' + '|'.join(re.escape(name) for roots in ROOTS.values() for name in roots) + ')$'
+TEST_FILTER = '^(' + '|'.join(re.escape(name)
+    for name in sorted({name for roots in ROOTS.values() for name in roots})) + ')$'
 TEST_ARGUMENTS = ('test', '-json', '-p', '2', '-mod=readonly', '-count=1',
                   '-timeout=4m', '-run', TEST_FILTER, *PACKAGES)
 
