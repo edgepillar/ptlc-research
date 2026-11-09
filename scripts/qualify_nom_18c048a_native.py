@@ -57,7 +57,7 @@ def original(directory, label, suffix, receipt):
 def selected_environment(workspace, proxy, cc, sdk=None):
     environment = dict(PATH='/usr/bin:/bin:/usr/sbin:/sbin', HOME=str(workspace / 'home'),
         GOTOOLCHAIN='local', GOWORK='off', GOENV='off', GOFLAGS='-trimpath',
-        GOPROXY=proxy.as_uri(), GOSUMDB='off', GOVCS='*:off',
+        GOPROXY='off' if proxy is None else proxy.as_uri(), GOSUMDB='off', GOVCS='*:off',
         GOPRIVATE='', GONOPROXY='none', GONOSUMDB='none', GOTELEMETRY='off',
         GOMAXPROCS='4', CGO_ENABLED='1', CC=str(cc),
         GOPATH=str(workspace / 'gopath'), GOMODCACHE=str(workspace / 'modules'),

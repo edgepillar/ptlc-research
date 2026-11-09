@@ -26,7 +26,7 @@ MAX_TOTAL = 64 * 1024**2
 require = selected.earlier.require
 
 
-def checked_payloads(archive, index):
+def checked_payloads(archive, index, *, archive_prefix=ARCHIVE_PREFIX):
     """Check every member and content identity before any extraction writes."""
     directories = {''}
     for name in index:
@@ -43,7 +43,7 @@ def checked_payloads(archive, index):
             and all(part not in ('', '.', '..', '.git') for part in path.parts)
             and '\\' not in row.filename
             and path.as_posix() == row.filename.rstrip('/')
-            and path.parts[0] == ARCHIVE_PREFIX
+            and path.parts[0] == archive_prefix
             and 0 <= row.file_size <= 8 * 1024**2
             and row.flag_bits & 1 == 0
             and row.compress_type in (zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED))
@@ -67,6 +67,18 @@ def checked_payloads(archive, index):
         result[name] = raw
     require(set(result) == set(index))
     return result
+
+
+def write_payloads(destination, payloads):
+    destination.mkdir(mode=0o700)
+    # Partial output stays at the new path for inspection.
+    for name, content in sorted(payloads.items()):
+        target = destination / name
+        target.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+        descriptor = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL
+                             | os.O_NOFOLLOW, 0o600)
+        with os.fdopen(descriptor, 'wb') as output:
+            output.write(content)
 
 
 def prepare(archive, destination, *, root=ROOT):
@@ -95,16 +107,7 @@ def prepare(archive, destination, *, root=ROOT):
         require(name not in payloads)
         payloads[name] = selected.earlier.regular(Path(root) / parent, 2 * 1024**2)
     require(len(payloads) == 552 and sum(map(len, payloads.values())) <= MAX_TOTAL)
-    destination.mkdir(mode=0o700)
-    # A partial output remains at its original new path for separate inspection.
-    # There is no replacement, cleanup, aliasing or implicit repair here.
-    for name, content in sorted(payloads.items()):
-        target = destination / name
-        target.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-        descriptor = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL
-                             | os.O_NOFOLLOW, 0o600)
-        with os.fdopen(descriptor, 'wb') as output:
-            output.write(content)
+    write_payloads(destination, payloads)
     source = selected.compare_source(destination, root, 'all')
     return dict(schema='ptlc-nom-18c048a-source-preparation-v1',
         outcome='PASS_PINNED_SOURCE_PREPARATION_ONLY',

@@ -17,12 +17,32 @@ tree again. [Pinned upstream comparison](https://github.com/zenon-network/go-zen
 | Original ZIP SHA-256 | `bb6db6683795515669b88cb8e293c32e00494514d388324ebe5af55b4d63849a` |
 
 The source retains the same 18 PTLC paths, GPLv3 license and Go dependency
-files as the previous tracked revision. This record stores file measurements.
-The finite native comparison and producer authentication remain unfilled for
-`008bdcd`. The selected behavior and journal remain pinned to `77ba9c7`.
+files as the previous tracked revision. The selected behavior and journal
+remain pinned to `77ba9c7`.
 [Previous source record](NOM_DEV_18C048A.md)
 
-## Shared paths for the next comparison
+## Finite native comparison
+
+The Linux workflow selects 38 top-level tests in 13 packages and checks every
+observed subtest. It uses the unchanged project PR #138 corpus and the
+upstream unlock and reclaim message vectors. It also selects synthetic ABI,
+account-block decoding, VM rollback, store failure, verifier, and observation
+controls. The workflow runs the entire selection in one `go test` command.
+
+Dependency acquisition uses an alternate module lock pair and a fresh module
+cache. The runner verifies the downloaded modules, then reuses the same cache
+with module and checksum network access disabled. The native command reads
+the unchanged upstream lock files. The source view is checked before and
+after the command. The runner retains only explicitly selected safe original
+streams and a bounded receipt. The receipt records failed or incomplete
+execution separately from passing test values.
+
+The workflow definition is a reproducible test plan. Native compatibility
+and producer authentication require separately bound execution evidence.
+The selection does not cover live observation, full account admission or
+source selection for the recovery journal.
+
+## Source boundaries
 
 1. Reuse the independent PR #138 message and hash vectors. Add fixed-width ABI
    and nested account-block decoding refusals around the same inputs.

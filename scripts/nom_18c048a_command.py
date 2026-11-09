@@ -31,6 +31,7 @@ LABELS = frozenset((
 ))
 MAX_STDOUT = 16 * 1024**2
 MAX_STDERR = 4 * 1024**2
+SELECTED_CANDIDATE_LABELS = frozenset(('selected-dependencies', 'selected-native'))
 
 
 def private_create(path):
@@ -53,7 +54,7 @@ def run(command, *, environment, directory, evidence, label, timeout):
             or any(type(k) is not str or type(v) is not str or not k
                    or '=' in k or '\0' in k or '\0' in v
                    for k, v in environment.items())
-            or type(label) is not str or label not in LABELS
+            or type(label) is not str or label not in LABELS | SELECTED_CANDIDATE_LABELS
             or type(timeout) not in (int, float) or not math.isfinite(timeout)
             or not 0 < timeout <= 1200):
         raise WorkerError('invalid selected 18c048a command')
