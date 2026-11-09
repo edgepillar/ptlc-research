@@ -128,14 +128,18 @@ class ObservationVerifierTests(unittest.TestCase):
                     worker._executable.unlink()
 
     def test_entry_file_measurement_rejects_empty_and_oversized_regular_files(self):
+        self.assertEqual(verifier.MAX_EXECUTABLE_BYTES, 64 * 1024 * 1024)
         path = self.directory / "measure"
-        path.touch()
-        with self.assertRaises(evidence.EvidenceError):
-            verifier._file_digest(path)
-        with path.open("wb") as output:
-            output.truncate(verifier.MAX_EXECUTABLE_BYTES + 1)
-        with self.assertRaises(evidence.EvidenceError):
-            verifier._file_digest(path)
+        payload = b"x" * 32
+        with patch.object(verifier, "MAX_EXECUTABLE_BYTES", len(payload)):
+            path.write_bytes(payload)
+            self.assertEqual(verifier._file_digest(path), hashlib.sha256(payload).hexdigest())
+            for invalid in (b"", payload + b"x"):
+                with self.subTest(size=len(invalid)):
+                    path.write_bytes(invalid)
+                    with patch.object(verifier.hashlib, "sha256", side_effect=AssertionError("unexpected hashing")), \
+                            self.assertRaises(evidence.EvidenceError):
+                        verifier._file_digest(path)
 
     def test_all_result_fields_missing_extra_or_changed_are_unknown(self):
         variants = []

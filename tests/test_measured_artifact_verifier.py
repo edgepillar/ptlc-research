@@ -11,7 +11,6 @@ from unittest.mock import patch
 
 from offline_session import exchange
 from offline_session import measured_artifact_verifier as measured
-from offline_session.observation_verifier import MAX_EXECUTABLE_BYTES
 from offline_session.public_worker import WorkerError
 from exchange_test_support import accepted, artifacts
 
@@ -116,17 +115,18 @@ class MeasuredArtifactVerifierTests(unittest.TestCase):
                     self.entry.unlink()
 
     def test_empty_and_oversized_entry_refuse_the_existing_measurement_bound(self):
-        adapter = self.select()
-        for size in (0, MAX_EXECUTABLE_BYTES + 1):
-            with self.subTest(size=size):
-                with self.entry.open("wb") as output:
-                    output.truncate(size)
-                with patch("offline_session.artifact_verifier.run_public_worker") as runner:
-                    with self.assertRaises(exchange.VerificationError):
-                        adapter(self.request)
-                    with self.assertRaises(exchange.VerificationError):
-                        self.select()
-                    runner.assert_not_called()
+        with patch("offline_session.observation_verifier.MAX_EXECUTABLE_BYTES", len(self.original)):
+            adapter = self.select()
+            for payload in (b"", self.original + b"x"):
+                with self.subTest(size=len(payload)):
+                    self.entry.write_bytes(payload)
+                    pin = hashlib.sha256(payload).hexdigest()
+                    with patch("offline_session.artifact_verifier.run_public_worker") as runner:
+                        with self.assertRaises(exchange.VerificationError):
+                            adapter(self.request)
+                        with self.assertRaises(exchange.VerificationError):
+                            measured.MeasuredSubprocessVerifier(self.entry, expected_executable_sha256_hex=pin)
+                        runner.assert_not_called()
 
     def test_equal_byte_new_file_is_accepted_without_inode_or_origin_claim(self):
         adapter = self.select()

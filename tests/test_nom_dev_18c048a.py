@@ -1,4 +1,5 @@
 """Candidate routing, original custody and failure controls; no Go execution."""
+import copy
 import hashlib
 import io
 import json
@@ -379,6 +380,26 @@ class PackageSelectionControls(unittest.TestCase):
 
 
 class OriginalRetentionControls(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.corpus_plan = selected.frozen_plan()
+        cls.corpus_payloads = selected.source_payloads()
+
+    def setUp(self):
+        # The synthetic receipt tests share one verified corpus snapshot.
+        # Each reader gets its own copy of the mutable plan and payload map.
+        def frozen_plan(root=ROOT):
+            self.assertEqual(root, ROOT)
+            return copy.deepcopy(self.corpus_plan)
+
+        def source_payloads(root=ROOT, *, fee_stage=False):
+            self.assertEqual(root, ROOT)
+            self.assertIs(fee_stage, False)
+            return self.corpus_payloads.copy()
+
+        self.enterContext(mock.patch.object(selected, 'frozen_plan', side_effect=frozen_plan))
+        self.enterContext(mock.patch.object(selected, 'source_payloads', side_effect=source_payloads))
+
     def fixture(self, directory, corrupt_complement=False, cold_stderr=b''):
         """Mock command stages only; original receipts and data readers are real."""
         paths = {key: directory / key for key in ('source', 'workspace', 'proxy', 'go', 'cc')}

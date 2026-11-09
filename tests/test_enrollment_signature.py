@@ -13,7 +13,6 @@ from offline_session import authority_contract as authority, completion
 from offline_session import enrollment_contract as contract, enrollment_authentication as auth
 from offline_session.enrollment_verifier import SubprocessEnrollmentSignature
 from offline_session.journal import Conflict, Journal, RecoveryExhausted
-from offline_session.observation_verifier import MAX_EXECUTABLE_BYTES
 from offline_session.public_worker import WorkerError
 from completion_test_support import final_signatures, released_bob
 from exchange_test_support import prepare
@@ -303,9 +302,15 @@ class EnrollmentSignatureAdapterTests(unittest.TestCase):
                 self.adapter(self.vector["request"])
 
     def test_entry_measurement_rejects_empty_or_oversized_file(self):
-        for size in (0, MAX_EXECUTABLE_BYTES + 1):
-            with self.path.open("wb") as source: source.truncate(size)
-            with self.assertRaises(auth.EnrollmentSignatureError): SubprocessEnrollmentSignature(self.path, expected_executable_sha256_hex=self.digest)
+        original = self.path.read_bytes()
+        with patch("offline_session.observation_verifier.MAX_EXECUTABLE_BYTES", len(original)):
+            SubprocessEnrollmentSignature(self.path, expected_executable_sha256_hex=self.digest)
+            for payload in (b"", original + b"x"):
+                with self.subTest(size=len(payload)):
+                    self.path.write_bytes(payload)
+                    pin = hashlib.sha256(payload).hexdigest()
+                    with self.assertRaises(auth.EnrollmentSignatureError):
+                        SubprocessEnrollmentSignature(self.path, expected_executable_sha256_hex=pin)
 
 
 if __name__ == "__main__":
