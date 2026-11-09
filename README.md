@@ -127,6 +127,10 @@ including setup, fetch and post work. Its one measured workspace peak is
 The [fast-path qualification procedure](docs/PUBLIC_CLIENT_FAST_QUALIFICATION.md)
 defines the separate source, original-stream, nonexecution and measurement gates.
 
+The [008bdcd upstream tracking corpus](docs/NOM_DEV_008BDCD.md) reconstructs
+562 source records and identifies the shared paths for the next finite
+comparison. Native compatibility remains unfilled for that tracked source.
+
 The [18c048a upstream tracking corpus](docs/NOM_DEV_18C048A.md) records all 525
 source files and the shared storage/lifecycle delta. It preserves the preceding
 [821bdd2 corpus](docs/NOM_DEV_821BDD2.md). Tracking remains separate from the
