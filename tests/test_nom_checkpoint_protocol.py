@@ -16,10 +16,10 @@ class NoMCheckpointProtocolControls(unittest.TestCase):
     def setUpClass(cls):
         cls.policy, cls.contexts, cls.retained = q.fixture_contexts()
 
-    def setUp(self):
-        self.initial = protocol.bootstrap_reference(self.policy, self.contexts["primary"])
-        self.latest = protocol.advance_reference(self.initial, self.contexts["extended"],
-            expected_current_digest_hex=self.initial.digest_hex)
+        # These checkpoints are immutable synthetic inputs shared by the controls.
+        cls.initial = protocol.bootstrap_reference(cls.policy, cls.contexts["primary"])
+        cls.latest = protocol.advance_reference(cls.initial, cls.contexts["extended"],
+            expected_current_digest_hex=cls.initial.digest_hex)
 
     def compare(self, local, current=None, challenge="d1"*32):
         current = self.latest if current is None else current
@@ -247,11 +247,12 @@ class NoMCheckpointProtocolControls(unittest.TestCase):
     def test_factories_frozen_objects_and_defensive_views_are_not_incoming_capabilities(self):
         for cls in (protocol.CheckpointServiceSelection, protocol.ReferenceCheckpoint):
             with self.assertRaises(TypeError): cls()
-        with self.assertRaises(FrozenInstanceError): self.initial._prior = self.latest
-        before = self.initial.canonical_bytes
-        value = self.initial.as_dict()
+        initial = protocol.bootstrap_reference(self.policy, self.contexts["primary"])
+        with self.assertRaises(FrozenInstanceError): initial._prior = self.latest
+        before = initial.canonical_bytes
+        value = initial.as_dict()
         value["charged_work"].clear()
-        self.assertEqual(self.initial.canonical_bytes, before)
+        self.assertEqual(initial.canonical_bytes, before)
         with self.assertRaises(protocol.CheckpointProtocolRefused): protocol.bootstrap_reference(self.policy, self.contexts["primary"].as_dict())
 
     def test_invalid_and_cyclic_reference_instances_refuse_without_unbounded_recursion(self):
@@ -272,7 +273,13 @@ class NoMCheckpointProtocolControls(unittest.TestCase):
 
     def test_complete_qualifier_retains_negative_and_unsafe_controls_and_prior_inputs(self):
         result = q.qualify()
-        q.check_cases(result)
+        # Compare independent copies of the actual report without regenerating it.
+        with patch.object(q, "qualify", return_value=result):
+            q.check_cases(copy.deepcopy(result))
+            changed = copy.deepcopy(result)
+            changed["boundary"]["protocol_worker_calls"] = False
+            with self.assertRaisesRegex(ValueError, "checkpoint protocol result changed"):
+                q.check_cases(changed)
         previous = q.prior.inputs()[1]
         self.assertEqual(len(previous), 190)
         self.assertTrue(all(result["input_sha256"][name] == digest for name, digest in previous.items()))

@@ -21,7 +21,7 @@
     "offline_session/nom_checkpoint_protocol.py": "c3bab7356fe4decdda53bf0dab298bd5cead584c92a8d6841ab90eed87b667a1",
     "qualification/fixtures/enrollment_signature.json": "b5bb2a35b10f425a09a3b2e02dcee234ce22037412d76a1fed981df3e3adf487",
     "scripts/qualify_nom_checkpoint_protocol.py": "cfcc7f7d56e79426bd2f91dd8c11089c78eee03a51b9d93e0635856a4294f34d",
-    "tests/test_nom_checkpoint_protocol.py": "e256350a2bf4a6bee3733300b83d6a4d3fe4baf8b37c8d8e99c712ecc19e6417"
+    "tests/test_nom_checkpoint_protocol.py": "4e0e56a597a1baf3e80b3cbbd0ba5e67966e61e130b9a64e5942ceaf96279705"
   },
   "preserved_file_sha256": {
     "compatibility/fixtures/nom_account_authorization_v1.json": "98ded6b18c01b436cf92d409693ede954700e362690369e3fe81a782f1bcb4ce",
