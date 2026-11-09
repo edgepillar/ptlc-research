@@ -5,6 +5,7 @@ from dataclasses import FrozenInstanceError
 import json
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 
 from offline_session import enrollment_contract as codec, nom_authority_contract as authority
 from offline_session import nom_checkpoint_discovery as discovery, nom_checkpoint_protocol as protocol
@@ -281,7 +282,14 @@ class NoMCheckpointDiscoveryControls(unittest.TestCase):
 
     def test_complete_qualifier_retains_all_previous_inputs_refusals_and_unsafe_controls(self):
         value = q.qualify()
-        q.check_cases(value)
+        # Build the full report once. Exercise the canonical comparison with
+        # independent copies of that report, including an equal-valued alias.
+        with patch.object(q, "qualify", return_value=value):
+            q.check_cases(copy.deepcopy(value))
+            changed = copy.deepcopy(value)
+            changed["boundary"]["discovery_worker_calls"] = False
+            with self.assertRaisesRegex(ValueError, "checkpoint discovery result changed"):
+                q.check_cases(changed)
         self.assertEqual(len(value["input_sha256"]), 201)
         self.assertEqual(value["refusal_controls"], q.corpus()["refusal_controls"])
         self.assertEqual(len(value["unsafe_controls"]), 4)
