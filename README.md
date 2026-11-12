@@ -127,9 +127,16 @@ including setup, fetch and post work. Its one measured workspace peak is
 The [fast-path qualification procedure](docs/PUBLIC_CLIENT_FAST_QUALIFICATION.md)
 defines the separate source, original-stream, nonexecution and measurement gates.
 
-The [008bdcd upstream tracking corpus](docs/NOM_DEV_008BDCD.md) reconstructs
-562 source records and identifies the shared paths for the next finite
-comparison. Native compatibility remains unfilled for that tracked source.
+The [ab8ee8d upstream tracking corpus](docs/NOM_DEV_AB8EE8D.md) reconstructs
+574 source records. Its 39-entry delta identifies acknowledgement recency,
+embedded refund, HTTP admission and downloader changes. The 18 direct PTLC
+paths retain their previous bytes; the shared changes require their own finite
+comparison. Native compatibility remains unfilled for this new tracked source.
+
+The [008bdcd upstream tracking corpus](docs/NOM_DEV_008BDCD.md) preserves its
+562 source records and separately accepted finite Linux comparison: 39 top-level
+tests in 13 packages at `9ae3d761`, with separate PR and main originals.
+That comparison does not qualify the later `ab8ee8d` source.
 
 The [18c048a upstream tracking corpus](docs/NOM_DEV_18C048A.md) records all 525
 source files and the shared storage/lifecycle delta. It preserves the preceding

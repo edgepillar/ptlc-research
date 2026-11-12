@@ -37,10 +37,14 @@ after the command. The runner retains only explicitly selected safe original
 streams and a bounded receipt. The receipt records failed or incomplete
 execution separately from passing test values.
 
-The workflow definition is a reproducible test plan. Native compatibility
-and producer authentication require separately bound execution evidence.
-The selection does not cover live observation, full account admission or
-source selection for the recovery journal.
+The workflow definition is a reproducible test plan. Its finite Linux execution
+was separately accepted for project source `9ae3d76123f23c3094559a068ee4fcac1c4b732c`,
+with distinct PR and
+[main attempt 42682009327/1](https://github.com/edgepillar/ptlc-research/actions/runs/42682009327/attempts/1)
+originals. That acceptance covers the declared 39 top-level tests in 13 packages
+and their observed subtests. It supplies no live observation, full account
+admission or source selection for the recovery journal. Producer authentication
+and any later source remain separate requirements.
 
 ## Source boundaries
 
@@ -59,10 +63,12 @@ source selection for the recovery journal.
    [Ledger queries](https://github.com/zenon-network/go-zenon/blob/008bdcd60f65923952f27a9d9a8c39fba7254a21/rpc/api/ledger.go)
    [Momentum time lookup](https://github.com/zenon-network/go-zenon/blob/008bdcd60f65923952f27a9d9a8c39fba7254a21/chain/momentum/range.go)
 
-The observed open proposals for enforced-spork acknowledgement, genesis
-spork authority binding and detailed-momentum response limits require separate
-comparisons if adopted. An acknowledgement that becomes stale does not grant
-retry or signing authority. [PR #280](https://github.com/zenon-network/go-zenon/pull/280)
+At this source selection, proposals for enforced-spork acknowledgement, genesis
+spork authority binding and detailed-momentum response limits were observed
+as open. The later [ab8ee8d source record](NOM_DEV_AB8EE8D.md) includes the
+merged acknowledgement change and scopes its new comparison. An acknowledgement
+that becomes stale does not grant retry or signing authority.
+[PR #280](https://github.com/zenon-network/go-zenon/pull/280)
 [PR #286](https://github.com/zenon-network/go-zenon/pull/286)
 [PR #281](https://github.com/zenon-network/go-zenon/pull/281)
 
