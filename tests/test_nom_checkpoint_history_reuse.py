@@ -23,24 +23,20 @@ class CheckpointHistoryReuseControls(unittest.TestCase):
 
     def test_each_call_completely_validates_every_selected_reference(self):
         protocol = discovery.protocol
-        original = protocol.ReferenceCheckpoint.as_dict
         for name, value in self.refs.items():
             with self.subTest(reference=name):
-                size = len(self.reference(value))
-                actual = [0]
-
-                def complete(instance):
-                    actual[0] += 1
-                    return original(instance)
-
-                with patch.object(protocol.ReferenceCheckpoint, 'as_dict', new=complete):
-                    expected = self.reference(value)
-                    self.assertEqual(actual[0], size+1)
-                    actual[0] = 0
-                    self.assertEqual(discovery._history(value), expected)
-                    self.assertEqual(actual[0], size)
-                    self.assertEqual(discovery._history(value), expected)
-                    self.assertEqual(actual[0], 2*size)
+                expected = self.reference(value)
+                contexts = []
+                current = value
+                while current is not None:
+                    contexts.append(id(current._context))
+                    current = current._prior
+                self.assertEqual(len(contexts), len(expected))
+                with patch.object(protocol, '_compatible', wraps=protocol._compatible) as checked:
+                    for _ in range(2):
+                        self.assertEqual(discovery._history(value), expected)
+                        self.assertEqual([id(call.args[1]) for call in checked.call_args_list], contexts)
+                        checked.reset_mock()
 
     def test_later_calls_revalidate_after_success_refusal_and_restoration(self):
         root = self.refs['initial']
@@ -53,6 +49,16 @@ class CheckpointHistoryReuseControls(unittest.TestCase):
         finally:
             object.__setattr__(root._policy, '_wire', wire)
         self.assertEqual(discovery._history(root), expected)
+        tail = self.refs['tail']
+        tail_history = discovery._history(tail)
+        claim = root._context._claim_wire
+        try:
+            object.__setattr__(root._context, '_claim_wire', b'{}')
+            with self.assertRaises(discovery.protocol.CheckpointProtocolRefused):
+                discovery._history(tail)
+        finally:
+            object.__setattr__(root._context, '_claim_wire', claim)
+        self.assertEqual(discovery._history(tail), tail_history)
         changed = discovery._history(root)
         changed[0]['checkpoint']['sequence'] = 999
         changed[0]['source_context_digest_hex'] = '00'*32

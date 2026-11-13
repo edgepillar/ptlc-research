@@ -120,14 +120,14 @@ def select_service(context, *, service_id_hex, service_epoch, checkpoint_key_hex
         raise CheckpointProtocolRefused("checkpoint service selection refused") from None
 
 
-def _snapshot(value, seen):
+def _snapshot(value, seen, snapshots=None):
     _require(type(value) is ReferenceCheckpoint and id(value) not in seen and len(seen) < MAX_SNAPSHOTS)
     seen = seen | {id(value)}
     retained, fields = _compatible(value._policy, value._context)
     if value._prior is None:
         sequence, previous = 1, "00" * 32
     else:
-        before = _snapshot(value._prior, seen)
+        before = _snapshot(value._prior, seen, snapshots)
         _require(value._policy.canonical_bytes == value._prior._policy.canonical_bytes)
         _require(fields["work_scope_digest_hex"] == before["work_scope_digest_hex"])
         continuation = continuity.compare_continuation(value._prior._context._binding._capsule,
@@ -135,12 +135,25 @@ def _snapshot(value, seen):
         _require(continuation["journal_relation"] == "STRICT_EXTENSION")
         sequence, previous = before["sequence"]+1, _hash(SNAPSHOT_DOMAIN, before)
     _require(sequence <= value._policy.as_dict()["max_snapshots"])
-    return dict(schema=SNAPSHOT_SCHEMA, service_selection_digest_hex=value._policy.digest_hex,
+    snapshot = dict(schema=SNAPSHOT_SCHEMA, service_selection_digest_hex=value._policy.digest_hex,
         sequence=sequence, previous_checkpoint_digest_hex=previous,
         work_scope_digest_hex=fields["work_scope_digest_hex"], capsule_sha256=fields["capsule_sha256"],
         journal_sha256=fields["journal_sha256"], journal_head_hex=fields["journal_head_hex"],
         journal_sequence=fields["journal_sequence"], charged_work=fields["charged_work"],
         disclosure_possible=True, work_outcome="UNKNOWN")
+    if snapshots is not None:
+        snapshots.append((value, snapshot))
+    return snapshot
+
+
+def _snapshot_lineage(candidate):
+    """Validate the complete lineage once and collect fresh root-to-head snapshots."""
+    snapshots = []
+    try:
+        _snapshot(candidate, set(), snapshots)
+    except _ERRORS:
+        raise CheckpointProtocolRefused("invalid retained reference checkpoint") from None
+    return snapshots
 
 
 @dataclass(frozen=True, init=False)

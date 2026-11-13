@@ -45,21 +45,17 @@ def _decode(wire):
 
 
 def _history(candidate):
-    _require(type(candidate) is protocol.ReferenceCheckpoint)
-    nodes, seen = [], set()
-    current = candidate
-    while current is not None:
-        _require(type(current) is protocol.ReferenceCheckpoint and id(current) not in seen)
-        _require(len(nodes) < MAX_CHECKPOINTS)
-        seen.add(id(current))
-        snapshot = current.as_dict()
+    _require(type(candidate) is protocol.ReferenceCheckpoint and MAX_CHECKPOINTS > 0)
+    snapshots = protocol._snapshot_lineage(candidate)
+    _require(len(snapshots) <= MAX_CHECKPOINTS)
+    nodes = []
+    for current, snapshot in snapshots:
         # A source-context hash commits to its complete actual declaration/read
         # view; it cannot construct an absent original or opening from this hash.
         context = current._context.as_dict()
         nodes.append(dict(checkpoint_digest_hex=protocol._hash(protocol.SNAPSHOT_DOMAIN, snapshot),
             checkpoint=snapshot, source_context_digest_hex=_hash(CONTEXT_DOMAIN, context)))
-        current = current._prior
-    nodes.reverse()
+    # Recursive validation collected each snapshot in root-to-head order.
     _require(len(nodes) == nodes[-1]["checkpoint"]["sequence"])
     return nodes
 
@@ -67,11 +63,12 @@ def _history(candidate):
 def _query(minimum, challenge_hex):
     _require(type(minimum) is protocol.ReferenceCheckpoint)
     codec._hex(challenge_hex)
-    value = minimum.as_dict()
     history = _history(minimum)
+    head = history[-1]
+    value = head["checkpoint"]
     return dict(schema=QUERY_SCHEMA, purpose="inspect-minimum-checkpoint-lineage",
-        service_selection=minimum._policy.as_dict(), service_selection_digest_hex=minimum._policy.digest_hex,
-        work_scope_digest_hex=value["work_scope_digest_hex"], minimum_checkpoint_digest_hex=minimum.digest_hex,
+        service_selection=minimum._policy.as_dict(), service_selection_digest_hex=value["service_selection_digest_hex"],
+        work_scope_digest_hex=value["work_scope_digest_hex"], minimum_checkpoint_digest_hex=head["checkpoint_digest_hex"],
         minimum_sequence=value["sequence"], minimum_opening_digest_hex=_hash(OPENING_DOMAIN, history),
         challenge_hex=challenge_hex)
 
