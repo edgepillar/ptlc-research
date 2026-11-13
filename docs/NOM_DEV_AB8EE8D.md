@@ -24,7 +24,10 @@ records and hashes; it neither opens the archive nor executes Go.
 The selected behavior and recovery journal remain pinned to `77ba9c7`.
 The [previous source record](NOM_DEV_008BDCD.md) has a separately accepted finite
 Linux comparison of 39 top-level tests in 13 packages. Those originals do not
-qualify this revision. Native compatibility for `ab8ee8d` remains **UNFILLED**.
+qualify this revision. The [new finite plan](NOM_DEV_AB8EE8D_NATIVE.md) preserves
+all 39 selected tests and adds 89, selecting 128 top-level tests in 19 packages.
+Declaring that selection supplies no Go execution result. Native compatibility
+for `ab8ee8d` remains **UNFILLED**.
 
 ## Changes relevant to the reference client
 
@@ -54,14 +57,15 @@ are unchanged by this inventory.
 
 ## Next acceptance gates
 
-1. Extend the finite native plan on this exact source. Preserve the independent
-   PR #138 message/hash corpus and prior selected ABI, verifier, VM rollback,
-   store-failure and observation controls. Add the affected recency, refund,
-   admission and downloader roots with every observed subtest accounted for.
+1. Check the declared 128-test selection against this exact source. Preserve
+   the independent PR #138 message/hash corpus and prior selected ABI,
+   verifier, VM rollback, store-failure and observation controls. Require the
+   selected recency, refund, admission and downloader roots to remain present.
 2. Execute and retain complete source/build/dependency and original-stream
    evidence for that new plan. Account for the changed module declaration;
    unchanged checksum bytes alone do not qualify dependency acquisition.
-   Hosted PR execution and the exact pushed main need separate acceptance.
+   Account for every observed subtest. Hosted PR execution and the exact pushed
+   main need separate acceptance.
 3. Assess the client consequences against an explicitly selected observation
    and signing policy before changing behavior or journal pins. Independent
    protocol, cryptography and recovery assessment remains **UNFILLED**.

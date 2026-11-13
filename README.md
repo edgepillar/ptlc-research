@@ -130,8 +130,10 @@ defines the separate source, original-stream, nonexecution and measurement gates
 The [ab8ee8d upstream tracking corpus](docs/NOM_DEV_AB8EE8D.md) reconstructs
 574 source records. Its 39-entry delta identifies acknowledgement recency,
 embedded refund, HTTP admission and downloader changes. The 18 direct PTLC
-paths retain their previous bytes; the shared changes require their own finite
-comparison. Native compatibility remains unfilled for this new tracked source.
+paths retain their previous bytes. The [finite native plan](docs/NOM_DEV_AB8EE8D_NATIVE.md)
+preserves the earlier 39 selected tests and adds 89, selecting 128 top-level
+tests in 19 packages. Native compatibility remains unfilled for this tracked
+source until its own original PR and main evidence is accepted.
 
 The [008bdcd upstream tracking corpus](docs/NOM_DEV_008BDCD.md) preserves its
 562 source records and separately accepted finite Linux comparison: 39 top-level
