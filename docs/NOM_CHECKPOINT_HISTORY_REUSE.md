@@ -1,16 +1,17 @@
 # Complete history validation within each invocation
 
-History discovery completely validates each selected reference when visiting it.
-The first reference receives that same complete validation in the first loop
-iteration. Removing the earlier duplicate call changes the public reference
-method count from N+1 to N for N selected history nodes. Each method still
-validates its complete recursive checkpoint snapshot, selected context, retained
-capsule and journal continuity.
+History discovery validates the complete retained lineage in one fresh recursive
+checkpoint walk per invocation. That walk collects root-to-head snapshots while
+checking every selected context, retained capsule and journal continuation.
+Discovery uses those snapshots to build the history, and queries use the already
+computed head fields. It does not reopen every ancestor separately or repeat the
+walk to derive the same query head.
 
 Every later history or public query invocation performs validation again. No
-reference, query, process or filesystem cache is introduced. Type, cycle and
-history bounds remain selected before traversal; this does not establish an
-atomic snapshot against concurrent mutation or hostile class edits. The returned
+reference, query, process or filesystem cache is introduced. Recursive type, cycle
+and checkpoint bounds remain enforced, and discovery checks the collected history
+limit before framing it. This does not establish an atomic snapshot against
+concurrent mutation or hostile class edits. The returned
 history remains a fresh value, with no authority to restore absent originals,
 reset UNKNOWN work or enter recovery.
 
@@ -22,11 +23,16 @@ Its SHA-256 is
 It is original project code under the repository MIT license, not an independent
 implementation or security assessment.
 
-Four added methods check complete validation on every invocation, five selected
-histories, later success/refusal/restoration, reused public queries and
-isolated returned values. One method compares 35 finite values or exact refusal
+Four methods check every selected context on each invocation, five selected
+histories, later success/refusal/restoration, ancestor claim mutation, reused
+public queries and isolated returned values. One method compares 35 finite values or exact refusal
 classes and messages with the frozen function while prohibiting file operations
 and subprocess entry. These observations are not a general equivalence proof.
+
+The seven dependent qualification manifests bind the changed runtime source and
+their preceding manifests with updated SHA-256 values. Their complete input
+sets, corpus values and NO-GO boundaries remain selected; input verification
+still refuses any unexpected source change.
 
 No journal operation, file boundary, public worker execution or effectful
 qualification is replaced by a cached result. The change supplies no service

@@ -18,7 +18,7 @@
   },
   "input_sha256": {
     "compatibility/fixtures/nom_checkpoint_protocol_v1.json": "8c0efc7d25b91238b8a1952a16b88cf96e81cd0fcee98ac3bf38bbea38bfc14c",
-    "offline_session/nom_checkpoint_protocol.py": "c3bab7356fe4decdda53bf0dab298bd5cead584c92a8d6841ab90eed87b667a1",
+    "offline_session/nom_checkpoint_protocol.py": "9802ef5bd0d8dae70f3334f173edabe34fab4ae08207f9af6705f4ed2dbdf996",
     "qualification/fixtures/enrollment_signature.json": "b5bb2a35b10f425a09a3b2e02dcee234ce22037412d76a1fed981df3e3adf487",
     "scripts/qualify_nom_checkpoint_protocol.py": "cfcc7f7d56e79426bd2f91dd8c11089c78eee03a51b9d93e0635856a4294f34d",
     "tests/test_nom_checkpoint_protocol.py": "4e0e56a597a1baf3e80b3cbbd0ba5e67966e61e130b9a64e5942ceaf96279705"
