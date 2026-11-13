@@ -6,7 +6,7 @@ import zipfile
 from qualification import nom_dev_ab8ee8d_source as upstream
 from qualification import nom_dev_18c048a as previous
 from qualification import nom_dev_008bdcd_native as baseline
-from qualification.nom_current_admission import MIB, PREFIX, physical, regular, require
+from qualification.nom_current_admission import MIB, PREFIX, decoded, physical, regular, require
 from qualification.nom_fee_original_boundary import compare_files
 from scripts import prepare_nom_18c048a as preparation
 
@@ -220,3 +220,65 @@ def prepare(archive, destination, root=ROOT):
 
 def accept_events(raw):
     return previous.package_events(raw, {PREFIX + key: set(roots) for key, roots in ROOTS.items()})
+
+
+EVENT_SCHEMA = 'ptlc-nom-original-non-output-events-v1'
+EVENT_SCOPE = 'EVERY_ORIGINAL_NON_OUTPUT_EVENT_LINE'
+
+
+def original_event_selection(raw):
+    """Validate the full private stream, then select exact original event lines."""
+    complete = accept_events(raw)
+    rows = raw.splitlines(keepends=True)
+    require(len(rows) == complete['events'] and all(row.endswith(b'\n') for row in rows))
+    kept = [row for row in rows if decoded(row, 65536)['Action'] != 'output']
+    original = dict(bytes=len(raw), sha256=previous.sha(raw))
+    content = b''.join(kept)
+    record = dict(schema=EVENT_SCHEMA, selection=EVENT_SCOPE,
+        original_stdout=original, original_events=len(rows),
+        omitted_output_events=len(rows)-len(kept), selected_events=len(kept),
+        selected_stream=dict(bytes=len(content), sha256=previous.sha(content)),
+        full_stdout_acceptance='NOT_CLAIMED',
+        selection_completeness_by_reader='NOT_ESTABLISHED')
+    accept_selected_events(content, record, original, complete)
+    return content, record, complete
+
+
+def accept_selected_events(raw, record, original, complete):
+    """Check retained original rows without claiming unavailable stdout custody."""
+    require(type(record) is type(original) is type(complete) is dict)
+    require(set(record) == {'schema', 'selection', 'original_stdout', 'original_events',
+        'omitted_output_events', 'selected_events', 'selected_stream',
+        'full_stdout_acceptance', 'selection_completeness_by_reader'})
+    require(record['schema'] == EVENT_SCHEMA and record['selection'] == EVENT_SCOPE
+        and record['full_stdout_acceptance'] == 'NOT_CLAIMED'
+        and record['selection_completeness_by_reader'] == 'NOT_ESTABLISHED')
+    for pin in (original, record['original_stdout'], record['selected_stream']):
+        require(type(pin) is dict and set(pin) == {'bytes', 'sha256'}
+            and type(pin['bytes']) is int and 0 < pin['bytes'] <= previous.MAX_STREAM
+            and type(pin['sha256']) is str
+            and re.fullmatch('[0-9a-f]{64}', pin['sha256']) is not None)
+    require(record['original_stdout'] == original
+        and record['selected_stream'] == dict(bytes=len(raw), sha256=previous.sha(raw))
+        and len(raw) <= original['bytes'])
+    for key in ('original_events', 'omitted_output_events', 'selected_events'):
+        require(type(record[key]) is int and 0 <= record[key] <= 10000)
+    require(record['selected_events'] > 0
+        and record['original_events'] == record['selected_events'] + record['omitted_output_events'])
+    if record['omitted_output_events'] == 0:
+        require(record['original_stdout'] == record['selected_stream'])
+    else:
+        require(original['bytes'] - len(raw) >= record['omitted_output_events'])
+    rows = raw.splitlines()
+    require(len(rows) == record['selected_events'])
+    for row in rows:
+        value = decoded(row, 65536)
+        require(type(value) is dict and value.get('Action') != 'output' and 'Output' not in value)
+    measured = accept_events(raw)
+    require(set(complete) == set(measured)
+        and all(type(value) is int and value > 0 for value in complete.values())
+        and complete['events'] == record['original_events']
+        and measured['events'] == record['selected_events']
+        and all(complete[key] == value for key, value in measured.items() if key != 'events'))
+    return dict(measured, evidence_scope=EVENT_SCOPE, full_stdout_acceptance='NOT_CLAIMED',
+                selection_completeness_by_reader='NOT_ESTABLISHED')

@@ -55,10 +55,29 @@ exit, cleanup and stream-completeness records accompany the result. A failure
 or interrupted attempt remains a failure or incomplete result. There is no
 automatic retry, historical test-result reuse or complete-upstream-suite claim.
 
-The workflow uploads only the checked result and individually selected safe
-original streams. A separate reader must bind the exact research head, source
-digest, workflow, run, attempt, original ZIP digest, console archive and all
-observed event values. A green PR run does not qualify the later main push.
+The native command for the [initial source](https://github.com/edgepillar/ptlc-research/commit/4a7d0d8fd862562e549b5750e6389037f2df6ab6)
+in the [first attempt](https://github.com/edgepillar/ptlc-research/actions/runs/43396334716/attempts/1)
+returned a zero native exit, but the complete stdout failed
+the privacy check. That failed attempt and its original CI archives remain
+failure evidence; they do not establish the 128 selected outcomes.
+
+The runner now validates the complete private Go event stream with the
+unchanged package, parent, descendant, skip and framing guards. It selects
+every non-output event line without rewriting its bytes. The checked
+result, those original structural rows and the other safe original streams
+are exported. Full native stdout is represented by its byte count and
+digest; output-message content stays outside the public artifact.
+
+The artifact reader independently checks all retained structural values.
+It cannot establish the selection completeness of unavailable full stdout.
+The full-stream check and byte-preserving selection remain assertions of
+the exact source-pinned CI producer. This is finite selected-event
+evidence, with no complete-stdout or execution-origin attestation claim.
+A separate reader must bind the exact research head, source digest,
+workflow, run, attempt, original ZIP digest and console archive. A green
+PR run does not qualify the later main push. Complete native compatibility
+and independent assessment remain unfilled; this lane qualifies only its
+finite retained structural-event values.
 
 ## Remaining boundaries
 

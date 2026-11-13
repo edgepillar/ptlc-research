@@ -23,11 +23,12 @@ from scripts.qualify_nom_18c048a_native import FLOOR, RESERVATION, original, sel
 from scripts.run_offline_ci_profile import source as research_source
 
 VERSION = b'go version go1.23.12 linux/amd64\n'
-SCHEMA = 'ptlc-nom-ab8ee8d-native-v1'
+SCHEMA = 'ptlc-nom-ab8ee8d-native-v2'
 LABELS = ('go-version', 'selected-dependencies', 'module-verify', 'selected-native')
-PASS = 'PASS_FINITE_NATIVE_COMPARISON'
+PASS = 'PASS_FINITE_ORIGINAL_STRUCTURAL_EVENTS'
 FAIL = 'FAILURE_OR_INCOMPLETE'
 RESULT = 'candidate-result.json'
+EVENTS = 'selected-native.events.jsonl'
 BOUNDARY = dict(application='NO-GO', core='NO-GO', journal_source_upgrade='NOT_SELECTED',
     independent_assessment='UNFILLED', recovery_action='NONE',
     compiler_workspaces=1, physical_source_views=1, module_caches=1,
@@ -35,7 +36,10 @@ BOUNDARY = dict(application='NO-GO', core='NO-GO', journal_source_upgrade='NOT_S
     test_transport='SYNTHETIC_LOOPBACK_HTTP_FIXTURES; NO_CHAIN_ENDPOINT',
     bootstrap_network='SELECTED_PACKAGE_DEPENDENCY_ACQUISITION_AND_VERIFICATION',
     native_module_network='OFF', os_network_isolation='NOT_CLAIMED', normal_default_vet=True,
-    test_result_cache='DISABLED_BY_COUNT_ONE', automatic_retry=False)
+    test_result_cache='DISABLED_BY_COUNT_ONE', automatic_retry=False,
+    retained_native_stdout='HASH_AND_BYTE_COUNT_ONLY',
+    retained_native_events=selected.EVENT_SCOPE, full_stdout_acceptance='NOT_CLAIMED',
+    selection_completeness_by_reader='NOT_ESTABLISHED')
 
 
 def safe(raw, private_paths=()):
@@ -100,10 +104,12 @@ def run(archive, workspace, go, expected_go, cc, head):
                 'result', 'actual_exit', 'complete', 'cleanup_complete', 'elapsed_seconds')}
             streams = {kind: original(evidence, label, kind, receipt) for kind in ('stdout', 'stderr')}
             summary['streams'] = {kind: dict(bytes=len(raw), sha256=sha(raw),
-                export=safe(raw, private_paths)) for kind, raw in streams.items()}
+                export=(label, kind) != ('selected-native', 'stdout') and safe(raw, private_paths))
+                for kind, raw in streams.items()}
         require(summary['actual_exit'] == 0 and summary['cleanup_complete'] is True
             and summary['complete'] == dict(stdout=True, stderr=True)
-            and all(stream['export'] for stream in summary['streams'].values()))
+            and all(stream['export'] for kind, stream in summary['streams'].items()
+                    if (label, kind) != ('selected-native', 'stdout')))
         return streams['stdout']
 
     try:
@@ -129,7 +135,12 @@ def run(archive, workspace, go, expected_go, cc, head):
         require(compare_files(source, paths) == report['source_before'])
 
         stdout = command('selected-native', selected.TEST_ARGUMENTS, 900, environment)
-        report['comparison'] = selected.accept_events(stdout)
+        events, event_selection, comparison = selected.original_event_selection(stdout)
+        require(safe(events, private_paths))
+        with capture.private_create(evidence / EVENTS) as stream:
+            stream.write(events)
+        report['event_selection'] = event_selection
+        report['comparison'] = comparison
         report['source_after'] = compare_files(source, paths)
         require(report['source_before'] == report['source_after']
             and before == research_source(ROOT, head))
@@ -157,6 +168,8 @@ def inspect(workspace, head):
     for label, summary in commands.items():
         require(set(summary['streams']) == {'stdout', 'stderr'})
         for kind, pin in summary['streams'].items():
+            if (label, kind) == ('selected-native', 'stdout'):
+                require(pin['export'] is False)
             require(type(pin['export']) is bool and type(pin['bytes']) is int
                 and 0 <= pin['bytes'] <= (capture.MAX_STDOUT if kind == 'stdout' else capture.MAX_STDERR)
                 and re.fullmatch('[0-9a-f]{64}', pin['sha256']) is not None)
@@ -166,8 +179,15 @@ def inspect(workspace, head):
                 require(safe(content) and len(content) == pin['bytes'] and sha(content) == pin['sha256'])
                 files.append(name)
                 streams[label, kind] = content
+    if 'event_selection' in report:
+        events = regular(workspace / 'commands' / EVENTS, selected.previous.MAX_STREAM)
+        require(safe(events))
+        pin = commands['selected-native']['streams']['stdout']
+        selected.accept_selected_events(events, report['event_selection'],
+            {name: pin[name] for name in ('bytes', 'sha256')}, report['comparison'])
+        files.append('commands/' + EVENTS)
     if report['outcome'] == PASS:
-        require(len(commands) == len(LABELS) and report['stage'] == 'complete' and len(streams) == 2*len(LABELS))
+        require(len(commands) == len(LABELS) and report['stage'] == 'complete' and len(streams) == 2*len(LABELS)-1 and 'event_selection' in report)
         require(all(summary['result'] == 'RETURNED_ZERO_WITH_COMPLETE_STREAMS'
             and type(summary['actual_exit']) is int and summary['actual_exit'] == 0
             and summary['cleanup_complete'] is True and canonical(summary['complete']) == canonical(dict(stdout=True, stderr=True))
@@ -176,7 +196,9 @@ def inspect(workspace, head):
             and streams['module-verify', 'stdout'] == b'all modules verified\n')
         snapshot = dict(files=len(paths), sha256=sha(canonical(paths)))
         require(canonical(report['source_before']) == canonical(report['source_after']) == canonical(snapshot))
-        require(canonical(report['comparison']) == canonical(selected.accept_events(streams['selected-native', 'stdout'])))
+        selected.accept_selected_events(events, report['event_selection'],
+            {name: commands['selected-native']['streams']['stdout'][name] for name in ('bytes', 'sha256')},
+            report['comparison'])
     return report, sorted(files)
 
 
