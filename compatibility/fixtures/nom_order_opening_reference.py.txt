@@ -1,0 +1,5 @@
+def opening(self, reference):
+    _require(type(reference) is protocol.ReferenceCheckpoint)
+    if id(reference) not in self._openings:
+        self._openings[id(reference)] = discovery.checkpoint_opening(reference).as_dict()
+    return self._openings[id(reference)]

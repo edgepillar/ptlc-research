@@ -65,7 +65,7 @@ only within that pure operation, which invokes no foreign callback or I/O.
     def opening(self, reference):
         _require(type(reference) is protocol.ReferenceCheckpoint)
         if id(reference) not in self._openings:
-            self._openings[id(reference)] = discovery.checkpoint_opening(reference).as_dict()
+            self._openings[id(reference)] = discovery._opening_description(reference)
         return self._openings[id(reference)]
 
     def query(self, selection):

@@ -7,6 +7,7 @@ import unittest
 from unittest.mock import patch
 
 from offline_session import nom_checkpoint_discovery as discovery
+from offline_session import nom_checkpoint_read_ordering as ordering
 from scripts import qualify_nom_checkpoint_discovery as fixture
 
 
@@ -142,3 +143,129 @@ class CheckpointHistoryReuseControls(unittest.TestCase):
         compare('returned-value-isolated', root)
         self.assertEqual(len(self.refs), 5)
         self.assertEqual(len(comparisons), 35)
+
+
+class OrderedOpeningReuseControls(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.policy, cls.contexts, cls.retained, cls.refs = fixture.fixture_contexts()
+        path = Path(__file__).resolve().parents[1] / 'compatibility/fixtures/nom_order_opening_reference.py.txt'
+        raw = path.read_bytes()
+        assert hashlib.sha256(raw).hexdigest() == '7e0e4a6f884d07d3083038fb9b1522b839dce0689b836facc830bc7b266955db'
+        namespace = dict(ordering.__dict__)
+        exec(compile(raw, path.name, 'exec'), namespace)
+        cls.reference = staticmethod(namespace['opening'])
+
+    def test_each_new_validation_walks_every_context_once_and_isolates_its_result(self):
+        protocol = discovery.protocol
+        for name, value in self.refs.items():
+            with self.subTest(reference=name):
+                expected = self.reference(ordering._Validation(), value)
+                contexts, current = [], value
+                while current is not None:
+                    contexts.append(id(current._context))
+                    current = current._prior
+                with patch.object(protocol, '_compatible', wraps=protocol._compatible) as checked:
+                    for _ in range(2):
+                        validation = ordering._Validation()
+                        result = validation.opening(value)
+                        self.assertEqual(result, expected)
+                        self.assertIs(validation.opening(value), result)
+                        self.assertEqual([id(call.args[1]) for call in checked.call_args_list], contexts)
+                        checked.reset_mock()
+                        result['checkpoint_lineage'][0]['checkpoint']['sequence'] = 999
+                        result['opening_digest_hex'] = '00'*32
+
+    def test_finite_values_and_exact_refusals_match_the_previous_method_without_io(self):
+        comparisons = []
+
+        def outcome(function, value):
+            try:
+                return 'VALUE', discovery.codec._canonical(function(ordering._Validation(), value))
+            except (ValueError, TypeError, KeyError, AttributeError, RecursionError,
+                    OverflowError, UnicodeError) as error:
+                return 'REFUSAL', type(error).__name__, str(error)
+
+        def blocked(*args, **kwargs):
+            raise AssertionError('pure opening comparison attempted an effectful operation')
+
+        def compare(label, value):
+            with self.subTest(label=label), ExitStack() as stack:
+                for target in ('builtins.open', 'os.open', 'os.write', 'os.fsync', 'subprocess.Popen'):
+                    stack.enter_context(patch(target, side_effect=blocked))
+                self.assertEqual(outcome(self.reference, value), outcome(ordering._Validation.opening, value))
+                comparisons.append(label)
+
+        for name, value in self.refs.items():
+            compare('valid:'+name, value)
+        root = self.refs['initial']
+        for index, value in enumerate((None, {}, b'', 0, object())):
+            compare('foreign:'+str(index), value)
+        compare('uninitialized', object.__new__(discovery.protocol.ReferenceCheckpoint))
+        for field in ('_policy', '_context', '_prior'):
+            value = copy.copy(root)
+            object.__delattr__(value, field)
+            compare('missing:'+field, value)
+            for index, foreign in enumerate(({}, b'', 0, object())):
+                value = copy.copy(root)
+                object.__setattr__(value, field, foreign)
+                compare('foreign:'+field+':'+str(index), value)
+        self_cycle = copy.copy(root)
+        object.__setattr__(self_cycle, '_prior', self_cycle)
+        compare('self-cycle', self_cycle)
+        first, second = copy.copy(root), copy.copy(root)
+        object.__setattr__(first, '_prior', second)
+        object.__setattr__(second, '_prior', first)
+        compare('two-node-cycle', first)
+        for index, wire in enumerate((b'', b'{}', bytes([255]))):
+            value, policy = copy.copy(root), copy.copy(root._policy)
+            object.__setattr__(policy, '_wire', wire)
+            object.__setattr__(value, '_policy', policy)
+            compare('malformed-policy:'+str(index), value)
+        wire = root._policy._wire
+        try:
+            compare('before-mutation', root)
+            object.__setattr__(root._policy, '_wire', b'{}')
+            compare('after-mutation', root)
+        finally:
+            object.__setattr__(root._policy, '_wire', wire)
+        compare('after-restore', root)
+        changed = ordering._Validation().opening(root)
+        changed['checkpoint_lineage'][0]['checkpoint']['sequence'] = 999
+        compare('returned-value-isolated', root)
+        self.assertEqual(len(self.refs), 5)
+        self.assertEqual(len(comparisons), 35)
+
+    def test_later_operations_refuse_mutated_ancestor_custody_and_accept_restoration(self):
+        root, tail = self.refs['initial'], self.refs['tail']
+        expected = ordering._Validation().opening(tail)
+        claim = root._context._claim_wire
+        try:
+            object.__setattr__(root._context, '_claim_wire', b'{}')
+            with self.assertRaises(discovery.CheckpointDiscoveryRefused):
+                ordering._Validation().opening(tail)
+            with self.assertRaises(ordering.CheckpointReadOrderRefused):
+                ordering.bootstrap_order_trace(tail)
+        finally:
+            object.__setattr__(root._context, '_claim_wire', claim)
+        self.assertEqual(ordering._Validation().opening(tail), expected)
+        trace = ordering.bootstrap_order_trace(tail)
+        self.assertEqual(trace.as_dict()['retained_head'], expected['checkpoint_lineage'][-1])
+
+    def test_retained_public_wrapper_revalidates_and_does_not_store_derived_values(self):
+        root, tail = self.refs['initial'], self.refs['tail']
+        wrapper = discovery.checkpoint_opening(tail)
+        expected = wrapper.as_dict()
+        changed = wrapper.as_dict()
+        changed['checkpoint_lineage'][0]['checkpoint']['sequence'] = 999
+        self.assertEqual(wrapper.as_dict(), expected)
+        policy = root._policy._wire
+        try:
+            object.__setattr__(root._policy, '_wire', b'{}')
+            with self.assertRaisesRegex(discovery.CheckpointDiscoveryRefused, '^invalid complete checkpoint opening$'):
+                wrapper.as_dict()
+            with self.assertRaisesRegex(discovery.CheckpointDiscoveryRefused, '^complete checkpoint opening refused$'):
+                discovery.checkpoint_opening(tail)
+        finally:
+            object.__setattr__(root._policy, '_wire', policy)
+        self.assertEqual(wrapper.as_dict(), expected)

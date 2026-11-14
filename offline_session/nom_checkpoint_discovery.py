@@ -115,6 +115,15 @@ def checkpoint_read(minimum, *, challenge_hex):
         raise CheckpointDiscoveryRefused("checkpoint discovery selection refused") from None
 
 
+def _opening_description(candidate):
+    """Derive one fresh complete opening without constructing a typed wrapper."""
+    try:
+        history = _history(candidate)
+        return dict(checkpoint_lineage=history, opening_digest_hex=_hash(OPENING_DOMAIN, history))
+    except _ERRORS:
+        raise CheckpointDiscoveryRefused("complete checkpoint opening refused") from None
+
+
 @dataclass(frozen=True, init=False)
 class NoMCheckpointEvidenceOpening:
     """Complete actual reference contexts; typed bytes establish no producer truth."""
@@ -126,8 +135,7 @@ class NoMCheckpointEvidenceOpening:
     def as_dict(self):
         try:
             _require(type(self) is NoMCheckpointEvidenceOpening)
-            history = _history(self._candidate)
-            return dict(checkpoint_lineage=history, opening_digest_hex=_hash(OPENING_DOMAIN, history))
+            return _opening_description(self._candidate)
         except _ERRORS:
             raise CheckpointDiscoveryRefused("invalid complete checkpoint opening") from None
 
