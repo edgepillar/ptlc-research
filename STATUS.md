@@ -13,12 +13,26 @@ local process and associates its exact result. The 19 fabricated-program Python
 controls and the actual built Rust checker assertions establish different scopes;
 neither authenticates an arbitrary executable or authorizes a swap.
 
-The next bounded M0/M4 item reconciles the delivery entry points and prepares a
-[new reading packet](docs/PUBLIC_CHECKER_CAPTURE_REVIEW.md) for that exact accepted
-source. The packet freezes its subject and questions; it is author preparation,
-not an independent assessment. Existing frozen review subjects stay unchanged.
-These documentation changes require their own applicable checks and do not
-inherit qualification from the source they describe.
+The latest accepted research execution subject is `e1c4945`, recorded below.
+Its checkpoint-history change validates the retained lineage once per invocation
+and validates it again on later invocations. The
+[finite comparison and exclusions](docs/NOM_CHECKPOINT_HISTORY_REUSE.md) do not
+establish atomic concurrent snapshots, general equivalence or a production
+speedup. The separate finite ab8ee8d comparison is also recorded against its own
+original main run; it supplies no complete upstream compatibility claim.
+
+The bounded M0 item reconciles README and this status record with that accepted
+subject. Its stop condition is consistent source/run references, preserved
+historical evidence and unchanged operational boundaries after applicable
+documentation checks. This documentation revision is outside the accepted
+`e1c4945` subject and requires its own gates.
+
+M4 author preparation remains separate from independent assessment. The
+[public-checker reading packet](docs/PUBLIC_CHECKER_CAPTURE_REVIEW.md) freezes
+`e43e6974`; the [earlier source handoff](docs/NOM_CURRENT_REVIEW_HANDOFF.md)
+freezes `e61aa174`. A later reviewer must explicitly select the later source and
+its complete delta. Neither frozen packet is relabeled as an assessment of
+`e1c4945`. Reviewer outreach and operational composition remain separate scopes.
 
 Before any later operational composition, D1 observation, D2 signer/nonce and D3
 original-custody/recovery decisions still need their selected constructions and
@@ -206,7 +220,41 @@ defect, with its verification scope declared before execution.
 
 ## Recorded accepted baseline
 
-The current recorded execution baseline is
+The latest recorded research execution baseline is
+[`e1c49451d2ee63ce432243aae5ac09e87ce8612e`](https://github.com/edgepillar/ptlc-research/tree/e1c49451d2ee63ce432243aae5ac09e87ce8612e),
+tree `b43236072d40d9d3f8c93492bce7a39436ba553b`, with accepted source-inventory
+SHA-256 `d9408631321f5ee823de658dff18b1fa338b4e16d9a27b566f598730ef080f26`.
+[PR #237](https://github.com/edgepillar/ptlc-research/pull/237) records the two
+history-preserving commits, complete local qualification, four separate PR gates,
+normal fast-forward and four separately accepted own-main original results.
+
+| Evidence | Accepted scope at e1c4945 |
+| --- | --- |
+| Local offline | 4,712 cases across 245 modules; all eight original streams complete; 2,732 index/worktree artifact versions checked |
+| Full PR | [43498616840/2](https://github.com/edgepillar/ptlc-research/actions/runs/43498616840/attempts/2): complete full-tier originals accepted separately from main; failed attempt one preserved |
+| Finite PR comparisons | [821bdd2: 43498616901/1](https://github.com/edgepillar/ptlc-research/actions/runs/43498616901/attempts/1), [18c048a: 43498616722/1](https://github.com/edgepillar/ptlc-research/actions/runs/43498616722/attempts/1) and [ab8ee8d: 43498616716/1](https://github.com/edgepillar/ptlc-research/actions/runs/43498616716/attempts/1): each accepted against its own originals |
+| Full own-main | [43548376528/1](https://github.com/edgepillar/ptlc-research/actions/runs/43548376528/attempts/1): 17 jobs, 16 successful and the fast job explicitly unexecuted; nine original artifact families and complete console; four 4,712-case Python profiles, 217 adaptor/Rust tests and ten public-checker cases |
+| 821bdd2 own-main | [43548376486/1](https://github.com/edgepillar/ptlc-research/actions/runs/43548376486/attempts/1): three jobs, 37 profiles, 42 Go commands, 782 named outcomes and 92 originals |
+| 18c048a own-main | [43548376517/1](https://github.com/edgepillar/ptlc-research/actions/runs/43548376517/attempts/1): three jobs, 42 profiles, 47 Go commands, 813 named outcomes and 102 originals |
+| ab8ee8d own-main | [43548376466/1](https://github.com/edgepillar/ptlc-research/actions/runs/43548376466/attempts/1): selected original structural events in 19 packages, 128 required parents, 260 observed parent/child outcomes and 558 non-output event records; complete native stdout acceptance not claimed and selection completeness not established by the reader |
+| Source and custody | 1,366 files and 39,588,539 source bytes; both edgepillar roles verified across 279 commits; 12 original artifact families, four original console archives and two metadata captures retained without repacking; all 18 transport/capture commands complete with actual exit zero |
+
+The full PR's first attempt failed after macOS jobs were not acquired. Its
+originals remain preserved. Later local reader, checkout and admission refusals
+also retain their original classifications. The successful later attempts do not
+reclassify earlier failures, and no completed native test or artifact transport
+was replayed to repair those local reader failures.
+
+The separately failed full own-main attempts at the preceding `9d038227` source
+remain failed and unaccepted. Current `e1c4945` main acceptance uses distinct push
+runs and originals; it does not supply missing evidence for that earlier source.
+Independent assessment, AS-1 through AS-7, application/core approval and action
+permission remain respectively UNFILLED, UNFILLED, NO-GO and NONE. Later revisions
+must select and qualify their own exact scope.
+
+### Preserved e43e6974 captured-checker baseline
+
+The preceding captured-checker execution baseline is
 [`e43e69747a95d0089c0f6f1a4979a42a7d5a58a9`](https://github.com/edgepillar/ptlc-research/tree/e43e69747a95d0089c0f6f1a4979a42a7d5a58a9),
 tree `4436577780e7ddd6819d88bc1a5ab2b2d5e6fb6a`, with accepted source-inventory
 SHA-256 `03c604b062ea9743aa2455a946858d351d6c98ed59affbe57733bb2df30940fd`.

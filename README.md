@@ -62,18 +62,27 @@ and capture grants no action or operational recovery authority.
 ## Evidence and checks
 
 The recorded accepted baseline is
-[`e43e6974`](https://github.com/edgepillar/ptlc-research/tree/e43e69747a95d0089c0f6f1a4979a42a7d5a58a9).
-[PR #229](https://github.com/edgepillar/ptlc-research/pull/229) records complete
+[`e1c4945`](https://github.com/edgepillar/ptlc-research/tree/e1c49451d2ee63ce432243aae5ac09e87ce8612e).
+[PR #237](https://github.com/edgepillar/ptlc-research/pull/237) records complete
 local regression, separate PR original acceptance, a normal fast-forward and
-three separately accepted own-main attempts. The
-[full main attempt 41967151419/1](https://github.com/edgepillar/ptlc-research/actions/runs/41967151419/attempts/1)
+four separately accepted own-main attempts. The
+[full main attempt 43548376528/1](https://github.com/edgepillar/ptlc-research/actions/runs/43548376528/attempts/1)
 accounted for 17 jobs: 16 succeeded and the fast job was unexecuted. Its nine
-original artifact families and complete console include four 4,692-case Python
-profiles and 217 Rust cases, including ten public checker cases. The actual
-built-checker process assertions qualify the declared capture component; they
-do not authenticate an arbitrary owner-selected binary. The
-[status record](STATUS.md) separates both finite native comparisons and all
-earlier failed attempts. Later source changes require their own relevant gates.
+original artifact families and complete console include four 4,712-case Python
+profiles, 217 adaptor/Rust tests and ten separately checked public-checker cases.
+The three native workflows retain their own finite comparison scopes. The
+[status record](STATUS.md) identifies their exact runs, exclusions and preserved
+failures. This source also validates checkpoint histories in
+[one fresh lineage walk per invocation](docs/NOM_CHECKPOINT_HISTORY_REUSE.md);
+the finite comparisons establish no general equivalence or production speedup.
+These accepted results belong to `e1c4945`. Later documentation or executable
+changes require their own relevant gates.
+
+The captured public-checker component's preceding accepted subject
+[`e43e6974`](https://github.com/edgepillar/ptlc-research/tree/e43e69747a95d0089c0f6f1a4979a42a7d5a58a9)
+and [PR #229](https://github.com/edgepillar/ptlc-research/pull/229) remain preserved
+with their original counts and three own-main runs in the status record. Built
+checker assertions do not authenticate an arbitrary owner-selected executable.
 
 The preceding
 [`50df48f8`](https://github.com/edgepillar/ptlc-research/tree/50df48f823f6b47c72a37f92a722a38042d975a7),
@@ -132,8 +141,13 @@ The [ab8ee8d upstream tracking corpus](docs/NOM_DEV_AB8EE8D.md) reconstructs
 embedded refund, HTTP admission and downloader changes. The 18 direct PTLC
 paths retain their previous bytes. The [finite native plan](docs/NOM_DEV_AB8EE8D_NATIVE.md)
 preserves the earlier 39 selected tests and adds 89, selecting 128 top-level
-tests in 19 packages. Native compatibility remains unfilled for this tracked
-source until its own original PR and main evidence is accepted.
+tests in 19 packages. At `e1c4945`, the
+[separate own-main comparison](https://github.com/edgepillar/ptlc-research/actions/runs/43548376466/attempts/1)
+accepted the selected original structural event values: 19 packages, 128 required
+parents, 260 observed parent/child outcomes and 558 non-output event records.
+That reader claims no complete native stdout acceptance and does not establish
+test-selection completeness. Complete upstream compatibility, running-node,
+crash-durability and independent-assessment requirements remain unfilled.
 
 The [008bdcd upstream tracking corpus](docs/NOM_DEV_008BDCD.md) preserves its
 562 source records and separately accepted finite Linux comparison: 39 top-level
