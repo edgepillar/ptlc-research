@@ -232,6 +232,7 @@ class CandidateProcessControls(unittest.TestCase):
             self.assertFalse((paths['workspace'] / 'native-intent.json').exists())
 
     def test_fee_stage_uses_live_cache_and_refuses_changed_baseline_originals(self):
+        labels = sorted(retention.expected_arguments())
         for corrupt in (False, True):
             with self.subTest(corrupt=corrupt), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary).resolve()
@@ -243,7 +244,6 @@ class CandidateProcessControls(unittest.TestCase):
                     paths[key].write_bytes(('synthetic ' + key).encode('ascii'))
                     paths[key].chmod(0o700)
                 workspace, source = paths['workspace'], paths['source']
-                labels = sorted(retention.expected_arguments())
                 calls = []
                 before = dict(combined_files=552, marker='candidate baseline')
                 after = dict(combined_files=553, marker='candidate fee stage')
@@ -416,8 +416,9 @@ class OriginalRetentionControls(unittest.TestCase):
             content='EXACT_SELECTED_CONTENTS; UNCHANGED_REFERENCE_AND_NEW_BOUNDARY_PRODUCERS',
             filesystem_mode_equality='NOT_ASSERTED', producer_authentication='NOT_ESTABLISHED_BY_READER')
         arguments = retention.expected_arguments()
+        # Render synthetic events from the plan already checked in setUpClass.
         packages = {'github.com/zenon-network/go-zenon/' + row['package']: set()
-            for row in selected.plan()['units']}
+            for row in self.corpus_plan['baseline']['units']}
         complement = {'github.com/zenon-network/go-zenon/vm/embedded/definition':
             set(selected.DEFINITION_COMPLEMENT)}
         comparison = dict(outcome='PASS_SELECTED_FINITE_VALUES_ONLY', synthetic=True)

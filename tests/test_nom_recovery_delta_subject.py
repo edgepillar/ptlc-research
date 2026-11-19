@@ -170,19 +170,26 @@ class NomRecoveryDeltaSubjectTests(unittest.TestCase):
         self.assertEqual(check.source.MAX_SOURCE_BYTES, 16 * 1024 * 1024)
 
     def test_blob_and_total_source_bounds_refuse_before_accepting_the_snapshot(self):
-        path = self.fixture.root / "docs/oversize.txt"
-        path.write_bytes(b"0" * (check.MAX_BLOB_BYTES + 1))
-        self.fixture.advance("docs/oversize.txt")
-        with self.assertRaises(check.SubjectError): check.generate(self.fixture.root, self.fixture.pins)
+        name = "docs/oversize.txt"
+        path = self.fixture.root / name
+        with path.open("xb") as handle:
+            handle.truncate(check.MAX_BLOB_BYTES + 1)
+        self.fixture.advance(name)
+        with self.assertRaisesRegex(check.SubjectError, "^source blob exceeds selected bound$"):
+            check.generate(self.fixture.root, self.fixture.pins)
+
+        # A tree charges size per path, even when its entries have the same blob.
+        # Stage those entries directly so the fixture needs only one sparse file.
+        with path.open("r+b") as handle:
+            handle.truncate(7 * 1024 * 1024)
+        blob = self.fixture.git("hash-object", "-w", "--", name).strip()
         path.unlink()
-        self.fixture.advance("docs/oversize.txt")
-        names = []
         for number in range(6):
-            name = "docs/bounded-{}.txt".format(number)
-            (self.fixture.root / name).write_bytes(b"0\n" * (7 * 1024 * 1024 // 2))
-            names.append(name)
-        self.fixture.advance(*names)
-        with self.assertRaises(check.SubjectError): check.generate(self.fixture.root, self.fixture.pins)
+            entry = "docs/bounded-{}.txt".format(number)
+            self.fixture.git("update-index", "--add", "--cacheinfo", "100644", blob, entry)
+        self.fixture.advance(name)
+        with self.assertRaisesRegex(check.SubjectError, "^complete source exceeds selected bound$"):
+            check.generate(self.fixture.root, self.fixture.pins)
 
     def test_nonregular_source_and_case_aliases_are_not_silently_inventoried(self):
         root = self.fixture.root
