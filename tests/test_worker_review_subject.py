@@ -18,26 +18,35 @@ SUBJECT_SHA256 = "f140380fe8c2a11387316c5b8ed7269cdce239f89592ded26588decf1c42c7
 
 
 class WorkerSubjectTests(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
+        # Read-only cases share only the synthetic input repository.
+        cls.prepare_fixture(cls, cls.addClassCleanup)
+
+    @staticmethod
+    def prepare_fixture(case, add_cleanup):
         fixture = fixtures.WitnessSubjectTests(methodName="runTest")
-        self.addCleanup(fixture.doCleanups)
+        add_cleanup(fixture.doCleanups)
         fixture.setUp()
-        self.fixture, self.root = fixture, fixture.root
-        self.files = dict(fixture.files)
+        case.fixture, case.root = fixture, fixture.root
+        case.files = dict(fixture.files)
         report = b"UNFILLED witness report.\n"
-        self.files[subject.witness.SUBJECT_PATH] = ("100644", fixture.raw)
-        self.files[subject.WITNESS_REPORT_PATH] = ("100644", report)
-        self.files["worker.txt"] = ("100644", b"Public synthetic worker source.\n")
-        (self.root / subject.WITNESS_REPORT_PATH).write_bytes(report)
+        case.files[subject.witness.SUBJECT_PATH] = ("100644", fixture.raw)
+        case.files[subject.WITNESS_REPORT_PATH] = ("100644", report)
+        case.files["worker.txt"] = ("100644", b"Public synthetic worker source.\n")
+        (case.root / subject.WITNESS_REPORT_PATH).write_bytes(report)
         fixture.fixture.index(subject.WITNESS_REPORT_PATH, report)
-        self.commit = fixture.fixture.commit(self.files)
-        self.pins = subject.Pins(self.commit, fixture.pins, fixture.digest,
+        case.commit = fixture.fixture.commit(case.files)
+        case.pins = subject.Pins(case.commit, fixture.pins, fixture.digest,
                                  hashlib.sha256(report).hexdigest())
-        self.expected = subject.generate(self.root, self.pins)
-        self.raw = subject.encoded(self.expected)
-        self.digest = hashlib.sha256(self.raw).hexdigest()
-        (self.root / subject.SUBJECT_PATH).write_bytes(self.raw)
-        fixture.fixture.index(subject.SUBJECT_PATH, self.raw)
+        case.expected = subject.generate(case.root, case.pins)
+        case.raw = subject.encoded(case.expected)
+        case.digest = hashlib.sha256(case.raw).hexdigest()
+        (case.root / subject.SUBJECT_PATH).write_bytes(case.raw)
+        fixture.fixture.index(subject.SUBJECT_PATH, case.raw)
+
+    def use_isolated_fixture(self):
+        self.prepare_fixture(self, self.addCleanup)
 
     def reject(self, value):
         raw = subject.encoded(value)
@@ -113,6 +122,7 @@ class WorkerSubjectTests(unittest.TestCase):
                 subject.verify_manifest(self.root, self.pins, raw, hashlib.sha256(raw).hexdigest())
 
     def test_all_six_prior_artifacts_are_protected_at_source_worktree_and_index(self):
+        self.use_isolated_fixture()
         names = [p["manifest_path"] for p in self.expected["prior_subjects"].values()]
         names += [p["path"] for p in self.expected["preserved_reports"]]
         for name in names:
@@ -140,6 +150,7 @@ class WorkerSubjectTests(unittest.TestCase):
                 subject.generate(self.root, pins)
 
     def test_current_source_edits_are_not_the_selected_immutable_inventory(self):
+        self.use_isolated_fixture()
         path = self.root / "worker.txt"
         path.write_bytes(b"Changed public checkout bytes.\n")
         self.fixture.fixture.index("worker.txt", path.read_bytes())
@@ -150,6 +161,7 @@ class WorkerSubjectTests(unittest.TestCase):
         self.assertEqual(subject.generate(self.root, self.pins), self.expected)
 
     def test_new_manifest_worktree_and_index_must_match_selected_bytes(self):
+        self.use_isolated_fixture()
         path = self.root / subject.SUBJECT_PATH
         path.write_bytes(b"{}\n")
         with self.assertRaises(subject.SubjectError):
@@ -160,6 +172,7 @@ class WorkerSubjectTests(unittest.TestCase):
             subject.verify_checkout(self.root, self.pins, self.digest)
 
     def test_unfilled_report_symlink_and_nonregular_index_refuse(self):
+        self.use_isolated_fixture()
         name = subject.WITNESS_REPORT_PATH
         raw = self.files[name][1]
         self.fixture.fixture.index(name, raw, mode="120000")
@@ -175,6 +188,7 @@ class WorkerSubjectTests(unittest.TestCase):
             subject.generate(self.root, self.pins)
 
     def test_complete_archive_is_inspected_without_extraction_and_omissions_refuse(self):
+        self.use_isolated_fixture()
         archive = self.root / "synthetic-worker-source.tar"
         self.fixture.fixture.git("archive", "--format=tar", "--output=" + str(archive), self.commit)
         before = set(self.root.rglob("*"))
