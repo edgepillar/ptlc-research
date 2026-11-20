@@ -6,11 +6,12 @@ funds are authorized by this status record.
 
 ## Active delivery work
 
-The M1 D6 source tracking item covers `54f6bad` and its shared genesis, ledger,
-embedded dispatch and dependency changes. The complete 621-file index was
-verified against the upstream Git tree. The behavior and journal pin is
-`77ba9c7`. Native compatibility for `54f6bad` is UNFILLED.
-[Source inventory and impact record](docs/NOM_DEV_54F6BAD.md)
+The M1 D6 source tracking item covers `18db0ca`. Two CI workflows changed from
+`54f6bad`. The complete 621-file index reconstructs against the upstream Git
+tree. The behavior and journal pin is `77ba9c7`. Native compatibility for
+`54f6bad` and `18db0ca` remains UNFILLED.
+[Workflow delta](docs/NOM_DEV_18DB0CA.md)
+[Earlier shared source impact](docs/NOM_DEV_54F6BAD.md)
 
 The M2b/M3 [captured public-checker component](docs/NOM_PUBLIC_CHECKER_COMPOSITION.md)
 met its declared offline stop condition at `e43e6974`, as recorded below.
