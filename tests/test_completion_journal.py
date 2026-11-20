@@ -19,6 +19,12 @@ from completion_test_support import alice_packet, bob_release, completion_accept
 
 
 class CompletionJournalTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        # Reuse immutable public packet fixtures across independent journals.
+        cls.release = bob_release()
+        cls.reference_packet = alice_packet()
+
     def setUp(self):
         temporary = tempfile.TemporaryDirectory(prefix="ptlc-completion-test-")
         self.addCleanup(temporary.cleanup)
@@ -31,14 +37,13 @@ class CompletionJournalTests(unittest.TestCase):
         self.partial = self.znn_bundle["partial_signatures_hex"][0]
         zenon, bitcoin = final_signatures()
         self.signatures = {"zenon": zenon, "bitcoin": bitcoin}
-        self.release = bob_release()
 
     def finish(self, request):
         """Fake local acceptance; these tests establish no cryptographic validity."""
         return completion_accepted(request)
 
     def packet(self):
-        return alice_packet()
+        return self.reference_packet
 
     def open(self, **kwargs):
         return Journal.open(self.root, self.anchor, **kwargs)
