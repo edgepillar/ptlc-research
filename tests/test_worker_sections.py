@@ -270,8 +270,18 @@ class WorkerSectionTests(unittest.TestCase):
             for value in (True,0,-1,1.0,check.MAX_BYTES+1):self.refuses(first_bytes=value)
             self.refuses(first_sha256='private claimed digest')
             self.refuses(first_sha256='0'*64)
-            with self.paths['first'].open('wb') as handle:handle.truncate(check.MAX_BYTES+1)
-            self.refuses()
+            self.assertEqual(check.MAX_BYTES, 32 * 1024 * 1024)
+            bound = max(len(raw) for raw in self.bodies.values())
+            with (
+                patch.object(check, 'MAX_BYTES', bound),
+                patch.object(check.scanner, 'owned_file', wraps=check.scanner.owned_file) as check_file,
+                patch.object(check.scanner.contents, 'regular',
+                             side_effect=AssertionError('oversized file opened')) as stream,
+            ):
+                self.paths['first'].write_bytes(b'x' * (bound + 1))
+                self.refuses()
+                check_file.assert_called_once_with(self.paths['first'], bound)
+                stream.assert_not_called()
 
     def test_role_aliases_foreign_types_and_missing_fields_refuse_before_io(self):
         class Foreign(dict):

@@ -469,10 +469,17 @@ class ObservationStoreTests(unittest.TestCase):
     def test_oversized_database_is_rejected_before_sqlite_connect(self):
         with self.open():
             pass
-        with (self.root / "observations.sqlite3").open("r+b") as output:
-            output.truncate(MAX_DATABASE_BYTES + 1)
-        with patch("sqlite3.connect", side_effect=AssertionError("oversized database opened")) as connection:
-            with self.assertRaises(StoreQuarantined):
+        self.assertEqual(MAX_DATABASE_BYTES, 8 * 1024 * 1024)
+        database = self.root / "observations.sqlite3"
+        bound = database.stat().st_size
+        self.assertLess(bound, MAX_DATABASE_BYTES)
+        with database.open("r+b") as output:
+            output.truncate(bound + 1)
+        with (
+            patch("offline_session.observation_store.MAX_DATABASE_BYTES", bound),
+            patch("sqlite3.connect", side_effect=AssertionError("oversized database opened")) as connection,
+        ):
+            with self.assertRaisesRegex(StoreQuarantined, "^invalid observation storage file$"):
                 self.open()
             connection.assert_not_called()
 

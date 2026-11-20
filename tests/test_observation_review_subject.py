@@ -241,11 +241,17 @@ class ObservationSubjectTests(unittest.TestCase):
         pins = subject.Pins(self.commit(files), self.baseline, self.pins.baseline_sha256)
         with self.assertRaises(subject.SubjectError):
             subject.generate(self.root, pins)
+        self.assertEqual(subject.MAX_ARCHIVE_BYTES, 16 * 1024 * 1024)
         archive = self.root / "oversize.tar"
-        with archive.open("wb") as handle:
-            handle.truncate(subject.MAX_ARCHIVE_BYTES + 1)
-        with self.assertRaises(subject.SubjectError):
-            subject.verify_archive(archive, self.expected)
+        bound = 1024
+        archive.write_bytes(b"x" * (bound + 1))
+        with (
+            patch.object(subject, "MAX_ARCHIVE_BYTES", bound),
+            patch.object(tarfile, "open", side_effect=AssertionError("oversized archive opened")) as stream,
+        ):
+            with self.assertRaisesRegex(subject.SubjectError, "^regular bounded plain tar required$"):
+                subject.verify_archive(archive, self.expected)
+            stream.assert_not_called()
 
         original_git = subject._git
         tree = original_git(self.root, "ls-tree", "-r", "-l", "-z", self.current)
