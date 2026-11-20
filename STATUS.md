@@ -6,6 +6,12 @@ funds are authorized by this status record.
 
 ## Active delivery work
 
+The M1 D6 source tracking item covers `54f6bad` and its shared genesis, ledger,
+embedded dispatch and dependency changes. The complete 621-file index was
+verified against the upstream Git tree. The behavior and journal pin is
+`77ba9c7`. Native compatibility for `54f6bad` is UNFILLED.
+[Source inventory and impact record](docs/NOM_DEV_54F6BAD.md)
+
 The M2b/M3 [captured public-checker component](docs/NOM_PUBLIC_CHECKER_COMPOSITION.md)
 met its declared offline stop condition at `e43e6974`, as recorded below.
 It rederives the complete public request, captures an explicitly owner-selected
@@ -13,7 +19,7 @@ local process and associates its exact result. The 19 fabricated-program Python
 controls and the actual built Rust checker assertions establish different scopes;
 neither authenticates an arbitrary executable or authorizes a swap.
 
-The latest accepted research execution subject is `e1c4945`, recorded below.
+The accepted checkpoint-history execution subject `e1c4945` is recorded below.
 Its checkpoint-history change validates the retained lineage once per invocation
 and validates it again on later invocations. The
 [finite comparison and exclusions](docs/NOM_CHECKPOINT_HISTORY_REUSE.md) do not

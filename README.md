@@ -136,6 +136,11 @@ including setup, fetch and post work. Its one measured workspace peak is
 The [fast-path qualification procedure](docs/PUBLIC_CLIENT_FAST_QUALIFICATION.md)
 defines the separate source, original-stream, nonexecution and measurement gates.
 
+The tracked upstream candidate `54f6bad` reconstructs 621 file records from
+the `ab8ee8d` inventory and a delta with 52 additions, 60 changes and five
+removals. Native compatibility for `54f6bad` remains UNFILLED. The behavior
+and journal pin is `77ba9c7`. See the [54f6bad source record](docs/NOM_DEV_54F6BAD.md).
+
 The [ab8ee8d upstream tracking corpus](docs/NOM_DEV_AB8EE8D.md) reconstructs
 574 source records. Its 39-entry delta identifies acknowledgement recency,
 embedded refund, HTTP admission and downloader changes. The 18 direct PTLC
