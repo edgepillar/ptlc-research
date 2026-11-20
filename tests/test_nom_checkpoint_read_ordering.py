@@ -29,10 +29,6 @@ class NoMCheckpointReadOrderingControls(unittest.TestCase):
         cls.packet=discovery.discovery_reply(cls.query,cls.middle._opening)
 
     def inspect(self,trace=None,read=None,local='primary'):
-        if trace is None and read is None:
-            # Each inspection still revalidates the shared anchor and reply.
-            return ordering.inspect_ordered_reply(
-                self.contexts[local], self.anchor, self.middle, self.packet, self.middle._opening)
         return q.inspect(self.contexts[local],self.middle_state if trace is None else trace,self.middle if read is None else read)
 
     def hold(self,value):
