@@ -231,6 +231,11 @@ def step(state, action, *, bounds=Bounds(), policy="atomic-owner"):
     _parameters(bounds, policy)
     _shape(state, bounds, policy)
     _action(action)
+    return _apply(state, action, bounds, policy)
+
+
+def _apply(state, action, bounds, policy):
+    """Apply the transition after validating the model inputs."""
     kind = action.kind
     if kind in ("service_loss", "service_return"):
         available = kind == "service_return"
@@ -322,7 +327,8 @@ def successors(state, *, bounds=Bounds(), policy="atomic-owner"):
                         actions.append(Action("check", index, proposal, authorized))
     for action in actions:
         try:
-            following = step(state, action, bounds=bounds, policy=policy)
+            # The state was checked above and all candidate actions are constructed here.
+            following = _apply(state, action, bounds, policy)
         except ValueError:
             continue
         if following != state:
