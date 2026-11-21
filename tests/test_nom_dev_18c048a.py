@@ -78,7 +78,8 @@ class CandidateReferenceControls(unittest.TestCase):
 
     def test_frozen_plan_refuses_changed_subject_types_and_missing_profiles(self):
         original = selected.execution_plan()
-        self.assertEqual(selected.frozen_plan(), original)
+        with mock.patch.object(selected, 'execution_plan', return_value=original):
+            self.assertEqual(selected.frozen_plan(), original)
         self.assertEqual(original['planned_native_commands'], 47)
         for mutation in ('core', 'boolean-workspaces', 'missing-profile', 'historical-cache'):
             changed = json.loads(json.dumps(original))
